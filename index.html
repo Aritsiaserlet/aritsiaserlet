@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aritsia — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -12,80 +12,22 @@
   --gold:#e8c87a;--gold-d:#c8a040;--gold-l:#f5e0a0;
   --dark:#1a2a3a;--mid:#2c4a6a;--light:#e8f4fc;
   --white:rgba(255,255,255,0.88);--glass:rgba(255,255,255,0.45);
-  --glass2:rgba(255,255,255,0.62);
+  --glass2:rgba(255,255,255,0.85);
+  --pixel-shadow: 4px 4px 0 rgba(26,42,58,0.3);
 }
 html,body{min-height:100%;overflow-x:hidden}
 body{
-  font-family:'Nunito',sans-serif;
-  background:linear-gradient(175deg,var(--sky1) 0%,var(--sky2) 28%,var(--sky3) 58%,var(--sky4) 100%);
+  font-family:'VT323', monospace;
+  font-size: 20px;
+  background:var(--sky2);
   min-height:100vh;position:relative;
 }
 
 /* ── Wind lines ── */
-.wind-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.55}
+.wind-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.8}
 
-/* ── Clouds ── */
-.clouds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-.cloud{position:absolute;background:rgba(255,255,255,0.84);border-radius:60px;animation:drift linear infinite}
-.cloud::before,.cloud::after{content:'';position:absolute;background:inherit;border-radius:50%}
-.c1{width:260px;height:62px;top:6%;left:-280px;animation-duration:58s;animation-delay:0s}
-.c1::before{width:100px;height:88px;top:-46px;left:36px}
-.c1::after{width:80px;height:70px;top:-34px;left:120px}
-.c2{width:180px;height:44px;top:16%;left:-200px;animation-duration:74s;animation-delay:-22s;opacity:.7}
-.c2::before{width:75px;height:65px;top:-32px;left:22px}
-.c2::after{width:60px;height:52px;top:-24px;left:90px}
-.c3{width:320px;height:72px;top:32%;left:-340px;animation-duration:88s;animation-delay:-40s;opacity:.82}
-.c3::before{width:128px;height:100px;top:-54px;left:60px}
-.c3::after{width:96px;height:80px;top:-40px;left:160px}
-.c4{width:140px;height:36px;top:52%;left:-160px;animation-duration:62s;animation-delay:-12s;opacity:.6}
-.c4::before{width:58px;height:52px;top:-28px;left:18px}
-.c4::after{width:46px;height:40px;top:-20px;left:70px}
-.c5{width:220px;height:54px;top:70%;left:-240px;animation-duration:96s;animation-delay:-55s;opacity:.72}
-.c5::before{width:88px;height:78px;top:-40px;left:45px}
-.c5::after{width:70px;height:58px;top:-30px;left:120px}
-.c6{width:110px;height:30px;top:4%;left:-130px;animation-duration:48s;animation-delay:-8s;opacity:.55}
-.c6::before{width:46px;height:42px;top:-22px;left:14px}
-.c6::after{width:36px;height:32px;top:-16px;left:56px}
-.c7{width:190px;height:48px;top:85%;left:-210px;animation-duration:70s;animation-delay:-30s;opacity:.65}
-.c7::before{width:80px;height:70px;top:-36px;left:30px}
-.c7::after{width:62px;height:55px;top:-26px;left:100px}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 500px))}}
-
-/* ── Falling leaves / debris (wind particles) ── */
-.particle{
-  position:fixed;pointer-events:none;z-index:2;
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,0.6);
-  animation:fall linear infinite;
-}
-@keyframes fall{
-  0%{transform:translate(0,0) rotate(0deg);opacity:0}
-  10%{opacity:1}
-  90%{opacity:0.6}
-  100%{transform:translate(var(--dx),100vh) rotate(720deg);opacity:0}
-}
-
-/* ── Nav ── */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:20;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 28px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(12px);
-  border-bottom:0.5px solid rgba(255,255,255,0.4);
-}
-.nav-logo{font-family:'Cinzel',serif;font-size:16px;letter-spacing:3px;color:var(--dark);font-weight:700}
-.nav-right{display:flex;gap:10px;align-items:center}
-.nav-btn{
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;
-  color:var(--mid);border:1.5px solid rgba(44,74,106,0.35);
-  background:rgba(255,255,255,0.5);backdrop-filter:blur(8px);
-  padding:7px 16px;border-radius:4px;cursor:pointer;
-  text-decoration:none;transition:all .2s;
-}
-.nav-btn:hover{background:rgba(255,255,255,0.82);border-color:var(--gold-d)}
-.nav-btn.play{border-color:var(--gold);color:var(--dark);display:flex;align-items:center;gap:6px}
-.nav-btn.admin{font-size:10px;opacity:.7}
+/* ── Custom Background ── */
+.custom-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;opacity:0;transition:opacity 0.5s;pointer-events:none}
 
 /* ── Page ── */
 .page{
@@ -93,7 +35,7 @@ body{
   min-height:100vh;
   display:flex;flex-direction:column;
   align-items:center;
-  padding:100px 20px 100px;
+  padding:60px 20px 100px;
   gap:0;
 }
 
@@ -104,221 +46,215 @@ body{
   margin-bottom:36px;
 }
 .avatar-ring{
-  width:150px;height:150px;border-radius:50%;
-  background:conic-gradient(var(--gold-l),var(--gold),var(--gold-d),var(--gold),var(--gold-l));
-  padding:4px;margin-bottom:24px;
-  box-shadow:0 8px 40px rgba(80,140,200,.3),0 0 0 2px rgba(255,255,255,.7);
-  animation:spin-ring 8s linear infinite;
+  width:140px;height:140px;
+  background:var(--gold);
+  padding:6px;margin-bottom:24px;
+  box-shadow:var(--pixel-shadow);
+  border:4px solid var(--dark);
 }
-@keyframes spin-ring{to{filter:hue-rotate(30deg)}}
 .avatar-inner{
-  width:100%;height:100%;border-radius:50%;overflow:hidden;
+  width:100%;height:100%;overflow:hidden;
   background:linear-gradient(135deg,#a8d4f0,#c8eaf8,#90c4e8);
   display:flex;align-items:center;justify-content:center;
   font-size:58px;
+  border:2px solid var(--dark);
 }
-.avatar-inner img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avatar-inner img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
 .name{
-  font-family:'Cinzel',serif;font-size:46px;font-weight:700;
-  color:var(--dark);letter-spacing:5px;
-  text-shadow:0 2px 16px rgba(255,255,255,.8),0 1px 4px rgba(30,60,100,.12);
-  margin-bottom:10px;line-height:1;
+  font-family:'Press Start 2P',cursive;font-size:32px;
+  color:var(--dark);letter-spacing:2px;
+  text-shadow:4px 4px 0 rgba(255,255,255,0.8);
+  margin-bottom:18px;line-height:1;
+  text-align:center;
 }
 .role-tag{
-  font-size:12px;font-weight:700;letter-spacing:2px;
-  color:var(--mid);background:var(--glass2);
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.75);
-  padding:5px 22px;border-radius:30px;margin-bottom:28px;
+  font-size:22px;letter-spacing:1px;
+  color:var(--dark);background:var(--white);
+  border:3px solid var(--dark);
+  padding:6px 16px;margin-bottom:28px;
   text-transform:uppercase;
+  box-shadow:var(--pixel-shadow);
 }
 
 /* ── Social ── */
 .social-links{
-  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
   margin-bottom:52px;
   animation:fadeUp .9s .12s ease both;
 }
 .social-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:9px 18px;border-radius:30px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;font-size:20px;
   text-decoration:none;
-  border:1.5px solid rgba(255,255,255,.72);
-  background:var(--glass);backdrop-filter:blur(12px);
-  color:var(--mid);
-  transition:transform .18s,background .18s,box-shadow .18s;
-  box-shadow:0 2px 12px rgba(80,140,200,.14);
+  border:3px solid var(--dark);
+  background:var(--white);
+  color:var(--dark);
+  transition:transform .1s,background .1s,box-shadow .1s;
+  box-shadow:4px 4px 0 var(--dark);
 }
-.social-btn:hover{transform:translateY(-3px);background:rgba(255,255,255,.85);box-shadow:0 6px 22px rgba(80,140,200,.25)}
-.social-btn svg{width:16px;height:16px;flex-shrink:0}
+.social-btn:hover{transform:translate(2px,2px);background:var(--gold-l);box-shadow:2px 2px 0 var(--dark)}
+.social-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--dark)}
+.social-btn svg{width:20px;height:20px;flex-shrink:0}
 
 /* ── Works section ── */
 .works-section{
-  width:100%;max-width:900px;
+  width:100%;max-width:960px;
   animation:fadeUp .9s .28s ease both;
+  background:var(--glass2);
+  border:4px solid var(--dark);
+  padding:30px;
+  box-shadow:var(--pixel-shadow);
 }
 .section-head{
   display:flex;align-items:center;gap:14px;
-  margin-bottom:18px;justify-content:center;
+  margin-bottom:24px;justify-content:center;
 }
-.s-line{flex:1;max-width:100px;height:1px;background:linear-gradient(90deg,transparent,rgba(30,60,100,.28))}
-.s-line.r{background:linear-gradient(90deg,rgba(30,60,100,.28),transparent)}
-.s-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:var(--mid);text-transform:uppercase}
+.s-line{flex:1;max-width:100px;height:4px;background:var(--dark)}
+.s-title{font-family:'Press Start 2P',cursive;font-size:16px;color:var(--dark);text-transform:uppercase}
 
 /* ── Filter ── */
-.filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.filter-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center}
-.filter-label{font-size:11px;font-weight:700;color:var(--mid);letter-spacing:1px;opacity:.6;margin-right:4px;white-space:nowrap}
+.filter-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.filter-label{font-size:20px;color:var(--dark);margin-right:4px;white-space:nowrap}
 .tab{
-  font-size:11px;font-weight:700;letter-spacing:.8px;
-  padding:5px 16px;border-radius:20px;
-  border:1.5px solid rgba(255,255,255,.6);
-  background:rgba(255,255,255,.3);color:var(--mid);
-  cursor:pointer;transition:all .18s;backdrop-filter:blur(6px);
+  font-family:'VT323', monospace;
+  font-size:20px;
+  padding:4px 14px;
+  border:3px solid var(--dark);
+  background:var(--white);color:var(--dark);
+  cursor:pointer;transition:background .1s, transform .1s;
   white-space:nowrap;
+  box-shadow:2px 2px 0 var(--dark);
 }
-.tab:hover,.tab.active{background:rgba(255,255,255,.88);border-color:var(--gold);color:var(--dark)}
-.subtab{font-size:10px;padding:4px 12px;border-radius:16px;opacity:.8}
-.subtab.active{opacity:1}
-.sub-row{display:none;gap:6px;flex-wrap:wrap;justify-content:center}
+.tab:hover{background:var(--gold-l);transform:translate(1px,1px);box-shadow:1px 1px 0 var(--dark)}
+.tab.active{background:var(--gold);transform:translate(2px,2px);box-shadow:0 0 0 var(--dark)}
+.subtab{font-size:18px;padding:2px 10px;background:var(--sky4)}
+.subtab.active{background:var(--sky2)}
+.sub-row{display:none;gap:8px;flex-wrap:wrap;justify-content:center}
 .sub-row.visible{display:flex}
 
 /* ── Gallery ── */
 .gallery{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:16px;
+  gap:20px;
 }
 .work-card{
-  border-radius:14px;overflow:hidden;
-  border:1.5px solid rgba(255,255,255,.72);
-  background:var(--glass2);backdrop-filter:blur(10px);
-  box-shadow:0 4px 20px rgba(80,140,200,.16);
-  cursor:pointer;transition:transform .22s,box-shadow .22s;
+  border:3px solid var(--dark);
+  background:var(--white);
+  box-shadow:4px 4px 0 rgba(26,42,58,0.5);
+  cursor:pointer;transition:transform .1s,box-shadow .1s;
 }
-.work-card:hover{transform:translateY(-5px);box-shadow:0 12px 34px rgba(80,140,200,.26)}
+.work-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(26,42,58,0.7);background:var(--gold-l)}
+.work-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 rgba(26,42,58,0.7)}
 .work-card.hidden{display:none}
 .card-thumb{
   width:100%;aspect-ratio:16/10;
-  background:linear-gradient(135deg,#b8dff0,#d6f0f8);
+  background:#a8d4f0;
+  border-bottom:3px solid var(--dark);
   display:flex;align-items:center;justify-content:center;
   font-size:38px;overflow:hidden;position:relative;
 }
-.card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;image-rendering:pixelated}
 .card-info{padding:12px 14px}
-.card-name{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:6px}
-.card-cats{display:flex;gap:5px;flex-wrap:wrap}
+.card-name{font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:10px;line-height:1.4}
+.card-cats{display:flex;gap:6px;flex-wrap:wrap}
 .cat-badge{
-  font-size:10px;font-weight:700;letter-spacing:.4px;
-  padding:2px 10px;border-radius:10px;
-  background:rgba(44,74,106,.1);color:var(--mid);
+  font-size:16px;
+  padding:2px 6px;
+  background:var(--sky4);border:2px solid var(--dark);color:var(--dark);
 }
-.cat-badge.sub{background:rgba(232,200,122,.25);color:var(--gold-d)}
+.cat-badge.sub{background:var(--gold-l);}
 
 /* ── Empty state ── */
 .empty-state{
   grid-column:1/-1;text-align:center;
-  padding:48px;color:rgba(44,74,106,.5);font-size:14px;
+  padding:48px;color:var(--dark);font-size:22px;
 }
 
-/* ── Play btn ── */
-.play-fixed{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:20}
-.play-btn{
-  font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;
-  color:var(--dark);background:rgba(255,255,255,.78);
-  backdrop-filter:blur(14px);border:2px solid var(--gold);
-  padding:12px 38px;border-radius:50px;cursor:pointer;
-  text-decoration:none;display:flex;align-items:center;gap:10px;
-  box-shadow:0 4px 22px rgba(200,160,64,.22);
-  transition:all .2s;
+/* ── Admin fixed ── */
+.admin-fixed{position:fixed;bottom:24px;right:24px;z-index:20}
+.admin-btn{
+  width:52px;height:52px;
+  background:var(--white);border:4px solid var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:4px 4px 0 var(--dark);
+  color:var(--dark);transition:all .1s;cursor:pointer;
 }
-.play-btn:hover{background:rgba(255,255,255,.96);transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,160,64,.32)}
+.admin-btn:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
+.admin-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--dark)}
+.admin-btn svg{width:28px;height:28px}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
 /* ── Modal ── */
 .modal-overlay{
   position:fixed;inset:0;z-index:100;
-  background:rgba(20,40,65,0.55);backdrop-filter:blur(6px);
-  opacity:0;pointer-events:none;transition:opacity .25s;
+  background:rgba(20,40,65,0.7);
+  opacity:0;pointer-events:none;transition:opacity .2s;
 }
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal-box{
-  background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);
-  border:1.5px solid rgba(255,255,255,.85);border-radius:20px;
+  background:var(--white);
+  border:4px solid var(--dark);
   width:calc(100vw - 40px);max-width:720px;max-height:90vh;overflow-y:auto;
-  box-shadow:0 20px 60px rgba(30,60,100,.25);
+  box-shadow:8px 8px 0 rgba(0,0,0,0.5);
   position:absolute;
-  transform:scale(.97);transition:transform .28s;
+  transform:scale(.97);transition:transform .2s;
   user-select:none;
 }
 .modal-overlay.open .modal-box{transform:scale(1)}
 .modal-drag-bar{
-  position:absolute;top:0;left:0;right:0;height:44px;
-  cursor:grab;z-index:3;border-radius:20px 20px 0 0;
+  position:absolute;top:0;left:0;right:0;height:40px;
+  cursor:grab;z-index:3;
   display:flex;align-items:center;justify-content:center;
+  background:var(--dark);border-bottom:3px solid var(--dark);
 }
 .modal-drag-bar:active{cursor:grabbing}
-.modal-drag-dot{width:36px;height:4px;border-radius:2px;background:rgba(44,74,106,.2);margin-top:8px}
+.modal-drag-dot{width:100%;height:100%;display:flex;align-items:center;padding:0 12px;color:var(--white);font-size:16px}
 .modal-close{
-  position:absolute;top:10px;right:14px;
-  background:rgba(44,74,106,.12);border:none;border-radius:50%;
-  width:32px;height:32px;font-size:18px;cursor:pointer;
+  position:absolute;top:4px;right:6px;
+  background:var(--danger,#c0392b);border:3px solid var(--dark);
+  width:32px;height:32px;font-size:20px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  color:var(--mid);transition:background .2s;z-index:4;
+  color:var(--white);z-index:4;box-shadow:2px 2px 0 var(--dark);transition:transform .1s, box-shadow .1s;
 }
-.modal-close:hover{background:rgba(44,74,106,.22)}
-.modal-img-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:18px 18px 0 0;position:relative;cursor:ns-resize}
-.modal-img{width:100%;height:100%;object-fit:cover;object-position:center 50%;display:block;transition:object-position .1s}
+.modal-close:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--dark)}
+.modal-img-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;border-bottom:4px solid var(--dark);position:relative;cursor:ns-resize}
+.modal-img{width:100%;height:100%;object-fit:cover;object-position:center 50%;display:block;transition:object-position .1s;image-rendering:pixelated}
 .modal-img-placeholder{
   width:100%;aspect-ratio:16/9;
-  background:linear-gradient(135deg,#b8dff0,#d6f0f8);
-  border-radius:18px 18px 0 0;
+  background:#a8d4f0;
+  border-bottom:4px solid var(--dark);
   display:flex;align-items:center;justify-content:center;font-size:64px;
 }
 .modal-viewer{
-  width:100%;aspect-ratio:16/9;border-radius:18px 18px 0 0;
-  background:#1a2a3a;display:block;border:none;
+  width:100%;aspect-ratio:16/9;border-bottom:4px solid var(--dark);
+  background:#1a2a3a;display:block;border-top:none;border-left:none;border-right:none;
 }
-.modal-body{padding:22px 26px 26px}
-.modal-title{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--dark);margin-bottom:8px}
-.modal-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.modal-desc{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:18px;white-space:pre-wrap}
+.modal-body{padding:26px}
+.modal-title{font-family:'Press Start 2P',cursive;font-size:18px;color:var(--dark);margin-bottom:12px;line-height:1.4}
+.modal-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.modal-desc{font-size:22px;color:var(--dark);line-height:1.5;margin-bottom:24px;white-space:pre-wrap}
 .modal-link{
   display:inline-flex;align-items:center;gap:8px;
-  padding:10px 22px;border-radius:10px;
-  border:2px solid var(--gold);background:rgba(232,200,122,.2);
-  font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;
-  color:var(--dark);text-decoration:none;transition:all .2s;
+  padding:10px 18px;
+  border:3px solid var(--dark);background:var(--gold);
+  font-family:'VT323',monospace;font-size:24px;
+  color:var(--dark);text-decoration:none;transition:all .1s;
+  box-shadow:4px 4px 0 var(--dark);
 }
-.modal-link:hover{background:rgba(232,200,122,.5);transform:translateY(-1px)}
-.viewer-hint{font-size:11px;color:rgba(44,74,106,.5);text-align:center;padding:6px 0 0;letter-spacing:.5px}
+.modal-link:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
+.viewer-hint{font-size:18px;color:var(--dark);text-align:center;padding:12px 0 0;opacity:0.8}
 
 </style>
 </head>
 <body>
 
-<!-- Wind canvas -->
+<!-- Custom background -->
+<div class="custom-bg" id="customBg"></div>
+
+<!-- Wind/Pixel canvas -->
 <canvas class="wind-canvas" id="windCanvas"></canvas>
-
-<!-- Clouds -->
-<div class="clouds">
-  <div class="cloud c1"></div><div class="cloud c2"></div>
-  <div class="cloud c3"></div><div class="cloud c4"></div>
-  <div class="cloud c5"></div><div class="cloud c6"></div>
-  <div class="cloud c7"></div>
-</div>
-
-<!-- Nav -->
-<nav class="nav">
-  <span class="nav-logo">ARITSIA</span>
-  <div class="nav-right">
-    <a href="play.html" class="nav-btn play">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-      PLAY
-    </a>
-    <a href="admin.html" class="nav-btn admin">⚙ ADMIN</a>
-  </div>
-</nav>
 
 <!-- Main -->
 <main class="page">
@@ -401,19 +337,18 @@ body{
   </section>
 </main>
 
-<!-- Play fixed -->
-<div class="play-fixed">
-  <a href="play.html" class="play-btn">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-    PLAY GAME
+<!-- Admin fixed -->
+<div class="admin-fixed">
+  <a href="admin.html" class="admin-btn" title="Admin Panel">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
   </a>
 </div>
 
 <script>
-// ── Wind canvas effect ──
+// ── Pixel particles animation ──
 const canvas = document.getElementById('windCanvas');
 const ctx = canvas.getContext('2d');
-let W, H, lines = [];
+let W, H, particles = [];
 
 function resize() {
   W = canvas.width = window.innerWidth;
@@ -424,66 +359,78 @@ window.addEventListener('resize', resize);
 
 function randBetween(a, b) { return a + Math.random() * (b - a); }
 
-function createLine() {
+function createParticle(yStart) {
+  const size = Math.floor(randBetween(2, 6)) * 2; // pixel sizes
   return {
     x: Math.random() * W,
-    y: Math.random() * H,
-    len: randBetween(60, 200),
-    speed: randBetween(6, 16),
-    opacity: randBetween(0.05, 0.25),
-    angle: randBetween(-0.15, 0.15), // mostly horizontal
-    width: randBetween(0.5, 1.5),
-    life: 0, maxLife: randBetween(40, 120)
+    y: yStart ?? H + size,
+    size: size,
+    speedY: randBetween(0.5, 2.5),
+    speedX: randBetween(-0.5, 0.5),
+    opacity: randBetween(0.1, 0.6)
   };
 }
 
-for (let i = 0; i < 35; i++) {
-  let l = createLine();
-  l.life = Math.random() * l.maxLife;
-  lines.push(l);
+for (let i = 0; i < 40; i++) {
+  particles.push(createParticle(Math.random() * H));
 }
 
-function animateWind() {
+function animateParticles() {
   ctx.clearRect(0, 0, W, H);
-  lines.forEach((l, i) => {
-    l.x += l.speed;
-    l.y += Math.sin(l.angle) * l.speed * 0.3;
-    l.life++;
-    const progress = l.life / l.maxLife;
-    const fade = progress < 0.2 ? progress / 0.2 : progress > 0.8 ? (1 - progress) / 0.2 : 1;
-    ctx.save();
-    ctx.strokeStyle = `rgba(255,255,255,${l.opacity * fade})`;
-    ctx.lineWidth = l.width;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    const ex = l.x + Math.cos(l.angle) * l.len;
-    const ey = l.y + Math.sin(l.angle) * l.len;
-    ctx.moveTo(l.x, l.y);
-    ctx.lineTo(ex, ey);
-    ctx.stroke();
-    ctx.restore();
-    if (l.x > W + 220 || l.life >= l.maxLife) lines[i] = createLine();
+  particles.forEach((p, i) => {
+    p.y -= p.speedY;
+    p.x += p.speedX;
+    
+    ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+    ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+    
+    if (p.y + p.size < 0) {
+      particles[i] = createParticle();
+    }
   });
-  requestAnimationFrame(animateWind);
+  requestAnimationFrame(animateParticles);
 }
-animateWind();
+animateParticles();
 
 // ── Works data from GitHub ──
 let works = [];
+let settings = {};
 let currentMainCat = 'all';
 let currentSubCat = 'all';
 
 const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
 const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/works.json`;
+const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json`;
 
-async function loadWorks() {
+async function loadData() {
+  // Load Works
   try {
     const r = await fetch(WORKS_URL + '?t=' + Date.now());
     if (r.ok) works = await r.json();
     else works = [];
   } catch(e) { works = []; }
+  
+  // Load Settings
+  try {
+    const sr = await fetch(SETTINGS_URL + '?t=' + Date.now());
+    if (sr.ok) settings = await sr.json();
+  } catch(e) { console.log('No settings found'); }
+  
+  applySettings();
   renderGallery();
+}
+
+function applySettings() {
+  if (settings.profileImage) {
+    document.getElementById('avatarInner').innerHTML = `<img src="${settings.profileImage}" alt="Profile">`;
+  }
+  if (settings.backgroundImage) {
+    const bg = document.getElementById('customBg');
+    bg.style.backgroundImage = `url('${settings.backgroundImage}')`;
+    bg.style.opacity = '1';
+    canvas.style.opacity = '0.4'; // Dim particles slightly when bg is loaded
+  }
 }
 
 function renderGallery() {
@@ -550,7 +497,7 @@ function setSubCat(sub, btn) {
   renderGallery();
 }
 
-loadWorks();
+loadData();
 
 // ── Modal ──
 function openModal(w) {
@@ -797,7 +744,7 @@ function disposeThreeViewer(){
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-box" id="modalBox">
-    <div class="modal-drag-bar" id="modalDragBar"><div class="modal-drag-dot"></div></div>
+    <div class="modal-drag-bar" id="modalDragBar"><div class="modal-drag-dot">DRAG ME</div></div>
     <button class="modal-close" onclick="closeModalDirect()">✕</button>
     <div id="modalMedia"></div>
     <div class="modal-body">
