@@ -175,11 +175,16 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(175deg,var(--sky
 
       <div class="edit-banner" id="editBanner">✏️ EDIT MODE — editing existing work</div>
       <div class="img-preview-wrap">
-        <div class="img-preview" id="imgPreview" onclick="document.getElementById('imgFileInput').click()">
+        <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
           <span style="font-size:32px">🖼️</span>
           <span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>
         </div>
-        <p class="img-focal-hint" id="focalHint">↕ Drag on image to adjust focal point</p>
+        <div class="img-focal-hint" id="focalHint" style="display:none">
+          <label style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--mid);text-transform:uppercase;display:block;margin-bottom:4px">Focal Point (up/down)</label>
+          <input type="range" id="focalSlider" min="0" max="100" value="50"
+            style="width:100%;accent-color:var(--gold-d)"
+            oninput="updateFocal(this.value)">
+        </div>
       </div>
       <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)">
 
@@ -375,7 +380,9 @@ function previewImage(input){
     const full=e.target.result;
     currentImageBase64=full.split(',')[1];
     const prev=document.getElementById('imgPreview');
-    prev.innerHTML=`<img src="${full}">`;
+    prev.innerHTML=`<img src="${full}" style="object-position:center 50%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
+    showFocalSlider(50);
+    initAdminImgDrag();
   };
   reader.readAsDataURL(file);
 }
@@ -448,6 +455,7 @@ async function addWork(){
         works[idx] = { ...works[idx], name, cat,
           subcat: cat==='3d'?subcat:'',
           desc, link: link||null,
+          imageFocal: currentImgFocal,
           ...(imagePath ? {image: imagePath} : {}),
           ...(modelPath ? {model: modelPath} : {}),
         };
@@ -458,6 +466,7 @@ async function addWork(){
         subcat:cat==='3d'?subcat:'',
         desc,image:imagePath,model:modelPath,
         link:link||null,
+        imageFocal:currentImgFocal,
         date:new Date().toISOString()
       });
     }
@@ -547,7 +556,8 @@ function resetForm(){
   currentImgFocal=50;
   editingId=null;
   document.getElementById('editBanner').classList.remove('visible');
-  document.getElementById('focalHint').classList.remove('visible');
+  document.getElementById('focalHint').style.display='none';
+  const sl=document.getElementById('focalSlider'); if(sl) sl.value=50;
   document.getElementById('submitBtn').textContent='＋ PUBLISH TO PORTFOLIO';
   document.getElementById('previewBtn').textContent='👁 PREVIEW';
 }
@@ -575,11 +585,12 @@ function editWork(id) {
   // Show existing image
   const prev = document.getElementById('imgPreview');
   if (w.image) {
-    prev.innerHTML = `<img src="${w.image}" style="object-position:center 50%">`;
-    document.getElementById('focalHint').classList.add('visible');
+    const focal = w.imageFocal !== undefined ? w.imageFocal : 50;
+    prev.innerHTML = `<img src="${w.image}" style="object-position:center ${focal}%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"><span style="position:absolute;bottom:6px;right:8px;font-size:10px;background:rgba(0,0,0,.4);color:#fff;padding:2px 6px;border-radius:4px;pointer-events:none">Dbl-click to replace</span>`;
+    showFocalSlider(focal);
     initAdminImgDrag();
   } else {
-    prev.innerHTML = `<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to change image</span>`;
+    prev.innerHTML = `<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>`;
   }
 
   document.getElementById('editBanner').classList.add('visible');
@@ -590,32 +601,33 @@ function editWork(id) {
   document.getElementById('imgPreview').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
-// ── Image focal drag in admin ──
-function initAdminImgDrag() {
-  const img = document.querySelector('#imgPreview img');
-  if (!img) return;
-  let dragging=false, startY=0, posY=50;
-  const prev = document.getElementById('imgPreview');
-  prev.addEventListener('mousedown', e => { if(e.target!==img) return; dragging=true; startY=e.clientY; e.preventDefault(); e.stopPropagation(); });
-  prev.addEventListener('touchstart', e => { if(e.target!==img) return; dragging=true; startY=e.touches[0].clientY; e.stopPropagation(); }, {passive:true});
-  window.addEventListener('mouseup', () => dragging=false);
-  window.addEventListener('touchend', () => dragging=false);
-  window.addEventListener('mousemove', e => {
-    if(!dragging) return;
-    posY = Math.max(0, Math.min(100, posY - (e.clientY-startY)*0.3));
-    startY = e.clientY;
-    img.style.objectPosition = `center ${posY}%`;
-    currentImgFocal = posY;
-  });
-  window.addEventListener('touchmove', e => {
-    if(!dragging) return;
-    posY = Math.max(0, Math.min(100, posY - (e.touches[0].clientY-startY)*0.3));
-    startY = e.touches[0].clientY;
-    img.style.objectPosition = `center ${posY}%`;
-    currentImgFocal = posY;
-  }, {passive:true});
-}
+// ── Image focal controls ──
 let currentImgFocal = 50;
+
+function imgPreviewClick() {
+  // Only open file picker if no image loaded yet
+  const img = document.querySelector('#imgPreview img');
+  if (!img) document.getElementById('imgFileInput').click();
+}
+
+function updateFocal(val) {
+  currentImgFocal = parseFloat(val);
+  const img = document.querySelector('#imgPreview img');
+  if (img) img.style.objectPosition = `center ${currentImgFocal}%`;
+}
+
+function showFocalSlider(posY) {
+  const hint = document.getElementById('focalHint');
+  hint.style.display = 'block';
+  const slider = document.getElementById('focalSlider');
+  if (slider) { slider.value = posY; currentImgFocal = posY; }
+}
+
+function initAdminImgDrag() {
+  // Using slider now — just set up click-to-replace
+  const prev = document.getElementById('imgPreview');
+  prev.ondblclick = () => document.getElementById('imgFileInput').click();
+}
 
 // ── Preview ──
 function openPreview() {
