@@ -178,6 +178,17 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(175deg,var(--sky
         <label>Description (optional)</label>
         <textarea id="wDesc" placeholder="Short description..."></textarea>
       </div>
+      <div class="field">
+        <label>Link (optional) — itch.io, CurseForge, Modrinth ฯลฯ</label>
+        <input type="url" id="wLink" placeholder="https://...">
+      </div>
+      <div class="field" id="modelWrap" style="display:none">
+        <label>3D Model (.glb) — สำหรับ 3D viewer</label>
+        <div style="font-size:11px;color:rgba(44,74,106,.55);margin-bottom:8px">Export จาก Blender: File → Export → glTF 2.0 (.glb)</div>
+        <input type="file" id="modelFileInput" accept=".glb,.gltf" onchange="onModelSelect(this)"
+          style="width:100%;font-size:12px;padding:8px;border-radius:8px;border:1.5px dashed rgba(44,74,106,.3);background:rgba(255,255,255,.5);cursor:pointer">
+        <p id="modelName" style="font-size:11px;color:var(--success);margin-top:6px;min-height:16px"></p>
+      </div>
 
       <button class="submit-btn" id="submitBtn" onclick="addWork()">＋ ADD TO PORTFOLIO</button>
       <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
@@ -339,7 +350,21 @@ function previewImage(input){
 function onCatChange(){
   const cat=document.getElementById('wCat').value;
   const sw=document.getElementById('subcatWrap');
+  const mw=document.getElementById('modelWrap');
   cat==='3d'?sw.classList.add('visible'):sw.classList.remove('visible');
+  mw.style.display=cat==='3d'?'block':'none';
+}
+
+let currentModelBase64=null, currentModelName=null;
+function onModelSelect(input){
+  const file=input.files[0];
+  if(!file)return;
+  if(file.size>20*1024*1024){alert('Model too large (max 20MB).');input.value='';return}
+  currentModelName=file.name;
+  document.getElementById('modelName').textContent='✓ '+file.name+' ('+Math.round(file.size/1024)+'KB)';
+  const reader=new FileReader();
+  reader.onload=e=>{ currentModelBase64=e.target.result.split(',')[1]; };
+  reader.readAsDataURL(file);
 }
 
 // ── Add work ──
@@ -348,6 +373,7 @@ async function addWork(){
   const cat=document.getElementById('wCat').value;
   const subcat=document.getElementById('wSubcat').value;
   const desc=document.getElementById('wDesc').value.trim();
+  const link=document.getElementById('wLink').value.trim();
 
   if(!name){showMsg('Please enter a work name.','err');return}
   if(!cat){showMsg('Please select a category.','err');return}
@@ -360,22 +386,34 @@ async function addWork(){
 
   try{
     let imagePath=null;
+    let modelPath=null;
 
     // Upload image to GitHub if exists
     if(currentImageBase64){
       showMsg('Uploading image...','ok');
-      fill.style.width='35%';
+      fill.style.width='30%';
       const fname=`works/${Date.now()}.${currentImageExt}`;
       await ghPutBinary(fname, currentImageBase64, `Add image for ${name}`);
       imagePath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      fill.style.width='55%';
+    }
+
+    // Upload 3D model to GitHub if exists
+    if(currentModelBase64 && cat==='3d'){
+      showMsg('Uploading 3D model...','ok');
       fill.style.width='65%';
+      const mfname=`works/${Date.now()}_model.glb`;
+      await ghPutBinary(mfname, currentModelBase64, `Add 3D model for ${name}`);
+      modelPath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${mfname}`;
+      fill.style.width='75%';
     }
 
     // Add to works array
     works.push({
       id:Date.now(),name,cat,
       subcat:cat==='3d'?subcat:'',
-      desc,image:imagePath,
+      desc,image:imagePath,model:modelPath,
+      link:link||null,
       date:new Date().toISOString()
     });
 
@@ -449,10 +487,16 @@ function resetForm(){
   document.getElementById('wCat').value='';
   document.getElementById('wSubcat').value='';
   document.getElementById('wDesc').value='';
+  document.getElementById('wLink').value='';
   document.getElementById('subcatWrap').classList.remove('visible');
+  document.getElementById('modelWrap').style.display='none';
   document.getElementById('imgPreview').innerHTML=`<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>`;
   document.getElementById('imgFileInput').value='';
+  document.getElementById('modelFileInput').value='';
+  document.getElementById('modelName').textContent='';
   currentImageBase64=null;
+  currentModelBase64=null;
+  currentModelName=null;
 }
 
 function showMsg(text,type){

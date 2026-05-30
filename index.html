@@ -235,6 +235,56 @@ body{
 .play-btn:hover{background:rgba(255,255,255,.96);transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,160,64,.32)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+/* ── Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(20,40,65,0.55);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,255,255,.85);border-radius:20px;
+  width:100%;max-width:720px;max-height:90vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(30,60,100,.25);
+  transform:translateY(30px) scale(.97);transition:transform .28s,opacity .28s;
+  position:relative;
+}
+.modal-overlay.open .modal-box{transform:translateY(0) scale(1)}
+.modal-close{
+  position:absolute;top:14px;right:16px;
+  background:rgba(44,74,106,.12);border:none;border-radius:50%;
+  width:32px;height:32px;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--mid);transition:background .2s;z-index:2;
+}
+.modal-close:hover{background:rgba(44,74,106,.22)}
+.modal-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:18px 18px 0 0;display:block}
+.modal-img-placeholder{
+  width:100%;aspect-ratio:16/9;
+  background:linear-gradient(135deg,#b8dff0,#d6f0f8);
+  border-radius:18px 18px 0 0;
+  display:flex;align-items:center;justify-content:center;font-size:64px;
+}
+.modal-viewer{
+  width:100%;aspect-ratio:16/9;border-radius:18px 18px 0 0;
+  background:#1a2a3a;display:block;border:none;
+}
+.modal-body{padding:22px 26px 26px}
+.modal-title{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--dark);margin-bottom:8px}
+.modal-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.modal-desc{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:18px;white-space:pre-wrap}
+.modal-link{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 22px;border-radius:10px;
+  border:2px solid var(--gold);background:rgba(232,200,122,.2);
+  font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;
+  color:var(--dark);text-decoration:none;transition:all .2s;
+}
+.modal-link:hover{background:rgba(232,200,122,.5);transform:translateY(-1px)}
+.viewer-hint{font-size:11px;color:rgba(44,74,106,.5);text-align:center;padding:6px 0 0;letter-spacing:.5px}
+
 </style>
 </head>
 <body>
@@ -279,25 +329,30 @@ body{
 
   <!-- Social -->
   <div class="social-links">
-    <a href="#" class="social-btn" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    <!-- Discord -->
+    <a href="#YOUR_DISCORD" class="social-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
       Discord
     </a>
-    <a href="#" class="social-btn" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.106 2.41 2.435 2.41h.024c1.33 0 2.434-1.102 2.434-2.41 0 1.308 1.034 2.41 2.362 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.436 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.622-2.08-2.99-3.13-3.612C19.486.686 3.862.697 3.13 1.338zM8 10.5v1c-.89.16-3 .95-3 2v7c0 .9 2.1 2 7 2s7-1.1 7-2v-7c0-1.05-2.11-1.84-3-2v-1c1 0 4 .5 4 3v7c0 2-2.9 3-8 3s-8-1-8-3v-7c0-2.5 3-3 4-3z"/></svg>
+    <!-- GitHub -->
+    <a href="https://github.com/Aritsiaserlet" class="social-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      GitHub
+    </a>
+    <!-- itch.io -->
+    <a href="#YOUR_ITCHIO" class="social-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 245.371 220.736" fill="currentColor"><path d="M31.99 1.365C21.287 7.72.2 31.945 0 38.298v10.516C0 62.144 12.46 73.86 23.773 73.86c13.584 0 24.902-11.258 24.902-24.62 0 13.362 10.93 24.62 24.515 24.62 13.586 0 24.165-11.258 24.165-24.62 0 13.362 11.622 24.62 25.207 24.62h.246c13.586 0 25.208-11.258 25.208-24.62 0 13.362 10.58 24.62 24.164 24.62 13.585 0 24.515-11.258 24.515-24.62 0 13.362 11.32 24.62 24.903 24.62 11.313 0 23.773-11.714 23.773-25.046V38.298c-.2-6.354-21.287-30.58-31.988-36.933C180.118-.6 63.66-.844 31.99 1.365zm72.32 64.18c-2.507 6.23-8.202 10.76-15.092 10.76-8.973 0-16.242-7.82-16.242-17.467l.008-.22c.013-.568.052-1.126.12-1.68h-.128v-7.608H96.89v7.608h-.112c.085.655.134 1.317.134 1.988 0 8.56-5.93 15.62-13.29 15.62h-.003c-.41 0-.812-.022-1.21-.062zm71.27 0c-2.506 6.23-8.2 10.76-15.09 10.76-8.973 0-16.242-7.82-16.242-17.467l.008-.22c.013-.568.052-1.126.12-1.68h-.127v-7.608h23.924v7.608h-.113c.086.655.135 1.317.135 1.988 0 8.56-5.93 15.62-13.29 15.62h-.003a16 16 0 0 1-1.21-.062zM133.7 96.23c-13.6 0-25.71 2.17-35.974 5.592v-.006l-1.384.472c-4.404 1.47-7.6 4.888-7.6 8.763v94.68l.006.024.003 15H222.35l.003-15 .006-.024v-94.68c0-3.875-3.196-7.293-7.6-8.763l-1.384-.472v.006C203.11 98.4 190.998 96.23 177.4 96.23H133.7zm-20.055 18.8h63.81c3.46 0 6.255 2.705 6.255 6.04v32.977c0 3.336-2.796 6.04-6.254 6.04H113.645c-3.458 0-6.255-2.704-6.255-6.04v-32.977c0-3.335 2.797-6.04 6.255-6.04z"/></svg>
       itch.io
     </a>
-    <a href="#" class="social-btn" target="_blank" rel="noopener">
+    <!-- CurseForge -->
+    <a href="#YOUR_CURSEFORGE" class="social-btn" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.608 3.478s3.793 2.294 3.384 6.083c0 0 2.294-1.633 1.94-4.925 0 0 1.769 1.19 2.305 4.01 0 0 1.19-1.473.884-3.504 0 0 4.248 2.999 4.248 8.23 0 4.396-3.504 7.898-7.9 7.898-4.394 0-7.897-3.504-7.897-7.897 0-4.73 3.036-9.895 3.036-9.895z"/></svg>
       CurseForge
     </a>
-    <a href="#" class="social-btn" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+    <!-- Modrinth -->
+    <a href="#YOUR_MODRINTH" class="social-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.006 0a12 12 0 0 0-3.43 23.532c-.048-.02 1.341-2.962 1.341-2.962a9.408 9.408 0 0 1-1.034-.244 9.318 9.318 0 0 1-5.855-5.046 9.365 9.365 0 0 1 .378-8.761 9.318 9.318 0 0 1 7.57-4.614v2.868a6.452 6.452 0 0 0-4.3 2.375 6.478 6.478 0 0 0 .516 8.524 6.452 6.452 0 0 0 2.697 1.645l-1.058 2.34a9.2 9.2 0 0 1-1.16-.534l-.612 2.686a11.96 11.96 0 0 0 4.957.62l.023-.002a12.034 12.034 0 0 0 1.735-.262A12.003 12.003 0 0 0 12.006 0zm5.748 3.712a12.01 12.01 0 0 1 4.04 6.33h-2.97a9.338 9.338 0 0 0-2.287-3.796zm1.35 9.228a6.452 6.452 0 0 1-3.07 3.788l1.44 2.51a9.368 9.368 0 0 0 4.5-5.71h-2.87z"/></svg>
       Modrinth
-    </a>
-    <a href="#" class="social-btn" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-      GitHub
     </a>
   </div>
 
@@ -419,9 +474,7 @@ async function loadWorks() {
     const r = await fetch(WORKS_URL + '?t=' + Date.now());
     if (r.ok) works = await r.json();
     else works = [];
-  } catch(e) {
-    works = [];
-  }
+  } catch(e) { works = []; }
   renderGallery();
 }
 
@@ -445,6 +498,7 @@ function renderGallery() {
     filtered.forEach(w => {
       const card = document.createElement('div');
       card.className = 'work-card';
+      card.onclick = () => openModal(w);
       const catEmoji = {game:'🎮', mod:'⚙️', '3d':'🧊'}[w.cat] || '📁';
       const catLabel = {game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat;
       const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
@@ -488,6 +542,161 @@ function setSubCat(sub, btn) {
 }
 
 loadWorks();
+
+// ── Modal ──
+function openModal(w) {
+  const catEmoji = {game:'🎮', mod:'⚙️', '3d':'🧊'}[w.cat] || '📁';
+  const catLabel = {game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat;
+  const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
+
+  // Media area
+  const media = document.getElementById('modalMedia');
+  if (w.cat === '3d' && w.model) {
+    media.innerHTML = '<canvas class="modal-viewer" id="threeCanvas"></canvas><p class="viewer-hint">🖱 Drag to rotate · Scroll to zoom</p>';
+    setTimeout(() => initThreeViewer(w.model), 80);
+  } else if (w.image) {
+    media.innerHTML = `<img class="modal-img" src="${w.image}" alt="${w.name}">`;
+  } else {
+    media.innerHTML = `<div class="modal-img-placeholder">${catEmoji}</div>`;
+  }
+
+  document.getElementById('modalTitle').textContent = w.name;
+  document.getElementById('modalDesc').textContent = w.desc || '';
+
+  const badges = document.getElementById('modalBadges');
+  badges.innerHTML = `<span class="cat-badge">${catEmoji} ${catLabel}</span>`;
+  if (subLabel) badges.innerHTML += `<span class="cat-badge sub">${subLabel}</span>`;
+
+  const link = document.getElementById('modalLink');
+  if (w.link) { link.href = w.link; link.style.display = 'inline-flex'; }
+  else link.style.display = 'none';
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  disposeThreeViewer();
+  document.getElementById('modalMedia').innerHTML = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModalDirect(); });
+
+// ── Three.js 3D Viewer ──
+let threeRenderer=null, threeAnimId=null;
+function initThreeViewer(modelUrl) {
+  const canvas = document.getElementById('threeCanvas');
+  if (!canvas || typeof THREE === 'undefined') return;
+
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x1a2a3a);
+
+  const camera = new THREE.PerspectiveCamera(45, W/H, 0.01, 1000);
+  camera.position.set(0, 1.5, 4);
+
+  threeRenderer = new THREE.WebGLRenderer({canvas, antialias:true});
+  threeRenderer.setSize(W, H);
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+  dir.position.set(3,5,3); scene.add(dir);
+  const fill = new THREE.DirectionalLight(0x88aaff, 0.4);
+  fill.position.set(-3,0,-3); scene.add(fill);
+
+  // Orbit controls (manual)
+  let isDragging=false, prevX=0, prevY=0, rotX=0, rotY=0, zoom=4;
+  const group = new THREE.Group(); scene.add(group);
+
+  canvas.addEventListener('mousedown', e=>{isDragging=true;prevX=e.clientX;prevY=e.clientY});
+  canvas.addEventListener('touchstart', e=>{isDragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY},{passive:true});
+  window.addEventListener('mouseup', ()=>isDragging=false);
+  window.addEventListener('touchend', ()=>isDragging=false);
+  canvas.addEventListener('mousemove', e=>{
+    if(!isDragging)return;
+    rotY+=(e.clientX-prevX)*0.01; rotX+=(e.clientY-prevY)*0.01;
+    prevX=e.clientX; prevY=e.clientY;
+  });
+  canvas.addEventListener('touchmove', e=>{
+    if(!isDragging)return;
+    rotY+=(e.touches[0].clientX-prevX)*0.01; rotX+=(e.touches[0].clientY-prevY)*0.01;
+    prevX=e.touches[0].clientX; prevY=e.touches[0].clientY;
+  },{passive:true});
+  canvas.addEventListener('wheel', e=>{zoom=Math.max(1,Math.min(12,zoom+e.deltaY*0.01))});
+
+  // Load GLB
+  const loader = new THREE.FileLoader();
+  loader.setResponseType('arraybuffer');
+  // Use GLTFLoader via dynamic import or inline parse
+  // Fallback: load script then parse
+  const script = document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+  script.onload = () => {
+    const gltfLoader = new THREE.GLTFLoader();
+    gltfLoader.load(modelUrl, gltf => {
+      const model = gltf.scene;
+      // Auto-center and scale
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const scale = 2.5 / maxDim;
+      model.scale.setScalar(scale);
+      const center = box.getCenter(new THREE.Vector3());
+      model.position.sub(center.multiplyScalar(scale));
+      group.add(model);
+    }, undefined, err => {
+      console.warn('GLB load error:', err);
+      // Show placeholder cube if model fails
+      const geo = new THREE.BoxGeometry(1.5,1.5,1.5);
+      const mat = new THREE.MeshStandardMaterial({color:0x4a9fd4,roughness:.4,metalness:.3});
+      group.add(new THREE.Mesh(geo,mat));
+    });
+  };
+  document.head.appendChild(script);
+
+  function animate(){
+    threeAnimId = requestAnimationFrame(animate);
+    group.rotation.x = rotX;
+    group.rotation.y += 0.005;
+    group.rotation.y += (rotY - group.rotation.y) * 0.08;
+    rotY *= 0.97;
+    camera.position.z = zoom;
+    threeRenderer.render(scene, camera);
+  }
+  animate();
+}
+
+function disposeThreeViewer(){
+  if(threeAnimId){ cancelAnimationFrame(threeAnimId); threeAnimId=null; }
+  if(threeRenderer){ threeRenderer.dispose(); threeRenderer=null; }
+}
+
 </script>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modalMedia"></div>
+    <div class="modal-body">
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-badges" id="modalBadges"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <a href="#" class="modal-link" id="modalLink" target="_blank" rel="noopener" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3h7v7l-2-2-7 7-3-3 7-7-2-2zm-3 3H4v14h14v-7l2-2v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h10l-2 2z"/></svg>
+        VIEW PROJECT
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 </body>
 </html>
