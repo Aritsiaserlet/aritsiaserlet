@@ -1078,7 +1078,6 @@ function openPreview() {
 
   if (!name) { showMsg('Enter a work name first.', 'err'); return; }
 
-  const catEmoji = {game:'🎮', mod:'⚙️', '3d':'🧊'}[cat] || '📁';
   const catLabel = {game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[cat] || cat;
   const subLabel = subcat ? subcat.charAt(0).toUpperCase()+subcat.slice(1) : '';
 
