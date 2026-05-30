@@ -239,28 +239,36 @@ body{
 .modal-overlay{
   position:fixed;inset:0;z-index:100;
   background:rgba(20,40,65,0.55);backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;
+  opacity:0;pointer-events:none;transition:opacity .25s;
 }
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal-box{
   background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);
   border:1.5px solid rgba(255,255,255,.85);border-radius:20px;
-  width:100%;max-width:720px;max-height:90vh;overflow-y:auto;
+  width:calc(100vw - 40px);max-width:720px;max-height:90vh;overflow-y:auto;
   box-shadow:0 20px 60px rgba(30,60,100,.25);
-  transform:translateY(30px) scale(.97);transition:transform .28s,opacity .28s;
-  position:relative;
+  position:absolute;
+  transform:scale(.97);transition:transform .28s;
+  user-select:none;
 }
-.modal-overlay.open .modal-box{transform:translateY(0) scale(1)}
+.modal-overlay.open .modal-box{transform:scale(1)}
+.modal-drag-bar{
+  position:absolute;top:0;left:0;right:0;height:44px;
+  cursor:grab;z-index:3;border-radius:20px 20px 0 0;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-drag-bar:active{cursor:grabbing}
+.modal-drag-dot{width:36px;height:4px;border-radius:2px;background:rgba(44,74,106,.2);margin-top:8px}
 .modal-close{
-  position:absolute;top:14px;right:16px;
+  position:absolute;top:10px;right:14px;
   background:rgba(44,74,106,.12);border:none;border-radius:50%;
   width:32px;height:32px;font-size:18px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  color:var(--mid);transition:background .2s;z-index:2;
+  color:var(--mid);transition:background .2s;z-index:4;
 }
 .modal-close:hover{background:rgba(44,74,106,.22)}
-.modal-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:18px 18px 0 0;display:block}
+.modal-img-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:18px 18px 0 0;position:relative;cursor:ns-resize}
+.modal-img{width:100%;height:100%;object-fit:cover;object-position:center 50%;display:block;transition:object-position .1s}
 .modal-img-placeholder{
   width:100%;aspect-ratio:16/9;
   background:linear-gradient(135deg,#b8dff0,#d6f0f8);
@@ -555,7 +563,8 @@ function openModal(w) {
     media.innerHTML = '<canvas class="modal-viewer" id="threeCanvas"></canvas><p class="viewer-hint">🖱 Drag to rotate · Scroll to zoom</p>';
     setTimeout(() => initThreeViewer(w.model), 80);
   } else if (w.image) {
-    media.innerHTML = `<img class="modal-img" src="${w.image}" alt="${w.name}">`;
+    media.innerHTML = `<div class="modal-img-wrap" id="imgWrap"><img class="modal-img" id="modalImgEl" src="${w.image}" alt="${w.name}"></div><p class="viewer-hint">↕ Drag image up/down to adjust</p>`;
+    initImgDrag();
   } else {
     media.innerHTML = `<div class="modal-img-placeholder">${catEmoji}</div>`;
   }
@@ -571,9 +580,80 @@ function openModal(w) {
   if (w.link) { link.href = w.link; link.style.display = 'inline-flex'; }
   else link.style.display = 'none';
 
+  // Center modal
+  const box = document.getElementById('modalBox');
+  const vw = window.innerWidth, vh = window.innerHeight;
+  box.style.left = Math.max(0, (vw - Math.min(720, vw-40))/2) + 'px';
+  box.style.top = Math.max(20, (vh - box.offsetHeight)/2) + 'px';
+
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // Re-center after render
+  requestAnimationFrame(() => {
+    box.style.top = Math.max(20, (vh - box.offsetHeight)/2) + 'px';
+  });
 }
+
+// ── Image focal drag ──
+function initImgDrag() {
+  const wrap = document.getElementById('imgWrap');
+  const img = document.getElementById('modalImgEl');
+  if (!wrap || !img) return;
+  let dragging = false, startY = 0, posY = 50;
+  wrap.addEventListener('mousedown', e => { dragging=true; startY=e.clientY; e.preventDefault(); });
+  wrap.addEventListener('touchstart', e => { dragging=true; startY=e.touches[0].clientY; }, {passive:true});
+  window.addEventListener('mouseup', () => dragging=false);
+  window.addEventListener('touchend', () => dragging=false);
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    posY = Math.max(0, Math.min(100, posY - (e.clientY - startY) * 0.3));
+    startY = e.clientY;
+    img.style.objectPosition = `center ${posY}%`;
+  });
+  window.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    posY = Math.max(0, Math.min(100, posY - (e.touches[0].clientY - startY) * 0.3));
+    startY = e.touches[0].clientY;
+    img.style.objectPosition = `center ${posY}%`;
+  }, {passive:true});
+}
+
+// ── Modal drag ──
+(function() {
+  let dragging=false, ox=0, oy=0;
+  document.addEventListener('mousedown', e => {
+    const bar = document.getElementById('modalDragBar');
+    if (!bar || !bar.contains(e.target)) return;
+    dragging=true;
+    const box=document.getElementById('modalBox');
+    ox=e.clientX-box.offsetLeft; oy=e.clientY-box.offsetTop;
+    e.preventDefault();
+  });
+  document.addEventListener('touchstart', e => {
+    const bar = document.getElementById('modalDragBar');
+    if (!bar || !bar.contains(e.target)) return;
+    dragging=true;
+    const box=document.getElementById('modalBox');
+    ox=e.touches[0].clientX-box.offsetLeft; oy=e.touches[0].clientY-box.offsetTop;
+  }, {passive:true});
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const box=document.getElementById('modalBox');
+    const maxX=window.innerWidth-box.offsetWidth, maxY=window.innerHeight-60;
+    box.style.left=Math.max(0,Math.min(maxX,e.clientX-ox))+'px';
+    box.style.top=Math.max(0,Math.min(maxY,e.clientY-oy))+'px';
+  });
+  document.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const box=document.getElementById('modalBox');
+    const maxX=window.innerWidth-box.offsetWidth, maxY=window.innerHeight-60;
+    box.style.left=Math.max(0,Math.min(maxX,e.touches[0].clientX-ox))+'px';
+    box.style.top=Math.max(0,Math.min(maxY,e.touches[0].clientY-oy))+'px';
+  }, {passive:true});
+  document.addEventListener('mouseup', () => dragging=false);
+  document.addEventListener('touchend', () => dragging=false);
+})();
 
 function closeModal(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
@@ -682,6 +762,7 @@ function disposeThreeViewer(){
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-box" id="modalBox">
+    <div class="modal-drag-bar" id="modalDragBar"><div class="modal-drag-dot"></div></div>
     <button class="modal-close" onclick="closeModalDirect()">✕</button>
     <div id="modalMedia"></div>
     <div class="modal-body">
