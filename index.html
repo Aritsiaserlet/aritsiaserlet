@@ -436,20 +436,33 @@ function renderGallery() {
   } else {
     emptyState.style.display = 'none';
     filtered.forEach(w => {
+      const card = document.createElement('div');
+      card.className = 'work-card';
+      card.onclick = () => openModal(w);
       const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
       const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
       const catIcon = catSetting.icon ? `<img src="${catSetting.icon}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
       const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
       const focalY = (w.imageFocal !== undefined && w.imageFocal !== null) ? w.imageFocal : 50;
+      
+      let toolsHtml = '';
+      if(w.tools && w.tools.length > 0 && settings.icons) {
+        w.tools.forEach(tid => {
+          const ic = settings.icons.find(x => x.id === tid);
+          if(ic) toolsHtml += `<img src="${ic.url}" title="${ic.name}" style="width:18px;height:18px;object-fit:cover;image-rendering:pixelated;border:2px solid var(--dark);background:var(--white);">`;
+        });
+      }
+
       card.innerHTML = `
         <div class="card-thumb">
           ${w.image ? `<img src="${w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||'📁'}</div>`}
         </div>
         <div class="card-info">
           <p class="card-name">${w.name}</p>
-          <div class="card-cats">
+          <div class="card-cats" style="align-items:center;">
             <span class="cat-badge">${catIcon}${catLabel}</span>
             ${subLabel ? `<span class="cat-badge sub">${subLabel}</span>` : ''}
+            ${toolsHtml ? `<div style="display:flex;gap:4px;margin-left:auto;">${toolsHtml}</div>` : ''}
           </div>
         </div>`;
       gallery.appendChild(card);
@@ -511,9 +524,18 @@ function openModal(w) {
   document.getElementById('modalTitle').textContent = w.name;
   document.getElementById('modalDesc').textContent = w.desc || '';
 
+  let toolsHtml = '';
+  if(w.tools && w.tools.length > 0 && settings.icons) {
+    w.tools.forEach(tid => {
+      const ic = settings.icons.find(x => x.id === tid);
+      if(ic) toolsHtml += `<img src="${ic.url}" title="${ic.name}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;border:2px solid var(--dark);background:var(--white);">`;
+    });
+  }
+
   const badges = document.getElementById('modalBadges');
   badges.innerHTML = `<span class="cat-badge">${catIcon}${catLabel}</span>`;
   if (subLabel) badges.innerHTML += `<span class="cat-badge sub">${subLabel}</span>`;
+  if (toolsHtml) badges.innerHTML += `<div style="display:flex;gap:6px;align-items:center;margin-left:8px;padding-left:8px;border-left:3px solid var(--dark);">${toolsHtml}</div>`;
 
   const link = document.getElementById('modalLink');
   if (w.link) { link.href = w.link; link.style.display = 'inline-flex'; }

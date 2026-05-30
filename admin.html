@@ -188,6 +188,22 @@ input[type="file"] {
   </nav>
 
   <div class="admin-content">
+    <!-- Icon Library Panel -->
+    <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;">
+      <h2>ICON LIBRARY</h2>
+      <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload icons here first, then select them in Settings or when adding a Work.</p>
+      
+      <div id="iconLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+        <!-- Filled by JS -->
+      </div>
+      
+      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="newIconName" placeholder="Icon Name (e.g. Unity)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+        <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
+        <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
+      </div>
+    </div>
+
     <!-- Settings Panel -->
     <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;">
       <h2>SITE SETTINGS</h2>
@@ -281,9 +297,18 @@ input[type="file"] {
         <textarea id="wDesc" placeholder="Short description..."></textarea>
       </div>
       <div class="field">
-        <label>Link (optional) — itch.io, CurseForge, Modrinth</label>
+        <label>Link (optional)</label>
         <input type="url" id="wLink" placeholder="https://...">
       </div>
+
+      <div class="field">
+        <label>Software/Tools Used</label>
+        <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select icons from your Icon Library</div>
+        <div id="toolsCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
       <div class="field" id="modelWrap" style="display:none">
         <label>3D Model (.glb) — สำหรับ 3D viewer</label>
         <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Export จาก Blender: File → Export → glTF 2.0 (.glb)</div>
@@ -314,6 +339,7 @@ const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
 const PASS    = '7964';
 const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
+const JSON_PATH = 'settings.json';
 let GH_TOKEN  = '';
 function getHeaders(){
   return {
@@ -432,7 +458,7 @@ async function loadWorks(){
 let settings={}, settingsSha=null;
 async function loadSettings(){
   try{
-    const data=await ghGet('settings.json');
+    const data=await ghGet(JSON_PATH);
     if(data){
       settingsSha=data.sha;
       settings=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
@@ -448,7 +474,9 @@ async function loadSettings(){
   } catch(e){
     console.log('No settings.json found or error loading:', e);
   }
+  renderIconLibrary();
   renderSettingsUI();
+  renderToolsCheckboxList();
 }
 
 async function saveWorks(){
@@ -516,26 +544,149 @@ function onModelSelect(input){
 // ── Settings ──
 let profileBase64=null, profileExt='png';
 let bgBase64=null, bgExt='png';
-let pendingCatIcons = {}; // catId -> {base64, ext}
-let pendingSocialIcons = {}; // idx -> {base64, ext}
+
+async function addIconToLibrary() {
+  const nameInput = document.getElementById('newIconName');
+  const fileInput = document.getElementById('newIconFile');
+  if(!nameInput.value.trim() || !fileInput.files[0]) {
+    alert("Please provide a name and select an image.");
+    return;
+  }
+  
+  const file = fileInput.files[0];
+  const ext = file.name.split('.').pop().toLowerCase()||'png';
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const base64 = e.target.result.split(',')[1];
+      const id = 'icon_' + Date.now();
+      const fname = `works/${id}.${ext}`;
+      
+      const btn = fileInput.nextElementSibling;
+      const oldBtnText = btn.innerText;
+      btn.innerText = "UPLOADING...";
+      btn.disabled = true;
+      
+      await ghPutBinary(fname, base64, `Upload icon ${nameInput.value}`);
+      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      
+      if(!settings.icons) settings.icons = [];
+      settings.icons.push({ id, name: nameInput.value.trim(), url });
+      
+      const json = JSON.stringify(settings, null, 2);
+      await ghPut(JSON_PATH, json, 'Update settings.json with new icon');
+      
+      nameInput.value = '';
+      fileInput.value = '';
+      btn.innerText = oldBtnText;
+      btn.disabled = false;
+      
+      renderIconLibrary();
+      renderSettingsUI();
+      renderToolsCheckboxList();
+    } catch(err) {
+      alert("Error uploading icon: " + err.message);
+      fileInput.nextElementSibling.innerText = "UPLOAD ICON";
+      fileInput.nextElementSibling.disabled = false;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderIconLibrary() {
+  const box = document.getElementById('iconLibraryList');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!settings.icons || settings.icons.length === 0) {
+    box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No icons uploaded yet.</div>';
+    return;
+  }
+  settings.icons.forEach((ic, i) => {
+    box.innerHTML += `
+      <div style="border:3px solid var(--dark);background:var(--white);padding:8px;display:flex;flex-direction:column;align-items:center;width:100px;text-align:center;position:relative;">
+        <button onclick="deleteIcon(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
+        <img src="${ic.url}" style="width:32px;height:32px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">
+        <span style="font-family:'VT323';font-size:16px;word-break:break-all;line-height:1;">${ic.name}</span>
+      </div>
+    `;
+  });
+}
+
+async function deleteIcon(idx) {
+  if(!confirm("Delete this icon? It will be removed from any links or categories using it.")) return;
+  settings.icons.splice(idx, 1);
+  try {
+    const json = JSON.stringify(settings, null, 2);
+    await ghPut(JSON_PATH, json, 'Delete icon from library');
+    renderIconLibrary();
+    renderSettingsUI();
+    renderToolsCheckboxList();
+  } catch(e) {
+    alert("Error deleting icon: " + e.message);
+  }
+}
+
+function generateIconOptions(selectedId) {
+  let html = `<option value="">-- No Icon --</option>`;
+  if(settings.icons) {
+    settings.icons.forEach(ic => {
+      const sel = (ic.id === selectedId) ? 'selected' : '';
+      html += `<option value="${ic.id}" ${sel}>${ic.name}</option>`;
+    });
+  }
+  return html;
+}
+
+function renderToolsCheckboxList() {
+  const box = document.getElementById('toolsCheckboxList');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!settings.icons || settings.icons.length === 0) {
+    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No icons available. Add some in the Icon Library.</div>';
+    return;
+  }
+  const activeTools = (editingId && works.find(x=>x.id===editingId) && works.find(x=>x.id===editingId).tools) ? works.find(x=>x.id===editingId).tools : [];
+  settings.icons.forEach(ic => {
+    const checked = activeTools.includes(ic.id) ? 'checked' : '';
+    box.innerHTML += `
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">
+        <input type="checkbox" value="${ic.id}" class="tool-checkbox" ${checked}>
+        <img src="${ic.url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">
+        <span style="font-family:'VT323';font-size:18px;">${ic.name}</span>
+      </label>
+    `;
+  });
+}
 
 function renderSettingsUI() {
   const catsBox = document.getElementById('catsList');
   catsBox.innerHTML = '';
   ['game','mod','3d'].forEach(id => {
     if(!settings.categories) settings.categories = {};
-    if(!settings.categories[id]) settings.categories[id] = {name: id.toUpperCase(), icon: ''};
+    if(!settings.categories[id]) settings.categories[id] = {name: id.toUpperCase(), iconId: '', icon: ''};
     const c = settings.categories[id];
-    const previewSrc = pendingCatIcons[id] ? `data:image/${pendingCatIcons[id].ext};base64,${pendingCatIcons[id].base64}` : c.icon;
     const defaultName = id==='game'?'Game':id==='mod'?'Minecraft Mod':'3D Model';
+    
+    let iconUrl = '';
+    if (c.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === c.iconId);
+      if(ic) iconUrl = ic.url;
+    } else if (c.icon) { 
+      iconUrl = c.icon;
+    }
+
     catsBox.innerHTML += `
       <div style="border:3px solid var(--dark);padding:12px;background:var(--sky4);">
         <div style="font-weight:bold;margin-bottom:8px;text-transform:uppercase;color:var(--dark);font-family:'Press Start 2P',cursive;font-size:12px;">${id}</div>
         <div class="field" style="margin-bottom:8px;">
           <input type="text" id="catName_${id}" value="${c.name==id.toUpperCase() ? defaultName : c.name}" onchange="settings.categories['${id}'].name=this.value" placeholder="Display Name">
         </div>
-        <input type="file" accept="image/*" onchange="previewCatIcon('${id}', this)">
-        ${previewSrc ? `<img src="${previewSrc}" style="width:32px;height:32px;object-fit:cover;margin-top:8px;image-rendering:pixelated;border:3px solid var(--dark);">` : ''}
+        <div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <select onchange="settings.categories['${id}'].iconId=this.value; renderSettingsUI()" style="padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);flex:1;">
+            ${generateIconOptions(c.iconId)}
+          </select>
+          ${iconUrl ? `<img src="${iconUrl}" style="width:28px;height:28px;object-fit:cover;image-rendering:pixelated;border:2px solid var(--dark);">` : ''}
+        </div>
       </div>
     `;
   });
@@ -544,16 +695,25 @@ function renderSettingsUI() {
   socBox.innerHTML = '';
   if(!settings.socials) settings.socials = [];
   settings.socials.forEach((s, idx) => {
-    const previewSrc = pendingSocialIcons[idx] ? `data:image/${pendingSocialIcons[idx].ext};base64,${pendingSocialIcons[idx].base64}` : s.icon;
+    let iconUrl = '';
+    if (s.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === s.iconId);
+      if(ic) iconUrl = ic.url;
+    } else if (s.icon) { 
+      iconUrl = s.icon;
+    }
+
     socBox.innerHTML += `
       <div style="border:3px solid var(--dark);padding:12px;background:var(--sky4);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
         <div style="flex:1;min-width:200px;">
           <input type="text" value="${s.name}" onchange="settings.socials[${idx}].name=this.value" placeholder="Name (e.g. itch.io)" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);margin-bottom:8px;">
           <input type="url" value="${s.url}" onchange="settings.socials[${idx}].url=this.value" placeholder="https://..." style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
         </div>
-        <div style="width:200px;">
-          <input type="file" accept="image/*" onchange="previewSocialIcon(${idx}, this)" style="font-size:12px;width:100%;">
-          ${previewSrc ? `<img src="${previewSrc}" style="width:40px;height:40px;object-fit:cover;margin-top:8px;image-rendering:pixelated;border:3px solid var(--dark);">` : ''}
+        <div style="width:200px;display:flex;flex-direction:column;gap:8px;">
+          <select onchange="settings.socials[${idx}].iconId=this.value; renderSettingsUI()" style="width:100%;padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);">
+            ${generateIconOptions(s.iconId)}
+          </select>
+          ${iconUrl ? `<img src="${iconUrl}" style="width:40px;height:40px;object-fit:cover;image-rendering:pixelated;border:2px solid var(--dark);">` : ''}
         </div>
         <button class="anav-btn danger" onclick="removeSocialLink(${idx})" style="padding:8px 12px;align-self:flex-start;">X</button>
       </div>
@@ -561,37 +721,14 @@ function renderSettingsUI() {
   });
 }
 
-function previewCatIcon(id, input) {
-  const file=input.files[0]; if(!file)return;
-  const ext=file.name.split('.').pop().toLowerCase()||'png';
-  const reader=new FileReader();
-  reader.onload=e=>{ pendingCatIcons[id] = {base64: e.target.result.split(',')[1], ext}; renderSettingsUI(); };
-  reader.readAsDataURL(file);
-}
-
-function previewSocialIcon(idx, input) {
-  const file=input.files[0]; if(!file)return;
-  const ext=file.name.split('.').pop().toLowerCase()||'png';
-  const reader=new FileReader();
-  reader.onload=e=>{ pendingSocialIcons[idx] = {base64: e.target.result.split(',')[1], ext}; renderSettingsUI(); };
-  reader.readAsDataURL(file);
-}
-
 function addSocialLink() {
   if(!settings.socials) settings.socials = [];
-  settings.socials.push({name:'', url:'', icon:''});
+  settings.socials.push({name:'', url:'', iconId:'', icon:''});
   renderSettingsUI();
 }
 
 function removeSocialLink(idx) {
   settings.socials.splice(idx, 1);
-  delete pendingSocialIcons[idx];
-  const newPending = {};
-  for(let i in pendingSocialIcons) {
-    if(i > idx) newPending[i-1] = pendingSocialIcons[i];
-    else if(i < idx) newPending[i] = pendingSocialIcons[i];
-  }
-  pendingSocialIcons = newPending;
   renderSettingsUI();
 }
 
@@ -650,32 +787,15 @@ async function saveSettings(){
       fill.style.width='50%';
     }
 
-    msg.textContent='Uploading category icons...';
-    for(let id in pendingCatIcons) {
-      const fname=`works/cat_${id}_${Date.now()}.${pendingCatIcons[id].ext}`;
-      await ghPutBinary(fname, pendingCatIcons[id].base64, `Update ${id} category icon`);
-      settings.categories[id].icon=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
-    }
-    fill.style.width='65%';
-
-    msg.textContent='Uploading social icons...';
-    for(let idx in pendingSocialIcons) {
-      const fname=`works/soc_${idx}_${Date.now()}.${pendingSocialIcons[idx].ext}`;
-      await ghPutBinary(fname, pendingSocialIcons[idx].base64, `Update social icon`);
-      settings.socials[idx].icon=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
-    }
-    fill.style.width='80%';
-
     msg.textContent='Updating settings.json...';
     const json=JSON.stringify(settings,null,2);
-    const result=await ghPut('settings.json', json, 'Update settings.json', settingsSha);
+    const result=await ghPut(JSON_PATH, json, 'Update settings.json', settingsSha);
     settingsSha=result.content.sha;
 
     fill.style.width='100%';
     msg.textContent='Settings saved successfully!';
     setTimeout(()=>{bar.style.display='none';msg.textContent='';},3000);
 
-    pendingCatIcons = {}; pendingSocialIcons = {};
     document.getElementById('profileFileInput').value='';
     document.getElementById('bgFileInput').value='';
     renderSettingsUI();
@@ -695,10 +815,11 @@ async function addWork(){
   const subcat=document.getElementById('wSubcat').value;
   const desc=document.getElementById('wDesc').value.trim();
   const link=document.getElementById('wLink').value.trim();
+  const selectedTools = Array.from(document.querySelectorAll('.tool-checkbox:checked')).map(cb => cb.value);
 
   if(!name){showMsg('Please enter a work name.','err');return}
   if(!cat){showMsg('Please select a category.','err');return}
-  if(!subcat){showMsg('Please select a sub-category.','err');return}
+  if(!subcat && (cat==='game'||cat==='mod'||cat==='3d')){showMsg('Please select a sub-category.','err');return}
 
   const btn=document.getElementById('submitBtn');
   const bar=document.getElementById('progressBar');
@@ -708,6 +829,11 @@ async function addWork(){
   try{
     let imagePath=null;
     let modelPath=null;
+
+    // Existing image/model path logic
+    const existing = editingId ? works.find(x=>x.id===editingId) : {};
+    imagePath = existing.image || null;
+    modelPath = existing.model || null;
 
     // Upload image to GitHub if exists
     if(currentImageBase64){
@@ -734,20 +860,22 @@ async function addWork(){
       const idx = works.findIndex(x => x.id === editingId);
       if (idx !== -1) {
         works[idx] = { ...works[idx], name, cat,
-          subcat: cat==='3d'?subcat:'',
+          subcat: (cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
           desc, link: link||null,
           imageFocal: currentImgFocal,
-          ...(imagePath ? {image: imagePath} : {}),
-          ...(modelPath ? {model: modelPath} : {}),
+          image: imagePath,
+          model: modelPath,
+          tools: selectedTools
         };
       }
     } else {
       works.push({
         id:Date.now(),name,cat,
-        subcat:cat==='3d'?subcat:'',
+        subcat:(cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
         desc,image:imagePath,model:modelPath,
         link:link||null,
         imageFocal:currentImgFocal,
+        tools:selectedTools,
         date:new Date().toISOString()
       });
     }
@@ -831,6 +959,8 @@ function resetForm(){
   document.getElementById('imgFileInput').value='';
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
+  document.getElementById('pwError').textContent='';
+  renderToolsCheckboxList();
   currentImageBase64=null;
   currentModelBase64=null;
   currentModelName=null;
@@ -862,6 +992,8 @@ function editWork(id) {
   document.getElementById('wSubcat').value = w.subcat || '';
   document.getElementById('wDesc').value = w.desc || '';
   document.getElementById('wLink').value = w.link || '';
+  
+  renderToolsCheckboxList();
 
   // Show existing image
   const prev = document.getElementById('imgPreview');
