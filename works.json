@@ -43,5 +43,22 @@
       "icon_1780139648730"
     ],
     "date": "2026-05-30T14:16:19.269Z"
+  },
+  {
+    "id": 1780159560907,
+    "name": "Icy Delight",
+    "cat": "game",
+    "subcat": "action",
+    "desc": "I make this game with friends in GameJamX",
+    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159557905.png",
+    "model": null,
+    "link": "https://roboticscool01gmailcom.itch.io/icy-delight",
+    "imageFocal": 45,
+    "tools": [
+      "icon_1780139577983",
+      "icon_1780139614213",
+      "icon_1780139648730"
+    ],
+    "date": "2026-05-30T16:46:00.907Z"
   }
 ]
