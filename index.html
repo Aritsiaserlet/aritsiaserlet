@@ -268,6 +268,17 @@ body{
     </div>
     <h1 class="name">ARITSIA</h1>
     <p class="role-tag">Game Dev · Minecraft Modder · 3D Artist</p>
+    <button id="playGameBtn" onclick="startGame()" style="
+      font-family:'Press Start 2P',cursive; font-size:18px; color:var(--dark);
+      background:var(--gold); border:4px solid var(--dark); padding:16px 24px;
+      margin-bottom:32px; cursor:pointer; box-shadow:6px 6px 0 var(--dark);
+      transition:transform 0.1s, box-shadow 0.1s; animation:fadeUp 0.9s 0.2s ease both;
+      display:inline-flex; align-items:center; gap:12px;
+    " onmouseover="this.style.transform='translate(2px,2px)'; this.style.boxShadow='4px 4px 0 var(--dark)';" 
+       onmouseout="this.style.transform='none'; this.style.boxShadow='6px 6px 0 var(--dark)';"
+       onmousedown="this.style.transform='translate(6px,6px)'; this.style.boxShadow='0 0 0 var(--dark)';">
+       ▶ PLAY MINIGAME
+    </button>
   </div>
 
   <!-- Social -->
@@ -776,6 +787,23 @@ function disposeThreeViewer(){
   if(threeRenderer){ threeRenderer.dispose(); threeRenderer=null; }
 }
 
+// ── Game Integration ──
+function startGame() {
+  const overlay = document.getElementById('gameOverlay');
+  overlay.classList.add('visible');
+  document.querySelector('.page').style.opacity = '0';
+  document.querySelector('.admin-fixed').style.display = 'none';
+  if(window.initGame) {
+    window.initGame(works, settings);
+  }
+}
+function exitGame() {
+  const overlay = document.getElementById('gameOverlay');
+  overlay.classList.remove('visible');
+  document.querySelector('.page').style.opacity = '1';
+  document.querySelector('.admin-fixed').style.display = 'block';
+  if(window.stopGame) window.stopGame();
+}
 </script>
 
 <!-- Modal -->
@@ -796,7 +824,58 @@ function disposeThreeViewer(){
   </div>
 </div>
 
+<!-- Game Overlay -->
+<div id="gameOverlay" style="
+  position:fixed; inset:0; z-index:200;
+  background:var(--sky4); 
+  opacity:0; pointer-events:none; transition:opacity 0.4s;
+  display:flex; flex-direction:column;
+">
+  <!-- HUD -->
+  <div id="gameHUD" style="
+    position:absolute; top:20px; left:20px; right:20px; z-index:210;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    font-family:'Press Start 2P',cursive; color:var(--dark); text-shadow:2px 2px 0 #fff;
+  ">
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="font-size:24px;">SCORE: <span id="gameScore">0</span></div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+      <button onclick="exitGame()" style="
+        font-family:'VT323'; font-size:24px; padding:4px 12px; background:var(--danger,#e74c3c); 
+        color:#fff; border:3px solid var(--dark); cursor:pointer; text-shadow:none;
+      ">EXIT GAME</button>
+      <div style="font-size:16px; margin-top:8px;">FIREWORKS: <span id="gameFireworks">0</span></div>
+      <div id="gameMultiplier" style="font-size:20px; color:var(--gold); display:none;">x2 BOOST!</div>
+    </div>
+  </div>
+  
+  <canvas id="gameCoreCanvas" style="width:100%; height:100%; display:block;"></canvas>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen" style="
+    position:absolute; inset:0; z-index:220; background:rgba(20,40,65,0.8);
+    display:none; flex-direction:column; align-items:center; justify-content:center;
+    color:#fff; font-family:'Press Start 2P',cursive; text-align:center;
+  ">
+    <h2 style="font-size:48px; color:var(--danger,#e74c3c); margin-bottom:24px; text-shadow:4px 4px 0 var(--dark);">GAME OVER</h2>
+    <p style="font-size:24px; margin-bottom:12px;">FINAL SCORE: <span id="finalScore" style="color:var(--gold);">0</span></p>
+    <button onclick="window.resetGame()" style="
+      margin-top:32px; font-family:'Press Start 2P',cursive; font-size:16px; 
+      padding:16px 24px; background:var(--gold); color:var(--dark); border:4px solid var(--dark);
+      cursor:pointer; box-shadow:4px 4px 0 var(--dark); transition:transform 0.1s;
+    " onmousedown="this.style.transform='translate(4px,4px)'; this.style.boxShadow='0 0 0 var(--dark)';">
+      PLAY AGAIN
+    </button>
+  </div>
+</div>
+<style>
+  #gameOverlay.visible { opacity: 1; pointer-events: all; }
+  .page { transition: opacity 0.4s; }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="game.js"></script>
 
 </body>
 </html>

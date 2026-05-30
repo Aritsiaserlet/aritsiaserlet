@@ -241,6 +241,21 @@ input[type="file"] {
       </div>
       <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
 
+      <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">GAME SETTINGS</h3>
+      <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
+        <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Here you can upload your custom Player Sprite and Attack Animation for the Minigame (Coming soon / Work in Progress).</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:200px;">
+            <label>Player Sprite (Idle/Fly)</label>
+            <input type="file" accept="image/*" disabled title="Coming soon">
+          </div>
+          <div class="field" style="flex:1;min-width:200px;">
+            <label>Player Attack Sprite</label>
+            <input type="file" accept="image/*" disabled title="Coming soon">
+          </div>
+        </div>
+      </div>
+
       <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
       <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
       <p class="form-msg" id="settingsMsg"></p>
