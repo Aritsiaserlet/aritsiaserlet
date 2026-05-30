@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Aritsia</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky1:#4a9fd4;--sky2:#7ec8e8;--sky3:#aaddee;--sky4:#cceeff;
+  --gold:#e8c87a;--gold-d:#c8a040;--gold-l:#f5e0a0;
+  --dark:#1a2a3a;--mid:#2c4a6a;
+  --glass:rgba(255,255,255,0.45);--glass2:rgba(255,255,255,0.72);
+  --danger:#c0392b;--success:#1a7a4a;
+}
+html,body{min-height:100%;overflow-x:hidden}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(175deg,var(--sky1) 0%,var(--sky2) 28%,var(--sky3) 58%,var(--sky4) 100%);min-height:100vh}
+.wind-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.4}
+.clouds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.cloud{position:absolute;background:rgba(255,255,255,0.8);border-radius:60px;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:'';position:absolute;background:inherit;border-radius:50%}
+.c1{width:240px;height:58px;top:8%;left:-260px;animation-duration:60s}
+.c1::before{width:96px;height:84px;top:-44px;left:34px}.c1::after{width:76px;height:66px;top:-32px;left:116px}
+.c2{width:160px;height:40px;top:22%;left:-180px;animation-duration:78s;animation-delay:-28s;opacity:.65}
+.c2::before{width:68px;height:60px;top:-30px;left:20px}.c2::after{width:54px;height:48px;top:-22px;left:86px}
+.c3{width:200px;height:50px;top:60%;left:-220px;animation-duration:90s;animation-delay:-45s;opacity:.7}
+.c3::before{width:84px;height:74px;top:-38px;left:40px}.c3::after{width:66px;height:56px;top:-28px;left:110px}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 500px))}}
+
+/* Lock */
+.lock-screen{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,50,80,0.2);backdrop-filter:blur(4px)}
+.lock-card{background:var(--glass2);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,.8);border-radius:20px;padding:40px 44px;width:340px;text-align:center;box-shadow:0 12px 48px rgba(30,60,100,.18)}
+.lock-icon{font-size:40px;margin-bottom:12px}
+.lock-title{font-family:'Cinzel',serif;font-size:18px;letter-spacing:2px;color:var(--dark);margin-bottom:6px}
+.lock-sub{font-size:12px;color:var(--mid);margin-bottom:28px;opacity:.7}
+.pw-input{width:100%;padding:12px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.6);font-size:18px;text-align:center;letter-spacing:6px;color:var(--dark);font-family:'Nunito',sans-serif;outline:none;margin-bottom:14px;transition:border-color .2s}
+.pw-input:focus{border-color:var(--gold)}
+.pw-btn{width:100%;padding:12px;border-radius:10px;border:2px solid var(--gold);background:rgba(232,200,122,.25);font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--dark);cursor:pointer;transition:all .2s}
+.pw-btn:hover{background:rgba(232,200,122,.5)}
+.pw-error{font-size:12px;color:var(--danger);margin-top:10px;min-height:18px}
+.back-link{display:block;margin-top:16px;font-size:12px;color:var(--mid);text-decoration:none;opacity:.6}
+.back-link:hover{opacity:1}
+.token-input{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.6);font-size:13px;font-family:'Nunito',sans-serif;color:var(--dark);outline:none;margin-bottom:14px;transition:border-color .2s;letter-spacing:1px}
+.token-input:focus{border-color:var(--gold)}
+.token-label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--mid);text-transform:uppercase;text-align:left;display:block;margin-bottom:6px;opacity:.7}
+
+/* Admin */
+.admin-panel{display:none;position:relative;z-index:5;min-height:100vh;padding:0 0 60px}
+.anav{display:flex;justify-content:space-between;align-items:center;padding:14px 28px;background:rgba(255,255,255,.18);backdrop-filter:blur(12px);border-bottom:.5px solid rgba(255,255,255,.4);position:sticky;top:0;z-index:10}
+.anav-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--dark)}
+.anav-right{display:flex;gap:10px}
+.anav-btn{font-size:12px;font-weight:700;padding:7px 16px;border-radius:6px;border:1.5px solid rgba(44,74,106,.3);background:rgba(255,255,255,.5);color:var(--mid);cursor:pointer;text-decoration:none;transition:all .2s}
+.anav-btn:hover{background:rgba(255,255,255,.82)}
+.anav-btn.danger{border-color:rgba(192,57,43,.3);color:var(--danger)}
+.anav-btn.danger:hover{background:rgba(192,57,43,.08)}
+.admin-content{max-width:960px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:700px){.admin-content{grid-template-columns:1fr}}
+.panel-card{background:var(--glass2);backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,.75);border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(80,140,200,.12)}
+.panel-card h2{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--dark);margin-bottom:20px;padding-bottom:12px;border-bottom:.5px solid rgba(44,74,106,.15)}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mid);margin-bottom:6px;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.6);font-size:14px;font-family:'Nunito',sans-serif;color:var(--dark);outline:none;transition:border-color .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field select option{background:#d6f0f8;color:var(--dark)}
+.field textarea{resize:vertical;min-height:80px}
+.subcat-wrap{display:none}.subcat-wrap.visible{display:block}
+.img-preview{width:100%;aspect-ratio:16/10;border-radius:10px;background:linear-gradient(135deg,#b8dff0,#d6f0f8);border:2px dashed rgba(44,74,106,.2);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;position:relative;cursor:pointer;margin-bottom:10px;transition:border-color .2s;flex-direction:column;gap:8px}
+.img-preview:hover{border-color:var(--gold)}
+.img-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#imgFileInput{display:none}
+.submit-btn{width:100%;padding:13px;border-radius:10px;border:2px solid var(--gold);background:rgba(232,200,122,.3);font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--dark);cursor:pointer;transition:all .2s;margin-top:4px}
+.submit-btn:hover{background:rgba(232,200,122,.6)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.form-msg{font-size:12px;text-align:center;margin-top:10px;min-height:18px}
+.form-msg.ok{color:var(--success)}.form-msg.err{color:var(--danger)}
+.progress-bar{width:100%;height:6px;background:rgba(44,74,106,.15);border-radius:3px;margin-top:10px;overflow:hidden;display:none}
+.progress-fill{height:100%;background:var(--gold-d);border-radius:3px;width:0%;transition:width .3s}
+.works-list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto}
+.works-list::-webkit-scrollbar{width:4px}
+.works-list::-webkit-scrollbar-thumb{background:rgba(44,74,106,.2);border-radius:4px}
+.witem{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.55);border-radius:10px;padding:10px 12px;border:.5px solid rgba(255,255,255,.7)}
+.witem-thumb{width:60px;height:38px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,#b8dff0,#d6f0f8);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden}
+.witem-thumb img{width:100%;height:100%;object-fit:cover}
+.witem-info{flex:1;min-width:0}
+.witem-name{font-size:13px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.witem-cat{font-size:10px;color:var(--mid);opacity:.7}
+.witem-del{background:none;border:none;cursor:pointer;font-size:16px;color:var(--danger);opacity:.5;transition:opacity .18s;padding:4px}
+.witem-del:hover{opacity:1}
+.no-works{font-size:13px;color:rgba(44,74,106,.45);text-align:center;padding:24px}
+.stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.stat{flex:1;min-width:80px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.5);border:.5px solid rgba(255,255,255,.7);text-align:center}
+.stat-n{font-size:22px;font-weight:700;color:var(--dark)}
+.stat-l{font-size:10px;color:var(--mid);opacity:.65;letter-spacing:.5px}
+.gh-status{font-size:11px;padding:6px 12px;border-radius:6px;margin-bottom:16px;text-align:center;font-weight:600}
+.gh-status.ok{background:rgba(26,122,74,.12);color:var(--success);border:.5px solid rgba(26,122,74,.2)}
+.gh-status.err{background:rgba(192,57,43,.1);color:var(--danger);border:.5px solid rgba(192,57,43,.2)}
+</style>
+</head>
+<body>
+
+<canvas class="wind-canvas" id="windCanvas"></canvas>
+<div class="clouds">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+</div>
+
+<!-- Lock -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon">🔐</div>
+    <h1 class="lock-title">ADMIN</h1>
+    <p class="lock-sub">Enter password and GitHub token</p>
+    <span class="token-label">Password</span>
+    <input class="pw-input" type="password" id="pwInput" placeholder="••••" maxlength="20"
+      onkeydown="if(event.key==='Enter')checkPw()">
+    <span class="token-label">GitHub Token</span>
+    <input class="token-input" type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx"
+      onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">ENTER</button>
+    <p class="pw-error" id="pwError"></p>
+    <a href="index.html" class="back-link">← Back to portfolio</a>
+  </div>
+</div>
+
+<!-- Admin -->
+<div class="admin-panel" id="adminPanel">
+  <nav class="anav">
+    <span class="anav-title">⚙ ADMIN PANEL</span>
+    <div class="anav-right">
+      <a href="index.html" class="anav-btn">← Portfolio</a>
+      <button class="anav-btn danger" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="admin-content">
+    <!-- Upload form -->
+    <div class="panel-card">
+      <h2>ADD WORK</h2>
+      <div id="ghStatus" class="gh-status ok">✓ Connected to GitHub · Aritsiaserlet/aritsiaserlet</div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-n" id="sAll">0</div><div class="stat-l">Total</div></div>
+        <div class="stat"><div class="stat-n" id="sGame">0</div><div class="stat-l">Game</div></div>
+        <div class="stat"><div class="stat-n" id="sMod">0</div><div class="stat-l">Mod</div></div>
+        <div class="stat"><div class="stat-n" id="s3d">0</div><div class="stat-l">3D</div></div>
+      </div>
+
+      <div class="img-preview" id="imgPreview" onclick="document.getElementById('imgFileInput').click()">
+        <span style="font-size:32px">🖼️</span>
+        <span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>
+      </div>
+      <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)">
+
+      <div class="field">
+        <label>Work Name</label>
+        <input type="text" id="wName" placeholder="e.g. Space Shooter">
+      </div>
+      <div class="field">
+        <label>Main Category</label>
+        <select id="wCat" onchange="onCatChange()">
+          <option value="">— select —</option>
+          <option value="game">🎮 Game</option>
+          <option value="mod">⚙️ Minecraft Mod</option>
+          <option value="3d">🧊 3D Model</option>
+        </select>
+      </div>
+      <div class="field subcat-wrap" id="subcatWrap">
+        <label>Sub-category (3D)</label>
+        <select id="wSubcat">
+          <option value="">— select type —</option>
+          <option value="character">Character</option>
+          <option value="building">Building</option>
+          <option value="object">Object</option>
+          <option value="creature">Creature</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Description (optional)</label>
+        <textarea id="wDesc" placeholder="Short description..."></textarea>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="addWork()">＋ ADD TO PORTFOLIO</button>
+      <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+      <p class="form-msg" id="formMsg"></p>
+    </div>
+
+    <!-- Works list -->
+    <div class="panel-card">
+      <h2>MANAGE WORKS</h2>
+      <div class="works-list" id="worksList">
+        <p class="no-works">Loading from GitHub...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Config ──
+const GH_USER = 'Aritsiaserlet';
+const GH_REPO = 'aritsiaserlet';
+const PASS    = '7964';
+const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
+let GH_TOKEN  = '';
+function getHeaders(){
+  return {
+    'Authorization': `token ${GH_TOKEN}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+// ── Wind ──
+const canvas = document.getElementById('windCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, lines = [];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+function rb(a,b){return a+Math.random()*(b-a)}
+function cl(){return{x:Math.random()*W,y:Math.random()*H,len:rb(60,200),speed:rb(6,16),opacity:rb(0.04,0.18),angle:rb(-0.15,0.15),width:rb(0.5,1.5),life:0,maxLife:rb(40,120)}}
+for(let i=0;i<30;i++){let l=cl();l.life=Math.random()*l.maxLife;lines.push(l)}
+function aw(){
+  ctx.clearRect(0,0,W,H);
+  lines.forEach((l,i)=>{
+    l.x+=l.speed;l.y+=Math.sin(l.angle)*l.speed*0.3;l.life++;
+    const p=l.life/l.maxLife,f=p<0.2?p/0.2:p>0.8?(1-p)/0.2:1;
+    ctx.save();ctx.strokeStyle=`rgba(255,255,255,${l.opacity*f})`;ctx.lineWidth=l.width;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(l.x,l.y);ctx.lineTo(l.x+Math.cos(l.angle)*l.len,l.y+Math.sin(l.angle)*l.len);ctx.stroke();ctx.restore();
+    if(l.x>W+220||l.life>=l.maxLife)lines[i]=cl();
+  });requestAnimationFrame(aw);
+}
+aw();
+
+// ── Auth ──
+function checkPw(){
+  const pw=document.getElementById('pwInput').value;
+  const tk=document.getElementById('tokenInput').value.trim();
+  const e=document.getElementById('pwError');
+  if(pw!==PASS){
+    e.textContent='Incorrect password';
+    document.getElementById('pwInput').value='';
+    setTimeout(()=>e.textContent='',2000);
+    return;
+  }
+  if(!tk||!tk.startsWith('ghp_')){
+    e.textContent='Please enter a valid GitHub token (starts with ghp_)';
+    setTimeout(()=>e.textContent='',3000);
+    return;
+  }
+  GH_TOKEN=tk;
+  document.getElementById('lockScreen').style.display='none';
+  document.getElementById('adminPanel').style.display='block';
+  loadWorks();
+}
+function logout(){
+  GH_TOKEN='';
+  document.getElementById('lockScreen').style.display='flex';
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('pwInput').value='';
+  document.getElementById('tokenInput').value='';
+}
+
+// ── GitHub helpers ──
+async function ghGet(path){
+  const r=await fetch(`${API}/${path}`,{headers:getHeaders()});
+  if(r.status===404)return null;
+  if(!r.ok)throw new Error(`GitHub error ${r.status}`);
+  return r.json();
+}
+
+async function ghPut(path, content, message, sha){
+  const body={message, content: btoa(unescape(encodeURIComponent(content)))};
+  if(sha)body.sha=sha;
+  const r=await fetch(`${API}/${path}`,{method:'PUT',headers:getHeaders(),body:JSON.stringify(body)});
+  if(!r.ok){const t=await r.text();throw new Error(`GitHub PUT error ${r.status}: ${t}`)}
+  return r.json();
+}
+
+async function ghPutBinary(path, base64content, message, sha){
+  const body={message, content: base64content};
+  if(sha)body.sha=sha;
+  const r=await fetch(`${API}/${path}`,{method:'PUT',headers:getHeaders(),body:JSON.stringify(body)});
+  if(!r.ok){const t=await r.text();throw new Error(`GitHub PUT error ${r.status}: ${t}`)}
+  return r.json();
+}
+
+async function ghDelete(path, message, sha){
+  const r=await fetch(`${API}/${path}`,{method:'DELETE',headers:getHeaders(),body:JSON.stringify({message,sha})});
+  if(!r.ok)throw new Error(`GitHub DELETE error ${r.status}`);
+  return r.json();
+}
+
+// ── Load works.json ──
+let works=[], worksSha=null;
+
+async function loadWorks(){
+  try{
+    const data=await ghGet('works.json');
+    if(data){
+      worksSha=data.sha;
+      works=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    } else {
+      works=[];worksSha=null;
+    }
+    renderAdminList();
+    updateStats();
+    document.getElementById('ghStatus').className='gh-status ok';
+    document.getElementById('ghStatus').textContent='✓ Connected to GitHub · Aritsiaserlet/aritsiaserlet';
+  } catch(e){
+    document.getElementById('ghStatus').className='gh-status err';
+    document.getElementById('ghStatus').textContent='✗ GitHub connection failed: '+e.message;
+    works=[];renderAdminList();
+  }
+}
+
+async function saveWorks(){
+  const json=JSON.stringify(works,null,2);
+  const result=await ghPut('works.json', json, 'Update works.json', worksSha);
+  worksSha=result.content.sha;
+}
+
+// ── Image ──
+let currentImageBase64=null, currentImageExt='jpg';
+
+function previewImage(input){
+  const file=input.files[0];
+  if(!file)return;
+  if(file.size>4*1024*1024){alert('Image too large (max 4MB). Please resize it first.');return}
+  currentImageExt=file.name.split('.').pop().toLowerCase()||'jpg';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const full=e.target.result;
+    currentImageBase64=full.split(',')[1];
+    const prev=document.getElementById('imgPreview');
+    prev.innerHTML=`<img src="${full}">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function onCatChange(){
+  const cat=document.getElementById('wCat').value;
+  const sw=document.getElementById('subcatWrap');
+  cat==='3d'?sw.classList.add('visible'):sw.classList.remove('visible');
+}
+
+// ── Add work ──
+async function addWork(){
+  const name=document.getElementById('wName').value.trim();
+  const cat=document.getElementById('wCat').value;
+  const subcat=document.getElementById('wSubcat').value;
+  const desc=document.getElementById('wDesc').value.trim();
+
+  if(!name){showMsg('Please enter a work name.','err');return}
+  if(!cat){showMsg('Please select a category.','err');return}
+  if(cat==='3d'&&!subcat){showMsg('Please select a 3D sub-category.','err');return}
+
+  const btn=document.getElementById('submitBtn');
+  const bar=document.getElementById('progressBar');
+  const fill=document.getElementById('progressFill');
+  btn.disabled=true;bar.style.display='block';fill.style.width='10%';
+
+  try{
+    let imagePath=null;
+
+    // Upload image to GitHub if exists
+    if(currentImageBase64){
+      showMsg('Uploading image...','ok');
+      fill.style.width='35%';
+      const fname=`works/${Date.now()}.${currentImageExt}`;
+      await ghPutBinary(fname, currentImageBase64, `Add image for ${name}`);
+      imagePath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      fill.style.width='65%';
+    }
+
+    // Add to works array
+    works.push({
+      id:Date.now(),name,cat,
+      subcat:cat==='3d'?subcat:'',
+      desc,image:imagePath,
+      date:new Date().toISOString()
+    });
+
+    showMsg('Saving to GitHub...','ok');
+    fill.style.width='85%';
+    await saveWorks();
+    fill.style.width='100%';
+
+    renderAdminList();
+    updateStats();
+    resetForm();
+    setTimeout(()=>{bar.style.display='none';fill.style.width='0%'},600);
+    showMsg('✓ Work published to portfolio!','ok');
+  } catch(e){
+    showMsg('Error: '+e.message,'err');
+    bar.style.display='none';fill.style.width='0%';
+  }
+  btn.disabled=false;
+}
+
+async function deleteWork(id){
+  const w=works.find(x=>x.id===id);
+  if(!w||!confirm(`Delete "${w.name}"?`))return;
+
+  try{
+    // Delete image file from GitHub if hosted there
+    if(w.image&&w.image.includes('raw.githubusercontent.com')){
+      const path=w.image.split(`/main/`)[1];
+      if(path){
+        const file=await ghGet(path);
+        if(file)await ghDelete(path,`Remove image for ${w.name}`,file.sha);
+      }
+    }
+    works=works.filter(x=>x.id!==id);
+    await saveWorks();
+    renderAdminList();
+    updateStats();
+    showMsg('✓ Work deleted.','ok');
+  } catch(e){showMsg('Error: '+e.message,'err')}
+}
+
+function updateStats(){
+  document.getElementById('sAll').textContent=works.length;
+  document.getElementById('sGame').textContent=works.filter(w=>w.cat==='game').length;
+  document.getElementById('sMod').textContent=works.filter(w=>w.cat==='mod').length;
+  document.getElementById('s3d').textContent=works.filter(w=>w.cat==='3d').length;
+}
+
+function renderAdminList(){
+  const list=document.getElementById('worksList');
+  if(!works.length){list.innerHTML='<p class="no-works">No works yet. Add one!</p>';return}
+  list.innerHTML='';
+  [...works].reverse().forEach(w=>{
+    const emoji={game:'🎮',mod:'⚙️','3d':'🧊'}[w.cat]||'📁';
+    const label={game:'Game',mod:'Minecraft Mod','3d':'3D Model'}[w.cat]||w.cat;
+    const sub=w.subcat?' · '+w.subcat.charAt(0).toUpperCase()+w.subcat.slice(1):'';
+    const el=document.createElement('div');el.className='witem';
+    el.innerHTML=`
+      <div class="witem-thumb">${w.image?`<img src="${w.image}">`:`${emoji}`}</div>
+      <div class="witem-info">
+        <div class="witem-name">${w.name}</div>
+        <div class="witem-cat">${emoji} ${label}${sub}</div>
+      </div>
+      <button class="witem-del" onclick="deleteWork(${w.id})" title="Delete">✕</button>`;
+    list.appendChild(el);
+  });
+}
+
+function resetForm(){
+  document.getElementById('wName').value='';
+  document.getElementById('wCat').value='';
+  document.getElementById('wSubcat').value='';
+  document.getElementById('wDesc').value='';
+  document.getElementById('subcatWrap').classList.remove('visible');
+  document.getElementById('imgPreview').innerHTML=`<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>`;
+  document.getElementById('imgFileInput').value='';
+  currentImageBase64=null;
+}
+
+function showMsg(text,type){
+  const el=document.getElementById('formMsg');
+  el.textContent=text;el.className='form-msg '+type;
+  if(type==='ok')setTimeout(()=>{el.textContent='';el.className='form-msg'},4000);
+}
+</script>
+</body>
+</html>
