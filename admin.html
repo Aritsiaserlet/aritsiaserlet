@@ -418,9 +418,15 @@ async function ghPut(path, content, message, sha){
   return r.json();
 }
 
-async function ghPutBinary(path, base64content, message, sha){
+async function ghPutBinary(path, base64content, message){
+  // Always fetch existing SHA first to avoid 422
+  let sha = undefined;
+  try {
+    const existing = await ghGet(path);
+    if(existing && existing.sha) sha = existing.sha;
+  } catch(e) { /* new file, no sha needed */ }
   const body={message, content: base64content};
-  if(sha)body.sha=sha;
+  if(sha) body.sha = sha;
   const r=await fetch(`${API}/${path}`,{method:'PUT',headers:getHeaders(),body:JSON.stringify(body)});
   if(!r.ok){const t=await r.text();throw new Error(`GitHub PUT error ${r.status}: ${t}`)}
   return r.json();
@@ -574,7 +580,8 @@ async function addIconToLibrary() {
       settings.icons.push({ id, name: nameInput.value.trim(), url });
       
       const json = JSON.stringify(settings, null, 2);
-      await ghPut(JSON_PATH, json, 'Update settings.json with new icon');
+      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new icon', settingsSha);
+      settingsSha = saveResult.content.sha;
       
       nameInput.value = '';
       fileInput.value = '';
