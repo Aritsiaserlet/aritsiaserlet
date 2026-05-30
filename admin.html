@@ -935,15 +935,22 @@ function renderAdminList(){
   if(!works.length){list.innerHTML='<p class="no-works">No works yet. Add one!</p>';return}
   list.innerHTML='';
   [...works].reverse().forEach(w=>{
-    const emoji={game:'🎮',mod:'⚙️','3d':'🧊'}[w.cat]||'📁';
+    const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
+    let iconUrl = '';
+    if(catSetting.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === catSetting.iconId);
+      if(ic) iconUrl = ic.url;
+    }
+    const catIcon = iconUrl ? `<img src="${iconUrl}" style="width:18px;height:18px;vertical-align:middle;object-fit:cover;image-rendering:pixelated;">` : '📁';
+
     const label={game:'Game',mod:'Minecraft Mod','3d':'3D Model'}[w.cat]||w.cat;
     const sub=w.subcat?' · '+w.subcat.charAt(0).toUpperCase()+w.subcat.slice(1):'';
     const el=document.createElement('div');el.className='witem';
     el.innerHTML=`
-      <div class="witem-thumb">${w.image?`<img src="${w.image}">`:`${emoji}`}</div>
+      <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${w.image}">`:catIcon}</div>
       <div class="witem-info">
         <div class="witem-name">${w.name}</div>
-        <div class="witem-cat">${emoji} ${label}${sub}</div>
+        <div class="witem-cat" style="display:flex;align-items:center;gap:6px;">${catIcon} ${label}${sub}</div>
       </div>
       <button class="witem-edit" onclick="editWork(${w.id})" title="Edit">✏️</button>
       <button class="witem-del" onclick="deleteWork(${w.id})" title="Delete">✕</button>`;

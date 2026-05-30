@@ -125,6 +125,7 @@ body{
   cursor:pointer;transition:background .1s, transform .1s;
   white-space:nowrap;
   box-shadow:2px 2px 0 var(--dark);
+  display:inline-flex;align-items:center;gap:6px;
 }
 .tab:hover{background:var(--gold-l);transform:translate(1px,1px);box-shadow:1px 1px 0 var(--dark)}
 .tab.active{background:var(--gold);transform:translate(2px,2px);box-shadow:0 0 0 var(--dark)}
@@ -161,8 +162,9 @@ body{
 .card-cats{display:flex;gap:6px;flex-wrap:wrap}
 .cat-badge{
   font-size:16px;
-  padding:2px 6px;
+  padding:4px 8px;
   background:var(--sky4);border:2px solid var(--dark);color:var(--dark);
+  display:inline-flex;align-items:center;gap:6px;
 }
 .cat-badge.sub{background:var(--gold-l);}
 
@@ -423,7 +425,7 @@ function applySettings() {
       const ic = settings.icons.find(x => x.id === c.iconId);
       if(ic) url = ic.url;
     }
-    const iconHtml = url ? `<img src="${url}" style="width:16px;height:16px;vertical-align:middle;image-rendering:pixelated;display:inline-block;margin-right:4px;">` : '';
+    const iconHtml = url ? `<img src="${url}" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
     mainTabs.innerHTML += `<button class="tab" data-cat="${id}" onclick="setMainCat('${id}',this)">${iconHtml}${name}</button>`;
   });
 }
@@ -457,7 +459,7 @@ function renderGallery() {
         const ic = settings.icons.find(x => x.id === catSetting.iconId);
         if(ic) catIconUrl = ic.url;
       }
-      const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
+      const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:18px;height:18px;object-fit:contain;image-rendering:pixelated;">` : '';
       const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
       const focalY = (w.imageFocal !== undefined && w.imageFocal !== null) ? w.imageFocal : 50;
       
@@ -528,7 +530,7 @@ function openModal(w) {
     const ic = settings.icons.find(x => x.id === catSetting.iconId);
     if(ic) catIconUrl = ic.url;
   }
-  const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
+  const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:18px;height:18px;object-fit:contain;image-rendering:pixelated;">` : '';
   const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
 
   // Media area
