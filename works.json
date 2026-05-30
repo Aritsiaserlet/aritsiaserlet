@@ -76,22 +76,5 @@
       "icon_1780139614213"
     ],
     "date": "2026-05-30T16:47:03.784Z"
-  },
-  {
-    "id": 1780159708563,
-    "name": "A Picturesque Breakfast",
-    "cat": "game",
-    "subcat": "puzzle",
-    "desc": "This one too, I make with friends and join Cozy Game Jam",
-    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159705549.png",
-    "model": null,
-    "link": "https://roboticscool01gmailcom.itch.io/a-picturesque",
-    "imageFocal": 41,
-    "tools": [
-      "icon_1780139577983",
-      "icon_1780139614213",
-      "icon_1780139648730"
-    ],
-    "date": "2026-05-30T16:48:28.563Z"
   }
 ]
