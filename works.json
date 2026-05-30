@@ -31,14 +31,14 @@
   },
   {
     "id": 1780150579269,
-    "name": "Mewtwo Y -MrX",
+    "name": "Mewtwo Y - MrX",
     "cat": "3d",
     "subcat": "creature",
     "desc": "make for fun",
-    "image": null,
-    "model": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780150576115_model.glb",
+    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159282174.png",
+    "model": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159285092_model.glb",
     "link": null,
-    "imageFocal": 50,
+    "imageFocal": 23,
     "tools": [
       "icon_1780139648730"
     ],
