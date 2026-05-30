@@ -406,7 +406,7 @@ function applySettings() {
       if(s.iconId && settings.icons) {
         const ic = settings.icons.find(x => x.id === s.iconId);
         if(ic) url = ic.url;
-      } else if(s.icon) url = s.icon;
+      }
       const iconHtml = url ? `<img src="${url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">` : '';
       socBox.innerHTML += `<a href="${s.url}" class="social-btn" target="_blank" rel="noopener">${iconHtml} ${s.name}</a>`;
     });
@@ -422,7 +422,7 @@ function applySettings() {
     if(c.iconId && settings.icons) {
       const ic = settings.icons.find(x => x.id === c.iconId);
       if(ic) url = ic.url;
-    } else if(c.icon) url = c.icon;
+    }
     const iconHtml = url ? `<img src="${url}" style="width:16px;height:16px;vertical-align:middle;image-rendering:pixelated;display:inline-block;margin-right:4px;">` : '';
     mainTabs.innerHTML += `<button class="tab" data-cat="${id}" onclick="setMainCat('${id}',this)">${iconHtml}${name}</button>`;
   });
@@ -456,8 +456,7 @@ function renderGallery() {
       if(catSetting.iconId && settings.icons) {
         const ic = settings.icons.find(x => x.id === catSetting.iconId);
         if(ic) catIconUrl = ic.url;
-      } else if(catSetting.icon) catIconUrl = catSetting.icon;
-      
+      }
       const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
       const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
       const focalY = (w.imageFocal !== undefined && w.imageFocal !== null) ? w.imageFocal : 50;
@@ -528,8 +527,7 @@ function openModal(w) {
   if(catSetting.iconId && settings.icons) {
     const ic = settings.icons.find(x => x.id === catSetting.iconId);
     if(ic) catIconUrl = ic.url;
-  } else if(catSetting.icon) catIconUrl = catSetting.icon;
-  
+  }
   const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
   const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
 
