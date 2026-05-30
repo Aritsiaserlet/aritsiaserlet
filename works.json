@@ -13,5 +13,20 @@
     "tools": [
       "icon_1780139648730"
     ]
+  },
+  {
+    "id": 1780150229911,
+    "name": "Camellya - P'Pukker",
+    "cat": "3d",
+    "subcat": "character",
+    "desc": "This model, I make for fun too",
+    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780150216539.png",
+    "model": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780150219859_model.glb",
+    "link": null,
+    "imageFocal": 9,
+    "tools": [
+      "icon_1780139648730"
+    ],
+    "date": "2026-05-30T14:10:29.911Z"
   }
 ]
