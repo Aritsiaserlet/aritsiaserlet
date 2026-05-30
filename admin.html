@@ -11,6 +11,7 @@
   --sky1:#4a9fd4;--sky2:#7ec8e8;--sky3:#aaddee;--sky4:#cceeff;
   --gold:#e8c87a;--gold-d:#c8a040;--gold-l:#f5e0a0;
   --dark:#1a2a3a;--mid:#2c4a6a;
+  --white:rgba(255,255,255,0.88);
   --glass:rgba(255,255,255,0.45);--glass2:rgba(255,255,255,0.85);
   --danger:#c0392b;--success:#1a7a4a;
   --pixel-shadow: 4px 4px 0 rgba(26,42,58,0.3);
@@ -74,7 +75,29 @@ body{
 .field textarea{resize:vertical;min-height:80px}
 .subcat-wrap{display:none}.subcat-wrap.visible{display:block}
 
-#imgFileInput{display:none}
+input[type="file"]::file-selector-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 8px 12px;
+  background: var(--white);
+  border: 3px solid var(--dark);
+  color: var(--dark);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--dark);
+  margin-right: 10px;
+  transition: all .1s;
+}
+input[type="file"]::file-selector-button:hover {
+  background: var(--gold-l);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--dark);
+}
+input[type="file"] {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: var(--dark);
+}
+
 .submit-btn{width:100%;padding:12px;border:3px solid var(--dark);background:var(--gold);font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);cursor:pointer;transition:all .1s;box-shadow:4px 4px 0 var(--dark);margin-top:4px}
 .submit-btn:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
 .submit-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--dark)}
@@ -168,7 +191,7 @@ body{
     <!-- Settings Panel -->
     <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;">
       <h2>SITE SETTINGS</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
         <div>
           <div class="field">
             <label>Profile Image</label>
@@ -190,6 +213,18 @@ body{
           </div>
         </div>
       </div>
+
+      <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">CATEGORIES (GAME, MOD, 3D)</h3>
+      <div id="catsList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:24px;">
+        <!-- Filled by JS -->
+      </div>
+
+      <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOCIAL LINKS</h3>
+      <div id="socialsList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
+        <!-- Filled by JS -->
+      </div>
+      <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
+
       <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
       <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
       <p class="form-msg" id="settingsMsg"></p>
@@ -230,19 +265,15 @@ body{
         <label>Main Category</label>
         <select id="wCat" onchange="onCatChange()">
           <option value="">— select —</option>
-          <option value="game">🎮 Game</option>
-          <option value="mod">⚙️ Minecraft Mod</option>
-          <option value="3d">🧊 3D Model</option>
+          <option value="game">Game</option>
+          <option value="mod">Minecraft Mod</option>
+          <option value="3d">3D Model</option>
         </select>
       </div>
       <div class="field subcat-wrap" id="subcatWrap">
-        <label>Sub-category (3D)</label>
+        <label>Sub-category</label>
         <select id="wSubcat">
           <option value="">— select type —</option>
-          <option value="character">Character</option>
-          <option value="building">Building</option>
-          <option value="object">Object</option>
-          <option value="creature">Creature</option>
         </select>
       </div>
       <div class="field">
@@ -417,6 +448,7 @@ async function loadSettings(){
   } catch(e){
     console.log('No settings.json found or error loading:', e);
   }
+  renderSettingsUI();
 }
 
 async function saveWorks(){
@@ -449,7 +481,23 @@ function onCatChange(){
   const cat=document.getElementById('wCat').value;
   const sw=document.getElementById('subcatWrap');
   const mw=document.getElementById('modelWrap');
-  cat==='3d'?sw.classList.add('visible'):sw.classList.remove('visible');
+  const subcat=document.getElementById('wSubcat');
+  
+  if (cat) {
+    sw.classList.add('visible');
+    subcat.innerHTML = '<option value="">— select type —</option>';
+    let options = [];
+    if (cat === 'game') options = ['RPG', 'Action', 'Puzzle', 'Visual Novel', 'Platformer', 'Other'];
+    if (cat === 'mod') options = ['Client-side', 'Server-side', 'Content', 'Utility', 'Other'];
+    if (cat === '3d') options = ['Character', 'Building', 'Object', 'Creature', 'Other'];
+    
+    options.forEach(opt => {
+      subcat.innerHTML += `<option value="${opt.toLowerCase()}">${opt}</option>`;
+    });
+  } else {
+    sw.classList.remove('visible');
+  }
+  
   mw.style.display=cat==='3d'?'block':'none';
 }
 
@@ -468,6 +516,84 @@ function onModelSelect(input){
 // ── Settings ──
 let profileBase64=null, profileExt='png';
 let bgBase64=null, bgExt='png';
+let pendingCatIcons = {}; // catId -> {base64, ext}
+let pendingSocialIcons = {}; // idx -> {base64, ext}
+
+function renderSettingsUI() {
+  const catsBox = document.getElementById('catsList');
+  catsBox.innerHTML = '';
+  ['game','mod','3d'].forEach(id => {
+    if(!settings.categories) settings.categories = {};
+    if(!settings.categories[id]) settings.categories[id] = {name: id.toUpperCase(), icon: ''};
+    const c = settings.categories[id];
+    const previewSrc = pendingCatIcons[id] ? `data:image/${pendingCatIcons[id].ext};base64,${pendingCatIcons[id].base64}` : c.icon;
+    const defaultName = id==='game'?'Game':id==='mod'?'Minecraft Mod':'3D Model';
+    catsBox.innerHTML += `
+      <div style="border:3px solid var(--dark);padding:12px;background:var(--sky4);">
+        <div style="font-weight:bold;margin-bottom:8px;text-transform:uppercase;color:var(--dark);font-family:'Press Start 2P',cursive;font-size:12px;">${id}</div>
+        <div class="field" style="margin-bottom:8px;">
+          <input type="text" id="catName_${id}" value="${c.name==id.toUpperCase() ? defaultName : c.name}" onchange="settings.categories['${id}'].name=this.value" placeholder="Display Name">
+        </div>
+        <input type="file" accept="image/*" onchange="previewCatIcon('${id}', this)">
+        ${previewSrc ? `<img src="${previewSrc}" style="width:32px;height:32px;object-fit:cover;margin-top:8px;image-rendering:pixelated;border:3px solid var(--dark);">` : ''}
+      </div>
+    `;
+  });
+
+  const socBox = document.getElementById('socialsList');
+  socBox.innerHTML = '';
+  if(!settings.socials) settings.socials = [];
+  settings.socials.forEach((s, idx) => {
+    const previewSrc = pendingSocialIcons[idx] ? `data:image/${pendingSocialIcons[idx].ext};base64,${pendingSocialIcons[idx].base64}` : s.icon;
+    socBox.innerHTML += `
+      <div style="border:3px solid var(--dark);padding:12px;background:var(--sky4);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <input type="text" value="${s.name}" onchange="settings.socials[${idx}].name=this.value" placeholder="Name (e.g. itch.io)" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);margin-bottom:8px;">
+          <input type="url" value="${s.url}" onchange="settings.socials[${idx}].url=this.value" placeholder="https://..." style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+        </div>
+        <div style="width:200px;">
+          <input type="file" accept="image/*" onchange="previewSocialIcon(${idx}, this)" style="font-size:12px;width:100%;">
+          ${previewSrc ? `<img src="${previewSrc}" style="width:40px;height:40px;object-fit:cover;margin-top:8px;image-rendering:pixelated;border:3px solid var(--dark);">` : ''}
+        </div>
+        <button class="anav-btn danger" onclick="removeSocialLink(${idx})" style="padding:8px 12px;align-self:flex-start;">X</button>
+      </div>
+    `;
+  });
+}
+
+function previewCatIcon(id, input) {
+  const file=input.files[0]; if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase()||'png';
+  const reader=new FileReader();
+  reader.onload=e=>{ pendingCatIcons[id] = {base64: e.target.result.split(',')[1], ext}; renderSettingsUI(); };
+  reader.readAsDataURL(file);
+}
+
+function previewSocialIcon(idx, input) {
+  const file=input.files[0]; if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase()||'png';
+  const reader=new FileReader();
+  reader.onload=e=>{ pendingSocialIcons[idx] = {base64: e.target.result.split(',')[1], ext}; renderSettingsUI(); };
+  reader.readAsDataURL(file);
+}
+
+function addSocialLink() {
+  if(!settings.socials) settings.socials = [];
+  settings.socials.push({name:'', url:'', icon:''});
+  renderSettingsUI();
+}
+
+function removeSocialLink(idx) {
+  settings.socials.splice(idx, 1);
+  delete pendingSocialIcons[idx];
+  const newPending = {};
+  for(let i in pendingSocialIcons) {
+    if(i > idx) newPending[i-1] = pendingSocialIcons[i];
+    else if(i < idx) newPending[i] = pendingSocialIcons[i];
+  }
+  pendingSocialIcons = newPending;
+  renderSettingsUI();
+}
 
 function previewProfile(input){
   const file=input.files[0];
@@ -521,8 +647,24 @@ async function saveSettings(){
       const fname=`works/bg_${Date.now()}.${bgExt}`;
       await ghPutBinary(fname, bgBase64, 'Update background image');
       settings.backgroundImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
-      fill.style.width='70%';
+      fill.style.width='50%';
     }
+
+    msg.textContent='Uploading category icons...';
+    for(let id in pendingCatIcons) {
+      const fname=`works/cat_${id}_${Date.now()}.${pendingCatIcons[id].ext}`;
+      await ghPutBinary(fname, pendingCatIcons[id].base64, `Update ${id} category icon`);
+      settings.categories[id].icon=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+    }
+    fill.style.width='65%';
+
+    msg.textContent='Uploading social icons...';
+    for(let idx in pendingSocialIcons) {
+      const fname=`works/soc_${idx}_${Date.now()}.${pendingSocialIcons[idx].ext}`;
+      await ghPutBinary(fname, pendingSocialIcons[idx].base64, `Update social icon`);
+      settings.socials[idx].icon=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+    }
+    fill.style.width='80%';
 
     msg.textContent='Updating settings.json...';
     const json=JSON.stringify(settings,null,2);
@@ -533,9 +675,10 @@ async function saveSettings(){
     msg.textContent='Settings saved successfully!';
     setTimeout(()=>{bar.style.display='none';msg.textContent='';},3000);
 
-    profileBase64=null; bgBase64=null;
+    pendingCatIcons = {}; pendingSocialIcons = {};
     document.getElementById('profileFileInput').value='';
     document.getElementById('bgFileInput').value='';
+    renderSettingsUI();
   }catch(e){
     msg.className='form-msg err';
     msg.textContent='Error saving settings: '+e.message;
@@ -555,7 +698,7 @@ async function addWork(){
 
   if(!name){showMsg('Please enter a work name.','err');return}
   if(!cat){showMsg('Please select a category.','err');return}
-  if(cat==='3d'&&!subcat){showMsg('Please select a 3D sub-category.','err');return}
+  if(!subcat){showMsg('Please select a sub-category.','err');return}
 
   const btn=document.getElementById('submitBtn');
   const bar=document.getElementById('progressBar');
