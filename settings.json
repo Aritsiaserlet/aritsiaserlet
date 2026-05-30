@@ -1,0 +1,43 @@
+{
+  "categories": {
+    "game": {
+      "name": "GAME",
+      "icon": ""
+    },
+    "mod": {
+      "name": "MOD",
+      "icon": ""
+    },
+    "3d": {
+      "name": "3D",
+      "icon": ""
+    }
+  },
+  "socials": [
+    {
+      "name": "Itch.io",
+      "url": "https://aritsiaserlet.itch.io/",
+      "icon": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/soc_0_1780136209347.png"
+    },
+    {
+      "name": "Modrinth",
+      "url": "https://modrinth.com/user/Aritsiaserlet",
+      "icon": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/soc_1_1780136211530.png"
+    },
+    {
+      "name": "Curseforge",
+      "url": "https://www.curseforge.com/members/aritsiaserlet/projects",
+      "icon": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/soc_2_1780136212677.png"
+    },
+    {
+      "name": "Github",
+      "url": "https://github.com/Aritsiaserlet",
+      "icon": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/soc_3_1780136213841.png"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discord.com/users/970873503677046825",
+      "icon": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/soc_4_1780136216229.png"
+    }
+  ]
+}
