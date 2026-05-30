@@ -402,7 +402,12 @@ function applySettings() {
   socBox.innerHTML = '';
   if(settings.socials && settings.socials.length > 0) {
     settings.socials.forEach(s => {
-      const iconHtml = s.icon ? `<img src="${s.icon}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">` : '';
+      let url = '';
+      if(s.iconId && settings.icons) {
+        const ic = settings.icons.find(x => x.id === s.iconId);
+        if(ic) url = ic.url;
+      } else if(s.icon) url = s.icon;
+      const iconHtml = url ? `<img src="${url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">` : '';
       socBox.innerHTML += `<a href="${s.url}" class="social-btn" target="_blank" rel="noopener">${iconHtml} ${s.name}</a>`;
     });
   }
@@ -413,7 +418,12 @@ function applySettings() {
   ['game','mod','3d'].forEach(id => {
     const c = settings.categories && settings.categories[id] ? settings.categories[id] : {};
     const name = c.name || (id==='game'?'Game':id==='mod'?'Minecraft Mod':'3D Model');
-    const iconHtml = c.icon ? `<img src="${c.icon}" style="width:16px;height:16px;vertical-align:middle;image-rendering:pixelated;display:inline-block;margin-right:4px;">` : '';
+    let url = '';
+    if(c.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === c.iconId);
+      if(ic) url = ic.url;
+    } else if(c.icon) url = c.icon;
+    const iconHtml = url ? `<img src="${url}" style="width:16px;height:16px;vertical-align:middle;image-rendering:pixelated;display:inline-block;margin-right:4px;">` : '';
     mainTabs.innerHTML += `<button class="tab" data-cat="${id}" onclick="setMainCat('${id}',this)">${iconHtml}${name}</button>`;
   });
 }
@@ -441,7 +451,14 @@ function renderGallery() {
       card.onclick = () => openModal(w);
       const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
       const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
-      const catIcon = catSetting.icon ? `<img src="${catSetting.icon}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
+      
+      let catIconUrl = '';
+      if(catSetting.iconId && settings.icons) {
+        const ic = settings.icons.find(x => x.id === catSetting.iconId);
+        if(ic) catIconUrl = ic.url;
+      } else if(catSetting.icon) catIconUrl = catSetting.icon;
+      
+      const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
       const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
       const focalY = (w.imageFocal !== undefined && w.imageFocal !== null) ? w.imageFocal : 50;
       
@@ -506,7 +523,14 @@ loadData();
 function openModal(w) {
   const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
   const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
-  const catIcon = catSetting.icon ? `<img src="${catSetting.icon}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
+  
+  let catIconUrl = '';
+  if(catSetting.iconId && settings.icons) {
+    const ic = settings.icons.find(x => x.id === catSetting.iconId);
+    if(ic) catIconUrl = ic.url;
+  } else if(catSetting.icon) catIconUrl = catSetting.icon;
+  
+  const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:cover;vertical-align:middle;display:inline-block;image-rendering:pixelated;margin-right:4px;">` : '';
   const subLabel = w.subcat ? w.subcat.charAt(0).toUpperCase() + w.subcat.slice(1) : '';
 
   // Media area
