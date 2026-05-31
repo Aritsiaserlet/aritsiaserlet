@@ -119,5 +119,32 @@
       "icon_1780139603464"
     ],
     "date": "2026-05-31T05:36:26.706Z"
+  },
+  {
+    "id": 1780205853538,
+    "name": "Pack-a-Punch",
+    "cat": "mod",
+    "subcat": "content",
+    "desc": "Universal upgrade machine. Upgrade almost any weapon or damage-dealing item, including TaCZ guns, for late-game survival and zombie apocalypse modpacks.",
+    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780205850958.png",
+    "model": null,
+    "links": [
+      {
+        "url": "https://www.curseforge.com/minecraft/mc-mods/pack-a-punch-machine",
+        "iconId": "icon_1780139603464",
+        "label": "Curseforge"
+      },
+      {
+        "url": "https://modrinth.com/mod/pack-a-punch-machine",
+        "iconId": "icon_1780139595048",
+        "label": "Modrinth"
+      }
+    ],
+    "imageFocal": 49,
+    "tools": [
+      "icon_1780139595048",
+      "icon_1780139603464"
+    ],
+    "date": "2026-05-31T05:37:33.538Z"
   }
 ]
