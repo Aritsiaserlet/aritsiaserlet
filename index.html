@@ -157,6 +157,15 @@ body{
   font-size:38px;overflow:hidden;position:relative;
 }
 .card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;image-rendering:pixelated}
+.like-btn{
+  position:absolute; top:8px; right:8px; z-index:5;
+  background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark);
+  display:flex; align-items:center; gap:6px; padding:2px 6px;
+  cursor:pointer; transition:transform 0.1s;
+}
+.like-btn:hover{ transform:translate(-1px,-1px); }
+.like-btn:active{ transform:translate(1px,1px); box-shadow:0 0 0 var(--dark); }
+.like-btn svg{ width:20px; height:20px; }
 .card-info{padding:12px 14px}
 .card-name{font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:10px;line-height:1.4}
 .card-cats{display:flex;gap:6px;flex-wrap:wrap}
@@ -273,13 +282,143 @@ body{
 }
 .set-select:focus {background:var(--gold-l);}
 .set-range {cursor:pointer;}
+
+/* ── Top Nav (Auth & Leaderboard) ── */
+.top-nav {
+  position:absolute; top:20px; right:20px; z-index:10;
+  display:flex; gap:12px; align-items:center;
+}
+.nav-btn {
+  font-family:'VT323',monospace; font-size:18px;
+  background:var(--white); color:var(--dark);
+  border:3px solid var(--dark); padding:6px 12px;
+  box-shadow:3px 3px 0 var(--dark); cursor:pointer;
+  transition:all 0.1s; display:inline-flex; align-items:center; gap:6px;
+}
+.nav-btn:hover { background:var(--gold-l); transform:translate(2px,2px); box-shadow:1px 1px 0 var(--dark); }
+.user-profile {
+  display:none; align-items:center; gap:8px;
+  background:var(--glass2); border:3px solid var(--dark);
+  padding:4px 12px 4px 4px; box-shadow:3px 3px 0 var(--dark);
+}
+.user-avatar { width:32px; height:32px; border:2px solid var(--dark); object-fit:cover; image-rendering:pixelated; }
+.user-name { font-family:'Press Start 2P',cursive; font-size:10px; color:var(--dark); }
+
+/* ── Leaderboard Modal ── */
+.leaderboard-modal {
+  position:fixed;inset:0;z-index:150;
+  background:rgba(20,40,65,0.8);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.leaderboard-modal.open {opacity:1;pointer-events:all;}
+.leaderboard-box {
+  background:var(--white); border:4px solid var(--dark);
+  width:calc(100vw - 40px); max-width:600px;
+  box-shadow:8px 8px 0 rgba(0,0,0,0.5); padding:24px;
+  max-height:80vh; overflow-y:auto;
+}
+.leaderboard-title {
+  font-family:'Press Start 2P',cursive; font-size:18px; color:var(--dark);
+  margin-bottom:20px; text-align:center; border-bottom:3px solid var(--dark); padding-bottom:12px;
+}
+.leaderboard-list { display:flex; flex-direction:column; gap:8px; }
+.leaderboard-item {
+  display:flex; align-items:center; gap:12px;
+  padding:8px 12px; border:3px solid var(--dark); background:var(--sky4);
+}
+.leaderboard-item.top3 { background:var(--gold-l); }
+.lb-rank { font-family:'Press Start 2P',cursive; font-size:14px; width:30px; text-align:center; }
+.lb-avatar { width:36px; height:36px; border:2px solid var(--dark); object-fit:cover; image-rendering:pixelated; }
+.lb-name { flex:1; font-family:'VT323',monospace; font-size:24px; }
+.lb-score { font-family:'VT323',monospace; font-size:24px; color:var(--danger); }
 </style>
 <script type="module">
   import { initSettings, getSettings, updateSettings } from './settingsManager.js';
+  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from './authManager.js';
+  
   window.portfolioSettingsManager = { getSettings, updateSettings };
+  window.portfolioAuthManager = { 
+    login: loginWithGoogle, 
+    logout: logout, 
+    toggleLike: toggleLike 
+  };
+
+  // Setup Auth UI binding
+  window.addEventListener('DOMContentLoaded', async () => {
+    const loginBtn = document.getElementById('loginBtn');
+    const userProfile = document.getElementById('userProfile');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+
+    // Fetch global likes once
+    window.globalLikes = await fetchLikeCounts();
+    if (window.renderGallery) window.renderGallery();
+
+    onUserChange(async user => {
+      window.currentUser = user;
+      if (user) {
+        loginBtn.style.display = 'none';
+        userProfile.style.display = 'flex';
+        userName.textContent = user.displayName || 'Player';
+        userAvatar.src = user.photoURL || '';
+        // Fetch user's likes
+        window.userLikes = await fetchUserLikes(user.uid);
+      } else {
+        loginBtn.style.display = 'inline-flex';
+        userProfile.style.display = 'none';
+        window.userLikes = {};
+      }
+      if (window.renderGallery) window.renderGallery();
+    });
+  });
+
+  window.handleLikeClick = async (e, workId) => {
+    e.stopPropagation();
+    if (!window.currentUser) {
+      alert("Please login to like this work!");
+      return;
+    }
+    const isLiking = !window.userLikes[workId];
+    const btn = e.currentTarget;
+    const span = btn.querySelector('span');
+    
+    // Optimistic UI Update
+    if (isLiking) {
+      window.userLikes[workId] = true;
+      window.globalLikes[workId] = (window.globalLikes[workId] || 0) + 1;
+      btn.style.color = 'var(--danger)';
+      btn.querySelector('svg').style.fill = 'currentColor';
+    } else {
+      delete window.userLikes[workId];
+      window.globalLikes[workId] = Math.max(0, (window.globalLikes[workId] || 0) - 1);
+      btn.style.color = 'var(--dark)';
+      btn.querySelector('svg').style.fill = 'none';
+    }
+    span.textContent = window.globalLikes[workId];
+    
+    const success = await window.portfolioAuthManager.toggleLike(workId, isLiking);
+    if (!success) {
+      // Revert if failed
+      if (isLiking) { delete window.userLikes[workId]; window.globalLikes[workId]--; }
+      else { window.userLikes[workId] = true; window.globalLikes[workId]++; }
+      if (window.renderGallery) window.renderGallery();
+    }
+  };
 </script>
 </head>
 <body>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+  <button class="nav-btn" onclick="openLeaderboard()">🏆 LEADERBOARD</button>
+  <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()">LOGIN</button>
+  <div class="user-profile" id="userProfile">
+    <img src="" class="user-avatar" id="userAvatar" alt="Avatar">
+    <span class="user-name" id="userName">Player</span>
+    <button class="nav-btn" onclick="window.portfolioAuthManager.logout()" style="padding:4px 8px;font-size:14px;box-shadow:none;border-width:2px;margin-left:8px;">LOGOUT</button>
+  </div>
+</div>
 
 <!-- Custom background -->
 <div class="custom-bg" id="customBg"></div>
@@ -334,6 +473,7 @@ body{
           <span class="filter-label">Sort:</span>
           <select id="sortSelect" onchange="handleSortChange()" style="font-family:'VT323',monospace;font-size:20px;border:3px solid var(--dark);background:var(--white);padding:4px 8px;color:var(--dark);outline:none;box-shadow:2px 2px 0 var(--dark);">
             <option value="featured">Featured</option>
+            <option value="most_liked">Most Liked</option>
             <option value="random">Random</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -541,6 +681,18 @@ function renderGallery() {
       return Math.random() - 0.5;
     }
     
+    if (currentSort === 'most_liked') {
+      const likesA = (window.globalLikes && window.globalLikes[a.id]) ? window.globalLikes[a.id] : 0;
+      const likesB = (window.globalLikes && window.globalLikes[b.id]) ? window.globalLikes[b.id] : 0;
+      if (likesA !== likesB) return likesB - likesA;
+      // Fallback if likes are equal
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
+      const dA = new Date(a.date || 0).getTime();
+      const dB = new Date(b.date || 0).getTime();
+      if (dA !== dB) return dB - dA;
+      return (a.name || '').localeCompare(b.name || '');
+    }
+    
     if (currentSort === 'newest') {
       return new Date(b.date || 0) - new Date(a.date || 0);
     }
@@ -594,9 +746,18 @@ function renderGallery() {
         });
       }
 
+      const likesCount = (window.globalLikes && window.globalLikes[w.id]) ? window.globalLikes[w.id] : 0;
+      const isLiked = (window.userLikes && window.userLikes[w.id]) ? true : false;
+      const heartFill = isLiked ? 'currentColor' : 'none';
+      const heartColor = isLiked ? 'var(--danger)' : 'var(--dark)';
+
       card.innerHTML = `
         <div class="card-thumb">
           ${w.image ? `<img src="${w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
+          <div class="like-btn" onclick="window.handleLikeClick(event, '${w.id}')" style="color:${heartColor};">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
+          </div>
         </div>
         <div class="card-info">
           <p class="card-name">${w.name}</p>
@@ -959,7 +1120,59 @@ function saveSettingsUI() {
   };
   window.portfolioSettingsManager.updateSettings(newSet);
 }
+
+// ── Leaderboard Logic ──
+window.openLeaderboard = async () => {
+  const modal = document.getElementById('leaderboardModal');
+  const listEl = document.getElementById('leaderboardList');
+  modal.classList.add('open');
+  listEl.innerHTML = '<div style="text-align:center;font-size:24px;">Loading top players...</div>';
+  
+  try {
+    const { collection, query, orderBy, limit, getDocs } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    const { db } = await import('./authManager.js');
+    const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
+    const snap = await getDocs(q);
+    
+    listEl.innerHTML = '';
+    if (snap.empty) {
+      listEl.innerHTML = '<div style="text-align:center;font-size:24px;">No scores yet!</div>';
+      return;
+    }
+    
+    let rank = 1;
+    snap.forEach(doc => {
+      const data = doc.data();
+      const item = document.createElement('div');
+      item.className = `leaderboard-item ${rank <= 3 ? 'top3' : ''}`;
+      item.innerHTML = `
+        <div class="lb-rank">#${rank}</div>
+        <img class="lb-avatar" src="${data.photoURL || ''}">
+        <div class="lb-name">${data.displayName || 'Anonymous'}</div>
+        <div class="lb-score">${data.highScore || 0} PTS</div>
+      `;
+      listEl.appendChild(item);
+      rank++;
+    });
+  } catch (error) {
+    listEl.innerHTML = '<div style="text-align:center;font-size:24px;color:var(--danger)">Failed to load leaderboard.</div>';
+    console.error(error);
+  }
+};
+
+window.closeLeaderboard = () => {
+  document.getElementById('leaderboardModal').classList.remove('open');
+};
 </script>
+
+<!-- Leaderboard Modal -->
+<div class="leaderboard-modal" id="leaderboardModal">
+  <div class="leaderboard-box">
+    <div class="modal-close" onclick="window.closeLeaderboard()" style="top:12px;right:12px;">×</div>
+    <h2 class="leaderboard-title">🏆 TOP 10 PLAYERS</h2>
+    <div class="leaderboard-list" id="leaderboardList"></div>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">

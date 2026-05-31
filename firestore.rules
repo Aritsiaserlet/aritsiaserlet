@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read all profiles (for leaderboard), but only write their own
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      
+      // Users can only read/write their own likes subcollection
+      match /likes/{workId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    // Anyone can read works (for like counts). Only admin/cloud functions should write theoretically,
+    // but for client-side likes, we allow incrementing the likes field.
+    match /works/{workId} {
+      allow read: if true;
+      // Allow update only if modifying the 'likes' field
+      allow update: if request.auth != null 
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']);
+    }
+  }
+}

@@ -881,11 +881,13 @@ function loop() {
   ctx.restore();
 }
 
-// ── Game Over (UNCHANGED)
+// ── Game Over
 function gameOver() {
   isPlaying = false; animId = null;
   const finEl = document.getElementById('finalScore');
   const goEl  = document.getElementById('gameOverScreen');
   if (finEl) finEl.textContent = score;
   if (goEl)  goEl.style.display = 'flex';
+  
+  if (window.saveScore) window.saveScore(score);
 }

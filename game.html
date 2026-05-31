@@ -270,6 +270,36 @@
   });
 </script>
 
+<script type="module">
+  import { db, getCurrentUser, onUserChange } from './authManager.js';
+  import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+  
+  let currentUser = null;
+  onUserChange(user => { currentUser = user; });
+
+  window.saveScore = async (newScore) => {
+    if (!currentUser || newScore <= 0) return;
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        const updates = {
+          totalScore: increment(newScore),
+          gamesPlayed: increment(1),
+          lastPlayed: serverTimestamp()
+        };
+        if (newScore > (data.highScore || 0)) {
+          updates.highScore = newScore;
+        }
+        await updateDoc(userRef, updates);
+      }
+    } catch (e) {
+      console.error("Failed to save score:", e);
+    }
+  };
+</script>
+
 <script src="game.js"></script>
 
 </body>
