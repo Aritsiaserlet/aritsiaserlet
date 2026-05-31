@@ -572,9 +572,26 @@ function openModal(w) {
   if (subLabel) badges.innerHTML += `<span class="cat-badge sub">${subLabel}</span>`;
   if (toolsHtml) badges.innerHTML += `<div style="display:flex;gap:6px;align-items:center;margin-left:8px;padding-left:8px;border-left:3px solid var(--dark);">${toolsHtml}</div>`;
 
-  const link = document.getElementById('modalLink');
-  if (w.link) { link.href = w.link; link.style.display = 'inline-flex'; }
-  else link.style.display = 'none';
+  const linksContainer = document.getElementById('modalLinksContainer');
+  linksContainer.innerHTML = '';
+  // Support both legacy .link and new .links array
+  let wLinks = w.links ? w.links : (w.link ? [{url: w.link, label: 'VIEW PROJECT'}] : []);
+  if(wLinks.length > 0) {
+    wLinks.forEach(l => {
+      if(!l.url) return;
+      let iconHtml = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3h7v7l-2-2-7 7-3-3 7-7-2-2zm-3 3H4v14h14v-7l2-2v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h10l-2 2z"/></svg>`;
+      if(l.iconId && settings.icons) {
+        const ic = settings.icons.find(x => x.id === l.iconId);
+        if(ic) iconHtml = `<img src="${ic.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
+      }
+      linksContainer.innerHTML += `
+        <a href="${l.url}" class="modal-link" target="_blank" rel="noopener" style="display:inline-flex;gap:8px;align-items:center;">
+          ${iconHtml}
+          ${l.label || 'Visit Link'}
+        </a>
+      `;
+    });
+  }
 
   // Center modal
   const box = document.getElementById('modalBox');
@@ -816,10 +833,7 @@ function exitGame() {
       <h2 class="modal-title" id="modalTitle"></h2>
       <div class="modal-badges" id="modalBadges"></div>
       <p class="modal-desc" id="modalDesc"></p>
-      <a href="#" class="modal-link" id="modalLink" target="_blank" rel="noopener" style="display:none">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3h7v7l-2-2-7 7-3-3 7-7-2-2zm-3 3H4v14h14v-7l2-2v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h10l-2 2z"/></svg>
-        VIEW PROJECT
-      </a>
+      <div id="modalLinksContainer" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;"></div>
     </div>
   </div>
 </div>

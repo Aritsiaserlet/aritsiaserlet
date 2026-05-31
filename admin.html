@@ -312,8 +312,9 @@ input[type="file"] {
         <textarea id="wDesc" placeholder="Short description..."></textarea>
       </div>
       <div class="field">
-        <label>Link (optional)</label>
-        <input type="url" id="wLink" placeholder="https://...">
+        <label>Links (Optional)</label>
+        <div id="wLinksBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+        <button class="anav-btn" onclick="addWorkLink()">+ ADD LINK</button>
       </div>
 
       <div class="field">
@@ -833,7 +834,6 @@ async function addWork(){
   const cat=document.getElementById('wCat').value;
   const subcat=document.getElementById('wSubcat').value;
   const desc=document.getElementById('wDesc').value.trim();
-  const link=document.getElementById('wLink').value.trim();
   const selectedTools = Array.from(document.querySelectorAll('.tool-checkbox:checked')).map(cb => cb.value);
 
   if(!name){showMsg('Please enter a work name.','err');return}
@@ -880,7 +880,7 @@ async function addWork(){
       if (idx !== -1) {
         works[idx] = { ...works[idx], name, cat,
           subcat: (cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
-          desc, link: link||null,
+          desc, links: currentWorkLinks,
           imageFocal: currentImgFocal,
           image: imagePath,
           model: modelPath,
@@ -892,7 +892,7 @@ async function addWork(){
         id:Date.now(),name,cat,
         subcat:(cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
         desc,image:imagePath,model:modelPath,
-        link:link||null,
+        links:currentWorkLinks,
         imageFocal:currentImgFocal,
         tools:selectedTools,
         date:new Date().toISOString()
@@ -956,7 +956,7 @@ function renderAdminList(){
       const ic = settings.icons.find(x => x.id === catSetting.iconId);
       if(ic) iconUrl = ic.url;
     }
-    const catIcon = iconUrl ? `<img src="${iconUrl}" style="width:18px;height:18px;vertical-align:middle;object-fit:cover;image-rendering:pixelated;">` : '📁';
+    const catIcon = iconUrl ? `<img src="${iconUrl}" style="width:18px;height:18px;vertical-align:middle;object-fit:cover;image-rendering:pixelated;">` : '';
 
     const label={game:'Game',mod:'Minecraft Mod','3d':'3D Model'}[w.cat]||w.cat;
     const sub=w.subcat?' · '+w.subcat.charAt(0).toUpperCase()+w.subcat.slice(1):'';
@@ -973,12 +973,43 @@ function renderAdminList(){
   });
 }
 
+let currentWorkLinks = [];
+
+function renderWorkLinks() {
+  const box = document.getElementById('wLinksBox');
+  if(!box) return;
+  box.innerHTML = '';
+  currentWorkLinks.forEach((l, idx) => {
+    box.innerHTML += `
+      <div style="display:flex;gap:8px;background:var(--white);padding:8px;border:3px solid var(--dark);align-items:center;flex-wrap:wrap;">
+        <select onchange="currentWorkLinks[${idx}].iconId=this.value;" style="padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);width:150px;">
+          ${generateIconOptions(l.iconId)}
+        </select>
+        <input type="text" value="${l.label||''}" onchange="currentWorkLinks[${idx}].label=this.value;" placeholder="Label (e.g. Steam)" style="flex:1;min-width:100px;padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);">
+        <input type="url" value="${l.url||''}" onchange="currentWorkLinks[${idx}].url=this.value;" placeholder="https://..." style="flex:2;min-width:150px;padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);">
+        <button class="anav-btn danger" onclick="removeWorkLink(${idx})" style="padding:4px 8px;">X</button>
+      </div>
+    `;
+  });
+}
+
+function addWorkLink() {
+  currentWorkLinks.push({url:'', iconId:'', label:''});
+  renderWorkLinks();
+}
+
+function removeWorkLink(idx) {
+  currentWorkLinks.splice(idx, 1);
+  renderWorkLinks();
+}
+
 function resetForm(){
   document.getElementById('wName').value='';
   document.getElementById('wCat').value='';
   document.getElementById('wSubcat').value='';
   document.getElementById('wDesc').value='';
-  document.getElementById('wLink').value='';
+  currentWorkLinks = [];
+  renderWorkLinks();
   document.getElementById('subcatWrap').classList.remove('visible');
   document.getElementById('modelWrap').style.display='none';
   document.getElementById('imgPreview').innerHTML=`<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>`;
@@ -1017,7 +1048,16 @@ function editWork(id) {
   onCatChange();
   document.getElementById('wSubcat').value = w.subcat || '';
   document.getElementById('wDesc').value = w.desc || '';
-  document.getElementById('wLink').value = w.link || '';
+  
+  // Backward compatibility: Convert old single 'link' to 'links' array
+  if (w.links) {
+    currentWorkLinks = JSON.parse(JSON.stringify(w.links));
+  } else if (w.link) {
+    currentWorkLinks = [{ url: w.link, label: 'Visit', iconId: '' }];
+  } else {
+    currentWorkLinks = [];
+  }
+  renderWorkLinks();
   
   renderToolsCheckboxList();
 
@@ -1074,10 +1114,10 @@ function openPreview() {
   const cat = document.getElementById('wCat').value;
   const subcat = document.getElementById('wSubcat').value;
   const desc = document.getElementById('wDesc').value.trim();
-  const link = document.getElementById('wLink').value.trim();
 
   if (!name) { showMsg('Enter a work name first.', 'err'); return; }
 
+  const catEmoji = {game:'🎮', mod:'⚙️', '3d':'🧊'}[cat] || '';
   const catLabel = {game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[cat] || cat;
   const subLabel = subcat ? subcat.charAt(0).toUpperCase()+subcat.slice(1) : '';
 
