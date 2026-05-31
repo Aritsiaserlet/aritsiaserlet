@@ -133,12 +133,18 @@
         "url": "https://modrinth.com/mod/tacz-runtime-compat",
         "iconId": "icon_1780139595048",
         "label": "Modrinth"
+      },
+      {
+        "url": "https://github.com/Aritsiaserlet/TaCZCompat",
+        "iconId": "icon_1780139614213",
+        "label": "Github"
       }
     ],
     "imageFocal": 68,
     "tools": [
       "icon_1780139595048",
-      "icon_1780139603464"
+      "icon_1780139603464",
+      "icon_1780139614213"
     ],
     "date": "2026-05-31T05:36:26.706Z"
   },
