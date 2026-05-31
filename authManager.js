@@ -86,6 +86,7 @@ export async function loginWithGoogle() {
     await signInWithPopup(auth, provider);
   } catch (error) {
     console.error("Login failed", error);
+    alert("Login Error: " + error.message + "\n\n(Please check Firebase Auth settings or Authorized Domains)");
   }
 }
 

@@ -374,9 +374,9 @@ body{
   });
 
   window.handleLikeClick = async (e, workId) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (!window.currentUser) {
-      alert("Please login to like this work!");
+      document.getElementById('loginPromptModal').style.display = 'flex';
       return;
     }
     const isLiking = !window.userLikes[workId];
@@ -403,6 +403,24 @@ body{
       if (isLiking) { delete window.userLikes[workId]; window.globalLikes[workId]--; }
       else { window.userLikes[workId] = true; window.globalLikes[workId]++; }
       if (window.renderGallery) window.renderGallery();
+      if (window.currentModalWorkId === workId && window.updateModalLikeBtn) window.updateModalLikeBtn();
+    }
+  };
+
+  window.updateModalLikeBtn = () => {
+    const wId = window.currentModalWorkId;
+    if (!wId) return;
+    const likesCount = (window.globalLikes && window.globalLikes[wId]) ? window.globalLikes[wId] : 0;
+    const isLiked = (window.userLikes && window.userLikes[wId]) ? true : false;
+    const heartFill = isLiked ? 'currentColor' : 'none';
+    const heartColor = isLiked ? 'var(--danger)' : 'var(--dark)';
+    const btn = document.getElementById('modalLikeBtn');
+    if (btn) {
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <span style="font-family:'VT323',monospace;font-size:24px;margin-top:2px;">${likesCount}</span>
+      `;
+      btn.style.color = heartColor;
     }
   };
 </script>
@@ -836,6 +854,9 @@ function openModal(w) {
 
   document.getElementById('modalTitle').textContent = w.name;
   document.getElementById('modalDesc').textContent = w.desc || '';
+  
+  window.currentModalWorkId = w.id;
+  window.updateModalLikeBtn();
 
   let toolsHtml = '';
   if(w.tools && w.tools.length > 0 && settings.icons) {
@@ -1181,7 +1202,10 @@ window.closeLeaderboard = () => {
     <button class="modal-close" onclick="closeModalDirect()">✕</button>
     <div id="modalMedia"></div>
     <div class="modal-body">
-      <h2 class="modal-title" id="modalTitle"></h2>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="like-btn" id="modalLikeBtn" onclick="window.handleLikeClick(event, window.currentModalWorkId); if(window.updateModalLikeBtn) window.updateModalLikeBtn();" style="position:relative;top:0;right:0;"></div>
+      </div>
       <div class="modal-badges" id="modalBadges"></div>
       <p class="modal-desc" id="modalDesc"></p>
       <div id="modalLinksContainer" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;"></div>
@@ -1189,6 +1213,17 @@ window.closeLeaderboard = () => {
   </div>
 </div>
 
+<!-- Login Prompt Modal -->
+<div class="login-prompt-modal" id="loginPromptModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(20,40,65,0.8);align-items:center;justify-content:center;">
+  <div class="settings-box" style="text-align:center;">
+    <h2 class="settings-title">LOGIN REQUIRED</h2>
+    <p style="font-family:'VT323',monospace;font-size:24px;color:var(--dark);margin-bottom:20px;">You must be logged in to like works!</p>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button class="nav-btn" onclick="document.getElementById('loginPromptModal').style.display='none';window.portfolioAuthManager.login();" style="font-size:22px;padding:8px 16px;background:var(--gold);">LOGIN</button>
+      <button class="nav-btn" onclick="document.getElementById('loginPromptModal').style.display='none';" style="font-size:22px;padding:8px 16px;">CANCEL</button>
+    </div>
+  </div>
+</div>
 <style>
   .page { transition: opacity 0.5s ease; }
   .fade-out { opacity: 0 !important; }
