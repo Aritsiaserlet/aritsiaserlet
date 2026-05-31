@@ -495,7 +495,7 @@ window.resetGame = function () {
 
   if (clouds.length === 0)       initClouds();
   if (windStreaks.length === 0)   initWind();
-  if (grassClumps.length === 0)  initGrass();
+  if (grassMid.length === 0)  initGrass();
 
   isPlaying = true;
   const goScreen = document.getElementById('gameOverScreen');
