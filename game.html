@@ -284,11 +284,14 @@
       const snap = await getDoc(userRef);
       if (snap.exists()) {
         const data = snap.data();
+        // SECURITY: Only update whitelisted fields.
+        // Firestore rules enforce that numeric stats can only increase.
         const updates = {
-          totalScore: increment(newScore),
-          gamesPlayed: increment(1),
+          totalScore: (data.totalScore || 0) + newScore,
+          gamesPlayed: (data.gamesPlayed || 0) + 1,
           lastPlayed: serverTimestamp()
         };
+        // Only update highScore if this game beat the previous record
         if (newScore > (data.highScore || 0)) {
           updates.highScore = newScore;
         }

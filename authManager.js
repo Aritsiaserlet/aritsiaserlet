@@ -18,7 +18,7 @@ import {
   updateDoc, 
   deleteDoc,
   collection,
-  increment, 
+  collectionGroup,
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -103,13 +103,19 @@ export function getCurrentUser() {
 }
 
 // ── Likes System ──
+// Source of truth: users/{uid}/likes/{workId}
+// works.likes is a derived field — only a Cloud Function should write it.
 
 export async function fetchLikeCounts() {
+  // Count likes per workId by querying the collectionGroup 'likes'.
+  // This avoids reading works.likes directly (which is a client-untrusted aggregation).
   try {
-    const worksSnap = await getDocs(collection(db, 'works'));
+    const snap = await getDocs(collectionGroup(db, 'likes'));
     const likeData = {};
-    worksSnap.forEach(docSnap => {
-      likeData[docSnap.id] = docSnap.data().likes || 0;
+    snap.forEach(docSnap => {
+      // Document ID is the workId
+      const workId = docSnap.id;
+      likeData[workId] = (likeData[workId] || 0) + 1;
     });
     return likeData;
   } catch (error) {
@@ -136,20 +142,15 @@ export async function toggleLike(workId, isLiking) {
   if (!currentUser) return false;
   
   const uid = currentUser.uid;
-  const workRef = doc(db, 'works', workId);
+  // SECURITY: Only write to users/{uid}/likes/{workId}.
+  // Never write to works/{workId}.likes — that's the Cloud Function's job.
   const userLikeRef = doc(db, `users/${uid}/likes`, workId);
 
   try {
     if (isLiking) {
-      // Create user like doc first
       await setDoc(userLikeRef, { createdAt: serverTimestamp() });
-      // Then increment global likes
-      await setDoc(workRef, { likes: increment(1) }, { merge: true });
     } else {
-      // Remove user like doc
       await deleteDoc(userLikeRef);
-      // Decrement global likes
-      await setDoc(workRef, { likes: increment(-1) }, { merge: true });
     }
     return true;
   } catch (error) {
