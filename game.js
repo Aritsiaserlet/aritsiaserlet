@@ -286,3 +286,5 @@ function gameOver() {
   document.getElementById('finalScore').innerText = score;
   document.getElementById('gameOverScreen').style.display = 'flex';
 }
+
+// EOF
