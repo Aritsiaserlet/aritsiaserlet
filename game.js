@@ -8,7 +8,7 @@ const MIN_ENEMY_GAP  = 380;   // px gap between enemies (Goal 2)
 
 const DIVE_SPEED     = 14;    // initial downward velocity px/frame
 const DIVE_DECEL     = 0.88;  // velocity multiplier per dive frame
-const VX_DIVE        = 10;    // [TUNED] forward lean px/frame (was 3, now 10 for visible forward travel)
+const VX_DIVE        = 3;     // forward lean px/frame (reduced for mostly vertical Elytra mace style)
 const STRIKE_FRAMES  = 5;     // frames held at impact
 const ASCENT_SPEED   = 9;     // initial upward velocity px/frame
 const ASCENT_DECEL   = 0.92;  // velocity multiplier per ascent frame
