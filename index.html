@@ -807,7 +807,8 @@ function disposeThreeViewer(){
 // ── Game Integration ──
 function startGame() {
   const overlay = document.getElementById('gameOverlay');
-  overlay.classList.add('visible');
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'all';
   document.querySelector('.page').style.opacity = '0';
   const adminBtn = document.querySelector('.admin-fixed');
   if(adminBtn) adminBtn.style.display = 'none';
@@ -817,7 +818,8 @@ function startGame() {
 }
 function exitGame() {
   const overlay = document.getElementById('gameOverlay');
-  overlay.classList.remove('visible');
+  overlay.style.opacity = '0';
+  overlay.style.pointerEvents = 'none';
   document.querySelector('.page').style.opacity = '1';
   const adminBtn = document.querySelector('.admin-fixed');
   if(adminBtn) adminBtn.style.display = 'block';
@@ -886,7 +888,6 @@ function exitGame() {
   </div>
 </div>
 <style>
-  #gameOverlay.visible { opacity: 1; pointer-events: all; }
   .page { transition: opacity 0.4s; }
 </style>
 
