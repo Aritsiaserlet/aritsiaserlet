@@ -809,7 +809,8 @@ function startGame() {
   const overlay = document.getElementById('gameOverlay');
   overlay.classList.add('visible');
   document.querySelector('.page').style.opacity = '0';
-  document.querySelector('.admin-fixed').style.display = 'none';
+  const adminBtn = document.querySelector('.admin-fixed');
+  if(adminBtn) adminBtn.style.display = 'none';
   if(window.initGame) {
     window.initGame(works, settings);
   }
@@ -818,7 +819,8 @@ function exitGame() {
   const overlay = document.getElementById('gameOverlay');
   overlay.classList.remove('visible');
   document.querySelector('.page').style.opacity = '1';
-  document.querySelector('.admin-fixed').style.display = 'block';
+  const adminBtn = document.querySelector('.admin-fixed');
+  if(adminBtn) adminBtn.style.display = 'block';
   if(window.stopGame) window.stopGame();
 }
 </script>
