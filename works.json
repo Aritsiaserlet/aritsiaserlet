@@ -166,12 +166,23 @@
         "url": "https://modrinth.com/mod/pack-a-punch-machine",
         "iconId": "icon_1780139595048",
         "label": "Modrinth"
+      },
+      {
+        "url": "https://github.com/Aritsiaserlet/Pack-A-Punch-NeoForge-1-21-1",
+        "iconId": "icon_1780139614213",
+        "label": "Github Neoforge"
+      },
+      {
+        "url": "https://github.com/Aritsiaserlet/Pack-A-Punch-Forge-1-20-1",
+        "iconId": "icon_1780139614213",
+        "label": "Github Forge"
       }
     ],
     "imageFocal": 49,
     "tools": [
       "icon_1780139595048",
-      "icon_1780139603464"
+      "icon_1780139603464",
+      "icon_1780139614213"
     ],
     "date": "2026-05-31T05:37:33.538Z"
   }
