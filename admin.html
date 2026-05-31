@@ -1139,8 +1139,26 @@ function openPreview() {
   if (subLabel) badges.innerHTML += `<span class="prev-badge sub">${subLabel}</span>`;
 
   const pl = document.getElementById('prevLink');
-  if (link) { pl.textContent = link; pl.href = link; pl.style.display = 'block'; }
-  else pl.style.display = 'none';
+  pl.innerHTML = '';
+  if (currentWorkLinks.length > 0) {
+    currentWorkLinks.forEach(l => {
+      if(!l.url) return;
+      let iconHtml = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3h7v7l-2-2-7 7-3-3 7-7-2-2zm-3 3H4v14h14v-7l2-2v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h10l-2 2z"/></svg>`;
+      if(l.iconId && settings.icons) {
+        const ic = settings.icons.find(x => x.id === l.iconId);
+        if(ic) iconHtml = `<img src="${ic.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
+      }
+      pl.innerHTML += `
+        <a href="${l.url}" target="_blank" rel="noopener" style="display:inline-flex;gap:8px;align-items:center;padding:10px 18px;border:3px solid var(--dark);background:var(--gold);font-family:'VT323',monospace;font-size:24px;color:var(--dark);text-decoration:none;box-shadow:4px 4px 0 var(--dark);margin-right:12px;margin-bottom:12px;">
+          ${iconHtml}
+          ${l.label || 'Visit Link'}
+        </a>
+      `;
+    });
+    pl.style.display = 'block';
+  } else {
+    pl.style.display = 'none';
+  }
 
   document.getElementById('prevOverlay').classList.add('open');
 }
