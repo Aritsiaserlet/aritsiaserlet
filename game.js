@@ -211,65 +211,122 @@ function initGrass() {
   grassBlades = [];
   dirtStones  = [];
 
-  const bladeStep = 6;
-  const count     = Math.ceil(W / bladeStep) + 2;
-  for (let i = 0; i < count; i++) {
+  // ── Tier 1: Tall dark background blades (every ~9px) — drawn first/behind
+  const t1Colors = ['#2a6028', '#356632', '#3d7038', '#2e6a2c'];
+  const t1Step   = 9;
+  for (let i = 0; i < Math.ceil(W / t1Step) + 2; i++) {
     grassBlades.push({
-      relX: i * bladeStep + Math.random() * 4,
-      h:    5 + Math.random() * 13,
-      w:    1 + (Math.random() < 0.38 ? 1 : 0),
-      dark: Math.random() < 0.40
+      relX:  i * t1Step + Math.random() * 7,
+      h:     12 + Math.random() * 14,   // 12–26px
+      w:     2 + (Math.random() < 0.35 ? 1 : 0),
+      color: t1Colors[Math.floor(Math.random() * t1Colors.length)],
+      tier:  1
     });
   }
 
-  const stoneCount = Math.floor(W / 28) + 4;
+  // ── Tier 2: Medium bright blades (every ~5px)
+  const t2Colors = ['#4a9b3a', '#5ab040', '#4d9932', '#52a838', '#58b03c'];
+  const t2Step   = 5;
+  for (let i = 0; i < Math.ceil(W / t2Step) + 2; i++) {
+    grassBlades.push({
+      relX:  i * t2Step + Math.random() * 4,
+      h:     6 + Math.random() * 10,    // 6–16px
+      w:     2,
+      color: t2Colors[Math.floor(Math.random() * t2Colors.length)],
+      tier:  2
+    });
+  }
+
+  // ── Tier 3: Short bright lime tips (every ~3px) — drawn last/on top
+  const t3Colors = ['#8fd940', '#a4e840', '#7cc330', '#b8f040', '#6abf48', '#9ce040'];
+  const t3Step   = 3;
+  for (let i = 0; i < Math.ceil(W / t3Step) + 2; i++) {
+    grassBlades.push({
+      relX:  i * t3Step + Math.random() * 2,
+      h:     2 + Math.random() * 8,     // 2–10px
+      w:     1 + (Math.random() < 0.28 ? 1 : 0),
+      color: t3Colors[Math.floor(Math.random() * t3Colors.length)],
+      tier:  3
+    });
+  }
+
+  // ── Dense dirt stones (many, varied sizes + 4 colors)
+  const stoneColors = [
+    '#4a2810', '#6a3c1a', '#8a5228',
+    '#7a4420', '#9e6535', '#5e3216', '#3c2008'
+  ];
+  const stoneCount = Math.floor(W / 11) + 6; // very dense
   for (let i = 0; i < stoneCount; i++) {
     dirtStones.push({
-      relX: Math.random() * W,
-      dy:   14 + Math.random() * 24,
-      size: 2 + Math.floor(Math.random() * 3),
-      dark: Math.random() < 0.5
+      relX:  Math.random() * W,
+      dy:    4 + Math.random() * 48,
+      w:     2 + Math.floor(Math.random() * 5),   // 2–6px
+      h:     2 + Math.floor(Math.random() * 4),   // 2–5px
+      color: stoneColors[Math.floor(Math.random() * stoneColors.length)]
     });
   }
 }
 
 function drawGround() {
-  const gy  = player.groundY + 42;
-  const off = groundOffset % W;
+  const gy     = player.groundY + 42;  // ground top Y
+  const off    = groundOffset % W;
+  const grassH = 38;                   // total solid grass fill depth
 
-  // ── Layer 4: Dirt
-  ctx.fillStyle = '#5c3a1e';
-  ctx.fillRect(0, gy + 14, W, H - gy - 14);
+  // ── Dirt base (warm brown)
+  ctx.fillStyle = '#8b5530';
+  ctx.fillRect(0, gy + grassH, W, H - gy - grassH);
 
-  // ── Dirt stones (scrolling, wrapped)
+  // ── Dense dirt stones (scrolling, wrapped)
   for (const s of dirtStones) {
     const sx = ((s.relX - off) % W + W) % W;
-    ctx.fillStyle = s.dark ? '#3e2810' : '#7a5535';
-    ctx.fillRect(Math.round(sx), gy + s.dy, s.size, Math.max(1, s.size - 1));
-    if (sx < 10) // wrap copy on right
-      ctx.fillRect(Math.round(sx + W), gy + s.dy, s.size, Math.max(1, s.size - 1));
+    ctx.fillStyle = s.color;
+    ctx.fillRect(Math.round(sx), gy + grassH + s.dy, s.w, s.h);
+    if (sx < 8)
+      ctx.fillRect(Math.round(sx + W), gy + grassH + s.dy, s.w, s.h);
   }
 
-  // ── Layer 3: Dark transition strip
-  ctx.fillStyle = '#2c5e32';
-  ctx.fillRect(0, gy + 6, W, 10);
+  // ── Dark green transition (bottom of grass → top of dirt)
+  ctx.fillStyle = '#1e5022';
+  ctx.fillRect(0, gy + grassH - 8, W, 10);
 
-  // ── Layer 2: Grass blades (scrolling, dense)
+  // ── Mid solid green fill
+  ctx.fillStyle = '#4a9b3a';
+  ctx.fillRect(0, gy, W, grassH - 8);
+
+  // ── Bright top strip
+  ctx.fillStyle = '#68cc50';
+  ctx.fillRect(0, gy, W, 10);
+
+  // ── Tier 1 blades (tall dark — drawn first so brighter tiers appear on top)
   for (const b of grassBlades) {
+    if (b.tier !== 1) continue;
     const bx = ((b.relX - off) % W + W) % W;
-    ctx.fillStyle = b.dark ? '#35883c' : '#5cc964';
-    ctx.fillRect(Math.round(bx), gy - b.h + 5, b.w, b.h);
-    if (bx < 4)
-      ctx.fillRect(Math.round(bx + W), gy - b.h + 5, b.w, b.h);
+    ctx.fillStyle = b.color;
+    ctx.fillRect(Math.round(bx), gy - b.h, b.w, b.h);
+    if (bx < 4) ctx.fillRect(Math.round(bx + W), gy - b.h, b.w, b.h);
   }
 
-  // ── Layer 1: Bright grass top edge
-  ctx.fillStyle = '#72de7c';
-  ctx.fillRect(0, gy, W, 7);
+  // ── Tier 2 blades (medium bright)
+  for (const b of grassBlades) {
+    if (b.tier !== 2) continue;
+    const bx = ((b.relX - off) % W + W) % W;
+    ctx.fillStyle = b.color;
+    ctx.fillRect(Math.round(bx), gy - b.h, b.w, b.h);
+    if (bx < 4) ctx.fillRect(Math.round(bx + W), gy - b.h, b.w, b.h);
+  }
 
-  // ── Ground separator line
-  ctx.fillStyle = '#1a2a3a';
-  ctx.fillRect(0, gy - 1, W, 2);
+  // ── Tier 3 blades (short lime tips — on top)
+  for (const b of grassBlades) {
+    if (b.tier !== 3) continue;
+    const bx = ((b.relX - off) % W + W) % W;
+    ctx.fillStyle = b.color;
+    ctx.fillRect(Math.round(bx), gy - b.h, b.w, b.h);
+    if (bx < 4) ctx.fillRect(Math.round(bx + W), gy - b.h, b.w, b.h);
+  }
+
+  // ── Ground separator
+  ctx.fillStyle = '#111a10';
+  ctx.fillRect(0, gy - 1, W, 1);
 }
 
 // ─────────────────────────────────────────────
@@ -435,11 +492,11 @@ function handleTouch(e) {
   if (!isPlaying || e.touches.length === 0) return;
   const touchX = e.touches[0].clientX;
   if (touchX < W / 2) {
-    // Left half → dive
-    if (attack.canChain) triggerDive();
-  } else {
-    // Right half → boost
+    // Left half → Boost
     if (fireworks > 0) { fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD(); }
+  } else {
+    // Right half → Dive
+    if (attack.canChain) triggerDive();
   }
 }
 
