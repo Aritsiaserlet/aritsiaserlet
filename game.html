@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aritsia — Minigame</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sky1: #4a9fd4; --sky2: #7ec8e8; --sky3: #aaddee; --sky4: #cceeff;
+    --gold: #e8c87a; --gold-d: #c8a040; --gold-l: #f5e0a0;
+    --dark: #1a2a3a; --mid: #2c4a6a; --light: #e8f4fc;
+    --white: rgba(255,255,255,0.88);
+    --danger: #e74c3c;
+  }
+
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: var(--sky4);
+  }
+
+  body {
+    font-family: 'VT323', monospace;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.1s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ── Loading Screen ── */
+  #loadingScreen {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--sky4);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 24px;
+  }
+  #loadingScreen h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(16px, 3vw, 28px);
+    color: var(--dark);
+    text-shadow: 3px 3px 0 rgba(255,255,255,0.6);
+    text-align: center;
+  }
+  .loading-bar-wrap {
+    width: 300px; max-width: 80vw;
+    height: 20px;
+    border: 3px solid var(--dark);
+    background: var(--white);
+    box-shadow: 4px 4px 0 var(--dark);
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    transition: width 0.4s ease;
+    animation: loadPulse 1s ease infinite;
+  }
+  @keyframes loadPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  #loadingText {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--dark);
+  }
+
+  /* ── Game Container ── */
+  #gameContainer {
+    position: fixed; inset: 0;
+    display: none;
+  }
+
+  /* ── HUD ── */
+  #gameHUD {
+    position: absolute; top: 20px; left: 20px; right: 20px; z-index: 10;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    font-family: 'Press Start 2P', cursive;
+    color: var(--dark);
+    text-shadow: 2px 2px 0 #fff;
+  }
+  #hudLeft {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  #hudRight {
+    display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+  }
+  #scoreDisplay {
+    font-size: clamp(14px, 2.5vw, 24px);
+  }
+  #fireworkDisplay {
+    font-size: clamp(12px, 1.8vw, 16px); margin-top: 8px;
+  }
+  #gameMultiplier {
+    font-size: clamp(14px, 2vw, 20px);
+    color: var(--gold);
+    display: none;
+  }
+  #exitBtn {
+    font-family: 'VT323', monospace;
+    font-size: clamp(18px, 2.5vw, 24px);
+    padding: 4px 14px;
+    background: var(--danger);
+    color: #fff;
+    border: 3px solid var(--dark);
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--dark);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  #exitBtn:hover { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--dark); }
+  #exitBtn:active { transform: translate(3px,3px); box-shadow: 0 0 0 var(--dark); }
+
+  /* ── Canvas ── */
+  #gameCoreCanvas {
+    width: 100%; height: 100%;
+    display: block;
+  }
+
+  /* ── Game Over Screen ── */
+  #gameOverScreen {
+    position: absolute; inset: 0; z-index: 20;
+    background: rgba(20,40,65,0.85);
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+    padding: 20px;
+  }
+  #gameOverScreen h2 {
+    font-size: clamp(28px, 5vw, 48px);
+    color: var(--danger);
+    margin-bottom: 24px;
+    text-shadow: 4px 4px 0 var(--dark);
+  }
+  #gameOverScreen p {
+    font-size: clamp(14px, 2.5vw, 24px);
+    margin-bottom: 12px;
+  }
+  #finalScore { color: var(--gold); }
+  #gameOverBtns {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    justify-content: center; margin-top: 32px;
+  }
+  .game-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(11px, 1.5vw, 16px);
+    padding: 12px 20px;
+    border: 4px solid var(--dark);
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--dark);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .game-btn:hover { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--dark); }
+  .game-btn:active { transform: translate(4px,4px); box-shadow: 0 0 0 var(--dark); }
+  .btn-play { background: var(--gold); color: var(--dark); }
+  .btn-exit { background: var(--danger); color: #fff; }
+
+  /* ── Controls hint ── */
+  #controlsHint {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+    font-family: 'VT323', monospace; font-size: 20px;
+    color: var(--dark); opacity: 0.6;
+    text-align: center; pointer-events: none;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loadingScreen">
+  <h1>LOADING...</h1>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar-fill" id="loadingBar"></div>
+  </div>
+  <div id="loadingText">Fetching portfolio data...</div>
+</div>
+
+<!-- Game Container (hidden until ready) -->
+<div id="gameContainer">
+  <!-- HUD -->
+  <div id="gameHUD">
+    <div id="hudLeft">
+      <div id="scoreDisplay">SCORE: <span id="gameScore">0</span></div>
+    </div>
+    <div id="hudRight">
+      <button id="exitBtn" onclick="exitToPortfolio()">✕ EXIT</button>
+      <div id="fireworkDisplay">🎆 FIREWORKS: <span id="gameFireworks">0</span></div>
+      <div id="gameMultiplier">x2 BOOST!</div>
+    </div>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas id="gameCoreCanvas"></canvas>
+
+  <!-- Controls Hint -->
+  <div id="controlsHint">SPACE = Attack &nbsp;|&nbsp; SHIFT = Firework Boost</div>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen">
+    <h2>GAME OVER</h2>
+    <p>FINAL SCORE: <span id="finalScore">0</span></p>
+    <div id="gameOverBtns">
+      <button class="game-btn btn-play" onclick="window.resetGame()">▶ PLAY AGAIN</button>
+      <button class="game-btn btn-exit" onclick="exitToPortfolio()">⬅ PORTFOLIO</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function exitToPortfolio() {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.4s ease';
+    setTimeout(() => { window.location.href = 'index.html'; }, 400);
+  }
+
+  function setLoadingProgress(pct, text) {
+    document.getElementById('loadingBar').style.width = pct + '%';
+    if (text) document.getElementById('loadingText').textContent = text;
+  }
+
+  window.addEventListener('load', async () => {
+    setLoadingProgress(20, 'Connecting to GitHub...');
+
+    let worksData = [];
+    let settingsData = {};
+
+    const GH_USER = 'Aritsiaserlet';
+    const GH_REPO = 'aritsiaserlet';
+    const bust = '?t=' + Date.now();
+
+    try {
+      setLoadingProgress(40, 'Loading works data...');
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/works.json${bust}`);
+      if (r.ok) worksData = await r.json();
+    } catch(e) {
+      console.warn('Failed to load works:', e);
+    }
+
+    try {
+      setLoadingProgress(70, 'Loading settings...');
+      const sr = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json${bust}`);
+      if (sr.ok) settingsData = await sr.json();
+    } catch(e) {
+      console.warn('Failed to load settings:', e);
+    }
+
+    setLoadingProgress(100, 'Starting game...');
+
+    setTimeout(() => {
+      // Hide loading, show game
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('gameContainer').style.display = 'block';
+
+      // Initialize game
+      if (window.initGame) {
+        window.initGame(worksData, settingsData);
+      } else {
+        document.getElementById('loadingText').textContent = 'Error: game.js failed to load.';
+        document.getElementById('loadingScreen').style.display = 'flex';
+        document.getElementById('loadingBar').style.background = '#e74c3c';
+      }
+    }, 300);
+  });
+</script>
+
+<script src="game.js"></script>
+
+</body>
+</html>

@@ -804,26 +804,14 @@ function disposeThreeViewer(){
   if(threeRenderer){ threeRenderer.dispose(); threeRenderer=null; }
 }
 
-// ── Game Integration ──
+// ── Game Navigation ──
 function startGame() {
-  const overlay = document.getElementById('gameOverlay');
-  overlay.style.opacity = '1';
-  overlay.style.pointerEvents = 'all';
-  document.querySelector('.page').style.opacity = '0';
+  document.querySelector('.page').classList.add('fade-out');
   const adminBtn = document.querySelector('.admin-fixed');
-  if(adminBtn) adminBtn.style.display = 'none';
-  if(window.initGame) {
-    window.initGame(works, settings);
-  }
-}
-function exitGame() {
-  const overlay = document.getElementById('gameOverlay');
-  overlay.style.opacity = '0';
-  overlay.style.pointerEvents = 'none';
-  document.querySelector('.page').style.opacity = '1';
-  const adminBtn = document.querySelector('.admin-fixed');
-  if(adminBtn) adminBtn.style.display = 'block';
-  if(window.stopGame) window.stopGame();
+  if(adminBtn) adminBtn.style.opacity = '0';
+  setTimeout(() => {
+    window.location.href = 'game.html';
+  }, 500);
 }
 </script>
 
@@ -842,57 +830,12 @@ function exitGame() {
   </div>
 </div>
 
-<!-- Game Overlay -->
-<div id="gameOverlay" style="
-  position:fixed; inset:0; z-index:200;
-  background:var(--sky4); 
-  opacity:0; pointer-events:none; transition:opacity 0.4s;
-  display:flex; flex-direction:column;
-">
-  <!-- HUD -->
-  <div id="gameHUD" style="
-    position:absolute; top:20px; left:20px; right:20px; z-index:210;
-    display:flex; justify-content:space-between; align-items:flex-start;
-    font-family:'Press Start 2P',cursive; color:var(--dark); text-shadow:2px 2px 0 #fff;
-  ">
-    <div style="display:flex; flex-direction:column; gap:8px;">
-      <div style="font-size:24px;">SCORE: <span id="gameScore">0</span></div>
-    </div>
-    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-      <button onclick="exitGame()" style="
-        font-family:'VT323'; font-size:24px; padding:4px 12px; background:var(--danger,#e74c3c); 
-        color:#fff; border:3px solid var(--dark); cursor:pointer; text-shadow:none;
-      ">EXIT GAME</button>
-      <div style="font-size:16px; margin-top:8px;">FIREWORKS: <span id="gameFireworks">0</span></div>
-      <div id="gameMultiplier" style="font-size:20px; color:var(--gold); display:none;">x2 BOOST!</div>
-    </div>
-  </div>
-  
-  <canvas id="gameCoreCanvas" style="width:100%; height:100%; display:block;"></canvas>
-
-  <!-- Game Over Screen -->
-  <div id="gameOverScreen" style="
-    position:absolute; inset:0; z-index:220; background:rgba(20,40,65,0.8);
-    display:none; flex-direction:column; align-items:center; justify-content:center;
-    color:#fff; font-family:'Press Start 2P',cursive; text-align:center;
-  ">
-    <h2 style="font-size:48px; color:var(--danger,#e74c3c); margin-bottom:24px; text-shadow:4px 4px 0 var(--dark);">GAME OVER</h2>
-    <p style="font-size:24px; margin-bottom:12px;">FINAL SCORE: <span id="finalScore" style="color:var(--gold);">0</span></p>
-    <button onclick="window.resetGame()" style="
-      margin-top:32px; font-family:'Press Start 2P',cursive; font-size:16px; 
-      padding:16px 24px; background:var(--gold); color:var(--dark); border:4px solid var(--dark);
-      cursor:pointer; box-shadow:4px 4px 0 var(--dark); transition:transform 0.1s;
-    " onmousedown="this.style.transform='translate(4px,4px)'; this.style.boxShadow='0 0 0 var(--dark)';">
-      PLAY AGAIN
-    </button>
-  </div>
-</div>
 <style>
-  .page { transition: opacity 0.4s; }
+  .page { transition: opacity 0.5s ease; }
+  .fade-out { opacity: 0 !important; }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="game.js?v=2"></script>
 
 </body>
 </html>
