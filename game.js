@@ -53,11 +53,28 @@ let keys      = {};
 let clouds      = [];
 let windStreaks  = [];
 let speedLines  = [];
-let grassBlades = [];
+let grassBack   = [];
+let grassMid    = [];
+let grassFront  = [];
 let dirtStones  = [];
+let flowers     = [];
 let birds       = [];
 let nextBirdFrame = 0;
 let groundOffset  = 0;   // scrolls left each frame
+
+function getGraphicsScale() {
+  try {
+    const raw = localStorage.getItem('portfolioSettings');
+    if(raw) {
+      const set = JSON.parse(raw);
+      if(set.graphics === 'Low') return 0.4;
+      if(set.graphics === 'Medium') return 0.7;
+      if(set.graphics === 'High') return 1.0;
+      if(set.graphics === 'Ultra') return 1.5;
+    }
+  } catch(e) {}
+  return 1.0;
+}
 
 // ── Screen shake (frame-based)
 let shakeX = 0, shakeY = 0, shakeFrames = 0;
@@ -67,7 +84,9 @@ let shakeX = 0, shakeY = 0, shakeFrames = 0;
 // ─────────────────────────────────────────────
 function initClouds() {
   clouds = [];
-  for (let i = 0; i < 7; i++)
+  const g = getGraphicsScale();
+  const count = Math.floor(7 * g);
+  for (let i = 0; i < count; i++)
     clouds.push(makeCloud(Math.random() * W));
 }
 function makeCloud(startX) {
@@ -110,7 +129,7 @@ function drawClouds() {
 // ─────────────────────────────────────────────
 function initWind() {
   windStreaks = [];
-  const target = 40;
+  const target = Math.floor(40 * getGraphicsScale());
   for (let i = 0; i < target; i++)
     windStreaks.push(makeWindStreak(Math.random() * W));
 }
@@ -128,8 +147,9 @@ function makeWindStreak(startX) {
   };
 }
 function updateWindStreaks() {
-  const targetCount = boostTimer > 0 ? 55 : 40;
-  const speedMult   = boostTimer > 0 ? 2.0 : 1.0;
+  const g = getGraphicsScale();
+  const targetCount = boostTimer > 0 ? Math.floor(55 * g) : Math.floor(40 * g);
+  const speedMult   = boostTimer > 0 ? 2.5 : 1.0; // Intensify wind blur during boost
 
   while (windStreaks.length < targetCount)
     windStreaks.push(makeWindStreak(W + Math.random() * 80));
@@ -169,8 +189,10 @@ function drawWindStreaks() {
 // ── Speed Lines (boost only)
 // ─────────────────────────────────────────────
 function updateSpeedLines() {
+  const g = getGraphicsScale();
   if (boostTimer > 0) {
-    for (let i = 0; i < 4; i++) {
+    const linesPerFrame = Math.max(1, Math.floor(4 * g));
+    for (let i = 0; i < linesPerFrame; i++) {
       speedLines.push({
         x:     W + 5,
         y:     Math.random() * H,
@@ -208,123 +230,133 @@ function drawSpeedLines() {
 // ── Ground (4 layers, scrolling parallax)
 // ─────────────────────────────────────────────
 function initGrass() {
-  grassBlades = [];
-  dirtStones  = [];
+  const g = getGraphicsScale();
+  grassBack = []; grassMid = []; grassFront = []; dirtStones = []; flowers = [];
 
-  // ── Tier 1: Tall dark background blades (every ~9px) — drawn first/behind
-  const t1Colors = ['#2a6028', '#356632', '#3d7038', '#2e6a2c'];
-  const t1Step   = 9;
-  for (let i = 0; i < Math.ceil(W / t1Step) + 2; i++) {
-    grassBlades.push({
-      relX:  i * t1Step + Math.random() * 7,
-      h:     12 + Math.random() * 14,   // 12–26px
-      w:     2 + (Math.random() < 0.35 ? 1 : 0),
-      color: t1Colors[Math.floor(Math.random() * t1Colors.length)],
-      tier:  1
+  const genClumps = (arr, density, maxH, minH, colors) => {
+    const spacing = 12 / density;
+    const numClumps = Math.ceil(W / spacing) + 3;
+    for (let i = 0; i < numClumps; i++) {
+      const cx = i * spacing + (Math.random() - 0.5) * 8;
+      const numBlades = 2 + Math.floor(Math.random() * 3);
+      const blades = [];
+      for (let j = 0; j < numBlades; j++) {
+        blades.push({
+          dx: (Math.random() - 0.5) * 10,
+          h: Math.round(minH + Math.random() * (maxH - minH)),
+          w: 1 + (Math.random() < 0.38 ? 1 : 0),
+          cBot: colors.cBot, cMid: colors.cMid, cTop: colors.cTop,
+          swayFactor: 0.5 + Math.random() * 0.7,
+          swayPhase: Math.random() * Math.PI * 2
+        });
+      }
+      arr.push({ relX: cx, blades });
+    }
+  };
+
+  // 3 Layers of grass (parallax)
+  // Background (tall, dark, slow)
+  genClumps(grassBack, 0.7 * g, 30, 20, {cBot:'#154015', cMid:'#1e5a1e', cTop:'#2e7030'});
+  // Mid (medium, normal, normal)
+  genClumps(grassMid, 1.0 * g, 20, 12, {cBot:'#2e7030', cMid:'#3a8536', cTop:'#4a9b3a'});
+  // Front (short, bright, fast)
+  genClumps(grassFront, 0.8 * g, 14, 6, {cBot:'#4a9932', cMid:'#6abf48', cTop:'#90e040'});
+
+  // Tiny pixel flowers in Mid layer
+  const numFlowers = Math.floor(8 * g);
+  const fCols = ['#f1c40f','#e74c3c','#9b59b6','#3498db'];
+  for(let i=0; i<numFlowers; i++) {
+    flowers.push({
+      relX: Math.random() * W,
+      yOff: Math.random() * 8,
+      c: fCols[Math.floor(Math.random()*fCols.length)],
+      swayPhase: Math.random() * 10
     });
   }
 
-  // ── Tier 2: Medium bright blades (every ~5px)
-  const t2Colors = ['#4a9b3a', '#5ab040', '#4d9932', '#52a838', '#58b03c'];
-  const t2Step   = 5;
-  for (let i = 0; i < Math.ceil(W / t2Step) + 2; i++) {
-    grassBlades.push({
-      relX:  i * t2Step + Math.random() * 4,
-      h:     6 + Math.random() * 10,    // 6–16px
-      w:     2,
-      color: t2Colors[Math.floor(Math.random() * t2Colors.length)],
-      tier:  2
-    });
-  }
-
-  // ── Tier 3: Short bright lime tips (every ~3px) — drawn last/on top
-  const t3Colors = ['#8fd940', '#a4e840', '#7cc330', '#b8f040', '#6abf48', '#9ce040'];
-  const t3Step   = 3;
-  for (let i = 0; i < Math.ceil(W / t3Step) + 2; i++) {
-    grassBlades.push({
-      relX:  i * t3Step + Math.random() * 2,
-      h:     2 + Math.random() * 8,     // 2–10px
-      w:     1 + (Math.random() < 0.28 ? 1 : 0),
-      color: t3Colors[Math.floor(Math.random() * t3Colors.length)],
-      tier:  3
-    });
-  }
-
-  // ── Dense dirt stones (many, varied sizes + 4 colors)
-  const stoneColors = [
-    '#4a2810', '#6a3c1a', '#8a5228',
-    '#7a4420', '#9e6535', '#5e3216', '#3c2008'
-  ];
-  const stoneCount = Math.floor(W / 11) + 6; // very dense
+  // ── Dense dirt stones (warm tones, many sizes)
+  const stoneColors = ['#4a2810','#6a3c1a','#8a5228','#7a4420','#9e6535','#5e3216','#3c2008'];
+  const stoneCount = Math.floor(W / (11 / g)) + 6;
   for (let i = 0; i < stoneCount; i++) {
     dirtStones.push({
       relX:  Math.random() * W,
-      dy:    4 + Math.random() * 48,
-      w:     2 + Math.floor(Math.random() * 5),   // 2–6px
-      h:     2 + Math.floor(Math.random() * 4),   // 2–5px
+      dy:    4 + Math.random() * 50,
+      w:     2 + Math.floor(Math.random() * 5),
+      h:     2 + Math.floor(Math.random() * 4),
       color: stoneColors[Math.floor(Math.random() * stoneColors.length)]
     });
   }
 }
 
 function drawGround() {
-  const gy     = player.groundY + 42;  // ground top Y
+  const gy     = player.groundY + 42;
   const off    = groundOffset % W;
-  const grassH = 38;                   // total solid grass fill depth
+  const grassH = 36;
+  const t      = Date.now() * 0.001;
+  const boostM = boostTimer > 0 ? 2.5 : 1.0;
+  const windAmp = boostTimer > 0 ? 6   : 2.8;
 
-  // ── Dirt base (warm brown)
+  // Helper to draw clumps
+  const drawClumps = (clumps, parallax, offsetMod = 0) => {
+    const pOff = (groundOffset * parallax + offsetMod) % W;
+    for (const clump of clumps) {
+      const cx = ((clump.relX - pOff) % W + W) % W;
+      for (const b of clump.blades) {
+        const bx  = cx + b.dx;
+        if (bx < -12 || bx > W + 12) continue;
+        const sway = Math.sin(t * 1.5 * boostM + b.swayPhase) * windAmp * b.swayFactor;
+        const seg1H = Math.max(1, Math.round(b.h * 0.38));
+        const seg2H = Math.max(1, Math.round(b.h * 0.34));
+        const seg3H = Math.max(1, b.h - seg1H - seg2H);
+        const x0 = Math.round(bx);
+        const x1 = Math.round(bx + sway * 0.45);
+        const x2 = Math.round(bx + sway);
+
+        ctx.fillStyle = b.cBot; ctx.fillRect(x0, gy - seg1H, b.w, seg1H);
+        ctx.fillStyle = b.cMid; ctx.fillRect(x1, gy - seg1H - seg2H, b.w, seg2H);
+        ctx.fillStyle = b.cTop; ctx.fillRect(x2, gy - seg1H - seg2H - seg3H, b.w, seg3H);
+      }
+    }
+  };
+
+  // 1. Background Grass (slowest parallax)
+  drawClumps(grassBack, 0.4, 0);
+
+  // 2. Dirt base & Stones (normal speed)
   ctx.fillStyle = '#8b5530';
   ctx.fillRect(0, gy + grassH, W, H - gy - grassH);
-
-  // ── Dense dirt stones (scrolling, wrapped)
   for (const s of dirtStones) {
     const sx = ((s.relX - off) % W + W) % W;
     ctx.fillStyle = s.color;
     ctx.fillRect(Math.round(sx), gy + grassH + s.dy, s.w, s.h);
-    if (sx < 8)
-      ctx.fillRect(Math.round(sx + W), gy + grassH + s.dy, s.w, s.h);
+    if (sx < 8) ctx.fillRect(Math.round(sx + W), gy + grassH + s.dy, s.w, s.h);
   }
 
-  // ── Dark green transition (bottom of grass → top of dirt)
-  ctx.fillStyle = '#1e5022';
-  ctx.fillRect(0, gy + grassH - 8, W, 10);
+  // 3. Dark transition & Mid solid fill
+  ctx.fillStyle = '#1e5022'; ctx.fillRect(0, gy + grassH - 8, W, 10);
+  ctx.fillStyle = '#4a9b3a'; ctx.fillRect(0, gy, W, grassH - 8);
+  ctx.fillStyle = '#6abf50'; ctx.fillRect(0, gy, W, 8); // bright top strip
 
-  // ── Mid solid green fill
-  ctx.fillStyle = '#4a9b3a';
-  ctx.fillRect(0, gy, W, grassH - 8);
+  // 4. Mid Grass (normal speed)
+  drawClumps(grassMid, 1.0, 0);
 
-  // ── Bright top strip
-  ctx.fillStyle = '#68cc50';
-  ctx.fillRect(0, gy, W, 10);
-
-  // ── Tier 1 blades (tall dark — drawn first so brighter tiers appear on top)
-  for (const b of grassBlades) {
-    if (b.tier !== 1) continue;
-    const bx = ((b.relX - off) % W + W) % W;
-    ctx.fillStyle = b.color;
-    ctx.fillRect(Math.round(bx), gy - b.h, b.w, b.h);
-    if (bx < 4) ctx.fillRect(Math.round(bx + W), gy - b.h, b.w, b.h);
+  // 4.5 Pixel Flowers (in mid layer)
+  for(const f of flowers) {
+    const fx = ((f.relX - off) % W + W) % W;
+    if(fx < -10 || fx > W + 10) continue;
+    const sway = Math.sin(t * 1.5 * boostM + f.swayPhase) * windAmp * 0.6;
+    ctx.fillStyle = '#3a8536'; // stem
+    ctx.fillRect(Math.round(fx + sway*0.5), gy - f.yOff, 2, f.yOff);
+    ctx.fillStyle = f.c; // petal
+    ctx.fillRect(Math.round(fx + sway), gy - f.yOff - 2, 4, 4);
+    ctx.fillStyle = '#ffffff'; // center
+    ctx.fillRect(Math.round(fx + sway + 1), gy - f.yOff - 1, 2, 2);
   }
 
-  // ── Tier 2 blades (medium bright)
-  for (const b of grassBlades) {
-    if (b.tier !== 2) continue;
-    const bx = ((b.relX - off) % W + W) % W;
-    ctx.fillStyle = b.color;
-    ctx.fillRect(Math.round(bx), gy - b.h, b.w, b.h);
-    if (bx < 4) ctx.fillRect(Math.round(bx + W), gy - b.h, b.w, b.h);
-  }
+  // 5. Foreground Grass (fast parallax)
+  drawClumps(grassFront, 1.5, 0);
 
-  // ── Tier 3 blades (short lime tips — on top)
-  for (const b of grassBlades) {
-    if (b.tier !== 3) continue;
-    const bx = ((b.relX - off) % W + W) % W;
-    ctx.fillStyle = b.color;
-    ctx.fillRect(Math.round(bx), gy - b.h, b.w, b.h);
-    if (bx < 4) ctx.fillRect(Math.round(bx + W), gy - b.h, b.w, b.h);
-  }
-
-  // ── Ground separator
+  // 6. Ground separator line
   ctx.fillStyle = '#111a10';
   ctx.fillRect(0, gy - 1, W, 1);
 }
@@ -461,9 +493,9 @@ window.resetGame = function () {
   attack.phase = 'idle'; attack.frameCount = 0; attack.canChain = true;
   shakeX = 0; shakeY = 0; shakeFrames = 0;
 
-  if (clouds.length === 0)      initClouds();
-  if (windStreaks.length === 0)  initWind();
-  if (grassBlades.length === 0) initGrass();
+  if (clouds.length === 0)       initClouds();
+  if (windStreaks.length === 0)   initWind();
+  if (grassClumps.length === 0)  initGrass();
 
   isPlaying = true;
   const goScreen = document.getElementById('gameOverScreen');

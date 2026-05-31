@@ -248,7 +248,36 @@ body{
 .modal-link:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
 .viewer-hint{font-size:18px;color:var(--dark);text-align:center;padding:12px 0 0;opacity:0.8}
 
+/* ── Settings Modal ── */
+.settings-modal {
+  position:fixed;inset:0;z-index:150;
+  background:rgba(20,40,65,0.8);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.settings-modal.open {opacity:1;pointer-events:all;}
+.settings-box {
+  background:var(--white);
+  border:4px solid var(--dark);
+  width:calc(100vw - 40px);max-width:500px;
+  box-shadow:8px 8px 0 rgba(0,0,0,0.5);
+  padding:24px;
+}
+.settings-title {font-family:'Press Start 2P',cursive;font-size:16px;color:var(--dark);margin-bottom:20px;text-align:center;border-bottom:3px solid var(--dark);padding-bottom:12px;}
+.set-row {display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.set-label {font-size:22px;color:var(--dark);}
+.set-select, .set-range {
+  font-family:'VT323',monospace;font-size:20px;
+  border:3px solid var(--dark);background:var(--sky4);
+  padding:4px 8px;color:var(--dark);outline:none;
+}
+.set-select:focus {background:var(--gold-l);}
+.set-range {cursor:pointer;}
 </style>
+<script type="module">
+  import { initSettings, getSettings, updateSettings } from './settingsManager.js';
+  window.portfolioSettingsManager = { getSettings, updateSettings };
+</script>
 </head>
 <body>
 
@@ -296,12 +325,24 @@ body{
 
     <!-- Main category filter -->
     <div class="filter-wrap">
-      <div class="filter-row" id="mainTabs">
-        <span class="filter-label">Category:</span>
-        <button class="tab active" data-cat="all" onclick="setMainCat('all',this)">All</button>
+      <div class="filter-row" style="justify-content:space-between;">
+        <div id="mainTabs" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <span class="filter-label">Category:</span>
+          <button class="tab active" data-cat="all" onclick="setMainCat('all',this)">All</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="filter-label">Sort:</span>
+          <select id="sortSelect" onchange="handleSortChange()" style="font-family:'VT323',monospace;font-size:20px;border:3px solid var(--dark);background:var(--white);padding:4px 8px;color:var(--dark);outline:none;box-shadow:2px 2px 0 var(--dark);">
+            <option value="featured">Featured</option>
+            <option value="random">Random</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="alphabetical">Alphabetical</option>
+          </select>
+        </div>
       </div>
-      <!-- Sub-category row (shows only when 3D is selected) -->
-      <div class="filter-row sub-row" id="subRow">
+      <!-- Sub-category row (shows only when a specific category is selected) -->
+      <div class="filter-row sub-row" id="subRow" style="justify-content:flex-start;">
         <span class="filter-label">Type:</span>
       </div>
     </div>
@@ -316,10 +357,49 @@ body{
 </main>
 
 <!-- Admin fixed -->
-<div class="admin-fixed">
+<div class="admin-fixed" style="display:flex;flex-direction:column;gap:10px;">
+  <button class="admin-btn" title="Settings" onclick="openSettingsModal()" style="font-size:28px;">⚙</button>
   <a href="admin.html" class="admin-btn" title="Admin Panel">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
   </a>
+</div>
+
+<!-- Settings Modal -->
+<div class="settings-modal" id="settingsModal">
+  <div class="settings-box">
+    <div class="modal-close" onclick="closeSettingsModal()" style="top:12px;right:12px;">×</div>
+    <h2 class="settings-title">SETTINGS</h2>
+    
+    <div class="set-row">
+      <span class="set-label">Theme Color</span>
+      <select class="set-select" id="setTheme" onchange="saveSettingsUI()">
+        <option value="Blue">Blue</option><option value="Purple">Purple</option>
+        <option value="Green">Green</option><option value="Orange">Orange</option>
+        <option value="Red">Red</option>
+      </select>
+    </div>
+    
+    <div class="set-row">
+      <span class="set-label">Graphics Quality</span>
+      <select class="set-select" id="setGraphics" onchange="saveSettingsUI()">
+        <option value="Low">Low</option><option value="Medium">Medium</option>
+        <option value="High">High</option><option value="Ultra">Ultra</option>
+      </select>
+    </div>
+
+    <div class="set-row">
+      <span class="set-label">Master Volume</span>
+      <input type="range" class="set-range" id="setMasterVol" min="0" max="100" onchange="saveSettingsUI()">
+    </div>
+    <div class="set-row">
+      <span class="set-label">Music Volume</span>
+      <input type="range" class="set-range" id="setMusicVol" min="0" max="100" onchange="saveSettingsUI()">
+    </div>
+    <div class="set-row">
+      <span class="set-label">SFX Volume</span>
+      <input type="range" class="set-range" id="setSfxVol" min="0" max="100" onchange="saveSettingsUI()">
+    </div>
+  </div>
 </div>
 
 <script>
@@ -375,6 +455,7 @@ let works = [];
 let settings = {};
 let currentMainCat = 'all';
 let currentSubCat = 'all';
+let currentSort = 'featured'; // Default sort
 
 const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
@@ -445,10 +526,41 @@ function renderGallery() {
   const gallery = document.getElementById('gallery');
   const emptyState = document.getElementById('emptyState');
 
-  const filtered = works.filter(w => {
+  let filtered = works.filter(w => {
     if (currentMainCat !== 'all' && w.cat !== currentMainCat) return false;
     if (currentMainCat === '3d' && currentSubCat !== 'all' && w.subcat !== currentSubCat) return false;
     return true;
+  });
+
+  // Sorting Logic
+  filtered.sort((a, b) => {
+    if (currentSort === 'random') {
+      // Very simple deterministic shuffle based on length (just for visual variation on load)
+      // Actual random sort on every re-render is annoying, so we use a pseudo-random hash or simple random if we really want true random.
+      // But let's stick to true random for now, since it was requested.
+      return Math.random() - 0.5;
+    }
+    
+    if (currentSort === 'newest') {
+      return new Date(b.date || 0) - new Date(a.date || 0);
+    }
+    if (currentSort === 'oldest') {
+      return new Date(a.date || 0) - new Date(b.date || 0);
+    }
+    if (currentSort === 'alphabetical') {
+      return (a.name || '').localeCompare(b.name || '');
+    }
+    
+    // Default Fallback (Featured -> Date -> Alphabetical) or "featured" explicit sort
+    if (a.featured !== b.featured) {
+      return a.featured ? -1 : 1;
+    }
+    // Then Date
+    const dA = new Date(a.date || 0).getTime();
+    const dB = new Date(b.date || 0).getTime();
+    if (dA !== dB) return dB - dA;
+    // Then Alphabetical
+    return (a.name || '').localeCompare(b.name || '');
   });
 
   // Remove existing cards (keep emptyState)
@@ -526,6 +638,11 @@ function setSubCat(sub, btn) {
   currentSubCat = sub;
   document.querySelectorAll('#subRow .subtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  renderGallery();
+}
+
+function handleSortChange() {
+  currentSort = document.getElementById('sortSelect').value;
   renderGallery();
 }
 
@@ -812,6 +929,36 @@ function startGame() {
   setTimeout(() => {
     window.location.href = 'game.html';
   }, 500);
+}
+}
+
+// ── Settings Modal Logic ──
+function openSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  const set = window.portfolioSettingsManager.getSettings();
+  
+  document.getElementById('setTheme').value = set.theme;
+  document.getElementById('setGraphics').value = set.graphics;
+  document.getElementById('setMasterVol').value = set.masterVolume;
+  document.getElementById('setMusicVol').value = set.musicVolume;
+  document.getElementById('setSfxVol').value = set.sfxVolume;
+
+  modal.classList.add('open');
+}
+
+function closeSettingsModal() {
+  document.getElementById('settingsModal').classList.remove('open');
+}
+
+function saveSettingsUI() {
+  const newSet = {
+    theme: document.getElementById('setTheme').value,
+    graphics: document.getElementById('setGraphics').value,
+    masterVolume: parseInt(document.getElementById('setMasterVol').value, 10),
+    musicVolume: parseInt(document.getElementById('setMusicVol').value, 10),
+    sfxVolume: parseInt(document.getElementById('setSfxVol').value, 10)
+  };
+  window.portfolioSettingsManager.updateSettings(newSet);
 }
 </script>
 
