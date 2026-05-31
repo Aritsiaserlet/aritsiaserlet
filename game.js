@@ -6,13 +6,11 @@
 // ─────────────────────────────────────────────
 const MIN_ENEMY_GAP  = 380;   // px gap between enemies (Goal 2)
 
-const DIVE_SPEED     = 14;    // initial downward velocity px/frame
-const DIVE_DECEL     = 0.88;  // velocity multiplier per dive frame
-const VX_DIVE        = 3;     // forward lean px/frame (reduced for mostly vertical Elytra mace style)
-const STRIKE_FRAMES  = 5;     // frames held at impact
-const ASCENT_SPEED   = 9;     // initial upward velocity px/frame
-const ASCENT_DECEL   = 0.92;  // velocity multiplier per ascent frame
-const CHAIN_THRESHOLD = 0.38; // [TUNED] fraction of ascent before SPACE re-enables (was 0.55 → 0.38 for fast chaining)
+const DIVE_SPEED     = 22;    // constant downward velocity px/frame (snappy dive)
+const VX_DIVE        = 3;     // forward lean px/frame
+const STRIKE_FRAMES  = 4;     // frames held at impact
+const ASCENT_SPEED   = 16;    // constant upward velocity px/frame
+const CHAIN_THRESHOLD = 0.38; // fraction of ascent before SPACE re-enables
 const HITBOX_PAD     = 8;     // extra px on each side of AABB during strike
 const TILT_DIVE      = 15;    // degrees of block rotation during dive
 const TILT_STRIKE    = 25;    // degrees of block rotation at impact
@@ -236,7 +234,6 @@ function updateAttack() {
     // Apply velocity
     player.y      += player.vy;
     player.x      += player.vxDive;
-    player.vy     *= DIVE_DECEL;       // decelerate naturally toward bottom
 
     // Hard clamp — never go below strikeY
     if (player.y >= strikeY) {
@@ -260,7 +257,6 @@ function updateAttack() {
 
   } else if (attack.phase === 'ascend') {
     player.y  += player.vy;
-    player.vy *= ASCENT_DECEL;  // decelerate as approaching top
 
     // Drift X back toward baseX during ascent
     player.x += (player.baseX - player.x) * 0.12;
