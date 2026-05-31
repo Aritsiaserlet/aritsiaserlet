@@ -142,17 +142,17 @@ input[type="file"] {
 .prev-title{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:20px;text-align:center}
 .prev-img{width:100%;aspect-ratio:16/10;object-fit:cover;border:3px solid var(--dark);margin-bottom:16px;display:block;image-rendering:pixelated}
 .prev-img-ph{width:100%;aspect-ratio:16/10;border:3px solid var(--dark);margin-bottom:16px;background:#a8d4f0;display:flex;align-items:center;justify-content:center;font-size:48px}
-.prev-name{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--dark);margin-bottom:8px}
-.prev-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.prev-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(44,74,106,.1);color:var(--mid)}
-.prev-badge.sub{background:rgba(232,200,122,.25);color:var(--gold-d)}
-.prev-desc{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:16px;white-space:pre-wrap}
+.prev-name{font-family:'Press Start 2P',cursive;font-size:16px;color:var(--dark);margin-bottom:12px;line-height:1.4}
+.prev-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.prev-badge{font-size:14px;padding:4px 8px;background:var(--sky4);border:2px solid var(--dark);color:var(--dark);display:inline-flex;align-items:center;gap:6px}
+.prev-badge.sub{background:var(--gold);color:var(--dark)}
+.prev-desc{font-size:18px;color:var(--dark);line-height:1.5;margin-bottom:24px;white-space:pre-wrap}
 .prev-link{font-size:12px;color:var(--sky1);word-break:break-all;margin-bottom:20px;display:block}
 .prev-actions{display:flex;gap:10px}
-.prev-cancel{flex:1;padding:11px;border-radius:10px;border:1.5px solid rgba(44,74,106,.2);background:rgba(255,255,255,.6);font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;color:var(--mid);cursor:pointer;transition:all .2s}
-.prev-cancel:hover{background:rgba(255,255,255,.9)}
-.prev-confirm{flex:1;padding:11px;border-radius:10px;border:2px solid var(--gold);background:rgba(232,200,122,.3);font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;color:var(--dark);cursor:pointer;transition:all .2s}
-.prev-confirm:hover{background:rgba(232,200,122,.6)}
+.prev-cancel{flex:1;padding:12px;border:3px solid var(--dark);background:var(--white);font-family:'VT323',monospace;font-size:24px;color:var(--dark);cursor:pointer;transition:all .1s;box-shadow:4px 4px 0 var(--dark)}
+.prev-cancel:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
+.prev-confirm{flex:1;padding:12px;border:3px solid var(--dark);background:var(--gold);font-family:'VT323',monospace;font-size:24px;color:var(--dark);cursor:pointer;transition:all .1s;box-shadow:4px 4px 0 var(--dark)}
+.prev-confirm:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
 </style>
 </head>
 <body>
@@ -1117,8 +1117,14 @@ function openPreview() {
 
   if (!name) { showMsg('Enter a work name first.', 'err'); return; }
 
-  const catEmoji = {game:'🎮', mod:'⚙️', '3d':'🧊'}[cat] || '';
-  const catLabel = {game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[cat] || cat;
+  const catSetting = settings.categories && settings.categories[cat] ? settings.categories[cat] : {};
+  let catIconUrl = '';
+  if(catSetting.iconId && settings.icons) {
+    const ic = settings.icons.find(x => x.id === catSetting.iconId);
+    if(ic) catIconUrl = ic.url;
+  }
+  const catIcon = catIconUrl ? `<img src="${catIconUrl}" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;">` : '';
+  const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[cat] || cat);
   const subLabel = subcat ? subcat.charAt(0).toUpperCase()+subcat.slice(1) : '';
 
   const media = document.getElementById('prevMedia');
@@ -1128,14 +1134,14 @@ function openPreview() {
   } else if (existingImg) {
     media.innerHTML = `<img class="prev-img" src="${existingImg.src}" style="object-position:${existingImg.style.objectPosition||'center 50%'}">`;
   } else {
-    media.innerHTML = `<div class="prev-img-ph">${catEmoji}</div>`;
+    media.innerHTML = `<div class="prev-img-ph"></div>`;
   }
 
   document.getElementById('prevName').textContent = name;
   document.getElementById('prevDesc').textContent = desc || '(no description)';
 
   const badges = document.getElementById('prevBadges');
-  badges.innerHTML = `<span class="prev-badge">${catEmoji} ${catLabel}</span>`;
+  badges.innerHTML = `<span class="prev-badge">${catIcon}${catLabel}</span>`;
   if (subLabel) badges.innerHTML += `<span class="prev-badge sub">${subLabel}</span>`;
 
   const pl = document.getElementById('prevLink');
