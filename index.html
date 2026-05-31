@@ -484,7 +484,7 @@ function renderGallery() {
 
       card.innerHTML = `
         <div class="card-thumb">
-          ${w.image ? `<img src="${w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||'📁'}</div>`}
+          ${w.image ? `<img src="${w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
         </div>
         <div class="card-info">
           <p class="card-name">${w.name}</p>
@@ -553,7 +553,7 @@ function openModal(w) {
     media.innerHTML = `<div class="modal-img-wrap" id="imgWrap"><img class="modal-img" id="modalImgEl" src="${w.image}" alt="${w.name}" style="object-position:center ${w.imageFocal||50}%"></div><p class="viewer-hint">↕ Drag image up/down to adjust</p>`;
     initImgDrag();
   } else {
-    media.innerHTML = `<div class="modal-img-placeholder">${catIcon||'📁'}</div>`;
+    media.innerHTML = `<div class="modal-img-placeholder">${catIcon||''}</div>`;
   }
 
   document.getElementById('modalTitle').textContent = w.name;
