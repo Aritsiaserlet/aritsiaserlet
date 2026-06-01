@@ -650,7 +650,7 @@
 
     if (scoreToSave >= 0 && playTimeSeconds > 0) {
       if (!currentUser) {
-        if (confirm('You are not logged in! Do you want to login to save your playtime and score?')) {
+        if (confirm(`You got a score of ${scoreToSave} and played for ${playTimeSeconds}s! You are not logged in. Do you want to login to save your stats?`)) {
           window.pendingScoreToSave = scoreToSave;
           window.pendingPlayTime = playTimeSeconds;
           window.pendingExitToLobby = true;
@@ -745,6 +745,17 @@
     // Store data globally for lobby
     window._worksData = worksData;
     window._settingsData = settingsData;
+    
+    if (settingsData && settingsData.game && settingsData.game.fwIconId && settingsData.icons) {
+      const ic = settingsData.icons.find(x => x.id === settingsData.game.fwIconId);
+      if (ic) {
+        const fIconImg = document.querySelector('#fireworkDisplay img');
+        if (fIconImg) {
+          fIconImg.src = ic.url;
+          // Also remove any inline SVG styles if they conflict, though it should be fine.
+        }
+      }
+    }
 
     setTimeout(() => {
       // Hide loading, show LOBBY (not game directly)
@@ -785,9 +796,10 @@
       if (userAvatar) userAvatar.src = user.photoURL || '';
 
       // Check if we have a pending score to save after login
-      if (window.pendingScoreToSave > 0) {
-        window.saveScore(window.pendingScoreToSave, window.pendingPlayTime || 0);
+      if (window.pendingScoreToSave > 0 || window.pendingPlayTime > 0) {
+        window.saveScore(window.pendingScoreToSave || 0, window.pendingPlayTime || 0);
         window.pendingScoreToSave = 0;
+        window.pendingPlayTime = 0;
         
         // Return to lobby if we were waiting on exit
         if (window.pendingExitToLobby) {
@@ -812,13 +824,10 @@
   });
 
   window.saveScore = async (newScore, playTimeSeconds = 0, maxMultiplier = 1) => {
-    if (newScore <= 0) return;
+    if (newScore <= 0 && playTimeSeconds <= 0) return;
     
     if (!currentUser) {
-      if (confirm('You are not logged in! Do you want to login to save your score of ' + newScore + ' ?')) {
-        window.pendingScoreToSave = newScore;
-        window.gameAuthManager.login();
-      }
+      // Do not prompt here. We prompt in exitGameToLobby instead.
       return;
     }
     
