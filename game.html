@@ -288,13 +288,13 @@
     position:absolute; inset:0; pointer-events:none; z-index:0; opacity:0.5;
   }
 
-  /* ── Game Settings Modal ── */
-  #gameSettingsModal {
+  /* ⚙️ Modals ⚙️ */
+  #gameSettingsModal, #saveScoreModal {
     position: fixed; inset: 0; z-index: 50;
     background: rgba(20,40,65,0.8);
     display: none; align-items: center; justify-content: center;
   }
-  #gameSettingsModal.open { display: flex; }
+  #gameSettingsModal.open, #saveScoreModal.open { display: flex; }
   .game-settings-box {
     background: var(--white); border: 4px solid var(--dark);
     padding: 32px; min-width: 300px; max-width: 90vw;
@@ -484,6 +484,17 @@
   </div>
 </div>
 
+<!-- Save Score Modal -->
+<div id="saveScoreModal" onclick="if(event.target===this) { this.classList.remove('open'); window.saveScoreModalCancel(); }">
+  <div class="game-settings-box" style="max-width: 400px; text-align: center; display: flex; flex-direction: column; gap: 20px;">
+    <div style="font-size: 20px; color: var(--gold); font-family: 'Press Start 2P', cursive; text-shadow: 2px 2px 0 var(--dark);">Game Message</div>
+    <div id="saveScoreMsg" style="font-size: 16px; line-height: 1.5;"></div>
+    <div style="display: flex; gap: 16px; justify-content: center; margin-top: 10px;">
+      <button class="game-btn" onclick="window.saveScoreModalOk()" style="background: var(--sky4); color: var(--dark); padding: 10px 20px; font-size: 16px;">LOGIN</button>
+      <button class="game-btn" onclick="window.saveScoreModalCancel()" style="background: var(--danger); color: white; padding: 10px 20px; font-size: 16px;">CANCEL</button>
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -628,6 +639,19 @@
     setTimeout(() => { window.location.href = 'index.html'; }, 400);
   }
 
+  window.saveScoreModalOk = function() {
+    document.getElementById('saveScoreModal').classList.remove('open');
+    if (window.gameAuthManager) window.gameAuthManager.login();
+  };
+
+  window.saveScoreModalCancel = function() {
+    document.getElementById('saveScoreModal').classList.remove('open');
+    window.pendingScoreToSave = 0;
+    window.pendingPlayTime = 0;
+    window.pendingExitToLobby = false;
+    if (window.finishExit) window.finishExit();
+  };
+
   window.exitGameToLobby = function() {
     const finalScore = parseInt(document.getElementById('finalScore').innerText || '0', 10);
     const scoreVal = window.currentScore || 0; 
@@ -640,30 +664,27 @@
     document.getElementById('lobbyScreen').style.display = 'flex';
     document.getElementById('gameTopNav').style.display = 'flex';
 
-    function finishExit() {
+    window.finishExit = function() {
       if (window.gameAuthManager && window.gameAuthManager.getCurrentUser()) {
         window.openLeaderboard();
       } else {
         window.openLeaderboard(scoreToSave);
       }
-    }
+    };
 
     if (scoreToSave >= 0 && playTimeSeconds > 0) {
       if (!(window.gameAuthManager && window.gameAuthManager.getCurrentUser())) {
-        if (confirm(`You got a score of ${scoreToSave} and played for ${playTimeSeconds}s! You are not logged in. Do you want to login to save your stats?`)) {
-          window.pendingScoreToSave = scoreToSave;
-          window.pendingPlayTime = playTimeSeconds;
-          window.pendingExitToLobby = true;
-          window.gameAuthManager.login();
-        } else {
-          finishExit();
-        }
+        document.getElementById('saveScoreMsg').innerText = `You got a score of ${scoreToSave} and played for ${playTimeSeconds}s! You are not logged in. Do you want to login to save your stats?`;
+        window.pendingScoreToSave = scoreToSave;
+        window.pendingPlayTime = playTimeSeconds;
+        window.pendingExitToLobby = true;
+        document.getElementById('saveScoreModal').classList.add('open');
       } else {
         window.saveScore(scoreToSave, playTimeSeconds);
-        finishExit();
+        window.finishExit();
       }
     } else {
-      finishExit();
+      window.finishExit();
     }
   };
 
