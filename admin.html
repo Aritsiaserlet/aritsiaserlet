@@ -204,6 +204,33 @@ input[type="file"] {
       </div>
     </div>
 
+    <!-- Sound Library Panel -->
+    <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;" id="soundLibraryPanel">
+      <h2>🔊 SOUND LIBRARY</h2>
+      <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload sounds here, then assign them to game events using the Sound Picker below.</p>
+
+      <!-- Uploaded Sounds Grid -->
+      <div id="soundLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Upload Row -->
+      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:24px;">
+        <input type="text" id="newSoundName" placeholder="Sound Name (e.g. Hit SFX)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+        <input type="file" id="newSoundFile" accept="audio/*" style="font-size:12px;width:220px;">
+        <button class="anav-btn" onclick="addSoundToLibrary()">UPLOAD SOUND</button>
+      </div>
+
+      <!-- Sound Picker / Assignments -->
+      <h3 style="font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOUND PICKER — Assign Sounds to Events</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;" id="soundPickerGrid">
+        <!-- Filled by JS -->
+      </div>
+
+      <button class="submit-btn" onclick="saveSoundAssignments()" style="margin-top:20px;">SAVE SOUND ASSIGNMENTS</button>
+      <p class="form-msg" id="soundMsg"></p>
+    </div>
+
     <!-- Settings Panel -->
     <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;">
       <h2>SITE SETTINGS</h2>
@@ -499,6 +526,8 @@ async function loadSettings(){
   renderIconLibrary();
   renderSettingsUI();
   renderToolsCheckboxList();
+  renderSoundLibrary();
+  renderSoundPicker();
 }
 
 async function saveWorks(){
@@ -680,6 +709,145 @@ function renderToolsCheckboxList() {
     `;
   });
 }
+
+// ── Sound Library ──────────────────────────────────────
+const SOUND_EVENTS = [
+  { key: 'game_hit',       label: '🎮 Game: Hit Enemy' },
+  { key: 'game_score',     label: '🎮 Game: Score Point' },
+  { key: 'game_combo',     label: '🎮 Game: Combo!' },
+  { key: 'game_dive',      label: '🎮 Game: Dive' },
+  { key: 'game_boost',     label: '🎮 Game: Boost Activate' },
+  { key: 'game_miss',      label: '🎮 Game: Miss Penalty' },
+  { key: 'game_gameover',  label: '🎮 Game: Game Over' },
+  { key: 'game_bgm',       label: '🎮 Game: Background Music (loops)' },
+  { key: 'portfolio_like', label: '🌐 Portfolio: Like' },
+  { key: 'portfolio_login',label: '🌐 Portfolio: Login' },
+  { key: 'portfolio_bgm',  label: '🌐 Portfolio: Background Music (loops)' },
+];
+
+async function addSoundToLibrary() {
+  const nameInput = document.getElementById('newSoundName');
+  const fileInput = document.getElementById('newSoundFile');
+  if(!nameInput.value.trim() || !fileInput.files[0]) {
+    alert('Please provide a name and select an audio file.');
+    return;
+  }
+  const file = fileInput.files[0];
+  const ext = file.name.split('.').pop().toLowerCase() || 'mp3';
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const base64 = e.target.result.split(',')[1];
+      const id = 'snd_' + Date.now();
+      const fname = `works/${id}.${ext}`;
+      const btn = document.querySelector('#soundLibraryPanel .anav-btn');
+      btn.textContent = 'UPLOADING...'; btn.disabled = true;
+      await ghPutBinary(fname, base64, `Upload sound ${nameInput.value}`);
+      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      if(!settings.sounds) settings.sounds = [];
+      settings.sounds.push({ id, name: nameInput.value.trim(), url });
+      const json = JSON.stringify(settings, null, 2);
+      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new sound', settingsSha);
+      settingsSha = saveResult.content.sha;
+      nameInput.value = ''; fileInput.value = '';
+      btn.textContent = 'UPLOAD SOUND'; btn.disabled = false;
+      renderSoundLibrary();
+      renderSoundPicker();
+    } catch(err) {
+      alert('Error uploading sound: ' + err.message);
+      const btn = document.querySelector('#soundLibraryPanel .anav-btn');
+      btn.textContent = 'UPLOAD SOUND'; btn.disabled = false;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderSoundLibrary() {
+  const box = document.getElementById('soundLibraryList');
+  if(!box) return;
+  box.innerHTML = '';
+  const sounds = settings.sounds || [];
+  if(sounds.length === 0) {
+    box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No sounds uploaded yet.</div>';
+    return;
+  }
+  sounds.forEach((snd, i) => {
+    box.innerHTML += `
+      <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;">
+        <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
+        <div style="font-size:28px;margin-bottom:4px;">🔊</div>
+        <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;">${snd.name}</div>
+        <audio controls src="${snd.url}" style="width:100%;height:28px;"></audio>
+      </div>
+    `;
+  });
+}
+
+async function deleteSound(idx) {
+  if(!confirm('Delete this sound? It will be unassigned from all events.')) return;
+  const deletedId = settings.sounds[idx].id;
+  settings.sounds.splice(idx, 1);
+  // Unassign from all events
+  if(settings.soundAssignments) {
+    for(const key of Object.keys(settings.soundAssignments)) {
+      if(settings.soundAssignments[key] === deletedId) settings.soundAssignments[key] = null;
+    }
+  }
+  try {
+    const json = JSON.stringify(settings, null, 2);
+    await ghPut(JSON_PATH, json, 'Delete sound from library');
+    renderSoundLibrary();
+    renderSoundPicker();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+function renderSoundPicker() {
+  const grid = document.getElementById('soundPickerGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  if(!settings.soundAssignments) settings.soundAssignments = {};
+  const sounds = settings.sounds || [];
+  SOUND_EVENTS.forEach(ev => {
+    const currentId = settings.soundAssignments[ev.key] || '';
+    let options = `<option value="">— None (Silent) —</option>`;
+    sounds.forEach(s => {
+      const sel = s.id === currentId ? 'selected' : '';
+      options += `<option value="${s.id}" ${sel}>${s.name}</option>`;
+    });
+    grid.innerHTML += `
+      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;">
+        <div style="font-family:'VT323';font-size:18px;color:var(--dark);margin-bottom:8px;">${ev.label}</div>
+        <select id="spk_${ev.key}" style="width:100%;padding:6px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);background:var(--white);">
+          ${options}
+        </select>
+      </div>
+    `;
+  });
+}
+
+async function saveSoundAssignments() {
+  const msgEl = document.getElementById('soundMsg');
+  if(!settings.soundAssignments) settings.soundAssignments = {};
+  SOUND_EVENTS.forEach(ev => {
+    const sel = document.getElementById(`spk_${ev.key}`);
+    if(sel) settings.soundAssignments[ev.key] = sel.value || null;
+  });
+  try {
+    msgEl.style.color = 'var(--mid)';
+    msgEl.textContent = 'Saving...';
+    const json = JSON.stringify(settings, null, 2);
+    const result = await ghPut(JSON_PATH, json, 'Update sound assignments');
+    settingsSha = result.content.sha;
+    msgEl.style.color = 'var(--success)';
+    msgEl.textContent = '✓ Sound assignments saved!';
+    setTimeout(() => msgEl.textContent = '', 3000);
+  } catch(e) {
+    msgEl.style.color = 'var(--danger)';
+    msgEl.textContent = '✗ Error: ' + e.message;
+  }
+}
+
+
 
 function renderSettingsUI() {
   const catsBox = document.getElementById('catsList');

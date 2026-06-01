@@ -336,10 +336,10 @@ body{
 <script type="module">
   import { initSettings, getSettings, updateSettings } from './settingsManager.js';
   import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from './authManager.js';
-  import { sfxLike, sfxLogin, startBGM, stopBGM, toggleBGM, setVolumes } from './audioManager.js';
+  import { sfxLike, sfxLogin, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments } from './audioManager.js';
   
   window.portfolioSettingsManager = { getSettings, updateSettings };
-  window.portfolioAudioManager = { startBGM, stopBGM, toggleBGM, setVolumes };
+  window.portfolioAudioManager = { startBGM, stopBGM, toggleBGM, setVolumes, togglePortfolioBGM: _togglePortfolioBGM };
   window.portfolioAuthManager = { 
     login: loginWithGoogle, 
     logout: logout, 
@@ -374,6 +374,9 @@ body{
       }
       if (window.renderGallery) window.renderGallery();
     });
+
+    // Load sound assignments from settings.json
+    await loadSoundAssignments();
 
     // Sync initial audio volumes from settings
     const initSet = getSettings();
@@ -442,7 +445,6 @@ body{
 
 <!-- Top Navigation -->
 <div class="top-nav">
-  <button class="nav-btn" id="bgmToggleBtn" onclick="window.togglePortfolioBGM()" title="Toggle Music">🎵</button>
   <button class="nav-btn" onclick="openLeaderboard()">🏆 LEADERBOARD</button>
   <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()">LOGIN</button>
   <div class="user-profile" id="userProfile">
@@ -537,7 +539,7 @@ body{
 </div>
 
 <!-- Settings Modal -->
-<div class="settings-modal" id="settingsModal">
+<div class="settings-modal" id="settingsModal" onclick="if(event.target===this)closeSettingsModal()">
   <div class="settings-box">
     <div class="modal-close" onclick="closeSettingsModal()" style="top:12px;right:12px;">×</div>
     <h2 class="settings-title">SETTINGS</h2>
@@ -570,6 +572,10 @@ body{
     <div class="set-row">
       <span class="set-label">SFX Volume</span>
       <input type="range" class="set-range" id="setSfxVol" min="0" max="100" onchange="saveSettingsUI()">
+    </div>
+    <div class="set-row">
+      <span class="set-label">Music</span>
+      <button class="nav-btn" id="bgmTogglePortfolio" onclick="window.togglePortfolioBGM()" style="font-size:20px;padding:4px 12px;">🎵 OFF</button>
     </div>
   </div>
 </div>
@@ -1168,15 +1174,13 @@ function saveSettingsUI() {
 let _bgmOn = false;
 window.togglePortfolioBGM = function() {
   if (!window.portfolioAudioManager) return;
-  _bgmOn = !_bgmOn;
-  if (_bgmOn) {
-    window.portfolioAudioManager.startBGM();
-  } else {
-    window.portfolioAudioManager.stopBGM();
+  const isNowOn = window.portfolioAudioManager.togglePortfolioBGM();
+  _bgmOn = isNowOn;
+  const btn = document.getElementById('bgmTogglePortfolio');
+  if (btn) {
+    btn.textContent = _bgmOn ? '🔊 ON' : '🎵 OFF';
+    btn.style.background = _bgmOn ? 'var(--gold)' : '';
   }
-  const btn = document.getElementById('bgmToggleBtn');
-  if (btn) btn.textContent = _bgmOn ? '🔊' : '🎵';
-  btn.title = _bgmOn ? 'Music ON — click to stop' : 'Music OFF — click to play';
 };
 
 // ── Leaderboard Logic ──
@@ -1224,7 +1228,7 @@ window.closeLeaderboard = () => {
 </script>
 
 <!-- Leaderboard Modal -->
-<div class="leaderboard-modal" id="leaderboardModal">
+<div class="leaderboard-modal" id="leaderboardModal" onclick="if(event.target===this)window.closeLeaderboard()">
   <div class="leaderboard-box">
     <div class="modal-close" onclick="window.closeLeaderboard()" style="top:12px;right:12px;">×</div>
     <h2 class="leaderboard-title">🏆 TOP 10 PLAYERS</h2>
@@ -1251,7 +1255,7 @@ window.closeLeaderboard = () => {
 </div>
 
 <!-- Login Prompt Modal -->
-<div class="login-prompt-modal" id="loginPromptModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(20,40,65,0.8);align-items:center;justify-content:center;">
+<div class="login-prompt-modal" id="loginPromptModal" onclick="if(event.target===this)document.getElementById('loginPromptModal').style.display='none'" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(20,40,65,0.8);align-items:center;justify-content:center;">
   <div class="settings-box" style="text-align:center;">
     <h2 class="settings-title">LOGIN REQUIRED</h2>
     <p style="font-family:'VT323',monospace;font-size:24px;color:var(--dark);margin-bottom:20px;">You must be logged in to like works!</p>

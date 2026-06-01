@@ -86,7 +86,28 @@ export async function loginWithGoogle() {
     await signInWithPopup(auth, provider);
   } catch (error) {
     console.error("Login failed", error);
-    alert("Login Error: " + error.message + "\n\n(Please check Firebase Auth settings or Authorized Domains)");
+    // Show a non-blocking in-page error message
+    const code = error.code || '';
+    let msg = 'Login failed. Please try again.';
+    if (code === 'auth/unauthorized-domain') {
+      msg = '⚠ This domain is not authorized in Firebase.\nPlease add it to Firebase Console → Authentication → Authorized Domains.';
+    } else if (code === 'auth/popup-closed-by-user') {
+      return; // User closed popup — not an error
+    } else if (code === 'auth/popup-blocked') {
+      msg = '⚠ Popup was blocked by your browser. Please allow popups for this site.';
+    }
+    // Show a toast notification
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+      background:#c0392b;color:#fff;padding:12px 24px;
+      font-family:'VT323',monospace;font-size:22px;z-index:9999;
+      border:3px solid #7b241c;box-shadow:4px 4px 0 rgba(0,0,0,0.5);
+      max-width:90vw;text-align:center;white-space:pre-line;
+    `;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 6000);
   }
 }
 
