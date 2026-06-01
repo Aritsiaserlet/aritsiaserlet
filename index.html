@@ -603,7 +603,8 @@ window.checkAdminPassword = function() {
   const pw = document.getElementById('adminPasswordInput').value;
   if(pw === '7964') {
     document.getElementById('adminPasswordInput').style.display = 'none';
-    document.getElementById('adminAuthLabel').innerText = 'GitHub Token';
+    const lbl = document.getElementById('adminAuthLabel');
+    if (lbl) lbl.innerText = 'GitHub Token';
     document.getElementById('adminTokenDiv').style.display = 'flex';
     document.getElementById('adminErrorMsg').innerText = '';
     document.getElementById('adminTokenInput').focus();

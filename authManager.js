@@ -130,15 +130,34 @@ export function getCurrentUser() {
 
 export async function fetchLikeCounts() {
   try {
-    const worksSnap = await getDocs(collection(db, 'works'));
+    // We use collectionGroup to fetch all 'likes' subcollections across all users.
+    // NOTE: This requires a Collection Group Index in Firebase Console.
+    const snap = await getDocs(collectionGroup(db, 'likes'));
     const likeData = {};
-    worksSnap.forEach(docSnap => {
-      likeData[docSnap.id] = docSnap.data().likes || 0;
+    snap.forEach(docSnap => {
+      const workId = docSnap.id;
+      likeData[workId] = (likeData[workId] || 0) + 1;
     });
     return likeData;
   } catch (error) {
-    console.error("Failed to fetch like counts", error);
-    return {};
+    console.error("Failed to fetch like counts via collectionGroup", error);
+    // Fallback: If collectionGroup fails due to missing index, manually fetch per user
+    try {
+      console.log("Attempting manual fetch fallback...");
+      const likeData = {};
+      const usersSnap = await getDocs(collection(db, 'users'));
+      for (const userDoc of usersSnap.docs) {
+        const userLikesSnap = await getDocs(collection(db, `users/${userDoc.id}/likes`));
+        userLikesSnap.forEach(likeDoc => {
+          const workId = likeDoc.id;
+          likeData[workId] = (likeData[workId] || 0) + 1;
+        });
+      }
+      return likeData;
+    } catch (fallbackError) {
+      console.error("Fallback fetch also failed", fallbackError);
+      return {};
+    }
   }
 }
 
@@ -161,16 +180,13 @@ export async function toggleLike(workId, isLiking) {
   if (!currentUser) return false;
   
   const uid = currentUser.uid;
-  const workRef = doc(db, 'works', workId);
   const userLikeRef = doc(db, `users/${uid}/likes`, workId);
 
   try {
     if (isLiking) {
       await setDoc(userLikeRef, { createdAt: serverTimestamp() });
-      await setDoc(workRef, { likes: increment(1) }, { merge: true });
     } else {
       await deleteDoc(userLikeRef);
-      await setDoc(workRef, { likes: increment(-1) }, { merge: true });
     }
     return true;
   } catch (error) {
