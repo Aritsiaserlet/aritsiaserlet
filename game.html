@@ -517,15 +517,57 @@
   animateLobby();
 
   // Leaderboard Logic
-  window.openLeaderboard = async (pendingScore = 0) => {
-    const modal = document.getElementById('leaderboardModal');
+    // Leaderboard and Stats Logic
+  window.refreshLobbyStats = async (pendingScore = 0) => {
     const listEl = document.getElementById('leaderboardList');
-    modal.classList.add('open');
-    listEl.innerHTML = '<div style="text-align:center;font-size:24px;font-family:\'VT323\';">Loading top players...</div>';
+    if (!listEl) return;
+    listEl.innerHTML = '<div style="text-align:center;font-size:20px;font-family:\'VT323\';">Loading...</div>';
+    
+    let myHighScore = 0;
     
     try {
-      const { collection, query, orderBy, limit, getDocs } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+      const { collection, query, orderBy, limit, getDocs, doc, getDoc, getCountFromServer, where } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
       const { db } = await import('./authManager.js');
+      
+      // Update Right Panel (Stats)
+      const currentUser = window.gameAuthManager ? window.gameAuthManager.getCurrentUser() : null;
+      if (currentUser) {
+        document.getElementById('lobbyLoginBox').style.display = 'none';
+        document.getElementById('lobbyProfileBox').style.display = 'flex';
+        document.getElementById('lobbyAvatar').src = currentUser.photoURL || 'https://via.placeholder.com/80';
+        document.getElementById('lobbyName').innerText = currentUser.displayName || 'Player';
+        
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const d = userSnap.data();
+          myHighScore = d.highScore || 0;
+          document.getElementById('statHigh').innerText = myHighScore;
+          const totalScore = d.totalScore || 0;
+          const gamesPlayed = d.gamesPlayed || 0;
+          document.getElementById('statAvg').innerText = gamesPlayed > 0 ? Math.round(totalScore / gamesPlayed) : 0;
+          document.getElementById('statCombo').innerText = d.bestCombo || 0;
+          document.getElementById('statGames').innerText = gamesPlayed;
+          
+          let seconds = d.playTimeSeconds || 0;
+          let timeStr = "";
+          if (seconds < 60) timeStr = seconds + "s";
+          else if (seconds < 3600) timeStr = Math.floor(seconds/60) + "m";
+          else timeStr = Math.floor(seconds/3600) + "h " + Math.floor((seconds%3600)/60) + "m";
+          document.getElementById('statTime').innerText = timeStr;
+          
+          // Calculate Rank
+          const higherScoresQ = query(collection(db, "users"), where("highScore", ">", myHighScore));
+          const snapCount = await getCountFromServer(higherScoresQ);
+          const rank = snapCount.data().count + 1;
+          document.getElementById('lobbyRank').innerText = `Rank: #${rank}`;
+        }
+      } else {
+        document.getElementById('lobbyLoginBox').style.display = 'flex';
+        document.getElementById('lobbyProfileBox').style.display = 'none';
+      }
+
+      // Update Left Panel (Leaderboard)
       const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
       const snap = await getDocs(q);
       
@@ -535,47 +577,35 @@
         const promptBanner = document.createElement('div');
         promptBanner.style.cssText = 'background:var(--gold-l); border:3px dashed var(--dark); padding:16px; margin-bottom:16px; text-align:center; font-family:"VT323", monospace; font-size:22px; color:var(--dark);';
         promptBanner.innerHTML = `
-          <div style="margin-bottom:12px;">You scored <span style="color:var(--danger);font-family:'Press Start 2P',cursive;font-size:16px;margin:0 4px;">${pendingScore}</span> points!</div>
-          <div style="margin-bottom:12px;">Do you want to login to save your score?</div>
-          <div style="display:flex; justify-content:center; gap:12px;">
-            <button class="game-btn" onclick="window.pendingScoreToSave=${pendingScore}; window.gameAuthManager.login();" style="font-size:16px;padding:8px 16px;">YES, LOGIN</button>
-            <button class="game-btn" onclick="this.parentElement.parentElement.remove()" style="font-size:16px;padding:8px 16px;background:var(--danger);color:#fff;">NO THANKS</button>
-          </div>
+          Score: ${pendingScore}<br>
+          <button onclick="window.gameAuthManager.login()" style="margin-top:8px;padding:8px 16px;font-family:'VT323',monospace;font-size:20px;cursor:pointer;border:3px solid var(--dark);background:var(--sky4);">Login to Save</button>
         `;
         listEl.appendChild(promptBanner);
       }
 
-      if (snap.empty) {
-        const emptyMsg = document.createElement('div');
-        emptyMsg.style.cssText = 'text-align:center;font-size:24px;font-family:\'VT323\';';
-        emptyMsg.textContent = 'No scores yet!';
-        listEl.appendChild(emptyMsg);
-        return;
-      }
-      
-      let rank = 1;
-      snap.forEach(doc => {
-        const data = doc.data();
+      let rankList = 1;
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
         const item = document.createElement('div');
-        item.className = `leaderboard-item ${rank <= 3 ? 'top3' : ''}`;
+        item.className = `leaderboard-item ${rankList <= 3 ? 'top3' : ''}`;
         item.innerHTML = `
-          <div class="lb-rank">#${rank}</div>
-          <img class="lb-avatar" src="${data.photoURL || ''}">
-          <div class="lb-name">${data.displayName || 'Anonymous'}</div>
-          <div class="lb-score">${data.highScore || 0} PTS</div>
+          <div class="lb-rank">#${rankList}</div>
+          <img src="${data.photoURL || 'https://via.placeholder.com/36'}" class="lb-avatar">
+          <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+            <div style="font-family:'VT323',monospace; font-size:20px; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${data.displayName || 'Anonymous'}</div>
+            <div style="font-family:'Press Start 2P',cursive; font-size:10px; color:var(--dark);">${data.highScore || 0}</div>
+          </div>
         `;
         listEl.appendChild(item);
-        rank++;
+        rankList++;
       });
     } catch (error) {
-      listEl.innerHTML += '<div style="text-align:center;font-size:24px;color:var(--danger);font-family:\'VT323\';">Failed to load leaderboard.</div>';
+      listEl.innerHTML += '<div style="text-align:center;font-size:20px;color:var(--danger);font-family:\'VT323\';">Failed to load stats.</div>';
       console.error(error);
     }
   };
-
-  window.closeLeaderboard = () => {
-    document.getElementById('leaderboardModal').classList.remove('open');
-  };
+  
+  window.openLeaderboard = window.refreshLobbyStats;
   function startGameFromLobby() {
     document.getElementById('lobbyScreen').style.display = 'none';
     document.getElementById('gameTopNav').style.display = 'none'; // hide top nav during game
