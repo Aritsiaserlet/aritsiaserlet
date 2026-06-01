@@ -273,22 +273,35 @@ input[type="file"] {
             </div>
           </div>
         </div>
-        <div class="field">
-          <label>About Text</label>
-          <textarea id="aboutText" placeholder="Write something about yourself..."></textarea>
+
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">CATEGORIES (GAME, MOD, 3D)</h3>
+        <div id="catsList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:24px;">
+          <!-- Filled by JS -->
         </div>
-        <div class="field">
-          <label>Social Links</label>
-          <div style="display:flex;gap:10px;margin-bottom:10px">
-            <input type="text" id="socialX" placeholder="X (Twitter) URL">
-            <input type="text" id="socialInsta" placeholder="Instagram URL">
-          </div>
-          <div style="display:flex;gap:10px">
-            <input type="text" id="socialFb" placeholder="Facebook URL">
-            <input type="text" id="socialYt" placeholder="YouTube URL">
+
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOCIAL LINKS</h3>
+        <div id="socialsList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
+          <!-- Filled by JS -->
+        </div>
+        <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
+
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">GAME SETTINGS</h3>
+        <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
+          <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Here you can upload your custom Player Sprite and Attack Animation for the Minigame (Coming soon / Work in Progress).</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="field" style="flex:1;min-width:200px;">
+              <label>Player Sprite (Idle/Fly)</label>
+              <input type="file" accept="image/*" disabled title="Coming soon">
+            </div>
+            <div class="field" style="flex:1;min-width:200px;">
+              <label>Player Attack Sprite</label>
+              <input type="file" accept="image/*" disabled title="Coming soon">
+            </div>
           </div>
         </div>
-        <button class="submit-btn" onclick="saveSettings()">SAVE SETTINGS</button>
+
+        <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
+        <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
         <p class="form-msg" id="settingsMsg"></p>
       </div>
     </div>
@@ -313,6 +326,21 @@ input[type="file"] {
 
         <div class="edit-banner" id="editBanner">✏️ EDIT MODE — editing existing work</div>
         
+        <div class="field">
+          <label>Image/Thumbnail</label>
+          <div class="img-preview-wrap">
+            <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
+              <span style="font-size:32px">🖼️</span>
+              <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
+            </div>
+            <div class="img-focal-hint" id="focalHint" style="display:none">
+              <label style="font-size:16px;color:var(--dark);display:block;margin-bottom:4px">Focal Point (up/down)</label>
+              <input type="range" id="focalSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--dark)" oninput="updateFocal(this.value)">
+            </div>
+          </div>
+          <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)" style="display:none">
+        </div>
+
         <div class="field">
           <label>Work Name</label>
           <input type="text" id="wName" placeholder="e.g. Space Shooter">
@@ -350,20 +378,7 @@ input[type="file"] {
           </div>
         </div>
         
-        <div class="field">
-          <label>Image/Thumbnail</label>
-          <div class="img-preview-wrap">
-            <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
-              <span style="font-size:32px">🖼️</span>
-              <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
-            </div>
-            <div class="img-focal-hint" id="focalHint" style="display:none">
-              <label style="font-size:16px;color:var(--dark);display:block;margin-bottom:4px">Focal Point (up/down)</label>
-              <input type="range" id="focalSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--dark)" oninput="updateFocal(this.value)">
-            </div>
-          </div>
-          <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)" style="display:none">
-        </div>
+
 
         <div class="field" id="modelWrap" style="display:none">
           <label>3D Model (.glb) — สำหรับ 3D viewer</label>
@@ -446,6 +461,15 @@ function animateParticles(){
 animateParticles();
 
 // ── Auth ──
+window.addEventListener('DOMContentLoaded', () => {
+  const savedToken = sessionStorage.getItem('ghToken');
+  if(savedToken) {
+    document.getElementById('pwInput').value = PASS;
+    document.getElementById('tokenInput').value = savedToken;
+    checkPw();
+  }
+});
+
 function checkPw(){
   const pw=document.getElementById('pwInput').value;
   const tk=document.getElementById('tokenInput').value.trim();

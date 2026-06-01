@@ -458,7 +458,7 @@
   animateLobby();
 
   // Leaderboard Logic
-  window.openLeaderboard = async () => {
+  window.openLeaderboard = async (pendingScore = 0) => {
     const modal = document.getElementById('leaderboardModal');
     const listEl = document.getElementById('leaderboardList');
     modal.classList.add('open');
@@ -471,8 +471,26 @@
       const snap = await getDocs(q);
       
       listEl.innerHTML = '';
+      
+      if (pendingScore > 0) {
+        const promptBanner = document.createElement('div');
+        promptBanner.style.cssText = 'background:var(--gold-l); border:3px dashed var(--dark); padding:16px; margin-bottom:16px; text-align:center; font-family:"VT323", monospace; font-size:22px; color:var(--dark);';
+        promptBanner.innerHTML = `
+          <div style="margin-bottom:12px;">You scored <span style="color:var(--danger);font-family:'Press Start 2P',cursive;font-size:16px;margin:0 4px;">${pendingScore}</span> points!</div>
+          <div style="margin-bottom:12px;">Do you want to login to save your score?</div>
+          <div style="display:flex; justify-content:center; gap:12px;">
+            <button class="game-btn" onclick="window.pendingScoreToSave=${pendingScore}; window.gameAuthManager.login();" style="font-size:16px;padding:8px 16px;">YES, LOGIN</button>
+            <button class="game-btn" onclick="this.parentElement.parentElement.remove()" style="font-size:16px;padding:8px 16px;background:var(--danger);color:#fff;">NO THANKS</button>
+          </div>
+        `;
+        listEl.appendChild(promptBanner);
+      }
+
       if (snap.empty) {
-        listEl.innerHTML = '<div style="text-align:center;font-size:24px;font-family:\'VT323\';">No scores yet!</div>';
+        const emptyMsg = document.createElement('div');
+        emptyMsg.style.cssText = 'text-align:center;font-size:24px;font-family:\'VT323\';';
+        emptyMsg.textContent = 'No scores yet!';
+        listEl.appendChild(emptyMsg);
         return;
       }
       
@@ -491,7 +509,7 @@
         rank++;
       });
     } catch (error) {
-      listEl.innerHTML = '<div style="text-align:center;font-size:24px;color:var(--danger);font-family:\'VT323\';">Failed to load leaderboard.</div>';
+      listEl.innerHTML += '<div style="text-align:center;font-size:24px;color:var(--danger);font-family:\'VT323\';">Failed to load leaderboard.</div>';
       console.error(error);
     }
   };
@@ -516,26 +534,25 @@
   }
 
   window.exitGameToLobby = function() {
-    // Check if score is > 0 and user is NOT logged in.
     const finalScore = parseInt(document.getElementById('finalScore').innerText || '0', 10);
-    const scoreVal = window.currentScore || 0; // We can get score from the element instead since we just exited
+    const scoreVal = window.currentScore || 0; 
     const scoreToSave = scoreVal > 0 ? scoreVal : finalScore;
-
-    if (scoreToSave > 0 && (!window.gameAuthManager || !window.gameAuthManager.getCurrentUser())) {
-      if (confirm('You are not logged in! Do you want to login to save your score of ' + scoreToSave + ' ?')) {
-        window.pendingScoreToSave = scoreToSave;
-        window.pendingExitToLobby = true;
-        window.gameAuthManager.login();
-        return; // Don't go to lobby yet, let login finish and auth listener will save score.
-      }
-    }
 
     if (window.stopGame) window.stopGame();
     document.getElementById('gameContainer').style.display = 'none';
     document.getElementById('lobbyScreen').style.display = 'flex';
     document.getElementById('gameTopNav').style.display = 'flex';
-    // The user requested: "ตอนกด exit ให้กลับหน้า lobby และก็ขึ้น leaderboard"
-    window.openLeaderboard();
+
+    if (scoreToSave > 0) {
+      if (window.gameAuthManager && window.gameAuthManager.getCurrentUser()) {
+        window.saveScore(scoreToSave);
+        window.openLeaderboard();
+      } else {
+        window.openLeaderboard(scoreToSave);
+      }
+    } else {
+      window.openLeaderboard();
+    }
   };
 
   function applyGameSettings() {

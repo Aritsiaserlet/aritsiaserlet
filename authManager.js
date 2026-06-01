@@ -126,36 +126,31 @@ export function getCurrentUser() {
 }
 
 // ── Likes System ──
-// Source of truth: likes/{workId} -> { uids: [uid1, uid2, ...] }
 
 export async function fetchLikeCounts() {
   try {
-    const snap = await getDocs(collection(db, 'likes'));
-    const likeData = {};
+    const snap = await getDocs(collectionGroup(db, 'likes'));
+    const counts = {};
     snap.forEach(docSnap => {
-      const data = docSnap.data();
-      likeData[docSnap.id] = data.uids ? data.uids.length : 0;
+      const workId = docSnap.id;
+      counts[workId] = (counts[workId] || 0) + 1;
     });
-    return likeData;
+    return counts;
   } catch (error) {
-    console.error("Failed to fetch like counts", error);
+    console.error("Failed to fetch like counts (may require index)", error);
     return {};
   }
 }
 
 export async function fetchUserLikes(uid) {
+  if (!uid) return {};
   try {
-    // We can just fetch all likes and find which ones have uid in uids
-    // Or we could use a query: query(collection(db, 'likes'), where('uids', 'array-contains', uid))
-    const snap = await getDocs(collection(db, 'likes'));
-    const userLikes = {};
+    const snap = await getDocs(collection(db, `users/${uid}/likes`));
+    const likes = {};
     snap.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.uids && data.uids.includes(uid)) {
-        userLikes[docSnap.id] = true;
-      }
+      likes[docSnap.id] = true;
     });
-    return userLikes;
+    return likes;
   } catch (error) {
     console.error("Failed to fetch user likes", error);
     return {};
@@ -165,12 +160,12 @@ export async function fetchUserLikes(uid) {
 export async function toggleLike(workId, isLiking) {
   if (!currentUser) return false;
   const uid = currentUser.uid;
-  const likeRef = doc(db, 'likes', workId);
+  const likeRef = doc(db, `users/${uid}/likes`, workId);
   try {
     if (isLiking) {
-      await setDoc(likeRef, { uids: arrayUnion(uid) }, { merge: true });
+      await setDoc(likeRef, { likedAt: serverTimestamp() });
     } else {
-      await setDoc(likeRef, { uids: arrayRemove(uid) }, { merge: true });
+      await deleteDoc(likeRef);
     }
     return true;
   } catch (error) {
