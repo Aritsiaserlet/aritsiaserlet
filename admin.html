@@ -329,7 +329,22 @@ input[type="file"] {
           </div>
         </div>
 
-        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">BALANCE & MECHANICS</h3>
+        
+        
+        <button class="submit-btn" id="saveAnimBtn" onclick="saveGameAnimations()">SAVE ANIMATIONS</button>
+        <div class="progress-bar" id="animProgressBar"><div class="progress-fill" id="animProgressFill"></div></div>
+        <p class="form-msg" id="animMsg"></p>
+      </div>
+    </div>
+
+    <!-- Game Balance Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>GAME BALANCE & MECHANICS</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        
         <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
             <div class="field">
@@ -347,15 +362,14 @@ input[type="file"] {
             <div class="field">
               <label>Firework Icon (In-Game)</label>
               <select id="gsetFwIcon" style="padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);width:100%;">
-                <!-- Filled by JS generateIconOptions -->
               </select>
             </div>
           </div>
         </div>
         
-        <button class="submit-btn" id="saveGameSettingsBtn" onclick="saveGameSettings()">SAVE GAME SETTINGS</button>
-        <div class="progress-bar" id="gsetProgressBar"><div class="progress-fill" id="gsetProgressFill"></div></div>
-        <p class="form-msg" id="gsetMsg"></p>
+        <button class="submit-btn" id="saveBalBtn" onclick="saveGameBalance()">SAVE BALANCE</button>
+        <div class="progress-bar" id="balProgressBar"><div class="progress-fill" id="balProgressFill"></div></div>
+        <p class="form-msg" id="balMsg"></p>
       </div>
     </div>
 
@@ -1178,15 +1192,13 @@ async function saveSettings(){
 }
 
 
-async function saveGameSettings() {
-  const btn=document.getElementById('saveGameSettingsBtn');
-  const bar=document.getElementById('gsetProgressBar');
-  const fill=document.getElementById('gsetProgressFill');
-  const msg=document.getElementById('gsetMsg');
-
+async function saveGameAnimations() {
+  const btn=document.getElementById('saveAnimBtn');
+  const bar=document.getElementById('animProgressBar');
+  const fill=document.getElementById('animProgressFill');
+  const msg=document.getElementById('animMsg');
   btn.disabled=true; bar.style.display='block'; fill.style.width='10%';
-  msg.className='form-msg ok'; msg.textContent='Saving Game Settings...';
-
+  msg.className='form-msg ok'; msg.textContent='Saving Animations...';
   try{
     if (!settings.game) settings.game = {};
     if(gSpriteBase64){
@@ -1199,35 +1211,47 @@ async function saveGameSettings() {
       await ghPutBinary(fname, gAttackBase64, 'Upload Attack Sprite');
       settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
     }
-    
     settings.game.playerSpriteFrames = parseInt(document.getElementById('gsetSpriteFrames').value) || 1;
     settings.game.playerSpriteFps = parseInt(document.getElementById('gsetSpriteFps').value) || 12;
     settings.game.playerSpriteLoop = document.getElementById('gsetSpriteLoop').checked;
-    
     settings.game.playerAttackFrames = parseInt(document.getElementById('gsetAttackFrames').value) || 1;
     settings.game.playerAttackFps = parseInt(document.getElementById('gsetAttackFps').value) || 15;
     settings.game.playerAttackLoop = document.getElementById('gsetAttackLoop').checked;
+    const json=JSON.stringify(settings,null,2);
+    const result=await ghPut(JSON_PATH, json, 'Update Game Animations', settingsSha);
+    settingsSha=result.content.sha;
+    fill.style.width='100%';
+    msg.textContent='Animations saved!';
+    setTimeout(()=>{bar.style.display='none';msg.textContent='';},3000);
+  }catch(e){
+    msg.className='form-msg err'; msg.textContent='Error: '+e.message; bar.style.display='none';
+  }finally{ btn.disabled=false; }
+}
 
+async function saveGameBalance() {
+  const btn=document.getElementById('saveBalBtn');
+  const bar=document.getElementById('balProgressBar');
+  const fill=document.getElementById('balProgressFill');
+  const msg=document.getElementById('balMsg');
+  btn.disabled=true; bar.style.display='block'; fill.style.width='10%';
+  msg.className='form-msg ok'; msg.textContent='Saving Balance...';
+  try{
+    if (!settings.game) settings.game = {};
     settings.game.fwDropChance = parseInt(document.getElementById('gsetFwDrop').value) || 0;
     settings.game.pointsPerHit = parseInt(document.getElementById('gsetPtsHit').value) || 15;
     settings.game.missPenalty = parseInt(document.getElementById('gsetMissPen').value) || 5;
     settings.game.fwIconId = document.getElementById('gsetFwIcon').value || '';
-
     const json=JSON.stringify(settings,null,2);
-    const result=await ghPut(JSON_PATH, json, 'Update Game Settings', settingsSha);
+    const result=await ghPut(JSON_PATH, json, 'Update Game Balance', settingsSha);
     settingsSha=result.content.sha;
-
     fill.style.width='100%';
-    msg.textContent='Game Settings saved!';
+    msg.textContent='Balance saved!';
     setTimeout(()=>{bar.style.display='none';msg.textContent='';},3000);
   }catch(e){
-    msg.className='form-msg err';
-    msg.textContent='Error: '+e.message;
-    bar.style.display='none';
-  }finally{
-    btn.disabled=false;
-  }
+    msg.className='form-msg err'; msg.textContent='Error: '+e.message; bar.style.display='none';
+  }finally{ btn.disabled=false; }
 }
+
 
 // ── Add work ──
 async function addWork(){

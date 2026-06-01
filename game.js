@@ -539,7 +539,7 @@ window.resetGame = function () {
   score = 0; fireworks = 0; multiplier = 1; maxMultiplier = 1; boostStacks = 0;
   boostTimer   = 0; baseSpeed    = 5; currentSpeed = baseSpeed;
   enemies      = []; particles   = [];
-  gameStartTime = Date.now();
+  gameStartTime = Date.now(); window.gameStartTime = gameStartTime;
   frameCount   = 0; groundOffset = 0;
   birds        = []; speedLines  = [];
   nextBirdFrame = 600 + Math.floor(Math.random() * 300);
@@ -662,15 +662,21 @@ function checkDiveCollision() {
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
     if (hx < e.x + e.w && hx + hw > e.x && hy < e.y + e.h && hy + hh > e.y) {
-      score += 10 * multiplier;
-      const gotFirework = Math.random() < 0.3;
+      const basePts = (window.settingsData && window.settingsData.game && window.settingsData.game.pointsPerHit !== undefined) ? window.settingsData.game.pointsPerHit : 15;
+      const pts = basePts * multiplier;
+      score += pts;
+      const fwChance = (window.settingsData && window.settingsData.game && window.settingsData.game.fwDropChance !== undefined) ? window.settingsData.game.fwDropChance / 100 : 0.1;
+      const gotFirework = Math.random() < fwChance;
       if (gotFirework) { fireworks++; updateHUD(); }
       const ex = e.x + e.w / 2, ey = e.y + e.h / 2;
       spawnParticles(ex, ey, '#f1c40f', 16);
       spawnParticles(ex, ey, '#ffffff', 10);
       spawnParticles(ex, ey, '#ffd700', 8);
       shakeScreen(); updateHUD();
-      // SFX: combo if multiplier > 1, else normal score hit
+      
+      const offsetY = floatingTexts.length * 20;
+      floatingTexts.push({ x: 30, y: 70 + offsetY, text: "+" + pts, life: 60, maxLife: 60, color: '#f1c40f', isHud: true });
+
       if (window.gameAudio) {
         window.gameAudio.sfxHit();
         if (multiplier > 1) window.gameAudio.sfxCombo();

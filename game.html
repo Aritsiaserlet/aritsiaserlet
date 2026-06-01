@@ -632,13 +632,34 @@
     const finalScore = parseInt(document.getElementById('finalScore').innerText || '0', 10);
     const scoreVal = window.currentScore || 0; 
     const scoreToSave = scoreVal > 0 ? scoreVal : finalScore;
+    const playTimeSeconds = window.gameStartTime ? Math.floor((Date.now() - window.gameStartTime) / 1000) : 0;
+    window.gameStartTime = null; // reset
 
     if (window.stopGame) window.stopGame();
     document.getElementById('gameContainer').style.display = 'none';
     document.getElementById('lobbyScreen').style.display = 'flex';
     document.getElementById('gameTopNav').style.display = 'flex';
 
-    if (scoreToSave > 0) {
+    if (scoreToSave >= 0 && playTimeSeconds > 0) { // allow 0 score if they just played to save time
+      if (!currentUser) {
+        if (confirm('You are not logged in! Do you want to login to save your playtime and score?')) {
+          window.pendingScoreToSave = scoreToSave;
+          window.pendingPlayTime = playTimeSeconds;
+          window.pendingExitToLobby = true;
+          window.gameAuthManager.login();
+        } else {
+          finishExit();
+        }
+        return;
+      } else {
+        window.saveScore(scoreToSave, playTimeSeconds);
+        finishExit();
+      }
+    } else {
+      finishExit();
+    }
+    
+    function finishExit() {
       if (window.gameAuthManager && window.gameAuthManager.getCurrentUser()) {
         window.saveScore(scoreToSave);
         window.openLeaderboard();
@@ -769,7 +790,7 @@
 
       // Check if we have a pending score to save after login
       if (window.pendingScoreToSave > 0) {
-        window.saveScore(window.pendingScoreToSave);
+        window.saveScore(window.pendingScoreToSave, window.pendingPlayTime || 0);
         window.pendingScoreToSave = 0;
         
         // Return to lobby if we were waiting on exit
