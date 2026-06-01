@@ -952,9 +952,11 @@ function renderSettingsUI() {
   const catsBox = document.getElementById('catsList');
   if (catsBox) {
     catsBox.innerHTML = '';
+    if (!settings.categories) settings.categories = {};
     if (settings.categories) {
       ['game', 'mod', '3d'].forEach(id => {
-        const c = settings.categories[id] || {};
+        if (!settings.categories[id]) settings.categories[id] = {};
+        const c = settings.categories[id];
         const defaultName = id === 'game' ? 'GAME' : (id === 'mod' ? 'MINECRAFT MOD' : '3D MODEL');
         
         let iconUrl = '';

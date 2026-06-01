@@ -266,7 +266,7 @@
     flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
   }
   .lobby-stat-row {
-    display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed var(--dark); padding-bottom: 4px;
+    display: flex; justify-content: space-between; margin-bottom: 8px; border: 3px solid var(--dark); padding: 8px 12px; background: var(--sky1); color: var(--dark);
   }
   @media (max-width: 1000px) {
     .lobby-content-grid { flex-direction: column; overflow-y: auto; align-items: center; justify-content: flex-start; }
@@ -278,7 +278,7 @@
     animation:driftCloud linear infinite;
   }
   .lobby-cloud::before, .lobby-cloud::after {
-    content:''; position:absolute; background:inherit; border-radius:50%;
+    content:''; position:absolute; background:inherit; border-radius:4px;
   }
   @keyframes driftCloud {
     from { transform: translateX(100vw); }
@@ -363,22 +363,22 @@
 
   <div class="lobby-content-grid">
     <div class="lobby-left">
-      <h2 class="leaderboard-title" style="margin-top:0;">🏆 TOP 10 PLAYERS</h2>
+      <h2 class="leaderboard-title" style="margin-top:0;">TOP 10 PLAYERS</h2>
       <div class="leaderboard-list" id="leaderboardList"></div>
     </div>
 
     <div class="lobby-center">
-      <h1>ARITSIA WITH MACE</h1>
+      <h1 style="line-height:1.2; font-size:clamp(32px, 5vw, 56px);">ARITSIA<br><span style="font-size:0.6em; color:var(--dark);">With Elytra Mace</span></h1>
       <div class="lobby-player"></div>
       <p style="font-family:'VT323',monospace; font-size:24px; margin-bottom:20px; text-shadow:1px 1px 0 rgba(0,0,0,0.5);">Dive into the artworks. Hit them to score!<br>Miss them and you lose points.</p>
       <button class="game-btn btn-play" onclick="startGameFromLobby()" style="font-size:clamp(14px,2.5vw,20px);padding:14px 28px;">▶ PLAY GAME</button>
-      <div class="lobby-hint">SPACE or Left-Click = Dive &nbsp;|&nbsp; SHIFT or Right-Click = Boost<br>Touch: Left Half = Boost 👉 Right Half = Dive</div>
-      <button class="game-btn btn-exit" onclick="exitToPortfolio()" style="font-size:clamp(11px,1.5vw,14px);padding:8px 16px;">🔙 BACK TO PORTFOLIO</button>
+      <div class="lobby-hint">SPACE or Left-Click = Dive &nbsp;|&nbsp; SHIFT or Right-Click = Boost<br>Touch: Left Half = Boost | Right Half = Dive</div>
+      <button class="game-btn btn-exit" onclick="exitToPortfolio()" style="font-size:clamp(11px,1.5vw,14px);padding:8px 16px;">BACK TO PORTFOLIO</button>
     </div>
 
     <div class="lobby-right">
       <div id="lobbyProfileBox" style="display:none; flex-direction:column; align-items:center;">
-        <img id="lobbyAvatar" src="" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--dark);margin-bottom:12px;object-fit:cover;">
+        <img id="lobbyAvatar" src="" style="width:80px;height:80px;border-radius:4px;border:3px solid var(--dark);margin-bottom:12px;object-fit:cover;">
         <h2 id="lobbyName" style="font-family:'Press Start 2P',cursive; font-size:14px; color:var(--dark); text-shadow:1px 1px 0 var(--white); margin-bottom:8px;text-align:center;">Player</h2>
         <div id="lobbyRank" style="font-family:'VT323',monospace; font-size:24px; color:var(--gold); text-shadow:1px 1px 0 var(--dark); margin-bottom:20px;">Rank: ---</div>
         
@@ -387,7 +387,7 @@
           <div class="lobby-stat-row"><span>Average Score:</span><span id="statAvg">0</span></div>
           <div class="lobby-stat-row"><span>Highest Combo:</span><span id="statCombo">0</span></div>
           <div class="lobby-stat-row"><span>Games Played:</span><span id="statGames">0</span></div>
-          <div class="lobby-stat-row" style="border-bottom:none;"><span>Play Time:</span><span id="statTime">0m</span></div>
+          <div class="lobby-stat-row"><span>Play Time:</span><span id="statTime">0m</span></div>
         </div>
       </div>
       <div id="lobbyLoginBox" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
@@ -404,14 +404,20 @@
   <div id="gameHUD">
     <div id="hudTop">
       <div id="scoreBox">SCORE: <span id="gameScore">0</span></div>
-      <div style="display:flex; gap:12px; align-items:center;">
-        <button id="exitBtn" onclick="exitGameToLobby()" style="background:var(--danger); color:#fff; border:3px solid var(--dark); font-family:'Press Start 2P'; font-size:16px; padding:0 12px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:2px 2px 0 var(--dark);">✕ EXIT</button>
-        <button class="nav-btn" onclick="document.getElementById('gameSettingsModal').classList.add('open')" style="font-size:24px; padding:0 8px; margin:0; height:44px; display:flex; align-items:center; justify-content:center;">⚙</button>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button id="exitBtn" onclick="exitGameToLobby()" style="background:var(--danger); color:#fff; border:3px solid var(--dark); font-family:'Press Start 2P'; font-size:16px; padding:0 12px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:2px 2px 0 var(--dark);">🚪 EXIT</button>
+          <button class="nav-btn" onclick="document.getElementById('gameSettingsModal').classList.add('open')" style="font-size:24px; padding:0 8px; margin:0; height:44px; display:flex; align-items:center; justify-content:center;">⚙️</button>
+        </div>
+        <div id="fireworkDisplay" style="display:flex; align-items:center; gap:8px; font-size:24px; font-family:'Press Start 2P',cursive; text-shadow:2px 2px 0 #fff; color:var(--dark);">
+           <img src="data:image/svg+xml;utf8,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M7 11v4h2v-4z' fill='%238B4513'/><path d='M6 7h4v4H6z' fill='%23fff'/><path d='M5 6h6v1H5z' fill='%23ccc'/><path d='M6 3h4v3H6z' fill='%23fff'/><path d='M7 1h2v2H7z' fill='%23f00'/><path d='M8 0h1v1H8z' fill='%23f00'/></svg>" style="width:24px; height:24px; image-rendering:pixelated; filter: drop-shadow(2px 2px 0 #fff);">
+           x<span id="gameFireworks">0</span>
+        </div>
+        <div id="gameMultiplier" style="font-size: clamp(16px, 2.5vw, 24px); color: var(--gold); display: none; text-shadow:2px 2px 0 #000;"></div>
       </div>
     </div>
     <div id="hudBottom">
-      <div id="fireworkDisplay">🎆 FIREWORKS: <span id="gameFireworks">0</span></div>
-      <div id="gameMultiplier">x2 BOOST!</div>
+      
     </div>
   </div>
 
@@ -419,7 +425,7 @@
   <canvas id="gameCoreCanvas"></canvas>
 
   <!-- Controls Hint -->
-  <div id="controlsHint">SPACE or Left-Click = Dive &nbsp;|&nbsp; SHIFT or Right-Click = Boost &nbsp;|&nbsp; Touch: Left Half = Boost · Right Half = Dive</div>
+  <div id="controlsHint">SPACE or Left-Click = Dive &nbsp;|&nbsp; SHIFT or Right-Click = Boost &nbsp;|&nbsp; Touch: Left Half = Boost | Right Half = Dive</div>
 
   <!-- Game Over Screen -->
   <div id="gameOverScreen">

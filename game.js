@@ -29,7 +29,8 @@ let gameSettings = {};
 let isPlaying    = false;
 let score        = 0;
 let fireworks    = 0;
-let multiplier   = 1;
+let boostStacks = 0;
+let multiplier = 1;
 let maxMultiplier= 1;
 let boostTimer   = 0;
 let baseSpeed    = 5;
@@ -55,6 +56,7 @@ let keys      = {};
 let clouds      = [];
 let windStreaks  = [];
 let speedLines  = [];
+let floatingTexts = [];
 let grassBack   = [];
 let grassMid    = [];
 let grassFront  = [];
@@ -366,6 +368,25 @@ function drawGround() {
 // ─────────────────────────────────────────────
 // ── Ambient Birds (tiny V-shapes)
 // ─────────────────────────────────────────────
+function updateAndDrawFloatingTexts() {
+  for (let i = floatingTexts.length - 1; i >= 0; i--) {
+    const ft = floatingTexts[i];
+    ft.life--;
+    ft.y -= 1; // float up
+    if (ft.life <= 0) { floatingTexts.splice(i, 1); continue; }
+    
+    ctx.save();
+    ctx.globalAlpha = ft.life / ft.maxLife;
+    ctx.font = `${Math.floor(16 * getGraphicsScale())}px 'Press Start 2P', cursive`;
+    ctx.fillStyle = ft.color || '#f1c40f';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.strokeText(ft.text, ft.x, ft.y);
+    ctx.fillText(ft.text, ft.x, ft.y);
+    ctx.restore();
+  }
+}
+
 function updateBirds() {
   if (frameCount >= nextBirdFrame && birds.length < 5) {
     const flock = 1 + Math.floor(Math.random() * 3);
@@ -469,7 +490,7 @@ window.initGame = function (portfolioWorks, settings) {
   canvas.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     if (!isPlaying) return;
-    if (fireworks > 0) { fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); maxMultiplier = Math.max(maxMultiplier, multiplier); updateHUD(); }
+    if (fireworks > 0) { fireworks--; boostTimer += 180; boostStacks = Math.min(boostStacks + 1, 64); multiplier = boostStacks > 0 ? boostStacks * 2 : 1; maxMultiplier = Math.max(maxMultiplier, boostStacks); updateHUD(); }
   });
 
   // ── Touch: left half = dive, right half = boost
@@ -509,7 +530,7 @@ function resizeGame() {
 // ── Reset
 // ─────────────────────────────────────────────
 window.resetGame = function () {
-  score        = 0; fireworks    = 0; multiplier   = 1; maxMultiplier = 1;
+  score = 0; fireworks = 0; multiplier = 1; maxMultiplier = 1; boostStacks = 0;
   boostTimer   = 0; baseSpeed    = 5; currentSpeed = baseSpeed;
   enemies      = []; particles   = [];
   gameStartTime = Date.now();
@@ -544,7 +565,7 @@ function handleKeyDown(e) {
   keys[e.code] = true;
   if ((e.code === 'Space' || e.code === 'ArrowUp') && attack.canChain) triggerDive();
   if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && fireworks > 0) {
-    fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); maxMultiplier = Math.max(maxMultiplier, multiplier); updateHUD();
+    fireworks--; boostTimer += 180; boostStacks = Math.min(boostStacks + 1, 64); multiplier = boostStacks > 0 ? boostStacks * 2 : 1; maxMultiplier = Math.max(maxMultiplier, boostStacks); updateHUD();
     if (window.gameAudio) window.gameAudio.sfxBoost();
   }
 }
@@ -557,7 +578,7 @@ function handleTouch(e) {
   if (touchX < W / 2) {
     // Left half → Boost
     if (fireworks > 0) {
-      fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); maxMultiplier = Math.max(maxMultiplier, multiplier); updateHUD();
+      fireworks--; boostTimer += 180; boostStacks = Math.min(boostStacks + 1, 64); multiplier = boostStacks > 0 ? boostStacks * 2 : 1; maxMultiplier = Math.max(maxMultiplier, boostStacks); updateHUD();
       if (window.gameAudio) window.gameAudio.sfxBoost();
     }
   } else {
@@ -576,7 +597,7 @@ function updateHUD() {
   if (scoreEl) scoreEl.textContent = score;
   if (fwEl)    fwEl.textContent    = fireworks;
   if (mulEl) {
-    if (multiplier > 1) { mulEl.textContent = `x${multiplier} BOOST!`; mulEl.style.display = 'block'; }
+    if (boostStacks > 0) { mulEl.textContent = `x${multiplier} SCORE!`; mulEl.style.display = 'block'; }
     else mulEl.style.display = 'none';
   }
   window.currentScore = score;
@@ -804,6 +825,7 @@ function loop() {
   // ── Layer 3: Boost speed lines
   updateSpeedLines();
   drawSpeedLines();
+  updateAndDrawFloatingTexts();
 
   // ── Layer 4: Birds (ambient)
   updateBirds();
@@ -819,8 +841,8 @@ function loop() {
   // ── Boost / speed logic
   if (boostTimer > 0) {
     boostTimer--;
-    currentSpeed = baseSpeed + (multiplier * 3);
-    if (boostTimer <= 0) { multiplier = 1; currentSpeed = baseSpeed; updateHUD(); }
+    currentSpeed = baseSpeed + (boostStacks * 15);
+    if (boostTimer <= 0) { boostStacks = 0; multiplier = 1; currentSpeed = baseSpeed; updateHUD(); }
   }
 
   // ── Attack
@@ -896,11 +918,11 @@ function loop() {
     // Miss penalty
     if (e.x + e.w < player.x && !e.passed) {
       e.passed = true;
-      if (boostTimer <= 0) {
-        score = Math.max(0, score - 5); updateHUD();
-        if (window.gameAudio) window.gameAudio.sfxMiss();
-        if (score === 0) { gameOver(); return; }
-      }
+      const penalty = 5 * (boostStacks > 0 ? boostStacks * 4 : 1);
+      score = Math.max(0, score - penalty); updateHUD();
+      floatingTexts.push({ x: player.x + player.w/2, y: player.y, text: "-" + penalty, life: 40, maxLife: 40, color: '#e74c3c' });
+      if (window.gameAudio) window.gameAudio.sfxMiss();
+      if (score === 0) { gameOver(); return; }
     }
     if (e.x + e.w < -200) enemies.splice(i, 1);
   }
