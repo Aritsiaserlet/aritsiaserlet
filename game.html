@@ -402,16 +402,16 @@
     </div>
     <div class="gset-row">
       <span class="gset-label">Music Vol</span>
-      <input type="range" class="gset-range" id="gsetMusicVol" min="0" max="100" onchange="applyGameSettings()">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
+        <input type="range" class="gset-range" id="gsetMusicVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
+        <button class="game-btn" id="gameBgmBtn" onclick="if(window.gameAudio){ window.isGameBgmOn = window.gameAudio.toggleBGM(); this.textContent = window.isGameBgmOn ? '🔊' : '🔇'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+      </div>
     </div>
     <div class="gset-row">
       <span class="gset-label">SFX Vol</span>
       <input type="range" class="gset-range" id="gsetSfxVol" min="0" max="100" onchange="applyGameSettings()">
     </div>
-    <div class="gset-row">
-      <span class="gset-label">Music</span>
-      <button class="game-btn" id="gameBgmBtn" onclick="window.gameAudio && window.gameAudio.toggleBGM(); updateGameBgmBtn()" style="font-size:16px;padding:6px 12px;">🎵 OFF</button>
-    </div>
+
   </div>
 </div>
 
@@ -571,9 +571,19 @@
     }
   }
 
-  function updateGameBgmBtn() {
-    // State is tracked in audioManager
+  let _gameBgmOn = false;
+  window.updateGameBgmBtn = function() {
+    if (window.gameAudio) {
+      const btn = document.getElementById('gameBgmBtn');
+      if (btn) {
+        // gameAudio doesn't expose the direct boolean easily, so let's track it
+        // but wait, window.gameAudio.toggleBGM() returns musicIsPlaying!
+      }
+    }
   }
+
+  // We should just use an onclick directly inline:
+  // onclick="if(window.gameAudio) { window.isGameBgmOn = window.gameAudio.toggleBGM(); document.getElementById('gameBgmBtn').textContent = window.isGameBgmOn ? '🔊' : '🔇'; }"
 
   function initGameSettings() {
     try {
@@ -674,6 +684,8 @@
           document.getElementById('gameContainer').style.display = 'none';
           document.getElementById('lobbyScreen').style.display = 'flex';
           document.getElementById('gameTopNav').style.display = 'flex';
+          window.openLeaderboard();
+        } else {
           window.openLeaderboard();
         }
       }

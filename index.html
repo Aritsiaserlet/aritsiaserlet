@@ -565,23 +565,22 @@ body{
       <span class="set-label">Master Volume</span>
       <input type="range" class="set-range" id="setMasterVol" min="0" max="100" onchange="saveSettingsUI()">
     </div>
-    <div class="set-row">
+    <div class="set-row" style="align-items: center;">
       <span class="set-label">Music Volume</span>
-      <input type="range" class="set-range" id="setMusicVol" min="0" max="100" onchange="saveSettingsUI()">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
+        <input type="range" class="set-range" id="setMusicVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
+        <button class="nav-btn" id="bgmTogglePortfolio" onclick="window.togglePortfolioBGM()" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+      </div>
     </div>
     <div class="set-row">
       <span class="set-label">SFX Volume</span>
       <input type="range" class="set-range" id="setSfxVol" min="0" max="100" onchange="saveSettingsUI()">
-    </div>
-    <div class="set-row">
-      <span class="set-label">Music</span>
-      <button class="nav-btn" id="bgmTogglePortfolio" onclick="window.togglePortfolioBGM()" style="font-size:20px;padding:4px 12px;">🎵 OFF</button>
-    </div>
+
 
     <!-- Admin Access Row -->
     <div class="set-row" style="margin-top: 20px; border-top: 3px dashed var(--dark); padding-top: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
       <span class="set-label" id="adminAuthLabel">Panel Password</span>
-      <input type="password" id="adminPasswordInput" placeholder="Enter 7964" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.checkAdminPassword()">
+      <input type="password" id="adminPasswordInput" placeholder="Panel Password" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.checkAdminPassword()">
       <div id="adminTokenDiv" style="display:none; width:100%; flex-direction:column; gap:8px;">
          <input type="password" id="adminTokenInput" placeholder="ghp_xxxxxxxxxxxx" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.goToAdmin()">
          <button class="nav-btn" onclick="window.goToAdmin()" style="width:100%; padding:10px; font-size:20px; justify-content:center; background:var(--gold);">ENTER ADMIN PANEL</button>
@@ -1218,8 +1217,7 @@ window.togglePortfolioBGM = function() {
   _bgmOn = isNowOn;
   const btn = document.getElementById('bgmTogglePortfolio');
   if (btn) {
-    btn.textContent = _bgmOn ? '🔊 ON' : '🎵 OFF';
-    btn.style.background = _bgmOn ? 'var(--gold)' : '';
+    btn.textContent = _bgmOn ? '🔊' : '🔇';
   }
 };
 

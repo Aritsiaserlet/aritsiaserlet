@@ -21,7 +21,8 @@ import {
   collectionGroup,
   serverTimestamp,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  increment
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -129,15 +130,14 @@ export function getCurrentUser() {
 
 export async function fetchLikeCounts() {
   try {
-    const snap = await getDocs(collectionGroup(db, 'likes'));
-    const counts = {};
-    snap.forEach(docSnap => {
-      const workId = docSnap.id;
-      counts[workId] = (counts[workId] || 0) + 1;
+    const worksSnap = await getDocs(collection(db, 'works'));
+    const likeData = {};
+    worksSnap.forEach(docSnap => {
+      likeData[docSnap.id] = docSnap.data().likes || 0;
     });
-    return counts;
+    return likeData;
   } catch (error) {
-    console.error("Failed to fetch like counts (may require index)", error);
+    console.error("Failed to fetch like counts", error);
     return {};
   }
 }
@@ -145,12 +145,12 @@ export async function fetchLikeCounts() {
 export async function fetchUserLikes(uid) {
   if (!uid) return {};
   try {
-    const snap = await getDocs(collection(db, `users/${uid}/likes`));
-    const likes = {};
-    snap.forEach(docSnap => {
-      likes[docSnap.id] = true;
+    const likesSnap = await getDocs(collection(db, `users/${uid}/likes`));
+    const userLikes = {};
+    likesSnap.forEach(docSnap => {
+      userLikes[docSnap.id] = true;
     });
-    return likes;
+    return userLikes;
   } catch (error) {
     console.error("Failed to fetch user likes", error);
     return {};
@@ -159,13 +159,18 @@ export async function fetchUserLikes(uid) {
 
 export async function toggleLike(workId, isLiking) {
   if (!currentUser) return false;
+  
   const uid = currentUser.uid;
-  const likeRef = doc(db, `users/${uid}/likes`, workId);
+  const workRef = doc(db, 'works', workId);
+  const userLikeRef = doc(db, `users/${uid}/likes`, workId);
+
   try {
     if (isLiking) {
-      await setDoc(likeRef, { likedAt: serverTimestamp() });
+      await setDoc(userLikeRef, { createdAt: serverTimestamp() });
+      await setDoc(workRef, { likes: increment(1) }, { merge: true });
     } else {
-      await deleteDoc(likeRef);
+      await deleteDoc(userLikeRef);
+      await setDoc(workRef, { likes: increment(-1) }, { merge: true });
     }
     return true;
   } catch (error) {
