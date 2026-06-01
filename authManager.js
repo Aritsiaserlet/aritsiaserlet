@@ -124,19 +124,17 @@ export function getCurrentUser() {
 }
 
 // ── Likes System ──
-// Source of truth: users/{uid}/likes/{workId}
-// works.likes is a derived field — only a Cloud Function should write it.
+// Source of truth: likes/{workId} -> { uids: [uid1, uid2, ...] }
+
+import { arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 export async function fetchLikeCounts() {
-  // Count likes per workId by querying the collectionGroup 'likes'.
-  // This avoids reading works.likes directly (which is a client-untrusted aggregation).
   try {
-    const snap = await getDocs(collectionGroup(db, 'likes'));
+    const snap = await getDocs(collection(db, 'likes'));
     const likeData = {};
     snap.forEach(docSnap => {
-      // Document ID is the workId
-      const workId = docSnap.id;
-      likeData[workId] = (likeData[workId] || 0) + 1;
+      const data = docSnap.data();
+      likeData[docSnap.id] = data.uids ? data.uids.length : 0;
     });
     return likeData;
   } catch (error) {
@@ -147,10 +145,15 @@ export async function fetchLikeCounts() {
 
 export async function fetchUserLikes(uid) {
   try {
-    const likesSnap = await getDocs(collection(db, `users/${uid}/likes`));
+    // We can just fetch all likes and find which ones have uid in uids
+    // Or we could use a query: query(collection(db, 'likes'), where('uids', 'array-contains', uid))
+    const snap = await getDocs(collection(db, 'likes'));
     const userLikes = {};
-    likesSnap.forEach(docSnap => {
-      userLikes[docSnap.id] = true;
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      if (data.uids && data.uids.includes(uid)) {
+        userLikes[docSnap.id] = true;
+      }
     });
     return userLikes;
   } catch (error) {
@@ -161,17 +164,13 @@ export async function fetchUserLikes(uid) {
 
 export async function toggleLike(workId, isLiking) {
   if (!currentUser) return false;
-  
   const uid = currentUser.uid;
-  // SECURITY: Only write to users/{uid}/likes/{workId}.
-  // Never write to works/{workId}.likes — that's the Cloud Function's job.
-  const userLikeRef = doc(db, `users/${uid}/likes`, workId);
-
+  const likeRef = doc(db, 'likes', workId);
   try {
     if (isLiking) {
-      await setDoc(userLikeRef, { createdAt: serverTimestamp() });
+      await setDoc(likeRef, { uids: arrayUnion(uid) }, { merge: true });
     } else {
-      await deleteDoc(userLikeRef);
+      await setDoc(likeRef, { uids: arrayRemove(uid) }, { merge: true });
     }
     return true;
   } catch (error) {

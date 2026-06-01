@@ -444,13 +444,8 @@ body{
 <body>
 
 <!-- Top Navigation -->
-<div class="top-nav">
-  <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()">LOGIN</button>
-  <div class="user-profile" id="userProfile">
-    <img src="" class="user-avatar" id="userAvatar" alt="Avatar">
-    <span class="user-name" id="userName">Player</span>
-    <button class="nav-btn" onclick="window.portfolioAuthManager.logout()" style="padding:4px 8px;font-size:14px;box-shadow:none;border-width:2px;margin-left:8px;">LOGOUT</button>
-  </div>
+<div class="top-nav" style="justify-content: flex-end;">
+  <button class="nav-btn" onclick="openSettingsModal()" style="font-size: 24px; padding: 4px 8px; margin: 0; display: flex; align-items: center; height: 44px;">⚙</button>
 </div>
 
 <!-- Custom background -->
@@ -531,7 +526,6 @@ body{
 
 <!-- Admin fixed -->
 <div class="admin-fixed" style="display:flex;flex-direction:column;gap:10px;">
-  <button class="admin-btn" title="Settings" onclick="openSettingsModal()" style="font-size:28px;">⚙</button>
   <a href="admin.html" class="admin-btn" title="Admin Panel">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
   </a>
@@ -542,6 +536,18 @@ body{
   <div class="settings-box">
     <div class="modal-close" onclick="closeSettingsModal()" style="top:12px;right:12px;">×</div>
     <h2 class="settings-title">SETTINGS</h2>
+    
+    <div class="set-row" style="margin-bottom: 20px; border-bottom: 3px dashed var(--dark); padding-bottom: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
+      <span class="set-label">Account</span>
+      <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()" style="width:100%; padding:10px; font-size:20px; justify-content:center; background:var(--gold);">LOGIN</button>
+      <div class="user-profile" id="userProfile" style="display:none; width:100%; justify-content:space-between; align-items:center; background:var(--sky4); border:3px solid var(--dark); padding:8px; box-sizing:border-box;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <img src="" class="user-avatar" id="userAvatar" alt="Avatar" style="width:32px; height:32px; border:2px solid var(--dark);">
+          <span class="user-name" id="userName" style="font-size:16px;">Player</span>
+        </div>
+        <button class="nav-btn" onclick="window.portfolioAuthManager.logout()" style="padding:6px 10px; font-size:14px; box-shadow:none; border-width:2px; background:var(--white);">LOGOUT</button>
+      </div>
+    </div>
     
     <div class="set-row">
       <span class="set-label">Theme Color</span>

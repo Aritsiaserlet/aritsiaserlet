@@ -553,6 +553,7 @@ function updateHUD() {
     if (multiplier > 1) { mulEl.textContent = `x${multiplier} BOOST!`; mulEl.style.display = 'block'; }
     else mulEl.style.display = 'none';
   }
+  window.currentScore = score;
 }
 
 // ─────────────────────────────────────────────
