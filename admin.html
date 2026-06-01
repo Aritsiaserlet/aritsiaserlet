@@ -289,7 +289,7 @@ input[type="file"] {
     </div>
 
     <!-- Upload form -->
-    <div class="panel-card">
+    <div class="panel-card" style="grid-column: 1 / -1;">
       <h2>ADD WORK</h2>
       <div id="ghStatus" class="gh-status ok">✓ Connected to GitHub</div>
 
@@ -367,9 +367,20 @@ input[type="file"] {
     </div>
 
     <!-- Works list -->
-    <div class="panel-card">
-      <h2>MANAGE WORKS</h2>
-      <div class="works-list" id="worksList">
+    <div class="panel-card" style="grid-column: 1 / -1;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid var(--dark); margin-bottom:20px; padding-bottom:12px;">
+        <h2 style="border:none; margin:0; padding:0;">MANAGE WORKS</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span style="font-size:16px; font-family:'Press Start 2P',cursive; color:var(--dark);">FILTER:</span>
+          <select id="adminFilter" onchange="renderAdminList()" style="font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); background:var(--white); padding:4px 8px; outline:none; box-shadow:2px 2px 0 var(--dark);">
+            <option value="all">All</option>
+            <option value="game">Game</option>
+            <option value="mod">Minecraft Mod</option>
+            <option value="3d">3D Model</option>
+          </select>
+        </div>
+      </div>
+      <div class="works-list" id="worksList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; max-height: 600px;">
         <p class="no-works">Loading from GitHub...</p>
       </div>
     </div>
@@ -1115,9 +1126,13 @@ function updateStats(){
 
 function renderAdminList(){
   const list=document.getElementById('worksList');
-  if(!works.length){list.innerHTML='<p class="no-works">No works yet. Add one!</p>';return}
+  const filter = document.getElementById('adminFilter') ? document.getElementById('adminFilter').value : 'all';
+  
+  const filteredWorks = works.filter(w => filter === 'all' || w.cat === filter);
+  
+  if(!filteredWorks.length){list.innerHTML='<p class="no-works">No works found.</p>';return}
   list.innerHTML='';
-  [...works].reverse().forEach(w=>{
+  [...filteredWorks].reverse().forEach(w=>{
     const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
     let iconUrl = '';
     if(catSetting.iconId && settings.icons) {
