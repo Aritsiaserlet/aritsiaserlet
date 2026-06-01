@@ -88,5 +88,10 @@
   "soundAssignments": {},
   "profileImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/profile_1780317507899.jpg",
   "backgroundImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/bg_1780317510459.jpg",
-  "game": {}
+  "game": {
+    "fwDropChance": 40,
+    "pointsPerHit": 15,
+    "missPenalty": 5,
+    "fwIconId": "icon_1780329290994"
+  }
 }
