@@ -649,7 +649,7 @@
     }
 
     if (scoreToSave >= 0 && playTimeSeconds > 0) {
-      if (!currentUser) {
+      if (!(window.gameAuthManager && window.gameAuthManager.getCurrentUser())) {
         if (confirm(`You got a score of ${scoreToSave} and played for ${playTimeSeconds}s! You are not logged in. Do you want to login to save your stats?`)) {
           window.pendingScoreToSave = scoreToSave;
           window.pendingPlayTime = playTimeSeconds;
