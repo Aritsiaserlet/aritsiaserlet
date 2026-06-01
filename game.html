@@ -286,7 +286,7 @@
     margin-bottom: 16px; gap: 12px;
   }
   .gset-label {
-    font-family: 'VT323', monospace; font-size: 22px; color: var(--dark);
+    font-family: 'VT323', monospace; font-size: 22px; color: var(--dark); width: 110px; flex-shrink: 0;
   }
   .gset-range { flex: 1; accent-color: var(--dark); max-width: 120px; }
 </style>
@@ -381,8 +381,11 @@
 <!-- Game Settings Modal -->
 <div id="gameSettingsModal" onclick="if(event.target===this)document.getElementById('gameSettingsModal').classList.remove('open')">
   <div class="game-settings-box">
-    <div class="modal-close" onclick="document.getElementById('gameSettingsModal').classList.remove('open')" style="position:absolute;top:10px;right:14px;font-size:24px;cursor:pointer;font-weight:bold;">×</div>
-    <div class="game-settings-title">⚙ SETTINGS</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+      <div style="width:32px;"></div>
+      <div class="game-settings-title" style="margin:0; border:none;">⚙ SETTINGS</div>
+      <div class="modal-close" onclick="document.getElementById('gameSettingsModal').classList.remove('open')" style="position:static;font-size:24px;cursor:pointer;font-weight:bold;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--danger);color:white;border:3px solid var(--dark);box-shadow:2px 2px 0 var(--dark);">×</div>
+    </div>
     
     <div class="gset-row" style="margin-bottom: 20px; border-bottom: 3px dashed var(--dark); padding-bottom: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
       <span class="gset-label">Account</span>
@@ -398,18 +401,24 @@
 
     <div class="gset-row">
       <span class="gset-label">Master Vol</span>
-      <input type="range" class="gset-range" id="gsetMasterVol" min="0" max="100" onchange="applyGameSettings()">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
+        <input type="range" class="gset-range" id="gsetMasterVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
+        <button class="game-btn" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('master'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+      </div>
     </div>
     <div class="gset-row">
       <span class="gset-label">Music Vol</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="gset-range" id="gsetMusicVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
-        <button class="game-btn" id="gameBgmBtn" onclick="if(window.gameAudio){ window.isGameBgmOn = window.gameAudio.toggleBGM(); this.textContent = window.isGameBgmOn ? '🔊' : '🔇'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="game-btn" id="gameBgmBtn" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('music'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
       </div>
     </div>
     <div class="gset-row">
       <span class="gset-label">SFX Vol</span>
-      <input type="range" class="gset-range" id="gsetSfxVol" min="0" max="100" onchange="applyGameSettings()">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
+        <input type="range" class="gset-range" id="gsetSfxVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
+        <button class="game-btn" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('sfx'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+      </div>
     </div>
 
   </div>
@@ -425,6 +434,8 @@
 </div>
 
 <script>
+  window.closeGameSettings = () => { document.getElementById('gameSettingsModal').classList.remove('open'); };
+
   // Wind Canvas for Lobby
   const lcanvas = document.getElementById('lobbyWindCanvas');
   const lctx = lcanvas.getContext('2d');
@@ -728,7 +739,7 @@
 </script>
 
 <script type="module">
-  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments } from './audioManager.js';
+  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute } from './audioManager.js';
   
   // Read volume settings from localStorage on load
   function loadAudioSettings() {
@@ -758,6 +769,7 @@
     sfxGameOver,
     sfxDive,
     toggleBGM,
+    toggleMute,
     setVolumes
   };
 

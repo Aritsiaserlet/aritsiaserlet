@@ -175,6 +175,7 @@ export async function toggleLike(workId, isLiking) {
     return true;
   } catch (error) {
     console.error("Failed to toggle like", error);
+    alert("Firebase Error: " + error.message);
     return false;
   }
 }

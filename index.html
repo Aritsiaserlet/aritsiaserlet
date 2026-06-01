@@ -205,11 +205,11 @@ body{
 }
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal-box{
+  position:absolute;
   background:var(--white);
   border:4px solid var(--dark);
   width:calc(100vw - 40px);max-width:720px;max-height:90vh;overflow-y:auto;
   box-shadow:8px 8px 0 rgba(0,0,0,0.5);
-  position:absolute;
   transform:scale(.97);transition:transform .2s;
   user-select:none;
 }
@@ -273,15 +273,15 @@ body{
   padding:24px;
 }
 .settings-title {font-family:'Press Start 2P',cursive;font-size:16px;color:var(--dark);margin-bottom:20px;text-align:center;border-bottom:3px solid var(--dark);padding-bottom:12px;}
-.set-row {display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.set-label {font-size:22px;color:var(--dark);}
+.set-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.set-label { font-family:'VT323',monospace; font-size:24px; color:var(--dark); width: 140px; flex-shrink: 0; }
 .set-select, .set-range {
   font-family:'VT323',monospace;font-size:20px;
   border:3px solid var(--dark);background:var(--sky4);
   padding:4px 8px;color:var(--dark);outline:none;
 }
 .set-select:focus {background:var(--gold-l);}
-.set-range {cursor:pointer;}
+.set-range { flex:1; max-width:200px; accent-color:var(--danger); }
 
 /* ── Top Nav (Auth & Leaderboard) ── */
 .top-nav {
@@ -336,10 +336,10 @@ body{
 <script type="module">
   import { initSettings, getSettings, updateSettings } from './settingsManager.js';
   import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from './authManager.js';
-  import { sfxLike, sfxLogin, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments } from './audioManager.js';
+  import { sfxLike, sfxLogin, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments, toggleMute } from './audioManager.js';
   
   window.portfolioSettingsManager = { getSettings, updateSettings };
-  window.portfolioAudioManager = { startBGM, stopBGM, toggleBGM, setVolumes, togglePortfolioBGM: _togglePortfolioBGM };
+  window.portfolioAudioManager = { startBGM, stopBGM, toggleBGM, setVolumes, togglePortfolioBGM: _togglePortfolioBGM, toggleMute };
   window.portfolioAuthManager = { 
     login: loginWithGoogle, 
     logout: logout, 
@@ -529,11 +529,14 @@ body{
 <!-- Settings Modal -->
 <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)closeSettingsModal()">
   <div class="settings-box">
-    <div class="modal-close" onclick="closeSettingsModal()" style="top:12px;right:12px;">×</div>
-    <h2 class="settings-title">SETTINGS</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+      <div style="width:32px;"></div> <!-- Spacer -->
+      <h2 class="settings-title" style="margin:0;">SETTINGS</h2>
+      <div class="modal-close" onclick="closeSettingsModal()" style="position:static;">×</div>
+    </div>
     
     <div class="set-row" style="margin-bottom: 20px; border-bottom: 3px dashed var(--dark); padding-bottom: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
-      <span class="set-label">Account</span>
+      <span class="set-label" style="width:100%;">Account</span>
       <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()" style="width:100%; padding:10px; font-size:20px; justify-content:center; background:var(--gold);">LOGIN</button>
       <div class="user-profile" id="userProfile" style="display:none; width:100%; justify-content:space-between; align-items:center; background:var(--sky4); border:3px solid var(--dark); padding:8px; box-sizing:border-box;">
         <div style="display:flex; align-items:center; gap:8px;">
@@ -561,25 +564,30 @@ body{
       </select>
     </div>
 
-    <div class="set-row">
+    <div class="set-row" style="align-items: center;">
       <span class="set-label">Master Volume</span>
-      <input type="range" class="set-range" id="setMasterVol" min="0" max="100" onchange="saveSettingsUI()">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
+        <input type="range" class="set-range" id="setMasterVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
+        <button class="nav-btn" id="masterMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('master'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+      </div>
     </div>
     <div class="set-row" style="align-items: center;">
       <span class="set-label">Music Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setMusicVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="bgmTogglePortfolio" onclick="window.togglePortfolioBGM()" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="nav-btn" id="musicMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('music'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
       </div>
     </div>
-    <div class="set-row">
+    <div class="set-row" style="align-items: center;">
       <span class="set-label">SFX Volume</span>
-      <input type="range" class="set-range" id="setSfxVol" min="0" max="100" onchange="saveSettingsUI()">
-
+      <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
+        <input type="range" class="set-range" id="setSfxVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
+        <button class="nav-btn" id="sfxMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('sfx'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+      </div>
+    </div>
 
     <!-- Admin Access Row -->
     <div class="set-row" style="margin-top: 20px; border-top: 3px dashed var(--dark); padding-top: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
-      <span class="set-label" id="adminAuthLabel">Panel Password</span>
       <input type="password" id="adminPasswordInput" placeholder="Panel Password" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.checkAdminPassword()">
       <div id="adminTokenDiv" style="display:none; width:100%; flex-direction:column; gap:8px;">
          <input type="password" id="adminTokenInput" placeholder="ghp_xxxxxxxxxxxx" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.goToAdmin()">

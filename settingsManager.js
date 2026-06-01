@@ -9,7 +9,9 @@ const defaultSettings = {
   masterVolume: 100,
   musicVolume: 100,
   sfxVolume: 100,
-  mute: false
+  masterMute: false,
+  musicMute: false,
+  sfxMute: false
 };
 
 // Available theme definitions

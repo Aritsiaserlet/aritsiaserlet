@@ -11,7 +11,7 @@ let musicAudio = null; // HTMLAudioElement for BGM
 let musicIsPlaying = false;
 
 // ── Volume state
-let volumes = { master: 1.0, music: 1.0, sfx: 1.0, mute: false };
+let volumes = { master: 1.0, music: 1.0, sfx: 1.0, masterMute: false, musicMute: false, sfxMute: false };
 
 // ── Sound URL cache (loaded from settings.json)
 // Keys match the soundAssignments keys in settings.json
@@ -59,29 +59,43 @@ function ensureContext() {
 
 function applyVolumes() {
   if (!masterGain) return;
-  const mute = volumes.mute ? 0 : 1;
-  masterGain.gain.setTargetAtTime(volumes.master * mute, audioCtx.currentTime, 0.05);
-  if (musicGain) musicGain.gain.setTargetAtTime(volumes.music, audioCtx.currentTime, 0.05);
-  if (sfxGain) sfxGain.gain.setTargetAtTime(volumes.sfx, audioCtx.currentTime, 0.05);
+  const masterMute = volumes.masterMute ? 0 : 1;
+  const musicMute = volumes.musicMute ? 0 : 1;
+  const sfxMute = volumes.sfxMute ? 0 : 1;
+  
+  masterGain.gain.setTargetAtTime(volumes.master * masterMute, audioCtx.currentTime, 0.05);
+  if (musicGain) musicGain.gain.setTargetAtTime(volumes.music * musicMute, audioCtx.currentTime, 0.05);
+  if (sfxGain) sfxGain.gain.setTargetAtTime(volumes.sfx * sfxMute, audioCtx.currentTime, 0.05);
+  
   // Also apply to HTMLAudio BGM if playing
   if (musicAudio) {
-    musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1));
+    musicAudio.volume = Math.min(1, volumes.master * masterMute * volumes.music * musicMute);
   }
 }
 
-export function setVolumes({ master, music, sfx, mute } = {}) {
+export function setVolumes({ master, music, sfx, masterMute, musicMute, sfxMute } = {}) {
   if (master !== undefined) volumes.master = master / 100;
   if (music  !== undefined) volumes.music  = music  / 100;
   if (sfx    !== undefined) volumes.sfx    = sfx    / 100;
-  if (mute   !== undefined) volumes.mute   = mute;
+  if (masterMute !== undefined) volumes.masterMute = masterMute;
+  if (musicMute !== undefined) volumes.musicMute = musicMute;
+  if (sfxMute !== undefined) volumes.sfxMute = sfxMute;
   applyVolumes();
+}
+
+export function toggleMute(type) {
+  if (type === 'master') volumes.masterMute = !volumes.masterMute;
+  else if (type === 'music') volumes.musicMute = !volumes.musicMute;
+  else if (type === 'sfx') volumes.sfxMute = !volumes.sfxMute;
+  applyVolumes();
+  return volumes[`${type}Mute`];
 }
 
 // ── Play a sound by its assignment key
 function playSound(key) {
   const url = soundUrls[key];
   if (!url) return; // No sound assigned — silent
-  if (volumes.mute) return;
+  if (volumes.masterMute || volumes.sfxMute) return;
   try {
     const audio = new Audio(url);
     audio.volume = Math.min(1, volumes.master * volumes.sfx);
