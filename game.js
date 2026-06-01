@@ -381,8 +381,14 @@ function updateAndDrawFloatingTexts() {
     ctx.fillStyle = ft.color || '#f1c40f';
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 3;
-    ctx.strokeText(ft.text, ft.x, ft.y);
-    ctx.fillText(ft.text, ft.x, ft.y);
+    if (ft.isHud) {
+      // Draw in screen space relative to scale
+      ctx.strokeText(ft.text, ft.x * getGraphicsScale(), ft.y * getGraphicsScale());
+      ctx.fillText(ft.text, ft.x * getGraphicsScale(), ft.y * getGraphicsScale());
+    } else {
+      ctx.strokeText(ft.text, ft.x, ft.y);
+      ctx.fillText(ft.text, ft.x, ft.y);
+    }
     ctx.restore();
   }
 }
@@ -918,9 +924,11 @@ function loop() {
     // Miss penalty
     if (e.x + e.w < player.x && !e.passed) {
       e.passed = true;
-      const penalty = 5 * (boostStacks > 0 ? boostStacks * 4 : 1);
+      const basePen = (window.settingsData && window.settingsData.game && window.settingsData.game.missPenalty !== undefined) ? window.settingsData.game.missPenalty : 5;
+      const penalty = basePen * (boostStacks > 0 ? boostStacks * 4 : 1);
       score = Math.max(0, score - penalty); updateHUD();
-      floatingTexts.push({ x: player.x + player.w/2, y: player.y, text: "-" + penalty, life: 40, maxLife: 40, color: '#e74c3c' });
+      const offsetY = floatingTexts.length * 20;
+      floatingTexts.push({ x: 30, y: 70 + offsetY, text: "-" + penalty, life: 40, maxLife: 40, color: '#e74c3c', isHud: true });
       if (window.gameAudio) window.gameAudio.sfxMiss();
       if (score === 0) { gameOver(); return; }
     }
