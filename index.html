@@ -445,7 +445,6 @@ body{
 
 <!-- Top Navigation -->
 <div class="top-nav">
-  <button class="nav-btn" onclick="openLeaderboard()">🏆 LEADERBOARD</button>
   <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()">LOGIN</button>
   <div class="user-profile" id="userProfile">
     <img src="" class="user-avatar" id="userAvatar" alt="Avatar">
@@ -1183,58 +1182,7 @@ window.togglePortfolioBGM = function() {
   }
 };
 
-// ── Leaderboard Logic ──
-window.openLeaderboard = async () => {
-  const modal = document.getElementById('leaderboardModal');
-  const listEl = document.getElementById('leaderboardList');
-  modal.classList.add('open');
-  listEl.innerHTML = '<div style="text-align:center;font-size:24px;">Loading top players...</div>';
-  
-  try {
-    const { collection, query, orderBy, limit, getDocs } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-    const { db } = await import('./authManager.js');
-    const q = query(collection(db, "users"), orderBy("highScore", "desc"), limit(10));
-    const snap = await getDocs(q);
-    
-    listEl.innerHTML = '';
-    if (snap.empty) {
-      listEl.innerHTML = '<div style="text-align:center;font-size:24px;">No scores yet!</div>';
-      return;
-    }
-    
-    let rank = 1;
-    snap.forEach(doc => {
-      const data = doc.data();
-      const item = document.createElement('div');
-      item.className = `leaderboard-item ${rank <= 3 ? 'top3' : ''}`;
-      item.innerHTML = `
-        <div class="lb-rank">#${rank}</div>
-        <img class="lb-avatar" src="${data.photoURL || ''}">
-        <div class="lb-name">${data.displayName || 'Anonymous'}</div>
-        <div class="lb-score">${data.highScore || 0} PTS</div>
-      `;
-      listEl.appendChild(item);
-      rank++;
-    });
-  } catch (error) {
-    listEl.innerHTML = '<div style="text-align:center;font-size:24px;color:var(--danger)">Failed to load leaderboard.</div>';
-    console.error(error);
-  }
-};
 
-window.closeLeaderboard = () => {
-  document.getElementById('leaderboardModal').classList.remove('open');
-};
-</script>
-
-<!-- Leaderboard Modal -->
-<div class="leaderboard-modal" id="leaderboardModal" onclick="if(event.target===this)window.closeLeaderboard()">
-  <div class="leaderboard-box">
-    <div class="modal-close" onclick="window.closeLeaderboard()" style="top:12px;right:12px;">×</div>
-    <h2 class="leaderboard-title">🏆 TOP 10 PLAYERS</h2>
-    <div class="leaderboard-list" id="leaderboardList"></div>
-  </div>
-</div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
