@@ -413,6 +413,7 @@ window.onbeforeunload = function () { stopCleanup(); };
 function stopCleanup() {
   isPlaying = false;
   if (animId) { cancelAnimationFrame(animId); animId = null; }
+  if (window.gameAudio) window.gameAudio.stopBGM();
   window.removeEventListener('keydown', handleKeyDown);
   window.removeEventListener('keyup',   handleKeyUp);
   window.removeEventListener('resize',  resizeGame);
@@ -450,6 +451,9 @@ window.initGame = function (portfolioWorks, settings) {
   canvas.addEventListener('touchstart', handleTouch, { passive: false });
 
   window.resetGame();
+
+  // Signal to the audio module (ES module in game.html) that game is ready
+  document.dispatchEvent(new CustomEvent('gameReady'));
 };
 
 window.stopGame = function () { stopCleanup(); };
@@ -515,6 +519,7 @@ function handleKeyDown(e) {
   if ((e.code === 'Space' || e.code === 'ArrowUp') && attack.canChain) triggerDive();
   if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && fireworks > 0) {
     fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD();
+    if (window.gameAudio) window.gameAudio.sfxBoost();
   }
 }
 function handleKeyUp(e) { keys[e.code] = false; }
@@ -525,7 +530,10 @@ function handleTouch(e) {
   const touchX = e.touches[0].clientX;
   if (touchX < W / 2) {
     // Left half → Boost
-    if (fireworks > 0) { fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD(); }
+    if (fireworks > 0) {
+      fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD();
+      if (window.gameAudio) window.gameAudio.sfxBoost();
+    }
   } else {
     // Right half → Dive
     if (attack.canChain) triggerDive();
@@ -555,6 +563,7 @@ function getStrikeY() { return player.groundY - player.h - 80; }
 function triggerDive() {
   player.vy = DIVE_SPEED; player.vxDive = VX_DIVE;
   attack.phase = 'dive'; attack.frameCount = 0; attack.canChain = false;
+  if (window.gameAudio) window.gameAudio.sfxDive();
 }
 
 function updateAttack() {
@@ -600,12 +609,19 @@ function checkDiveCollision() {
     const e = enemies[i];
     if (hx < e.x + e.w && hx + hw > e.x && hy < e.y + e.h && hy + hh > e.y) {
       score += 10 * multiplier;
-      if (Math.random() < 0.3) { fireworks++; updateHUD(); }
+      const gotFirework = Math.random() < 0.3;
+      if (gotFirework) { fireworks++; updateHUD(); }
       const ex = e.x + e.w / 2, ey = e.y + e.h / 2;
       spawnParticles(ex, ey, '#f1c40f', 16);
       spawnParticles(ex, ey, '#ffffff', 10);
       spawnParticles(ex, ey, '#ffd700', 8);
       shakeScreen(); updateHUD();
+      // SFX: combo if multiplier > 1, else normal score hit
+      if (window.gameAudio) {
+        window.gameAudio.sfxHit();
+        if (multiplier > 1) window.gameAudio.sfxCombo();
+        else window.gameAudio.sfxScore();
+      }
       enemies.splice(i, 1);
     }
   }
@@ -855,6 +871,7 @@ function loop() {
       e.passed = true;
       if (boostTimer <= 0) {
         score = Math.max(0, score - 5); updateHUD();
+        if (window.gameAudio) window.gameAudio.sfxMiss();
         if (score === 0) { gameOver(); return; }
       }
     }
@@ -889,5 +906,6 @@ function gameOver() {
   if (finEl) finEl.textContent = score;
   if (goEl)  goEl.style.display = 'flex';
   
+  if (window.gameAudio) window.gameAudio.sfxGameOver();
   if (window.saveScore) window.saveScore(score);
 }

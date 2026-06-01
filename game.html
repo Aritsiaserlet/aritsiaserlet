@@ -190,6 +190,7 @@
       <div id="scoreDisplay">SCORE: <span id="gameScore">0</span></div>
     </div>
     <div id="hudRight">
+      <button id="muteBtn" onclick="window.gameAudio && window.gameAudio.toggleMute()" style="font-family:'VT323',monospace;font-size:22px;background:rgba(255,255,255,0.8);border:3px solid var(--dark);padding:2px 10px;cursor:pointer;box-shadow:2px 2px 0 var(--dark);">🔊</button>
       <button id="exitBtn" onclick="exitToPortfolio()">✕ EXIT</button>
       <div id="fireworkDisplay">🎆 FIREWORKS: <span id="gameFireworks">0</span></div>
       <div id="gameMultiplier">x2 BOOST!</div>
@@ -215,6 +216,7 @@
 
 <script>
   function exitToPortfolio() {
+    if (window.gameAudio) window.gameAudio.stopBGM();
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.4s ease';
     setTimeout(() => { window.location.href = 'index.html'; }, 400);
@@ -301,6 +303,57 @@
       console.error("Failed to save score:", e);
     }
   };
+</script>
+
+<script type="module">
+  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive } from './audioManager.js';
+  
+  // Read volume settings from localStorage on load
+  function loadAudioSettings() {
+    try {
+      const raw = localStorage.getItem('portfolioSettings');
+      if (raw) {
+        const s = JSON.parse(raw);
+        setVolumes({
+          master: s.masterVolume ?? 100,
+          music:  s.musicVolume  ?? 100,
+          sfx:    s.sfxVolume    ?? 100,
+          mute:   s.mute         ?? false
+        });
+      }
+    } catch(e) {}
+  }
+
+  // Expose SFX and BGM controls globally for game.js (classic script)
+  window.gameAudio = {
+    startBGM,
+    stopBGM,
+    sfxHit,
+    sfxScore,
+    sfxCombo,
+    sfxBoost,
+    sfxMiss,
+    sfxGameOver,
+    sfxDive,
+    toggleMute() {
+      try {
+        const raw = localStorage.getItem('portfolioSettings');
+        const s = raw ? JSON.parse(raw) : {};
+        s.mute = !s.mute;
+        localStorage.setItem('portfolioSettings', JSON.stringify(s));
+        setVolumes({ mute: s.mute });
+        const btn = document.getElementById('muteBtn');
+        if (btn) btn.textContent = s.mute ? '🔇' : '🔊';
+      } catch(e) {}
+    }
+  };
+
+  loadAudioSettings();
+  
+  // BGM starts only after the game container is shown (user gesture already happened at loading click)
+  document.addEventListener('gameReady', () => {
+    startBGM();
+  });
 </script>
 
 <script src="game.js"></script>

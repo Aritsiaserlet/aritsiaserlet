@@ -336,8 +336,10 @@ body{
 <script type="module">
   import { initSettings, getSettings, updateSettings } from './settingsManager.js';
   import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from './authManager.js';
+  import { sfxLike, sfxLogin, startBGM, stopBGM, toggleBGM, setVolumes } from './audioManager.js';
   
   window.portfolioSettingsManager = { getSettings, updateSettings };
+  window.portfolioAudioManager = { startBGM, stopBGM, toggleBGM, setVolumes };
   window.portfolioAuthManager = { 
     login: loginWithGoogle, 
     logout: logout, 
@@ -364,12 +366,22 @@ body{
         userAvatar.src = user.photoURL || '';
         // Fetch user's likes
         window.userLikes = await fetchUserLikes(user.uid);
+        sfxLogin(); // Play login chime
       } else {
         loginBtn.style.display = 'inline-flex';
         userProfile.style.display = 'none';
         window.userLikes = {};
       }
       if (window.renderGallery) window.renderGallery();
+    });
+
+    // Sync initial audio volumes from settings
+    const initSet = getSettings();
+    setVolumes({
+      master: initSet.masterVolume,
+      music:  initSet.musicVolume,
+      sfx:    initSet.sfxVolume,
+      mute:   initSet.mute
     });
   });
 
@@ -380,8 +392,8 @@ body{
       return;
     }
     const isLiking = !window.userLikes[workId];
-    const btn = e.currentTarget;
-    const span = btn.querySelector('span');
+    const btn = e ? e.currentTarget : document.getElementById('modalLikeBtn');
+    const span = btn ? btn.querySelector('span') : null;
     
     // Optimistic UI Update
     if (isLiking) {
@@ -397,6 +409,7 @@ body{
     }
     span.textContent = window.globalLikes[workId];
     
+    sfxLike(); // Play like SFX
     const success = await window.portfolioAuthManager.toggleLike(workId, isLiking);
     if (!success) {
       // Revert if failed
@@ -429,6 +442,7 @@ body{
 
 <!-- Top Navigation -->
 <div class="top-nav">
+  <button class="nav-btn" id="bgmToggleBtn" onclick="window.togglePortfolioBGM()" title="Toggle Music">🎵</button>
   <button class="nav-btn" onclick="openLeaderboard()">🏆 LEADERBOARD</button>
   <button class="nav-btn" id="loginBtn" onclick="window.portfolioAuthManager.login()">LOGIN</button>
   <div class="user-profile" id="userProfile">
@@ -1140,7 +1154,30 @@ function saveSettingsUI() {
     sfxVolume: parseInt(document.getElementById('setSfxVol').value, 10)
   };
   window.portfolioSettingsManager.updateSettings(newSet);
+  // Sync volumes to audio engine in real-time
+  if (window.portfolioAudioManager && window.portfolioAudioManager.setVolumes) {
+    window.portfolioAudioManager.setVolumes({
+      master: newSet.masterVolume,
+      music:  newSet.musicVolume,
+      sfx:    newSet.sfxVolume
+    });
+  }
 }
+
+// ── BGM Toggle for Portfolio Page ──
+let _bgmOn = false;
+window.togglePortfolioBGM = function() {
+  if (!window.portfolioAudioManager) return;
+  _bgmOn = !_bgmOn;
+  if (_bgmOn) {
+    window.portfolioAudioManager.startBGM();
+  } else {
+    window.portfolioAudioManager.stopBGM();
+  }
+  const btn = document.getElementById('bgmToggleBtn');
+  if (btn) btn.textContent = _bgmOn ? '🔊' : '🎵';
+  btn.title = _bgmOn ? 'Music ON — click to stop' : 'Music OFF — click to play';
+};
 
 // ── Leaderboard Logic ──
 window.openLeaderboard = async () => {
