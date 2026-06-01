@@ -315,17 +315,23 @@
 <!-- Lobby Screen -->
 <div id="lobbyScreen">
   <div class="lobby-clouds">
-    <div class="lobby-cloud" style="width:180px;height:45px;top:15%;animation-duration:25s;">
-      <div style="width:80px;height:70px;background:inherit;border-radius:50%;position:absolute;top:-35px;left:30px;"></div>
-      <div style="width:60px;height:55px;background:inherit;border-radius:50%;position:absolute;top:-25px;left:90px;"></div>
+    <div class="lobby-cloud" style="width:180px;height:75px;top:15%;animation-duration:25s;">
+      <div style="width:180px;height:75px;background:inherit;position:absolute;top:0;left:0;"></div>
+      <div style="width:126px;height:75px;background:inherit;position:absolute;top:-50px;left:27px;"></div>
+      <div style="width:50px;height:75px;background:inherit;position:absolute;top:0;left:-14px;"></div>
+      <div style="width:50px;height:75px;background:inherit;position:absolute;top:0;left:130px;"></div>
     </div>
-    <div class="lobby-cloud" style="width:120px;height:35px;top:45%;animation-duration:18s;animation-delay:-5s;opacity:0.6;transform:scale(0.8);">
-      <div style="width:50px;height:45px;background:inherit;border-radius:50%;position:absolute;top:-25px;left:20px;"></div>
-      <div style="width:45px;height:40px;background:inherit;border-radius:50%;position:absolute;top:-15px;left:60px;"></div>
+    <div class="lobby-cloud" style="width:120px;height:50px;top:45%;animation-duration:18s;animation-delay:-5s;opacity:0.6;transform:scale(0.8);">
+      <div style="width:120px;height:50px;background:inherit;position:absolute;top:0;left:0;"></div>
+      <div style="width:84px;height:50px;background:inherit;position:absolute;top:-33px;left:18px;"></div>
+      <div style="width:33px;height:50px;background:inherit;position:absolute;top:0;left:-9px;"></div>
+      <div style="width:33px;height:50px;background:inherit;position:absolute;top:0;left:86px;"></div>
     </div>
-    <div class="lobby-cloud" style="width:220px;height:60px;top:70%;animation-duration:35s;animation-delay:-12s;opacity:0.8;">
-      <div style="width:100px;height:90px;background:inherit;border-radius:50%;position:absolute;top:-45px;left:40px;"></div>
-      <div style="width:80px;height:70px;background:inherit;border-radius:50%;position:absolute;top:-35px;left:110px;"></div>
+    <div class="lobby-cloud" style="width:220px;height:92px;top:70%;animation-duration:35s;animation-delay:-12s;opacity:0.8;">
+      <div style="width:220px;height:92px;background:inherit;position:absolute;top:0;left:0;"></div>
+      <div style="width:154px;height:92px;background:inherit;position:absolute;top:-61px;left:33px;"></div>
+      <div style="width:61px;height:92px;background:inherit;position:absolute;top:0;left:-17px;"></div>
+      <div style="width:61px;height:92px;background:inherit;position:absolute;top:0;left:158px;"></div>
     </div>
   </div>
   <canvas class="lobby-wind" id="lobbyWindCanvas"></canvas>
@@ -345,8 +351,8 @@
     <div id="hudTop">
       <div id="scoreBox">SCORE: <span id="gameScore">0</span></div>
       <div style="display:flex; gap:12px; align-items:center;">
-        <button id="exitBtn" onclick="exitGameToLobby()" style="background:var(--danger); color:#fff; border:3px solid var(--dark); font-family:'Press Start 2P'; font-size:16px; padding:6px 12px; cursor:pointer; box-shadow:2px 2px 0 var(--dark);">✕ EXIT</button>
-        <button class="nav-btn" onclick="document.getElementById('gameSettingsModal').classList.add('open')" style="font-size:24px; padding:4px 8px; margin:0;">⚙</button>
+        <button id="exitBtn" onclick="exitGameToLobby()" style="background:var(--danger); color:#fff; border:3px solid var(--dark); font-family:'Press Start 2P'; font-size:16px; padding:0 12px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:2px 2px 0 var(--dark);">✕ EXIT</button>
+        <button class="nav-btn" onclick="document.getElementById('gameSettingsModal').classList.add('open')" style="font-size:24px; padding:0 8px; margin:0; height:44px; display:flex; align-items:center; justify-content:center;">⚙</button>
       </div>
     </div>
     <div id="hudBottom">
@@ -624,7 +630,7 @@
   import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from './authManager.js';
   import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
   
-  window.gameAuthManager = { login: loginWithGoogle, logout: logout };
+  window.gameAuthManager = { login: loginWithGoogle, logout: logout, getCurrentUser: getCurrentUser };
 
   let currentUser = null;
   onUserChange(user => {

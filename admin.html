@@ -65,8 +65,11 @@ body{
 .anav-btn.danger:hover{background:#e74c3c}
 .admin-content{max-width:1000px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 @media(max-width:700px){.admin-content{grid-template-columns:1fr}}
-.panel-card{background:var(--white);border:4px solid var(--dark);padding:24px;box-shadow:var(--pixel-shadow)}
-.panel-card h2{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:20px;padding-bottom:12px;border-bottom:4px solid var(--dark)}
+.panel-card{background:var(--white);border:4px solid var(--dark);padding:24px;box-shadow:var(--pixel-shadow); display:flex; flex-direction:column; margin-bottom:24px;}
+.panel-card h2{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:0;padding-bottom:12px;border-bottom:4px solid var(--dark); cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none;}
+.panel-card h2:hover{color:var(--gold-d);}
+.panel-body{margin-top:20px; flex:1; display:flex; flex-direction:column;}
+.panel-card.collapsed .panel-body{display:none;}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:20px;color:var(--dark);margin-bottom:6px}
 .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:3px solid var(--dark);background:var(--white);font-size:20px;font-family:'VT323',monospace;color:var(--dark);outline:none;box-shadow:inset 2px 2px 0 rgba(0,0,0,0.1)}
@@ -189,199 +192,215 @@ input[type="file"] {
 
   <div class="admin-content">
     <!-- Icon Library Panel -->
-    <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;">
-      <h2>ICON LIBRARY</h2>
-      <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload icons here first, then select them in Settings or when adding a Work.</p>
-      
-      <div id="iconLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-        <!-- Filled by JS -->
-      </div>
-      
-      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-        <input type="text" id="newIconName" placeholder="Icon Name (e.g. Unity)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-        <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
-        <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>ICON LIBRARY</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload icons here first, then select them in Settings or when adding a Work.</p>
+        
+        <div id="iconLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <!-- Filled by JS -->
+        </div>
+        
+        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="newIconName" placeholder="Icon Name (e.g. Unity)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
+          <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
+        </div>
       </div>
     </div>
 
     <!-- Sound Library Panel -->
-    <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;" id="soundLibraryPanel">
-      <h2>🔊 SOUND LIBRARY</h2>
-      <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload sounds here, then assign them to game events using the Sound Picker below.</p>
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;" id="soundLibraryPanel">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>🔊 SOUND LIBRARY</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload sounds here, then assign them to game events using the Sound Picker below.</p>
 
-      <!-- Uploaded Sounds Grid -->
-      <div id="soundLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-        <!-- Filled by JS -->
+        <!-- Uploaded Sounds Grid -->
+        <div id="soundLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- Upload Row -->
+        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:24px;">
+          <input type="text" id="newSoundName" placeholder="Sound Name (e.g. Hit SFX)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <input type="file" id="newSoundFile" accept="audio/*" style="font-size:12px;width:220px;">
+          <button class="anav-btn" onclick="addSoundToLibrary()">UPLOAD SOUND</button>
+        </div>
+
+        <!-- Sound Picker / Assignments -->
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOUND PICKER — Assign Sounds to Events</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;" id="soundPickerGrid">
+          <!-- Filled by JS -->
+        </div>
+
+        <button class="submit-btn" onclick="saveSoundAssignments()" style="margin-top:20px;">SAVE SOUND ASSIGNMENTS</button>
+        <p class="form-msg" id="soundMsg"></p>
       </div>
-
-      <!-- Upload Row -->
-      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:24px;">
-        <input type="text" id="newSoundName" placeholder="Sound Name (e.g. Hit SFX)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-        <input type="file" id="newSoundFile" accept="audio/*" style="font-size:12px;width:220px;">
-        <button class="anav-btn" onclick="addSoundToLibrary()">UPLOAD SOUND</button>
-      </div>
-
-      <!-- Sound Picker / Assignments -->
-      <h3 style="font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOUND PICKER — Assign Sounds to Events</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;" id="soundPickerGrid">
-        <!-- Filled by JS -->
-      </div>
-
-      <button class="submit-btn" onclick="saveSoundAssignments()" style="margin-top:20px;">SAVE SOUND ASSIGNMENTS</button>
-      <p class="form-msg" id="soundMsg"></p>
     </div>
 
     <!-- Settings Panel -->
-    <div class="panel-card" style="grid-column: 1 / -1; margin-bottom: 24px;">
-      <h2>SITE SETTINGS</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
-        <div>
-          <div class="field">
-            <label>Profile Image</label>
-            <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Upload a square image for your avatar.</div>
-            <input type="file" id="profileFileInput" accept="image/*" onchange="previewProfile(this)">
-            <div style="width:100px;height:100px;border:3px solid var(--dark);background:#a8d4f0;margin-top:10px;position:relative;overflow:hidden">
-              <img id="profilePreview" style="width:100%;height:100%;object-fit:cover;display:none;image-rendering:pixelated">
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>SITE SETTINGS</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+          <div>
+            <div class="field">
+              <label>Profile Image</label>
+              <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Upload a square image for your avatar.</div>
+              <input type="file" id="profileFileInput" accept="image/*" onchange="previewProfile(this)">
+              <div style="width:100px;height:100px;border:3px solid var(--dark);background:#a8d4f0;margin-top:10px;position:relative;overflow:hidden">
+                <img id="profilePreview" style="width:100%;height:100%;object-fit:cover;display:none;image-rendering:pixelated">
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="field">
+              <label>Background Image</label>
+              <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Recommended size: 1920x1080px.</div>
+              <input type="file" id="bgFileInput" accept="image/*" onchange="previewBg(this)">
+              <div style="width:200px;height:112px;border:3px solid var(--dark);background:#a8d4f0;margin-top:10px;position:relative;overflow:hidden">
+                <img id="bgPreview" style="width:100%;height:100%;object-fit:cover;display:none;image-rendering:pixelated">
+              </div>
             </div>
           </div>
         </div>
-        <div>
-          <div class="field">
-            <label>Background Image</label>
-            <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Upload a background image for the site.</div>
-            <input type="file" id="bgFileInput" accept="image/*" onchange="previewBg(this)">
-            <div style="width:100%;aspect-ratio:16/9;border:3px solid var(--dark);background:#a8d4f0;margin-top:10px;position:relative;overflow:hidden">
-              <img id="bgPreview" style="width:100%;height:100%;object-fit:cover;display:none;image-rendering:pixelated">
+        <div class="field">
+          <label>About Text</label>
+          <textarea id="aboutText" placeholder="Write something about yourself..."></textarea>
+        </div>
+        <div class="field">
+          <label>Social Links</label>
+          <div style="display:flex;gap:10px;margin-bottom:10px">
+            <input type="text" id="socialX" placeholder="X (Twitter) URL">
+            <input type="text" id="socialInsta" placeholder="Instagram URL">
+          </div>
+          <div style="display:flex;gap:10px">
+            <input type="text" id="socialFb" placeholder="Facebook URL">
+            <input type="text" id="socialYt" placeholder="YouTube URL">
+          </div>
+        </div>
+        <button class="submit-btn" onclick="saveSettings()">SAVE SETTINGS</button>
+        <p class="form-msg" id="settingsMsg"></p>
+      </div>
+    </div>
+
+    <!-- Add Work Panel -->
+    <div class="panel-card">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span id="formTitle">ADD NEW WORK</span>
+        <span class="toggle-icon">▲</span>
+      </h2>
+      <div class="panel-body">
+        <input type="hidden" id="editId">
+        
+        <div id="ghStatus" class="gh-status ok">✓ Connected to GitHub</div>
+
+        <div class="stats">
+          <div class="stat"><div class="stat-n" id="sAll">0</div><div class="stat-l">Total</div></div>
+          <div class="stat"><div class="stat-n" id="sGame">0</div><div class="stat-l">Game</div></div>
+          <div class="stat"><div class="stat-n" id="sMod">0</div><div class="stat-l">Mod</div></div>
+          <div class="stat"><div class="stat-n" id="s3d">0</div><div class="stat-l">3D</div></div>
+        </div>
+
+        <div class="edit-banner" id="editBanner">✏️ EDIT MODE — editing existing work</div>
+        
+        <div class="field">
+          <label>Work Name</label>
+          <input type="text" id="wName" placeholder="e.g. Space Shooter">
+        </div>
+        <div class="field">
+          <label>Main Category</label>
+          <select id="wCat" onchange="onCatChange()">
+            <option value="">— select —</option>
+            <option value="game">Game</option>
+            <option value="mod">Minecraft Mod</option>
+            <option value="3d">3D Model</option>
+          </select>
+        </div>
+        <div class="field subcat-wrap" id="subcatWrap">
+          <label>Sub-category</label>
+          <select id="wSubcat">
+            <option value="">— select type —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Description (optional)</label>
+          <textarea id="wDesc" placeholder="Short description..."></textarea>
+        </div>
+        <div class="field">
+          <label>Links (Optional)</label>
+          <div id="wLinksBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+          <button class="anav-btn" onclick="addWorkLink()">+ ADD LINK</button>
+        </div>
+
+        <div class="field">
+          <label>Software/Tools Used</label>
+          <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select icons from your Icon Library</div>
+          <div id="toolsCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <div class="field">
+          <label>Image/Thumbnail</label>
+          <div class="img-preview-wrap">
+            <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
+              <span style="font-size:32px">🖼️</span>
+              <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
+            </div>
+            <div class="img-focal-hint" id="focalHint" style="display:none">
+              <label style="font-size:16px;color:var(--dark);display:block;margin-bottom:4px">Focal Point (up/down)</label>
+              <input type="range" id="focalSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--dark)" oninput="updateFocal(this.value)">
             </div>
           </div>
+          <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)" style="display:none">
         </div>
-      </div>
 
-      <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">CATEGORIES (GAME, MOD, 3D)</h3>
-      <div id="catsList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:24px;">
-        <!-- Filled by JS -->
-      </div>
-
-      <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOCIAL LINKS</h3>
-      <div id="socialsList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
-        <!-- Filled by JS -->
-      </div>
-      <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
-
-      <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">GAME SETTINGS</h3>
-      <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
-        <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Here you can upload your custom Player Sprite and Attack Animation for the Minigame (Coming soon / Work in Progress).</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <div class="field" style="flex:1;min-width:200px;">
-            <label>Player Sprite (Idle/Fly)</label>
-            <input type="file" accept="image/*" disabled title="Coming soon">
-          </div>
-          <div class="field" style="flex:1;min-width:200px;">
-            <label>Player Attack Sprite</label>
-            <input type="file" accept="image/*" disabled title="Coming soon">
-          </div>
+        <div class="field" id="modelWrap" style="display:none">
+          <label>3D Model (.glb) — สำหรับ 3D viewer</label>
+          <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Export จาก Blender: File → Export → glTF 2.0 (.glb)</div>
+          <input type="file" id="modelFileInput" accept=".glb,.gltf" onchange="onModelSelect(this)" style="width:100%;font-size:16px;padding:8px;border:3px dashed var(--dark);background:var(--white);cursor:pointer;font-family:'VT323',monospace">
+          <p id="modelName" style="font-size:16px;color:var(--success);margin-top:6px;min-height:16px"></p>
         </div>
-      </div>
 
-      <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
-      <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
-      <p class="form-msg" id="settingsMsg"></p>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <button class="submit-btn" id="previewBtn" onclick="openPreview()" style="background:var(--white); flex:1;">👁 PREVIEW</button>
+          <button class="submit-btn" id="cancelBtn" onclick="resetForm()" style="background:var(--danger); color:var(--white); flex:1; display:none;">✕ CANCEL</button>
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="addWork()">＋ PUBLISH TO PORTFOLIO</button>
+        <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+        <p class="form-msg" id="formMsg"></p>
+      </div>
     </div>
 
-    <!-- Upload form -->
-    <div class="panel-card" style="grid-column: 1 / -1;">
-      <h2>ADD WORK</h2>
-      <div id="ghStatus" class="gh-status ok">✓ Connected to GitHub</div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-n" id="sAll">0</div><div class="stat-l">Total</div></div>
-        <div class="stat"><div class="stat-n" id="sGame">0</div><div class="stat-l">Game</div></div>
-        <div class="stat"><div class="stat-n" id="sMod">0</div><div class="stat-l">Mod</div></div>
-        <div class="stat"><div class="stat-n" id="s3d">0</div><div class="stat-l">3D</div></div>
-      </div>
-
-      <div class="edit-banner" id="editBanner">✏️ EDIT MODE — editing existing work</div>
-      <div class="img-preview-wrap">
-        <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
-          <span style="font-size:32px">🖼️</span>
-          <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
-        </div>
-        <div class="img-focal-hint" id="focalHint" style="display:none">
-          <label style="font-size:16px;color:var(--dark);display:block;margin-bottom:4px">Focal Point (up/down)</label>
-          <input type="range" id="focalSlider" min="0" max="100" value="50"
-            style="width:100%;accent-color:var(--dark)"
-            oninput="updateFocal(this.value)">
-        </div>
-      </div>
-      <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)">
-
-      <div class="field">
-        <label>Work Name</label>
-        <input type="text" id="wName" placeholder="e.g. Space Shooter">
-      </div>
-      <div class="field">
-        <label>Main Category</label>
-        <select id="wCat" onchange="onCatChange()">
-          <option value="">— select —</option>
-          <option value="game">Game</option>
-          <option value="mod">Minecraft Mod</option>
-          <option value="3d">3D Model</option>
-        </select>
-      </div>
-      <div class="field subcat-wrap" id="subcatWrap">
-        <label>Sub-category</label>
-        <select id="wSubcat">
-          <option value="">— select type —</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Description (optional)</label>
-        <textarea id="wDesc" placeholder="Short description..."></textarea>
-      </div>
-      <div class="field">
-        <label>Links (Optional)</label>
-        <div id="wLinksBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
-        <button class="anav-btn" onclick="addWorkLink()">+ ADD LINK</button>
-      </div>
-
-      <div class="field">
-        <label>Software/Tools Used</label>
-        <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select icons from your Icon Library</div>
-        <div id="toolsCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
-          <!-- Filled by JS -->
-        </div>
-      </div>
-
-      <div class="field" id="modelWrap" style="display:none">
-        <label>3D Model (.glb) — สำหรับ 3D viewer</label>
-        <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Export จาก Blender: File → Export → glTF 2.0 (.glb)</div>
-        <input type="file" id="modelFileInput" accept=".glb,.gltf" onchange="onModelSelect(this)"
-          style="width:100%;font-size:16px;padding:8px;border:3px dashed var(--dark);background:var(--white);cursor:pointer;font-family:'VT323',monospace">
-        <p id="modelName" style="font-size:16px;color:var(--success);margin-top:6px;min-height:16px"></p>
-      </div>
-
-      <button class="submit-btn" id="previewBtn" onclick="openPreview()" style="background:var(--white);margin-bottom:8px">👁 PREVIEW</button>
-      <button class="submit-btn" id="submitBtn" onclick="addWork()">＋ PUBLISH TO PORTFOLIO</button>
-      <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
-      <p class="form-msg" id="formMsg"></p>
-    </div>
-
-    <!-- Works list -->
-    <div class="panel-card" style="grid-column: 1 / -1;">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid var(--dark); margin-bottom:20px; padding-bottom:12px;">
-        <h2 style="border:none; margin:0; padding:0;">MANAGE WORKS</h2>
-        <div style="display:flex; gap:10px; align-items:center;">
+    <!-- Manage Works Panel -->
+    <div class="panel-card">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>MANAGE WORKS</span>
+        <span class="toggle-icon">▲</span>
+      </h2>
+      <div class="panel-body">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom: 16px;">
           <span style="font-size:16px; font-family:'Press Start 2P',cursive; color:var(--dark);">FILTER:</span>
-          <select id="adminFilter" onchange="renderAdminList()" style="font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); background:var(--white); padding:4px 8px; outline:none; box-shadow:2px 2px 0 var(--dark);">
+          <select id="adminFilter" onchange="renderAdminList()" style="flex:1; font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); background:var(--white); padding:6px 12px; outline:none; box-shadow:inset 2px 2px 0 rgba(0,0,0,0.1);">
             <option value="all">All</option>
             <option value="game">Game</option>
             <option value="mod">Minecraft Mod</option>
             <option value="3d">3D Model</option>
           </select>
         </div>
-      </div>
-      <div class="works-list" id="worksList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; max-height: 600px;">
-        <p class="no-works">Loading from GitHub...</p>
+        <div class="works-list" id="worksList" style="display:flex;flex-direction:column;gap:12px;overflow-y:auto;flex:1;max-height:800px;padding-right:10px;">
+          <p class="no-works">Loading from GitHub...</p>
+        </div>
       </div>
     </div>
   </div>

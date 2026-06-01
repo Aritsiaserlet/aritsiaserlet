@@ -19,7 +19,9 @@ import {
   deleteDoc,
   collection,
   collectionGroup,
-  serverTimestamp 
+  serverTimestamp,
+  arrayUnion,
+  arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -125,8 +127,6 @@ export function getCurrentUser() {
 
 // ── Likes System ──
 // Source of truth: likes/{workId} -> { uids: [uid1, uid2, ...] }
-
-import { arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 export async function fetchLikeCounts() {
   try {
