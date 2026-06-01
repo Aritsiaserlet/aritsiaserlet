@@ -640,7 +640,15 @@
     document.getElementById('lobbyScreen').style.display = 'flex';
     document.getElementById('gameTopNav').style.display = 'flex';
 
-    if (scoreToSave >= 0 && playTimeSeconds > 0) { // allow 0 score if they just played to save time
+    function finishExit() {
+      if (window.gameAuthManager && window.gameAuthManager.getCurrentUser()) {
+        window.openLeaderboard();
+      } else {
+        window.openLeaderboard(scoreToSave);
+      }
+    }
+
+    if (scoreToSave >= 0 && playTimeSeconds > 0) {
       if (!currentUser) {
         if (confirm('You are not logged in! Do you want to login to save your playtime and score?')) {
           window.pendingScoreToSave = scoreToSave;
@@ -650,24 +658,12 @@
         } else {
           finishExit();
         }
-        return;
       } else {
         window.saveScore(scoreToSave, playTimeSeconds);
         finishExit();
       }
     } else {
       finishExit();
-    }
-    
-    function finishExit() {
-      if (window.gameAuthManager && window.gameAuthManager.getCurrentUser()) {
-        window.saveScore(scoreToSave);
-        window.openLeaderboard();
-      } else {
-        window.openLeaderboard(scoreToSave);
-      }
-    } else {
-      window.openLeaderboard();
     }
   };
 
