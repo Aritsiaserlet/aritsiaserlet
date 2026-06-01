@@ -19,7 +19,7 @@ service cloud.firestore {
       
       function onlyAllowedFields() {
         let incomingKeys = request.resource.data.keys();
-        let allowedKeys = ['displayName', 'photoURL', 'highScore', 'bestCombo', 'gamesPlayed', 'totalScore', 'lastPlayed', 'lastLogin', 'createdAt'];
+        let allowedKeys = ['displayName', 'photoURL', 'highScore', 'bestCombo', 'gamesPlayed', 'totalScore', 'lastPlayed', 'lastLogin', 'createdAt', 'playTimeSeconds'];
         return incomingKeys.hasOnly(allowedKeys);
       }
       
@@ -29,7 +29,8 @@ service cloud.firestore {
         let validHigh = !("highScore" in newData) || !("highScore" in oldData) || newData.highScore >= oldData.highScore;
         let validTotal = !("totalScore" in newData) || !("totalScore" in oldData) || newData.totalScore >= oldData.totalScore;
         let validGames = !("gamesPlayed" in newData) || !("gamesPlayed" in oldData) || newData.gamesPlayed >= oldData.gamesPlayed;
-        return validHigh && validTotal && validGames;
+        let validTime = !("playTimeSeconds" in newData) || !("playTimeSeconds" in oldData) || newData.playTimeSeconds >= oldData.playTimeSeconds;
+        return validHigh && validTotal && validGames && validTime;
       }
 
       allow create: if isOwner() && onlyAllowedFields();

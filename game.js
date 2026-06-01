@@ -30,8 +30,10 @@ let isPlaying    = false;
 let score        = 0;
 let fireworks    = 0;
 let multiplier   = 1;
+let maxMultiplier= 1;
 let boostTimer   = 0;
 let baseSpeed    = 5;
+let gameStartTime = 0;
 let currentSpeed = baseSpeed;
 
 // ── Player (UNCHANGED)
@@ -430,6 +432,29 @@ window.initGame = function (portfolioWorks, settings) {
   if (!canvas) { console.error('gameCoreCanvas not found'); return; }
   ctx = canvas.getContext('2d');
 
+
+  // Preload custom sprites
+  if (gameSettings.game) {
+    if (gameSettings.game.playerSprite) {
+      playerSpriteImg = new Image();
+      playerSpriteImg.src = gameSettings.game.playerSprite;
+      playerSpriteData = {
+        frames: gameSettings.game.playerSpriteFrames || 1,
+        fps: gameSettings.game.playerSpriteFps || 12,
+        loop: gameSettings.game.playerSpriteLoop !== false
+      };
+    }
+    if (gameSettings.game.playerAttackSprite) {
+      playerAttackImg = new Image();
+      playerAttackImg.src = gameSettings.game.playerAttackSprite;
+      playerAttackData = {
+        frames: gameSettings.game.playerAttackFrames || 1,
+        fps: gameSettings.game.playerAttackFps || 15,
+        loop: gameSettings.game.playerAttackLoop === true
+      };
+    }
+  }
+
   window.addEventListener('resize', resizeGame);
   resizeGame();
 
@@ -444,7 +469,7 @@ window.initGame = function (portfolioWorks, settings) {
   canvas.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     if (!isPlaying) return;
-    if (fireworks > 0) { fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD(); }
+    if (fireworks > 0) { fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); maxMultiplier = Math.max(maxMultiplier, multiplier); updateHUD(); }
   });
 
   // ── Touch: left half = dive, right half = boost
@@ -484,9 +509,10 @@ function resizeGame() {
 // ── Reset
 // ─────────────────────────────────────────────
 window.resetGame = function () {
-  score        = 0; fireworks    = 0; multiplier   = 1;
+  score        = 0; fireworks    = 0; multiplier   = 1; maxMultiplier = 1;
   boostTimer   = 0; baseSpeed    = 5; currentSpeed = baseSpeed;
   enemies      = []; particles   = [];
+  gameStartTime = Date.now();
   frameCount   = 0; groundOffset = 0;
   birds        = []; speedLines  = [];
   nextBirdFrame = 600 + Math.floor(Math.random() * 300);
@@ -518,7 +544,7 @@ function handleKeyDown(e) {
   keys[e.code] = true;
   if ((e.code === 'Space' || e.code === 'ArrowUp') && attack.canChain) triggerDive();
   if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && fireworks > 0) {
-    fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD();
+    fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); maxMultiplier = Math.max(maxMultiplier, multiplier); updateHUD();
     if (window.gameAudio) window.gameAudio.sfxBoost();
   }
 }
@@ -531,7 +557,7 @@ function handleTouch(e) {
   if (touchX < W / 2) {
     // Left half → Boost
     if (fireworks > 0) {
-      fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); updateHUD();
+      fireworks--; boostTimer += 180; multiplier = Math.min(multiplier + 1, 8); maxMultiplier = Math.max(maxMultiplier, multiplier); updateHUD();
       if (window.gameAudio) window.gameAudio.sfxBoost();
     }
   } else {
@@ -908,5 +934,6 @@ function gameOver() {
   if (goEl)  goEl.style.display = 'flex';
   
   if (window.gameAudio) window.gameAudio.sfxGameOver();
-  if (window.saveScore) window.saveScore(score);
+  const playTimeSeconds = Math.floor((Date.now() - gameStartTime) / 1000);
+  if (window.saveScore) window.saveScore(score, playTimeSeconds, maxMultiplier);
 }

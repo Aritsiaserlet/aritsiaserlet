@@ -287,15 +287,27 @@ input[type="file"] {
 
         <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">GAME SETTINGS</h3>
         <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
-          <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Here you can upload your custom Player Sprite and Attack Animation for the Minigame (Coming soon / Work in Progress).</p>
+          <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Configure custom Player Sprite and Attack Animation (upload horizontal spritesheets).</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;">
             <div class="field" style="flex:1;min-width:200px;">
               <label>Player Sprite (Idle/Fly)</label>
-              <input type="file" accept="image/*" disabled title="Coming soon">
+              <input type="file" id="gsetSpriteFile" accept="image/*">
+              <img id="gsetSpritePreview" src="" style="max-width:100%; height:auto; margin-top:8px; display:none; border:2px solid var(--dark); image-rendering:pixelated;">
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="flex:1"><label style="font-size:12px;">Frames</label><input type="number" id="gsetSpriteFrames" min="1" value="1"></div>
+                <div style="flex:1"><label style="font-size:12px;">FPS</label><input type="number" id="gsetSpriteFps" min="1" value="12"></div>
+              </div>
+              <label style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="gsetSpriteLoop" checked> Loop Animation</label>
             </div>
             <div class="field" style="flex:1;min-width:200px;">
               <label>Player Attack Sprite</label>
-              <input type="file" accept="image/*" disabled title="Coming soon">
+              <input type="file" id="gsetAttackFile" accept="image/*">
+              <img id="gsetAttackPreview" src="" style="max-width:100%; height:auto; margin-top:8px; display:none; border:2px solid var(--dark); image-rendering:pixelated;">
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="flex:1"><label style="font-size:12px;">Frames</label><input type="number" id="gsetAttackFrames" min="1" value="1"></div>
+                <div style="flex:1"><label style="font-size:12px;">FPS</label><input type="number" id="gsetAttackFps" min="1" value="15"></div>
+              </div>
+              <label style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="gsetAttackLoop"> Loop Animation</label>
             </div>
           </div>
         </div>
@@ -903,64 +915,38 @@ async function saveSoundAssignments() {
 
 
 
+
 function renderSettingsUI() {
-  const catsBox = document.getElementById('catsList');
-  catsBox.innerHTML = '';
-  ['game','mod','3d'].forEach(id => {
-    if(!settings.categories) settings.categories = {};
-    if(!settings.categories[id]) settings.categories[id] = {name: id.toUpperCase(), iconId: '', icon: ''};
-    const c = settings.categories[id];
-    const defaultName = id==='game'?'Game':id==='mod'?'Minecraft Mod':'3D Model';
-    
-    let iconUrl = '';
-    if (c.iconId && settings.icons) {
-      const ic = settings.icons.find(x => x.id === c.iconId);
-      if(ic) iconUrl = ic.url;
-    }
-
-    catsBox.innerHTML += `
-      <div style="border:3px solid var(--dark);padding:12px;background:var(--sky4);">
-        <div style="font-weight:bold;margin-bottom:8px;text-transform:uppercase;color:var(--dark);font-family:'Press Start 2P',cursive;font-size:12px;">${id}</div>
-        <div class="field" style="margin-bottom:8px;">
-          <input type="text" id="catName_${id}" value="${c.name==id.toUpperCase() ? defaultName : c.name}" onchange="settings.categories['${id}'].name=this.value" placeholder="Display Name">
-        </div>
-        <div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;">
-          <select onchange="settings.categories['${id}'].iconId=this.value; renderSettingsUI()" style="padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);flex:1;">
-            ${generateIconOptions(c.iconId)}
-          </select>
-          ${iconUrl ? `<img src="${iconUrl}" style="width:28px;height:28px;object-fit:cover;image-rendering:pixelated;border:2px solid var(--dark);">` : `<div style="width:28px;height:28px;border:2px dashed var(--mid);background:var(--white);"></div>`}
-        </div>
-      </div>
-    `;
-  });
-
-  const socBox = document.getElementById('socialsList');
-  socBox.innerHTML = '';
-  if(!settings.socials) settings.socials = [];
-  settings.socials.forEach((s, idx) => {
-    // Only show icon from the library (iconId), ignore legacy s.icon
-    let iconUrl = '';
-    if (s.iconId && settings.icons) {
-      const ic = settings.icons.find(x => x.id === s.iconId);
-      if(ic) iconUrl = ic.url;
-    }
-
-    socBox.innerHTML += `
-      <div style="border:3px solid var(--dark);padding:12px;background:var(--sky4);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-        <div style="flex:1;min-width:200px;">
-          <input type="text" value="${s.name}" onchange="settings.socials[${idx}].name=this.value" placeholder="Name (e.g. itch.io)" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);margin-bottom:8px;">
-          <input type="url" value="${s.url}" onchange="settings.socials[${idx}].url=this.value" placeholder="https://..." style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-        </div>
-        <div style="width:200px;display:flex;align-items:center;gap:8px;">
-          <select onchange="settings.socials[${idx}].iconId=this.value; renderSettingsUI()" style="flex:1;padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);">
-            ${generateIconOptions(s.iconId)}
-          </select>
-          ${iconUrl ? `<img src="${iconUrl}" style="width:40px;height:40px;object-fit:cover;image-rendering:pixelated;border:2px solid var(--dark);">` : `<div style="width:40px;height:40px;border:2px dashed var(--mid);background:var(--white);flex-shrink:0;"></div>`}
-        </div>
-        <button class="anav-btn danger" onclick="removeSocialLink(${idx})" style="padding:8px 12px;align-self:flex-start;">X</button>
-      </div>
-    `;
-  });
+  document.getElementById('sTitle').value = settings.title || '';
+  document.getElementById('sDesc').value = settings.description || '';
+  document.getElementById('sAbout').value = settings.aboutText || '';
+  document.getElementById('sLinks').value = settings.socialLinks ? settings.socialLinks.join('\n') : '';
+  if (settings.profileImage) {
+    document.getElementById('profilePreview').src = settings.profileImage;
+    document.getElementById('profilePreview').style.display = 'block';
+  }
+  if (settings.backgroundImage) {
+    document.getElementById('bgPreview').src = settings.backgroundImage;
+    document.getElementById('bgPreview').style.display = 'block';
+  }
+  
+  // Render Game Settings
+  if (!settings.game) settings.game = {};
+  if (settings.game.playerSprite) {
+    document.getElementById('gsetSpritePreview').src = settings.game.playerSprite;
+    document.getElementById('gsetSpritePreview').style.display = 'block';
+  }
+  document.getElementById('gsetSpriteFrames').value = settings.game.playerSpriteFrames || 1;
+  document.getElementById('gsetSpriteFps').value = settings.game.playerSpriteFps || 12;
+  document.getElementById('gsetSpriteLoop').checked = settings.game.playerSpriteLoop !== false; // default true
+  
+  if (settings.game.playerAttackSprite) {
+    document.getElementById('gsetAttackPreview').src = settings.game.playerAttackSprite;
+    document.getElementById('gsetAttackPreview').style.display = 'block';
+  }
+  document.getElementById('gsetAttackFrames').value = settings.game.playerAttackFrames || 1;
+  document.getElementById('gsetAttackFps').value = settings.game.playerAttackFps || 15;
+  document.getElementById('gsetAttackLoop').checked = settings.game.playerAttackLoop === true; // default false
 }
 
 function addSocialLink() {
@@ -1021,6 +1007,7 @@ async function saveSettings(){
       settings.profileImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       fill.style.width='40%';
     }
+    
     if(bgBase64){
       msg.textContent='Uploading background image...';
       const fname=`works/bg_${Date.now()}.${bgExt}`;
@@ -1028,6 +1015,29 @@ async function saveSettings(){
       settings.backgroundImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       fill.style.width='50%';
     }
+    
+    if (!settings.game) settings.game = {};
+    if(gSpriteBase64){
+      msg.textContent='Uploading Player Sprite...';
+      const fname=`works/sprite_${Date.now()}.${gSpriteExt}`;
+      await ghPutBinary(fname, gSpriteBase64, 'Upload Player Sprite');
+      settings.game.playerSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+    }
+    if(gAttackBase64){
+      msg.textContent='Uploading Attack Sprite...';
+      const fname=`works/attack_${Date.now()}.${gAttackExt}`;
+      await ghPutBinary(fname, gAttackBase64, 'Upload Attack Sprite');
+      settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+    }
+    
+    settings.game.playerSpriteFrames = parseInt(document.getElementById('gsetSpriteFrames').value) || 1;
+    settings.game.playerSpriteFps = parseInt(document.getElementById('gsetSpriteFps').value) || 12;
+    settings.game.playerSpriteLoop = document.getElementById('gsetSpriteLoop').checked;
+    
+    settings.game.playerAttackFrames = parseInt(document.getElementById('gsetAttackFrames').value) || 1;
+    settings.game.playerAttackFps = parseInt(document.getElementById('gsetAttackFps').value) || 15;
+    settings.game.playerAttackLoop = document.getElementById('gsetAttackLoop').checked;
+
 
     msg.textContent='Updating settings.json...';
     const json=JSON.stringify(settings,null,2);
