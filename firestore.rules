@@ -42,5 +42,10 @@ service cloud.firestore {
         allow write: if isOwner();
       }
     }
+    
+    // 4. Allow collection group query for likes
+    match /{path=**}/likes/{workId} {
+      allow read: if true;
+    }
   }
 }

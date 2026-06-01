@@ -752,6 +752,10 @@
       if (loginBtn) loginBtn.style.display = 'inline-flex';
       if (userProfile) userProfile.style.display = 'none';
     }
+    
+    if (window.refreshLobbyStats) {
+      window.refreshLobbyStats();
+    }
   });
 
   window.saveScore = async (newScore, playTimeSeconds = 0, maxMultiplier = 1) => {
