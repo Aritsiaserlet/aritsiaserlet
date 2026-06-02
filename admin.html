@@ -1428,8 +1428,8 @@ window.renderTeam = function() {
   box.innerHTML = '';
   currentTeam.forEach((member, i) => {
     let opts = '<option value="">-- No Icon --</option>';
-    if (window.settings && window.settings.icons) {
-      window.settings.icons.forEach(ic => {
+    if (typeof settings !== 'undefined' && settings.icons) {
+      settings.icons.forEach(ic => {
         opts += `<option value="${ic.id}" ${ic.id === member.iconId ? 'selected' : ''}>${ic.name}</option>`;
       });
     }
