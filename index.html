@@ -398,6 +398,7 @@ body{
       sfx:    initSet.sfxVolume,
       mute:   initSet.mute
     });
+    if(window.initSoundBtns) window.initSoundBtns();
   }
 );
 
@@ -581,21 +582,21 @@ body{
       <span class="set-label">Master Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setMasterVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="masterMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('master'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="nav-btn" id="masterMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('master'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;">🔊</button>
       </div>
     </div>
     <div class="set-row" style="align-items: center;">
       <span class="set-label">Music Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setMusicVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="musicMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('music'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="nav-btn" id="musicMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('music'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;">🔊</button>
       </div>
     </div>
     <div class="set-row" style="align-items: center;">
       <span class="set-label">SFX Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setSfxVol" min="0" max="100" onchange="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="sfxMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('sfx'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="nav-btn" id="sfxMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('sfx'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;">🔊</button>
       </div>
     </div>
 
@@ -1284,6 +1285,32 @@ function startGame() {
 }
 
 // ── Settings Modal Logic ──
+window.updateSoundBtn = function(btn, isMuted) {
+  if(!btn) return;
+  const set = window.portfolioSettingsManager ? window.portfolioSettingsManager.getSettings() : {};
+  let iconUrl = '';
+  if (set && set.soundBtnIconId && set.icons) {
+    const ic = set.icons.find(x => x.id === set.soundBtnIconId);
+    if (ic) iconUrl = ic.url;
+  }
+  if (iconUrl) {
+    btn.innerHTML = `<img src="${iconUrl}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;opacity:${isMuted ? '0.5' : '1'};filter:${isMuted ? 'grayscale(100%)' : 'none'};">`;
+  } else {
+    btn.textContent = isMuted ? '🔇' : '🔊';
+  }
+};
+
+window.initSoundBtns = function() {
+  const btns = ['masterMuteBtn', 'musicMuteBtn', 'sfxMuteBtn', 'bgmTogglePortfolio'];
+  btns.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      const isMuted = btn.textContent.includes('🔇') || btn.innerHTML.includes('opacity: 0.5') || btn.innerHTML.includes('opacity:0.5');
+      window.updateSoundBtn(btn, isMuted);
+    }
+  });
+};
+
 function openSettingsModal() {
   const modal = document.getElementById('settingsModal');
   const set = window.portfolioSettingsManager.getSettings();
@@ -1328,7 +1355,8 @@ window.togglePortfolioBGM = function() {
   _bgmOn = isNowOn;
   const btn = document.getElementById('bgmTogglePortfolio');
   if (btn) {
-    btn.textContent = _bgmOn ? '🔊' : '🔇';
+    if(window.updateSoundBtn) window.updateSoundBtn(btn, !_bgmOn);
+    else btn.textContent = _bgmOn ? '🔊' : '🔇';
   }
 };
 
