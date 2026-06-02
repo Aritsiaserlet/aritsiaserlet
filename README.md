@@ -1,4 +1,4 @@
-# Aritsia — Pixel Art Portfolio
+# Aritsia - Pixel Art Portfolio
 
 A pixel-art style portfolio website for a Game Developer / Minecraft Modder / 3D Artist, built with vanilla HTML, CSS, and JavaScript — no framework required.
 
@@ -86,4 +86,4 @@ From the admin panel you can:
 
 ## 📝 License
 
-© 2025 Vinlanx. All rights reserved.
+© 2026 AritsiaZ. Licensed under the MIT License.
