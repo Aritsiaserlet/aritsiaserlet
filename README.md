@@ -55,7 +55,7 @@ Since this project uses the GitHub Raw API as its "backend", you just need to:
 
 ## Admin Panel
 
-The admin panel is accessible from the Settings modal (⚙ button) on the main page:
+The admin panel is accessible from the Settings modal (Settings button) on the main page:
 
 1. Enter the admin password (default: `****` — **change this in `js/index.js`** before going public)
 2. Enter a GitHub Personal Access Token (PAT) with `repo` scope
