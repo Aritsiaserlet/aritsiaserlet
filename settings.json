@@ -185,5 +185,12 @@
     }
   ],
   "teamBtnIconId": "icon_1780403259826",
-  "soundBtnIconId": "icon_1780412487582"
+  "soundBtnIconId": "icon_1780412487582",
+  "sounds": [
+    {
+      "id": "snd_1780414348838",
+      "name": "Mace Smash Air",
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780414348838.ogg"
+    }
+  ]
 }
