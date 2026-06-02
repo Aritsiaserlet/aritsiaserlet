@@ -332,6 +332,18 @@ body{
 .lb-avatar { width:36px; height:36px; border:2px solid var(--dark); object-fit:cover; image-rendering:pixelated; }
 .lb-name { flex:1; font-family:'VT323',monospace; font-size:24px; }
 .lb-score { font-family:'VT323',monospace; font-size:24px; color:var(--danger); }
+
+.team-popup {
+  position: absolute; left: calc(100% + 20px); top: 0; width: 300px;
+  background: var(--white); border: 4px solid var(--dark); padding: 20px;
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+  display: none; flex-direction: column; z-index: 100;
+}
+@media(max-width: 768px) {
+  .team-popup {
+    left: 0; top: 100%; margin-top: 20px; width: 100%; box-sizing: border-box;
+  }
+}
 </style>
 <script type="module">
   import { initSettings, getSettings, updateSettings } from './settingsManager.js';
@@ -965,6 +977,39 @@ function openModal(w) {
     });
   }
 
+  // Populate Team
+  const tbc = document.getElementById('modalTeamBtnContainer');
+  const tpList = document.getElementById('teamPopupList');
+  if (tbc && tpList) {
+    if (w.team && w.team.length > 0) {
+      tbc.style.display = 'block';
+      tpList.innerHTML = '';
+      w.team.forEach(member => {
+        let iconHtml = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+        if (member.iconId && window.settingsData && window.settingsData.icons) {
+          const ic = window.settingsData.icons.find(x => x.id === member.iconId);
+          if (ic) {
+            iconHtml = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;">`;
+          }
+        }
+        let content = `
+          <div style="display:flex; align-items:center; gap:12px; background:var(--sky4); padding:12px; border:2px solid var(--dark);">
+            ${iconHtml}
+            <div style="flex:1; font-family:'Press Start 2P', cursive; font-size:12px; color:var(--dark);">${member.name}</div>
+          </div>
+        `;
+        if (member.url) {
+          tpList.innerHTML += `<a href="${member.url}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">${content}</a>`;
+        } else {
+          tpList.innerHTML += content;
+        }
+      });
+    } else {
+      tbc.style.display = 'none';
+      document.getElementById('teamPopup').style.display = 'none';
+    }
+  }
+
   // Center modal
   const box = document.getElementById('modalBox');
   const vw = window.innerWidth, vh = window.innerHeight;
@@ -1043,8 +1088,19 @@ function initImgDrag() {
 function closeModal(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
 }
+
+function toggleTeamPopup() {
+  const tp = document.getElementById('teamPopup');
+  if (tp.style.display === 'flex') {
+    tp.style.display = 'none';
+  } else {
+    tp.style.display = 'flex';
+  }
+}
+  
 function closeModalDirect() {
   document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('teamPopup').style.display = 'none';
   document.body.style.overflow = '';
   disposeThreeViewer();
   document.getElementById('modalMedia').innerHTML = '';
@@ -1253,7 +1309,22 @@ window.togglePortfolioBGM = function() {
       <div class="modal-badges" id="modalBadges"></div>
       <p class="modal-desc" id="modalDesc"></p>
       <div id="modalLinksContainer" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;"></div>
+
+      <div id="modalTeamBtnContainer" style="margin-top:16px; display:none;">
+         <button class="nav-btn" onclick="toggleTeamPopup()" style="background:var(--sky4); color:var(--dark); font-size:16px; padding:8px 16px;">👥 TEAM</button>
+      </div>
+  
     </div>
+
+    <!-- Team Popup -->
+    <div id="teamPopup" class="team-popup">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="margin:0; font-family:'Press Start 2P', cursive; font-size:16px; color:var(--dark);">TEAM</h3>
+        <button onclick="document.getElementById('teamPopup').style.display='none'" style="background:var(--danger);color:white;border:3px solid var(--dark);width:28px;height:28px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;">X</button>
+      </div>
+      <div id="teamPopupList" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+
   </div>
 </div>
 

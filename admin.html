@@ -438,6 +438,12 @@ input[type="file"] {
         </div>
 
         <div class="field">
+          <label>Team Members (Optional)</label>
+          <div id="wTeamBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+          <button class="anav-btn" onclick="addTeamMember()">+ ADD TEAM MEMBER</button>
+        </div>
+
+        <div class="field">
           <label>Software/Tools Used</label>
           <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select icons from your Icon Library</div>
           <div id="toolsCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
@@ -1305,7 +1311,7 @@ async function addWork(){
       if (idx !== -1) {
         works[idx] = { ...works[idx], name, cat,
           subcat: (cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
-          desc, links: currentWorkLinks,
+          desc, links: currentWorkLinks, team: currentTeam.filter(t => t.name.trim() !== ''),
           imageFocal: currentImgFocal,
           image: imagePath,
           model: modelPath,
@@ -1317,7 +1323,7 @@ async function addWork(){
         id:Date.now(),name,cat,
         subcat:(cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
         desc,image:imagePath,model:modelPath,
-        links:currentWorkLinks,
+        links:currentWorkLinks, team: currentTeam.filter(t => t.name.trim() !== ''),
         imageFocal:currentImgFocal,
         tools:selectedTools,
         date:new Date().toISOString()
@@ -1404,6 +1410,43 @@ function renderAdminList(){
 
 let currentWorkLinks = [];
 
+let currentTeam = [];
+
+window.addTeamMember = function() {
+  currentTeam.push({ name: '', url: '', iconId: '' });
+  window.renderTeam();
+};
+
+window.removeTeamMember = function(i) {
+  currentTeam.splice(i, 1);
+  window.renderTeam();
+};
+
+window.renderTeam = function() {
+  const box = document.getElementById('wTeamBox');
+  if(!box) return;
+  box.innerHTML = '';
+  currentTeam.forEach((member, i) => {
+    let opts = '<option value="">-- No Icon --</option>';
+    if (window.settings && window.settings.icons) {
+      window.settings.icons.forEach(ic => {
+        opts += `<option value="${ic.id}" ${ic.id === member.iconId ? 'selected' : ''}>${ic.name}</option>`;
+      });
+    }
+    box.innerHTML += `
+      <div style="display:flex; gap:8px; align-items:center; background:var(--sky4); padding:8px; border:2px solid var(--dark);">
+        <input type="text" placeholder="Name" value="${member.name||''}" onchange="currentTeam[${i}].name=this.value" style="flex:1;">
+        <input type="text" placeholder="Link URL" value="${member.url||''}" onchange="currentTeam[${i}].url=this.value" style="flex:1;">
+        <select onchange="currentTeam[${i}].iconId=this.value" style="width:120px;">
+          ${opts}
+        </select>
+        <button class="game-btn" onclick="window.removeTeamMember(${i})" style="padding:4px 8px; font-size:12px; background:var(--danger); color:white;">X</button>
+      </div>
+    `;
+  });
+};
+
+
 function renderWorkLinks() {
   const box = document.getElementById('wLinksBox');
   if(!box) return;
@@ -1486,6 +1529,14 @@ function editWork(id) {
   } else {
     currentWorkLinks = [];
   }
+
+  if (w.team) {
+    currentTeam = JSON.parse(JSON.stringify(w.team));
+  } else {
+    currentTeam = [];
+  }
+  window.renderTeam();
+
   renderWorkLinks();
   
   renderToolsCheckboxList();
