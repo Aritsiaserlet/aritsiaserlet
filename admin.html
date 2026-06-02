@@ -1448,7 +1448,6 @@ function resetForm(){
   document.getElementById('imgFileInput').value='';
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
-  document.getElementById('pwError').textContent='';
   renderToolsCheckboxList();
   currentImageBase64=null;
   currentModelBase64=null;
@@ -1458,8 +1457,8 @@ function resetForm(){
   document.getElementById('editBanner').classList.remove('visible');
   document.getElementById('focalHint').style.display='none';
   const sl=document.getElementById('focalSlider'); if(sl) sl.value=50;
-  document.getElementById('submitBtn').textContent='＋ PUBLISH TO PORTFOLIO';
-  document.getElementById('previewBtn').textContent='👁 PREVIEW';
+  document.getElementById('submitBtn').textContent='PUBLISH TO PORTFOLIO';
+  document.getElementById('previewBtn').textContent='PREVIEW';
 }
 
 function showMsg(text,type){
@@ -1520,8 +1519,8 @@ function editWork(id) {
   }
 
   document.getElementById('editBanner').classList.add('visible');
-  document.getElementById('submitBtn').textContent = '✓ SAVE CHANGES';
-  document.getElementById('previewBtn').textContent = '👁 PREVIEW CHANGES';
+  document.getElementById('submitBtn').textContent = 'SAVE CHANGES';
+  document.getElementById('previewBtn').textContent = 'PREVIEW CHANGES';
 
   // Scroll to form
   document.getElementById('imgPreview').scrollIntoView({behavior:'smooth', block:'center'});
