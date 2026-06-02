@@ -100,28 +100,7 @@
     ],
     "featured": false,
     "tags": [],
-    "team": [
-      {
-        "name": "Non",
-        "url": "https://discord.com/users/1018888909419204658",
-        "iconId": "icon_1780139586547"
-      },
-      {
-        "name": "Petch",
-        "url": "https://discord.com/users/726290821250416651",
-        "iconId": "icon_1780139586547"
-      },
-      {
-        "name": "Mew",
-        "url": "https://discord.com/users/777801927810482176",
-        "iconId": "icon_1780139586547"
-      },
-      {
-        "name": "Putter",
-        "url": "https://discord.com/users/1456492030153724007",
-        "iconId": "icon_1780139586547"
-      }
-    ]
+    "team": []
   },
   {
     "id": 1780205455222,
