@@ -29,14 +29,39 @@ let volumes = { master: 1.0, music: 1.0, sfx: 1.0, masterMute: false, musicMute:
 // Keys match the soundAssignments keys in settings.json
 let soundUrls = {};
 
+export let globalSoundBtnIconUrl = '';
+export function updateGameSoundBtn(btn, isMuted) {
+  if(!btn) return;
+  if (globalSoundBtnIconUrl) {
+    btn.innerHTML = `<img src="${globalSoundBtnIconUrl}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;opacity:${isMuted?'0.5':'1'};filter:${isMuted?'grayscale(100%)':'none'};">`;
+  } else {
+    btn.textContent = isMuted ? '🔇' : '🔊';
+  }
+}
+
 // ── Load sound assignments from settings.json
 export async function loadSoundAssignments() {
   try {
-    const GH_USER = 'Aritsiaserlet';
-    const GH_REPO = 'aritsiaserlet';
-    const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json?t=${Date.now()}`);
-    if (!r.ok) return;
-    const settings = await r.json();
+    let settings = null;
+    if (window.portfolioSettingsManager) {
+      settings = window.portfolioSettingsManager.getSettings();
+    } else if (window.parent && window.parent.portfolioSettingsManager) {
+      settings = window.parent.portfolioSettingsManager.getSettings();
+    }
+    
+    if (!settings || Object.keys(settings).length === 0) {
+      const GH_USER = 'Aritsiaserlet';
+      const GH_REPO = 'aritsiaserlet';
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json?t=${Date.now()}`);
+      if (r.ok) settings = await r.json();
+    }
+    if (!settings) return;
+
+    if (settings.soundBtnIconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === settings.soundBtnIconId);
+      if (ic) globalSoundBtnIconUrl = ic.url;
+    }
+
     const library = settings.sounds || [];
     const assignments = settings.soundAssignments || {};
     // Map each assignment key → URL

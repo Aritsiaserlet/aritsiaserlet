@@ -81,7 +81,7 @@ import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from '../au
     }
   };
 
-  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute } from '../audioManager.js';
+  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute, updateGameSoundBtn } from '../audioManager.js';
   
   // Read volume settings from localStorage on load
   function loadAudioSettings() {
@@ -112,9 +112,25 @@ import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from '../au
     sfxDive,
     toggleBGM,
     toggleMute,
-    setVolumes
+    setVolumes,
+    updateGameSoundBtn
   };
 
   loadAudioSettings();
   // Load sound assignments from settings.json so sounds work in-game
-  loadSoundAssignments();
+  loadSoundAssignments().then(() => {
+    // Initial UI update for settings buttons if they exist
+    ['master', 'music', 'sfx'].forEach(type => {
+      const btn = document.getElementById(`gameMuteBtn_${type}`);
+      if (btn) {
+        let isMuted = false;
+        try {
+          const s = JSON.parse(localStorage.getItem('portfolioSettings') || '{}');
+          if (type === 'master') isMuted = s.mute || false;
+          if (type === 'music') isMuted = s.musicMute || false;
+          if (type === 'sfx') isMuted = s.sfxMute || false;
+        } catch(e) {}
+        updateGameSoundBtn(btn, isMuted);
+      }
+    });
+  });

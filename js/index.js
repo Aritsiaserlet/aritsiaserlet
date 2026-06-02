@@ -52,14 +52,14 @@ function createParticle(yStart) {
   return {
     x: Math.floor(Math.random() * W),
     y: yStart ?? Math.floor(H + 100),
-    length: Math.floor(randBetween(6, 25)) * 6,
-    speedY: randBetween(1.5, 5.0),
+    length: Math.floor(randBetween(10, 35)) * 6,
+    speedY: randBetween(2.0, 6.0),
     phase: Math.random() * Math.PI * 2,
-    opacity: randBetween(0.1, 0.6)
+    opacity: randBetween(0.25, 0.85)
   };
 }
 
-for (let i = 0; i < 40; i++) {
+for (let i = 0; i < 80; i++) {
   particles.push(createParticle(Math.random() * H));
 }
 

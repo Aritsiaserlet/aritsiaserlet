@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -154,21 +154,21 @@
       <span class="gset-label">Master Vol</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="gset-range" id="gsetMasterVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
-        <button class="game-btn" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('master'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="game-btn" id="gameMuteBtn_master" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('master'); window.gameAudio.updateGameSoundBtn(this, m); }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
       </div>
     </div>
     <div class="gset-row">
       <span class="gset-label">Music Vol</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="gset-range" id="gsetMusicVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
-        <button class="game-btn" id="gameBgmBtn" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('music'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="game-btn" id="gameMuteBtn_music" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('music'); window.gameAudio.updateGameSoundBtn(this, m); }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
       </div>
     </div>
     <div class="gset-row">
       <span class="gset-label">SFX Vol</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="gset-range" id="gsetSfxVol" min="0" max="100" onchange="applyGameSettings()" style="flex:1;">
-        <button class="game-btn" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('sfx'); this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
+        <button class="game-btn" id="gameMuteBtn_sfx" onclick="if(window.gameAudio) { const m = window.gameAudio.toggleMute('sfx'); window.gameAudio.updateGameSoundBtn(this, m); }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;">🔊</button>
       </div>
     </div>
 
