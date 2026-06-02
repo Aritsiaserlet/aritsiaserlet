@@ -226,6 +226,6 @@
   ],
   "profileFit": "cover",
   "profilePos": "center",
-  "bgSize": "contain",
+  "bgSize": "100% 100%",
   "bgPos": "center"
 }
