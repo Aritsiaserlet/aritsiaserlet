@@ -135,10 +135,15 @@ async function loadSettings(){
         document.getElementById('profilePreview').src = settings.profileImage;
         document.getElementById('profilePreview').style.display = 'block';
       }
+      if(settings.profileFit) document.getElementById('profileFit').value = settings.profileFit;
+      if(settings.profilePos) document.getElementById('profilePos').value = settings.profilePos;
+      
       if(settings.backgroundImage){
         document.getElementById('bgPreview').src = settings.backgroundImage;
         document.getElementById('bgPreview').style.display = 'block';
       }
+      if(settings.bgSize) document.getElementById('bgSize').value = settings.bgSize;
+      if(settings.bgPos) document.getElementById('bgPos').value = settings.bgPos;
     }
   } catch(e){
     console.log('No settings.json found or error loading:', e);
@@ -149,6 +154,7 @@ async function loadSettings(){
   renderSoundLibrary();
   renderSoundPicker();
   renderTeamLibrary();
+  renderTeamCheckboxList();
 }
 
 async function saveWorks(){
@@ -400,25 +406,9 @@ function renderSoundLibrary() {
     return;
   }
   sounds.forEach((snd, i) => {
-    let iconHtml = `<div style="font-size:28px;margin-bottom:4px;">🔊</div>`;
-    if (snd.iconId && settings.icons) {
-      const ic = settings.icons.find(x => x.id === snd.iconId);
-      if (ic) iconHtml = `<img src="${ic.url}" style="width:32px;height:32px;object-fit:contain;image-rendering:pixelated;margin-bottom:4px;">`;
-    }
-    let selectHtml = `<select onchange="updateSoundIcon(${i}, this.value)" style="width:100%;font-family:'VT323';font-size:14px;border:2px solid var(--dark);margin-bottom:4px;background:var(--sky4);cursor:pointer;outline:none;">
-      <option value="">- No Icon (🔊) -</option>`;
-    if (settings.icons) {
-      settings.icons.forEach(ic => {
-        selectHtml += `<option value="${ic.id}" ${snd.iconId === ic.id ? 'selected' : ''}>${ic.name}</option>`;
-      });
-    }
-    selectHtml += `</select>`;
-
     box.innerHTML += `
       <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;">
         <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:2;">X</button>
-        ${iconHtml}
-        ${selectHtml}
         <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;line-height:1;">${snd.name}</div>
         <audio controls src="${snd.url}" style="width:100%;height:28px;margin-top:auto;"></audio>
       </div>
@@ -426,17 +416,7 @@ function renderSoundLibrary() {
   });
 }
 
-window.updateSoundIcon = async function(idx, iconId) {
-  settings.sounds[idx].iconId = iconId;
-  try {
-    const json = JSON.stringify(settings, null, 2);
-    const res = await ghPut(JSON_PATH, json, 'Update sound icon', settingsSha);
-    settingsSha = res.content.sha;
-    renderSoundLibrary();
-  } catch(e) {
-    alert("Error updating icon: " + e.message);
-  }
-}
+
 
 async function deleteSound(idx) {
   customConfirm('Delete this sound? It will be unassigned from all events.', async () => {
@@ -465,18 +445,39 @@ function renderSoundPicker() {
   if(!settings.soundAssignments) settings.soundAssignments = {};
   const sounds = settings.sounds || [];
   SOUND_EVENTS.forEach(ev => {
-    const currentId = settings.soundAssignments[ev.key] || '';
-    let options = `<option value="">— None (Silent) —</option>`;
-    sounds.forEach(s => {
-      const sel = s.id === currentId ? 'selected' : '';
-      options += `<option value="${s.id}" ${sel}>${s.name}</option>`;
-    });
+    let currentIds = settings.soundAssignments[ev.key];
+    if (!Array.isArray(currentIds)) {
+      currentIds = currentIds ? [currentIds] : [];
+    }
+    
+    let checksHtml = '';
+    if (sounds.length === 0) {
+      checksHtml = `<div style="font-family:'VT323';font-size:16px;color:var(--mid);">No sounds available</div>`;
+    } else {
+      sounds.forEach(s => {
+        const isChecked = currentIds.includes(s.id) ? 'checked' : '';
+        checksHtml += `<label style="display:flex;align-items:center;gap:6px;font-family:'VT323';font-size:16px;cursor:pointer;margin-bottom:4px;">
+          <input type="checkbox" class="spk-check-${ev.key}" value="${s.id}" ${isChecked}>
+          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</span>
+        </label>`;
+      });
+    }
+
+    let iconImg = '';
+    if (ev.label.startsWith('Game:') && settings.gameCategoryIconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === settings.gameCategoryIconId);
+      if (ic) iconImg = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;margin-right:6px;vertical-align:middle;">`;
+    } else if (ev.label.startsWith('Portfolio:') && settings.portfolioCategoryIconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === settings.portfolioCategoryIconId);
+      if (ic) iconImg = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;margin-right:6px;vertical-align:middle;">`;
+    }
+
     grid.innerHTML += `
       <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;">
-        <div style="font-family:'VT323';font-size:18px;color:var(--dark);margin-bottom:8px;">${ev.label}</div>
-        <select id="spk_${ev.key}" style="width:100%;padding:6px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);background:var(--white);">
-          ${options}
-        </select>
+        <div style="font-family:'VT323';font-size:18px;color:var(--dark);margin-bottom:8px;display:flex;align-items:center;">${iconImg}${ev.label}</div>
+        <div style="width:100%;max-height:100px;overflow-y:auto;background:var(--white);border:3px solid var(--dark);padding:6px;">
+          ${checksHtml}
+        </div>
       </div>
     `;
   });
@@ -486,8 +487,9 @@ async function saveSoundAssignments() {
   const msgEl = document.getElementById('soundMsg');
   if(!settings.soundAssignments) settings.soundAssignments = {};
   SOUND_EVENTS.forEach(ev => {
-    const sel = document.getElementById(`spk_${ev.key}`);
-    if(sel) settings.soundAssignments[ev.key] = sel.value || null;
+    const checkboxes = document.querySelectorAll(`.spk-check-${ev.key}:checked`);
+    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+    settings.soundAssignments[ev.key] = selectedIds;
   });
   try {
     msgEl.style.color = 'var(--mid)';
@@ -682,6 +684,11 @@ async function saveSettings(){
       settings.backgroundImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       fill.style.width='50%';
     }
+    
+    settings.profileFit = document.getElementById('profileFit').value;
+    settings.profilePos = document.getElementById('profilePos').value;
+    settings.bgSize = document.getElementById('bgSize').value;
+    settings.bgPos = document.getElementById('bgPos').value;
     
     if (!settings.game) settings.game = {};
     if(gSpriteBase64){
@@ -1172,6 +1179,14 @@ function renderTeamLibrary() {
   const sBtnSelect = document.getElementById('soundBtnIcon');
   if (sBtnSelect) {
     sBtnSelect.innerHTML = generateIconOptions(settings.soundBtnIconId || '');
+  }
+  const gcSelect = document.getElementById('gameCategoryIcon');
+  if (gcSelect) {
+    gcSelect.innerHTML = generateIconOptions(settings.gameCategoryIconId || '');
+  }
+  const pcSelect = document.getElementById('portfolioCategoryIcon');
+  if (pcSelect) {
+    pcSelect.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '');
   }
   
   const box = document.getElementById('teamLibraryList');

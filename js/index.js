@@ -52,14 +52,14 @@ function createParticle(yStart) {
   return {
     x: Math.floor(Math.random() * W),
     y: yStart ?? Math.floor(H + 100),
-    length: Math.floor(randBetween(10, 35)) * 6,
-    speedY: randBetween(2.0, 6.0),
+    length: Math.floor(randBetween(20, 50)) * 6,
+    speedY: randBetween(3.0, 8.0),
     phase: Math.random() * Math.PI * 2,
-    opacity: randBetween(0.25, 0.85)
+    opacity: randBetween(0.4, 0.9)
   };
 }
 
-for (let i = 0; i < 80; i++) {
+for (let i = 0; i < 25; i++) {
   particles.push(createParticle(Math.random() * H));
 }
 
@@ -73,9 +73,9 @@ function animateParticles() {
     for (let j=0; j<segCount; j++) {
       let alpha = p.opacity * (1 - j/segCount); // fade out tail
       ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      let waveX = Math.floor(Math.sin(currentY * 0.015 + p.phase) * 8);
-      ctx.fillRect(Math.floor(p.x + waveX), Math.floor(currentY), 4, 4);
-      currentY += 6;
+      let waveX = Math.floor(Math.sin(currentY * 0.015 + p.phase) * 12);
+      ctx.fillRect(Math.floor(p.x + waveX), Math.floor(currentY), 6, 6);
+      currentY += 8;
     }
     
     if (p.y + p.length < 0) {
@@ -135,11 +135,15 @@ async function loadData() {
 // ── Apply Settings (Profile, Background, Socials, Categories) ──
 function applySettings() {
   if (settings.profileImage) {
-    document.getElementById('avatarInner').innerHTML = `<img src="${settings.profileImage}" alt="Profile">`;
+    const pFit = settings.profileFit || 'cover';
+    const pPos = settings.profilePos || 'center';
+    document.getElementById('avatarInner').innerHTML = `<img src="${settings.profileImage}" alt="Profile" style="width:100%; height:100%; object-fit:${pFit}; object-position:${pPos};">`;
   }
   if (settings.backgroundImage) {
     const bg = document.getElementById('customBg');
     bg.style.backgroundImage = `url('${settings.backgroundImage}')`;
+    if (settings.bgSize) bg.style.backgroundSize = settings.bgSize;
+    if (settings.bgPos) bg.style.backgroundPosition = settings.bgPos;
     bg.style.opacity = '1';
     canvas.style.opacity = '0.4'; // Dim particles slightly when bg is loaded
   }

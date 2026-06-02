@@ -684,10 +684,10 @@ function checkDiveCollision() {
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
     if (hx < e.x + e.w && hx + hw > e.x && hy < e.y + e.h && hy + hh > e.y) {
-      const basePts = (window.settingsData && window.settingsData.game && window.settingsData.game.pointsPerHit !== undefined) ? window.settingsData.game.pointsPerHit : 15;
+      const basePts = (gameSettings && gameSettings.game && gameSettings.game.pointsPerHit !== undefined) ? gameSettings.game.pointsPerHit : 15;
       const pts = basePts * multiplier;
       score += pts;
-      const fwChance = (window.settingsData && window.settingsData.game && window.settingsData.game.fwDropChance !== undefined) ? window.settingsData.game.fwDropChance / 100 : 0.1;
+      const fwChance = (gameSettings && gameSettings.game && gameSettings.game.fwDropChance !== undefined) ? gameSettings.game.fwDropChance / 100 : 0.1;
       const gotFirework = Math.random() < fwChance;
       if (gotFirework) { fireworks++; updateHUD(); }
       const ex = e.x + e.w / 2, ey = e.y + e.h / 2;
@@ -952,7 +952,7 @@ function loop() {
     // Miss penalty
     if (e.x + e.w < player.x && !e.passed) {
       e.passed = true;
-      const basePen = (window.settingsData && window.settingsData.game && window.settingsData.game.missPenalty !== undefined) ? window.settingsData.game.missPenalty : 5;
+      const basePen = (gameSettings && gameSettings.game && gameSettings.game.missPenalty !== undefined) ? gameSettings.game.missPenalty : 5;
       const penalty = basePen * (boostStacks > 0 ? boostStacks * 4 : 1);
       score = Math.max(0, score - penalty); updateHUD();
       const offsetY = floatingTexts.length * 20;

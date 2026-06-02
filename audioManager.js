@@ -65,10 +65,16 @@ export async function loadSoundAssignments() {
     const library = settings.sounds || [];
     const assignments = settings.soundAssignments || {};
     // Map each assignment key → URL
-    for (const [key, soundId] of Object.entries(assignments)) {
-      if (!soundId) continue;
-      const sound = library.find(s => s.id === soundId);
-      if (sound && sound.url) soundUrls[key] = sound.url;
+    // Map each assignment key → Array of URLs
+    for (const [key, soundIds] of Object.entries(assignments)) {
+      if (!soundIds) continue;
+      const idArray = Array.isArray(soundIds) ? soundIds : [soundIds];
+      const urls = [];
+      idArray.forEach(id => {
+        const sound = library.find(s => s.id === id);
+        if (sound && sound.url) urls.push(sound.url);
+      });
+      if (urls.length > 0) soundUrls[key] = urls;
     }
   } catch(e) {
     console.warn('Failed to load sound assignments:', e);
@@ -130,10 +136,11 @@ export function toggleMute(type) {
 
 // ── Play a sound by its assignment key
 function playSound(key) {
-  const url = soundUrls[key];
-  if (!url) return; // No sound assigned — silent
+  const urls = soundUrls[key];
+  if (!urls || urls.length === 0) return; // No sound assigned — silent
   if (volumes.masterMute || volumes.sfxMute) return;
   try {
+    const url = urls[Math.floor(Math.random() * urls.length)];
     const audio = new Audio(url);
     audio.volume = Math.min(1, volumes.master * volumes.sfx);
     audio.play().catch(() => {});
