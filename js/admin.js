@@ -438,30 +438,82 @@ async function deleteSound(idx) {
   });
 }
 
+function syncSoundPickerToSettings() {
+  SOUND_EVENTS.forEach(ev => {
+    const layerContainers = document.querySelectorAll(`#layers_${ev.key} .spk-layer`);
+    const layers = [];
+    layerContainers.forEach(lc => {
+      const checked = Array.from(lc.querySelectorAll(`input[type="checkbox"]:checked`)).map(cb => cb.value);
+      layers.push(checked);
+    });
+    settings.soundAssignments[ev.key] = layers;
+  });
+}
+
+window.addSoundLayer = function(evKey) {
+  syncSoundPickerToSettings();
+  let current = settings.soundAssignments[evKey] || [];
+  if (!Array.isArray(current[0]) && current.length > 0) {
+    current = [current]; // Upgrade 1D to 2D
+  } else if (current.length === 0) {
+    current = [[]];
+  }
+  current.push([]); // Add empty layer
+  settings.soundAssignments[evKey] = current;
+  renderSoundPicker();
+};
+
+window.removeSoundLayer = function(evKey, layerIdx) {
+  syncSoundPickerToSettings();
+  let current = settings.soundAssignments[evKey];
+  if (Array.isArray(current) && Array.isArray(current[0])) {
+    current.splice(layerIdx, 1);
+    if (current.length === 0) current.push([]);
+  }
+  settings.soundAssignments[evKey] = current;
+  renderSoundPicker();
+};
+
 function renderSoundPicker() {
   const grid = document.getElementById('soundPickerGrid');
   if(!grid) return;
   grid.innerHTML = '';
   if(!settings.soundAssignments) settings.soundAssignments = {};
   const sounds = settings.sounds || [];
+  
   SOUND_EVENTS.forEach(ev => {
-    let currentIds = settings.soundAssignments[ev.key];
-    if (!Array.isArray(currentIds)) {
-      currentIds = currentIds ? [currentIds] : [];
+    let currentLayers = settings.soundAssignments[ev.key];
+    if (!currentLayers || currentLayers.length === 0) {
+      currentLayers = [[]];
+    } else if (!Array.isArray(currentLayers[0])) {
+      currentLayers = [currentLayers]; // Upgrade 1D to 2D
     }
     
-    let checksHtml = '';
-    if (sounds.length === 0) {
-      checksHtml = `<div style="font-family:'VT323';font-size:16px;color:var(--mid);">No sounds available</div>`;
-    } else {
-      sounds.forEach(s => {
-        const isChecked = currentIds.includes(s.id) ? 'checked' : '';
-        checksHtml += `<label style="display:flex;align-items:center;gap:6px;font-family:'VT323';font-size:16px;cursor:pointer;margin-bottom:4px;">
-          <input type="checkbox" class="spk-check-${ev.key}" value="${s.id}" ${isChecked}>
-          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</span>
-        </label>`;
-      });
-    }
+    let layersHtml = '';
+    currentLayers.forEach((layerIds, idx) => {
+      let checksHtml = '';
+      if (sounds.length === 0) {
+        checksHtml = `<div style="font-family:'VT323';font-size:16px;color:var(--mid);">No sounds available</div>`;
+      } else {
+        sounds.forEach(s => {
+          const isChecked = layerIds.includes(s.id) ? 'checked' : '';
+          checksHtml += `<label style="display:flex;align-items:center;gap:6px;font-family:'VT323';font-size:16px;cursor:pointer;margin-bottom:4px;">
+            <input type="checkbox" value="${s.id}" ${isChecked}>
+            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</span>
+          </label>`;
+        });
+      }
+      
+      layersHtml += `
+        <div class="spk-layer" style="margin-bottom:8px;border:2px dashed var(--mid);padding:6px;background:var(--white);position:relative;">
+          <div style="font-family:'VT323';font-size:16px;color:var(--dark);margin-bottom:4px;">Layer ${idx + 1} (Plays simultaneously)</div>
+          ${idx > 0 ? `<button onclick="removeSoundLayer('${ev.key}', ${idx})" style="position:absolute;top:4px;right:4px;background:var(--danger);color:white;border:2px solid var(--dark);font-family:'VT323';font-size:12px;cursor:pointer;">X</button>` : ''}
+          <div style="width:100%;max-height:80px;overflow-y:auto;border:2px solid var(--dark);padding:4px;">
+            ${checksHtml}
+          </div>
+        </div>
+      `;
+    });
 
     let iconImg = '';
     if (ev.label.startsWith('Game:') && settings.gameCategoryIconId && settings.icons) {
@@ -473,11 +525,12 @@ function renderSoundPicker() {
     }
 
     grid.innerHTML += `
-      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;">
+      <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;flex-direction:column;">
         <div style="font-family:'VT323';font-size:18px;color:var(--dark);margin-bottom:8px;display:flex;align-items:center;">${iconImg}${ev.label}</div>
-        <div style="width:100%;max-height:100px;overflow-y:auto;background:var(--white);border:3px solid var(--dark);padding:6px;">
-          ${checksHtml}
+        <div id="layers_${ev.key}" style="flex:1;">
+          ${layersHtml}
         </div>
+        <button onclick="addSoundLayer('${ev.key}')" style="margin-top:auto;background:var(--sky2);color:var(--dark);border:2px solid var(--dark);font-family:'VT323';font-size:14px;padding:4px;cursor:pointer;width:100%;">+ ADD LAYER</button>
       </div>
     `;
   });
@@ -485,12 +538,7 @@ function renderSoundPicker() {
 
 async function saveSoundAssignments() {
   const msgEl = document.getElementById('soundMsg');
-  if(!settings.soundAssignments) settings.soundAssignments = {};
-  SOUND_EVENTS.forEach(ev => {
-    const checkboxes = document.querySelectorAll(`.spk-check-${ev.key}:checked`);
-    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-    settings.soundAssignments[ev.key] = selectedIds;
-  });
+  syncSoundPickerToSettings();
   try {
     msgEl.style.color = 'var(--mid)';
     msgEl.textContent = 'Saving...';
