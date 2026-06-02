@@ -175,9 +175,9 @@ input[type="file"] {
 
   <div class="admin-content">
     <div id="ghStatusBox" style="grid-column: 1 / -1; display:flex; justify-content:center; align-items:center; border:4px solid var(--dark); padding:12px; background:var(--white); box-shadow:8px 8px 0 rgba(0,0,0,0.5); cursor:pointer; transition:0.2s;"
-         onclick="const t = prompt('Enter new GitHub Personal Access Token:'); if(t) { sessionStorage.setItem('ghToken', t.trim()); location.reload(); }"
-         onmouseover="this.style.background='var(--gold-l)'; this.querySelector('#ghStatus').textContent='✎ Click here to edit Token'"
-         onmouseout="this.style.background=window.ghConnected ? '#abebc6' : '#fadbd8'; this.querySelector('#ghStatus').textContent=window.ghConnected ? '✓ Connected to GitHub' : '✗ GitHub connection failed'">
+         onclick="if(!this.classList.contains('editing')){ this.classList.add('editing'); this.innerHTML=`<input type='text' id='ghTokenInput' placeholder='Enter new Token' style='flex:1;font-family:\\'VT323\\';font-size:24px;padding:8px;border:none;outline:none;'><button onclick='event.stopPropagation(); const t=document.getElementById(\\'ghTokenInput\\').value; if(t){sessionStorage.setItem(\\'ghToken\\',t.trim());location.reload();}' class='anav-btn' style='margin-left:12px;'>SAVE</button><button onclick='event.stopPropagation(); location.reload();' class='anav-btn' style='background:var(--danger);margin-left:8px;'>CANCEL</button>`; document.getElementById('ghTokenInput').focus(); }"
+         onmouseover="if(!this.classList.contains('editing')){ this.style.background='var(--gold-l)'; this.querySelector('#ghStatus').textContent='✎ Click here to edit Token'; }"
+         onmouseout="if(!this.classList.contains('editing')){ this.style.background=window.ghConnected ? '#abebc6' : '#fadbd8'; this.querySelector('#ghStatus').textContent=window.ghConnected ? '✓ Connected to GitHub' : '✗ GitHub connection failed'; }">
       <div id="ghStatus" style="margin:0; border:none; padding:0; background:transparent; font-size:28px; width:100%; text-align:center; color:var(--dark);">Checking connection...</div>
     </div>
     <!-- Icon Library Panel -->
@@ -223,8 +223,7 @@ input[type="file"] {
           </select>
           <button class="anav-btn" onclick="addTeamLibraryMember()">ADD MEMBER</button>
         </div>
-        
-        <button class="submit-btn" onclick="saveTeamLibrary()" style="margin-top:20px;">SAVE TEAM MEMBERS</button>
+        </div>
       </div>
     </div>
 
@@ -805,17 +804,18 @@ function renderIconLibrary() {
 }
 
 async function deleteIcon(idx) {
-  if(!confirm("Delete this icon? It will be removed from any links or categories using it.")) return;
-  settings.icons.splice(idx, 1);
-  try {
-    const json = JSON.stringify(settings, null, 2);
-    await ghPut(JSON_PATH, json, 'Delete icon from library');
-    renderIconLibrary();
-    renderSettingsUI();
-    renderToolsCheckboxList();
-  } catch(e) {
-    alert("Error deleting icon: " + e.message);
-  }
+  customConfirm("Delete this icon? It will be removed from any links or categories using it.", async () => {
+    settings.icons.splice(idx, 1);
+    try {
+      const json = JSON.stringify(settings, null, 2);
+      await ghPut(JSON_PATH, json, 'Delete icon from library');
+      renderIconLibrary();
+      renderSettingsUI();
+      renderToolsCheckboxList();
+    } catch(e) {
+      alert("Error deleting icon: " + e.message);
+    }
+  });
 }
 
 function generateIconOptions(selectedId) {
@@ -924,21 +924,22 @@ function renderSoundLibrary() {
 }
 
 async function deleteSound(idx) {
-  if(!confirm('Delete this sound? It will be unassigned from all events.')) return;
-  const deletedId = settings.sounds[idx].id;
-  settings.sounds.splice(idx, 1);
-  // Unassign from all events
-  if(settings.soundAssignments) {
-    for(const key of Object.keys(settings.soundAssignments)) {
+  customConfirm('Delete this sound? It will be unassigned from all events.', async () => {
+    const deletedId = settings.sounds[idx].id;
+    settings.sounds.splice(idx, 1);
+    // Remove assignments
+    for(const key in settings.soundAssignments) {
       if(settings.soundAssignments[key] === deletedId) settings.soundAssignments[key] = null;
     }
-  }
-  try {
-    const json = JSON.stringify(settings, null, 2);
-    await ghPut(JSON_PATH, json, 'Delete sound from library');
-    renderSoundLibrary();
-    renderSoundPicker();
-  } catch(e) { alert('Error: ' + e.message); }
+    try {
+      const json = JSON.stringify(settings, null, 2);
+      await ghPut(JSON_PATH, json, 'Delete sound from library');
+      renderSoundLibrary();
+      renderSettingsUI();
+    } catch(e) {
+      alert("Error deleting sound: " + e.message);
+    }
+  });
 }
 
 function renderSoundPicker() {
@@ -1363,23 +1364,24 @@ async function addWork(){
 
 async function deleteWork(id){
   const w=works.find(x=>x.id===id);
-  if(!w||!confirm(`Delete "${w.name}"?`))return;
-
-  try{
-    // Delete image file from GitHub if hosted there
-    if(w.image&&w.image.includes('raw.githubusercontent.com')){
-      const path=w.image.split(`/main/`)[1];
-      if(path){
-        const file=await ghGet(path);
-        if(file)await ghDelete(path,`Remove image for ${w.name}`,file.sha);
+  if(!w)return;
+  customConfirm(`Delete "${w.name}"?`, async () => {
+    try{
+      // Delete image file from GitHub if hosted there
+      if(w.image&&w.image.includes('raw.githubusercontent.com')){
+        const path=w.image.split(`/main/`)[1];
+        if(path){
+          const file=await ghGet(path);
+          if(file)await ghDelete(path,`Remove image for ${w.name}`,file.sha);
+        }
       }
-    }
-    works=works.filter(x=>x.id!==id);
-    await saveWorks();
-    renderAdminList();
-    updateStats();
-    showMsg('✓ Work deleted.','ok');
-  } catch(e){showMsg('Error: '+e.message,'err')}
+      works=works.filter(x=>x.id!==id);
+      await saveWorks();
+      renderAdminList();
+      updateStats();
+      showMsg('✓ Work deleted.','ok');
+    } catch(e){showMsg('Error: '+e.message,'err')}
+  });
 }
 
 function updateStats(){
@@ -1705,20 +1707,23 @@ async function addTeamLibraryMember() {
     
     renderTeamLibrary();
     renderTeamCheckboxList();
+    await saveSettings(); // autosave
   } catch(e) {
     alert("Error adding team member: " + e.message);
   }
 }
 
 async function deleteTeamLibraryMember(id) {
-  if(!confirm("Delete this team member? Don't forget to click SAVE TEAM MEMBERS afterwards.")) return;
-  settings.teams = settings.teams.filter(t => t.id !== id);
-  try {
-    renderTeamLibrary();
-    renderTeamCheckboxList();
-  } catch(e) {
-    alert("Error deleting team member: " + e.message);
-  }
+  customConfirm("Delete this team member?", async () => {
+    settings.teams = settings.teams.filter(t => t.id !== id);
+    try {
+      renderTeamLibrary();
+      renderTeamCheckboxList();
+      await saveSettings(); // autosave
+    } catch(e) {
+      alert("Error deleting team member: " + e.message);
+    }
+  });
 }
 
 async function saveTeamLibrary() {
@@ -1788,5 +1793,27 @@ function toggleTeamSelection(id, isChecked) {
     </div>
   </div>
 </div>
+
+<div class="modal-overlay" id="customConfirmOverlay" style="position:fixed;inset:0;z-index:9999;background:rgba(20,40,65,.8);display:none;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) this.style.display='none'">
+  <div class="modal-box" style="background:var(--white);border:4px solid var(--dark);width:100%;max-width:400px;box-shadow:8px 8px 0 rgba(0,0,0,0.5);padding:24px;text-align:center;">
+    <h3 id="customConfirmMsg" style="font-family:'VT323';font-size:24px;color:var(--dark);margin-bottom:24px;line-height:1.2;"></h3>
+    <div style="display:flex;justify-content:center;gap:16px;">
+      <button class="submit-btn" id="customConfirmYes" style="width:120px;background:var(--danger);font-size:20px;margin:0;">YES</button>
+      <button class="anav-btn" onclick="document.getElementById('customConfirmOverlay').style.display='none'" style="width:120px;margin:0;">NO</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function customConfirm(msg, callback) {
+  const overlay = document.getElementById('customConfirmOverlay');
+  document.getElementById('customConfirmMsg').textContent = msg;
+  overlay.style.display = 'flex';
+  document.getElementById('customConfirmYes').onclick = () => {
+    overlay.style.display = 'none';
+    callback();
+  };
+}
+</script>
 </body>
 </html>
