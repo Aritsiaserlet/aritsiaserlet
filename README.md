@@ -1,19 +1,19 @@
 # Aritsia - Pixel Art Portfolio
 
-A pixel-art style portfolio website for a Game Developer / Minecraft Modder / 3D Artist, built with vanilla HTML, CSS, and JavaScript — no framework required.
+A pixel-art style portfolio website for a Game Developer / Minecraft Modder / 3D Artist, built with vanilla HTML, CSS, and JavaScript - no framework required.
 
-## ✨ Features
+## Features
 
-- **Portfolio Gallery** — Dynamic card grid with category filtering, sorting, and like system
-- **Pixel Minigame** — Play a built-in Elytra dive-attack minigame (`game.html`)
-- **Admin Panel** — Full CMS via `admin.html` for managing works, icons, sounds, and site settings
-- **Milestone Architecture** — All content (`settings.json`, `works.json`) lives in the same GitHub repo and is fetched via the GitHub Raw API — no backend needed
-- **Firebase Auth + Firestore** — Google login for the likes/leaderboard system
-- **Custom Audio Engine** — Web Audio API-based sound manager with per-channel volume/mute controls
-- **Theme System** — 5 color themes (Blue, Purple, Green, Orange, Red) saved to `localStorage`
-- **3D Model Viewer** — Embedded Three.js GLB model viewer for 3D work entries
+- **Portfolio Gallery** - Dynamic card grid with category filtering, sorting, and like system
+- **Pixel Minigame** - Play a built-in Elytra dive-attack minigame (`game.html`)
+- **Admin Panel** - Full CMS via `admin.html` for managing works, icons, sounds, and site settings
+- **Milestone Architecture** - All content (`settings.json`, `works.json`) lives in the same GitHub repo and is fetched via the GitHub Raw API - no backend needed
+- **Firebase Auth + Firestore** - Google login for the likes/leaderboard system
+- **Custom Audio Engine** - Web Audio API-based sound manager with per-channel volume/mute controls
+- **Theme System** - 5 color themes (Blue, Purple, Green, Orange, Red) saved to `localStorage`
+- **3D Model Viewer** - Embedded Three.js GLB model viewer for 3D work entries
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 aritsiaserlet/
@@ -36,7 +36,7 @@ aritsiaserlet/
 └── works.json          # Portfolio works data (fetched via GitHub Raw API)
 ```
 
-## 🚀 Setup
+## Setup
 
 Since this project uses the GitHub Raw API as its "backend", you just need to:
 
@@ -53,11 +53,11 @@ Since this project uses the GitHub Raw API as its "backend", you just need to:
 4. **Enable GitHub Pages** on your repository (Settings → Pages → Deploy from `main` branch)
 5. Visit your site at `https://yourusername.github.io/your-repo-name/`
 
-## 🎮 Admin Panel
+## Admin Panel
 
 The admin panel is accessible from the Settings modal (⚙ button) on the main page:
 
-1. Enter the admin password (default: `7964` — **change this in `js/index.js`** before going public)
+1. Enter the admin password (default: `****` — **change this in `js/index.js`** before going public)
 2. Enter a GitHub Personal Access Token (PAT) with `repo` scope
 3. Click **Enter Admin Panel**
 
@@ -66,15 +66,15 @@ From the admin panel you can:
 - Upload and manage icons, team members, and sounds
 - Configure site settings (avatar, background, social links, categories)
 
-## 🔑 Security Notes
+## Security Notes
 
 > **Important:** This portfolio exposes admin access via a hardcoded password and a GitHub PAT entered at runtime. This is suitable for a personal portfolio where you are the only admin. **Do not commit your GitHub token to the repository.**
 
-- The admin password is in `js/index.js` — change `'7964'` to something secure
+- The admin password is in `js/index.js` — change `'****'` to something secure
 - The GitHub token is stored in `sessionStorage` only (cleared on tab close)
 - Firebase config is public by design (Firebase security rules control data access)
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -84,6 +84,6 @@ From the admin panel you can:
 | 3D Viewer | Three.js r128 |
 | Fonts | Google Fonts (Press Start 2P, VT323) |
 
-## 📝 License
+## License
 
 © 2026 AritsiaZ. Licensed under the MIT License.
