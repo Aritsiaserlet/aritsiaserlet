@@ -111,7 +111,7 @@
   "profileImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/profile_1780412544854.webp",
   "backgroundImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/bg_1780419980830.jpg",
   "game": {
-    "fwDropChance": 40,
+    "fwDropChance": 100,
     "pointsPerHit": 15,
     "missPenalty": 5,
     "fwIconId": "icon_1780329290994",
