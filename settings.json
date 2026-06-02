@@ -92,6 +92,20 @@
     "fwDropChance": 40,
     "pointsPerHit": 15,
     "missPenalty": 5,
-    "fwIconId": "icon_1780329290994"
-  }
+    "fwIconId": "icon_1780329290994",
+    "playerSpriteFrames": 1,
+    "playerSpriteFps": 12,
+    "playerSpriteLoop": true,
+    "playerAttackFrames": 1,
+    "playerAttackFps": 15,
+    "playerAttackLoop": false
+  },
+  "teams": [
+    {
+      "id": "team_1780392054240",
+      "name": "dsada",
+      "link": "dada",
+      "iconId": "icon_1780139577983"
+    }
+  ]
 }
