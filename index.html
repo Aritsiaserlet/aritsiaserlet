@@ -983,7 +983,7 @@ function openModal(w) {
   if (w.team && w.team.length > 0 && settings && settings.teams) {
     const teamMembers = w.team.map(id => settings.teams.find(t => t.id === id)).filter(Boolean);
     if (teamMembers.length > 0) {
-      let teamBtnIconHtml = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#4B0082"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>';
+      let teamBtnIconHtml = '';
       if (settings.teamBtnIconId && settings.icons) {
         const globalIc = settings.icons.find(x => x.id === settings.teamBtnIconId);
         if (globalIc) teamBtnIconHtml = `<img src="${globalIc.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;">`;
@@ -998,7 +998,7 @@ function openModal(w) {
       if (tpList) {
         tpList.innerHTML = '';
         teamMembers.forEach(member => {
-          let iconHtml = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+          let iconHtml = '';
           if (member.iconId && settings.icons) {
             const ic = settings.icons.find(x => x.id === member.iconId);
             if (ic) iconHtml = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;">`;
@@ -1042,9 +1042,52 @@ function initImgDrag() {
   let dragging = false, startY = 0, posY = 50;
   wrap.addEventListener('mousedown', e => { dragging=true; startY=e.clientY; e.preventDefault(); });
   wrap.addEventListener('touchstart', e => { dragging=true; startY=e.touches[0].clientY; }, {passive:true});
-  window.addEventListener('mouseup', () => dragging=false);
-  window.addEventListener('touchend', () => dragging=false);
+  
+  // Drag logic for Main Modal
+  const mBox = document.getElementById('modalBox');
+  const mDrag = document.getElementById('modalDragBar');
+  let isDraggingMain = false, mStartX, mStartY, mInitX, mInitY;
+
+  mDrag.addEventListener('mousedown', e => {
+    isDraggingMain = true;
+    mStartX = e.clientX; mStartY = e.clientY;
+    mInitX = mBox.offsetLeft; mInitY = mBox.offsetTop;
+    mBox.style.margin = '0';
+    document.body.style.userSelect = 'none';
+  });
+
+  // Drag logic for Team Modal
+  const tBox = document.getElementById('teamModalBox');
+  const tDrag = document.getElementById('teamDragBar');
+  let isDraggingTeam = false, tStartX, tStartY, tInitX, tInitY;
+
+  if (tDrag && tBox) {
+    tDrag.addEventListener('mousedown', e => {
+      isDraggingTeam = true;
+      tStartX = e.clientX; tStartY = e.clientY;
+      tInitX = tBox.offsetLeft; tInitY = tBox.offsetTop;
+      tBox.style.margin = '0';
+      // Bring to front
+      tBox.style.zIndex = parseInt(mBox.style.zIndex || 100) + 1;
+      document.body.style.userSelect = 'none';
+    });
+  }
+
   window.addEventListener('mousemove', e => {
+    if (isDraggingMain) {
+      const dx = e.clientX - mStartX;
+      const dy = e.clientY - mStartY;
+      mBox.style.left = (mInitX + dx) + 'px';
+      mBox.style.top = (mInitY + dy) + 'px';
+    }
+    if (isDraggingTeam) {
+      const dx = e.clientX - tStartX;
+      const dy = e.clientY - tStartY;
+      tBox.style.left = (tInitX + dx) + 'px';
+      tBox.style.top = (tInitY + dy) + 'px';
+    }
+    
+    // Image Focal Drag
     if (!dragging) return;
     posY = Math.max(0, Math.min(100, posY - (e.clientY - startY) * 0.3));
     startY = e.clientY;
@@ -1060,38 +1103,65 @@ function initImgDrag() {
 
 // ── Modal drag ──
 (function() {
-  let dragging=false, ox=0, oy=0;
-  document.addEventListener('mousedown', e => {
-    const bar = document.getElementById('modalDragBar');
-    if (!bar || !bar.contains(e.target)) return;
-    dragging=true;
-    const box=document.getElementById('modalBox');
-    ox=e.clientX-box.offsetLeft; oy=e.clientY-box.offsetTop;
-    e.preventDefault();
-  });
-  document.addEventListener('touchstart', e => {
-    const bar = document.getElementById('modalDragBar');
-    if (!bar || !bar.contains(e.target)) return;
-    dragging=true;
-    const box=document.getElementById('modalBox');
-    ox=e.touches[0].clientX-box.offsetLeft; oy=e.touches[0].clientY-box.offsetTop;
-  }, {passive:true});
-  document.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    const box=document.getElementById('modalBox');
-    const maxX=window.innerWidth-box.offsetWidth, maxY=window.innerHeight-60;
-    box.style.left=Math.max(0,Math.min(maxX,e.clientX-ox))+'px';
-    box.style.top=Math.max(0,Math.min(maxY,e.clientY-oy))+'px';
-  });
-  document.addEventListener('touchmove', e => {
-    if (!dragging) return;
-    const box=document.getElementById('modalBox');
-    const maxX=window.innerWidth-box.offsetWidth, maxY=window.innerHeight-60;
-    box.style.left=Math.max(0,Math.min(maxX,e.touches[0].clientX-ox))+'px';
-    box.style.top=Math.max(0,Math.min(maxY,e.touches[0].clientY-oy))+'px';
-  }, {passive:true});
-  document.addEventListener('mouseup', () => dragging=false);
-  document.addEventListener('touchend', () => dragging=false);
+  let draggingM=false, draggingT=false, oxM=0, oyM=0, oxT=0, oyT=0;
+  
+  function getEventPos(e) {
+    return e.touches ? {x: e.touches[0].clientX, y: e.touches[0].clientY} : {x: e.clientX, y: e.clientY};
+  }
+
+  function handleDown(e) {
+    const barM = document.getElementById('modalDragBar');
+    const barT = document.getElementById('teamDragBar');
+    const pos = getEventPos(e);
+    
+    if (barT && barT.contains(e.target)) {
+      draggingT = true;
+      const tbox = document.getElementById('teamModalBox');
+      const mbox = document.getElementById('modalBox');
+      tbox.style.zIndex = parseInt(mbox.style.zIndex || 100) + 1;
+      oxT = pos.x - tbox.offsetLeft;
+      oyT = pos.y - tbox.offsetTop;
+      if(!e.touches) e.preventDefault();
+      return;
+    }
+    
+    if (barM && barM.contains(e.target)) {
+      draggingM = true;
+      const mbox = document.getElementById('modalBox');
+      oxM = pos.x - mbox.offsetLeft;
+      oyM = pos.y - mbox.offsetTop;
+      if(!e.touches) e.preventDefault();
+    }
+  }
+
+  function handleMove(e) {
+    if (!draggingM && !draggingT) return;
+    const pos = getEventPos(e);
+    
+    if (draggingT) {
+      const box = document.getElementById('teamModalBox');
+      const maxX = window.innerWidth - box.offsetWidth, maxY = window.innerHeight - 60;
+      box.style.left = Math.max(0, Math.min(maxX, pos.x - oxT)) + 'px';
+      box.style.top = Math.max(0, Math.min(maxY, pos.y - oyT)) + 'px';
+    } else if (draggingM) {
+      const box = document.getElementById('modalBox');
+      const maxX = window.innerWidth - box.offsetWidth, maxY = window.innerHeight - 60;
+      box.style.left = Math.max(0, Math.min(maxX, pos.x - oxM)) + 'px';
+      box.style.top = Math.max(0, Math.min(maxY, pos.y - oyM)) + 'px';
+    }
+  }
+
+  function handleUp() {
+    draggingM = false;
+    draggingT = false;
+  }
+
+  document.addEventListener('mousedown', handleDown);
+  document.addEventListener('touchstart', handleDown, {passive:true});
+  document.addEventListener('mousemove', handleMove);
+  document.addEventListener('touchmove', handleMove, {passive:true});
+  document.addEventListener('mouseup', handleUp);
+  document.addEventListener('touchend', handleUp);
 })();
 
 function closeModal(e) {
@@ -1099,12 +1169,21 @@ function closeModal(e) {
 }
 
 function toggleTeamPopup() {
-  document.getElementById('teamModalOverlay').classList.add('open');
+  const tb = document.getElementById('teamModalBox');
+  if (tb.style.display === 'block') {
+    tb.style.display = 'none';
+  } else {
+    tb.style.display = 'block';
+    // Center it slightly offset from the main modal
+    const vw = window.innerWidth, vh = window.innerHeight;
+    tb.style.left = Math.max(0, (vw - Math.min(400, vw-40))/2 + 40) + 'px';
+    tb.style.top = Math.max(20, (vh - tb.offsetHeight)/2 + 40) + 'px';
+  }
 }
   
 function closeModalDirect() {
   document.getElementById('modalOverlay').classList.remove('open');
-  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('teamModalBox').style.display = 'none';
   document.body.style.overflow = '';
   disposeThreeViewer();
   document.getElementById('modalMedia').innerHTML = '';
@@ -1323,15 +1402,13 @@ window.togglePortfolioBGM = function() {
   </div>
 </div>
 
-<!-- Team Modal -->
-<div class="modal-overlay" id="teamModalOverlay" onclick="if(event.target===this) document.getElementById('teamModalOverlay').classList.remove('open');" style="z-index: 150;">
-  <div class="modal-box" style="max-width: 400px; border-radius: 0; padding: 0;">
-    <div style="display:flex; justify-content:space-between; align-items:center; background: var(--gold-l); padding: 12px; border-bottom: 4px solid var(--dark);">
-      <h3 style="margin:0; font-family:'Press Start 2P', cursive; font-size:16px; color:var(--dark);">TEAM</h3>
-      <button onclick="document.getElementById('teamModalOverlay').classList.remove('open')" style="background:var(--danger);color:white;border:3px solid var(--dark);width:28px;height:28px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;">X</button>
-    </div>
-    <div id="teamPopupList" style="display:flex; flex-direction:column; gap:12px; padding: 20px;"></div>
+<!-- Team Modal (Drag-able, Non-blocking) -->
+<div id="teamModalBox" class="modal-box" style="display:none; position:fixed; z-index: 150; max-width: 400px; border-radius: 0; padding: 0;">
+  <div id="teamDragBar" style="display:flex; justify-content:space-between; align-items:center; background: var(--gold-l); padding: 12px; border-bottom: 4px solid var(--dark); cursor:move;">
+    <h3 style="margin:0; font-family:'Press Start 2P', cursive; font-size:16px; color:var(--dark); pointer-events:none;">TEAM</h3>
+    <button onclick="document.getElementById('teamModalBox').style.display='none'" style="background:var(--danger);color:white;border:3px solid var(--dark);width:28px;height:28px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;">X</button>
   </div>
+  <div id="teamPopupList" style="display:flex; flex-direction:column; gap:12px; padding: 20px;"></div>
 </div>
 
 <!-- Login Prompt Modal -->
