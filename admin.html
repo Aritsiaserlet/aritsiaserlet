@@ -174,6 +174,7 @@ input[type="file"] {
   </nav>
 
   <div class="admin-content">
+    <div id="ghStatus" class="gh-status ok" style="margin-bottom: 20px;">✓ Connected to GitHub</div>
     <!-- Icon Library Panel -->
     <div class="panel-card collapsed" style="grid-column: 1 / -1;">
       <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
@@ -390,8 +391,6 @@ input[type="file"] {
       <div class="panel-body">
         <input type="hidden" id="editId">
         
-        <div id="ghStatus" class="gh-status ok">✓ Connected to GitHub</div>
-
         <div class="stats">
           <div class="stat"><div class="stat-n" id="sAll">0</div><div class="stat-l">Total</div></div>
           <div class="stat"><div class="stat-n" id="sGame">0</div><div class="stat-l">Game</div></div>
@@ -600,6 +599,7 @@ async function ghDelete(path, message, sha){
 
 // ── Load works.json ──
 let works=[], worksSha=null;
+let selectedTeams=[];
 
 async function loadWorks(){
   try{
