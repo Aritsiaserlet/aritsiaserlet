@@ -191,6 +191,11 @@
       "id": "snd_1780414348838",
       "name": "Mace Smash Air",
       "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780414348838.ogg"
+    },
+    {
+      "id": "snd_1780414370587",
+      "name": "Mace Smash Ground",
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780414370587.ogg"
     }
   ]
 }
