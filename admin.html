@@ -162,23 +162,6 @@ input[type="file"] {
 
 <canvas class="wind-canvas" id="windCanvas"></canvas>
 
-<!-- Lock -->
-<div class="lock-screen" id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-icon">🔐</div>
-    <h1 class="lock-title">ADMIN</h1>
-    <p class="lock-sub">Enter password and GitHub token</p>
-    <span class="token-label">Password</span>
-    <input class="pw-input" type="password" id="pwInput" placeholder="••••" maxlength="20"
-      onkeydown="if(event.key==='Enter')checkPw()">
-    <span class="token-label">GitHub Token</span>
-    <input class="token-input" type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx"
-      onkeydown="if(event.key==='Enter')checkPw()">
-    <button class="pw-btn" onclick="checkPw()">ENTER</button>
-    <p class="pw-error" id="pwError"></p>
-    <a href="index.html" class="back-link">← Back to portfolio</a>
-  </div>
-</div>
 
 <!-- Admin -->
 <div class="admin-panel" id="adminPanel">
@@ -525,7 +508,7 @@ input[type="file"] {
 // ── Config ──
 const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
-const PASS    = '7964';
+
 const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
 const JSON_PATH = 'settings.json';
 let GH_TOKEN  = '';
@@ -562,39 +545,19 @@ animateParticles();
 
 // ── Auth ──
 const savedToken = sessionStorage.getItem('ghToken');
-if(savedToken) {
-  document.getElementById('pwInput').value = PASS;
-  document.getElementById('tokenInput').value = savedToken;
-  checkPw();
-}
-
-function checkPw(){
-  const pw=document.getElementById('pwInput').value;
-  const tk=document.getElementById('tokenInput').value.trim();
-  const e=document.getElementById('pwError');
-  if(pw!==PASS){
-    e.textContent='Incorrect password';
-    document.getElementById('pwInput').value='';
-    setTimeout(()=>e.textContent='',2000);
-    return;
-  }
-  if(!tk||!tk.startsWith('ghp_')){
-    e.textContent='Please enter a valid GitHub token (starts with ghp_)';
-    setTimeout(()=>e.textContent='',3000);
-    return;
-  }
-  GH_TOKEN=tk;
-  document.getElementById('lockScreen').style.display='none';
-  document.getElementById('adminPanel').style.display='block';
+if(!savedToken) {
+  window.location.href = 'index.html';
+} else {
+  GH_TOKEN = savedToken;
+  document.getElementById('adminPanel').style.display = 'block';
   loadWorks();
   loadSettings();
 }
+
 function logout(){
   GH_TOKEN='';
-  document.getElementById('lockScreen').style.display='flex';
-  document.getElementById('adminPanel').style.display='none';
-  document.getElementById('pwInput').value='';
-  document.getElementById('tokenInput').value='';
+  sessionStorage.removeItem('ghToken');
+  window.location.href = 'index.html';
 }
 
 // ── GitHub helpers ──
