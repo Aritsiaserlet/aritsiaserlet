@@ -731,11 +731,15 @@ async function loadData() {
     } else {
       sr = await fetch(SETTINGS_URL + '?t=' + Date.now());
     }
-    if (sr.ok) settings = await sr.json();
+    if (sr.ok) {
+      settings = await sr.json();
+      if(window.portfolioSettingsManager) window.portfolioSettingsManager.updateSettings(settings);
+    }
   } catch(e) { console.log('No settings found'); }
   
   applySettings();
   renderGallery();
+  if(window.initSoundBtns) window.initSoundBtns();
 }
 
 function applySettings() {
