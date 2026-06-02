@@ -982,10 +982,15 @@ function openModal(w) {
   const tpList = document.getElementById('teamPopupList');
   if (w.team && w.team.length > 0 && settings && settings.teams) {
     const teamMembers = w.team.map(id => settings.teams.find(t => t.id === id)).filter(Boolean);
-    if (teamMembers.length > 0) {
+      let teamBtnIconHtml = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#4B0082"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>';
+      if (settings.teamBtnIconId && settings.icons) {
+        const globalIc = settings.icons.find(x => x.id === settings.teamBtnIconId);
+        if (globalIc) teamBtnIconHtml = `<img src="${globalIc.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;">`;
+      }
+      
       linksContainer.innerHTML += `
         <button onclick="toggleTeamPopup()" class="modal-link" style="display:inline-flex;gap:8px;align-items:center;background:#d0eaff;cursor:pointer;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="#4B0082"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          ${teamBtnIconHtml}
           <span style="font-family:'VT323',monospace;font-size:24px;color:var(--dark);">TEAM</span>
         </button>
       `;
@@ -1097,17 +1102,12 @@ function closeModal(e) {
 }
 
 function toggleTeamPopup() {
-  const tp = document.getElementById('teamPopup');
-  if (tp.style.display === 'flex') {
-    tp.style.display = 'none';
-  } else {
-    tp.style.display = 'flex';
-  }
+  document.getElementById('teamModalOverlay').classList.add('open');
 }
   
 function closeModalDirect() {
   document.getElementById('modalOverlay').classList.remove('open');
-  document.getElementById('teamPopup').style.display = 'none';
+  document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
   disposeThreeViewer();
   document.getElementById('modalMedia').innerHTML = '';
@@ -1321,15 +1321,19 @@ window.togglePortfolioBGM = function() {
   
     </div>
 
-    <!-- Team Popup -->
-    <div id="teamPopup" class="team-popup">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h3 style="margin:0; font-family:'Press Start 2P', cursive; font-size:16px; color:var(--dark);">TEAM</h3>
-        <button onclick="document.getElementById('teamPopup').style.display='none'" style="background:var(--danger);color:white;border:3px solid var(--dark);width:28px;height:28px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;">X</button>
-      </div>
-      <div id="teamPopupList" style="display:flex; flex-direction:column; gap:12px;"></div>
-    </div>
+    <!-- Team Popup removed from here -->
 
+  </div>
+</div>
+
+<!-- Team Modal -->
+<div class="modal-overlay" id="teamModalOverlay" onclick="if(event.target===this) document.getElementById('teamModalOverlay').classList.remove('open');" style="z-index: 150;">
+  <div class="modal-box" style="max-width: 400px; border-radius: 0; padding: 0;">
+    <div style="display:flex; justify-content:space-between; align-items:center; background: var(--gold-l); padding: 12px; border-bottom: 4px solid var(--dark);">
+      <h3 style="margin:0; font-family:'Press Start 2P', cursive; font-size:16px; color:var(--dark);">TEAM</h3>
+      <button onclick="document.getElementById('teamModalOverlay').classList.remove('open')" style="background:var(--danger);color:white;border:3px solid var(--dark);width:28px;height:28px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;">X</button>
+    </div>
+    <div id="teamPopupList" style="display:flex; flex-direction:column; gap:12px; padding: 20px;"></div>
   </div>
 </div>
 
