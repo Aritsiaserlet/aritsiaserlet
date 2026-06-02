@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — Aritsia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+
+<!-- Canvas Background Particles -->
+<canvas class="wind-canvas" id="windCanvas"></canvas>
+
+<!-- Navigation Bar -->
+<nav class="pnav">
+  <div class="pnav-left">
+    <a href="index.html" class="pnav-logo">◀ Back</a>
+    <span class="pnav-title">PORTFOLIO</span>
+  </div>
+  <div class="pnav-right">
+    <button class="pnav-btn" id="themeBtn" title="Toggle Theme">🎨</button>
+    <button class="pnav-btn" id="helpBtn" title="Help">?</button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="portfolio-main">
+
+  <!-- Section 1: Hero / Intro -->
+  <section class="portfolio-section hero-section" id="heroSection">
+    <div class="hero-content">
+      <h1 class="hero-title">Aritsia</h1>
+      <p class="hero-subtitle">Senior Frontend Developer & UI/UX Designer</p>
+      <p class="hero-tagline">Building impeccable pixel-perfect experiences with clean, modular code</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="scrollToSection('skillsSection')">Explore Skills</button>
+        <button class="btn btn-secondary" onclick="scrollToSection('worksSection')">View Works</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Skill Tree / Tech Stack -->
+  <section class="portfolio-section skills-section" id="skillsSection">
+    <h2 class="section-title">Skill Tree</h2>
+    <div class="skills-container" id="skillsContainer">
+      <!-- Filled by portfolio-skills.js -->
+    </div>
+  </section>
+
+  <!-- Section 3: Project Timeline / Milestones -->
+  <section class="portfolio-section timeline-section" id="timelineSection">
+    <h2 class="section-title">Timeline & Milestones</h2>
+    <div class="timeline-container" id="timelineContainer">
+      <!-- Filled by portfolio-timeline.js -->
+    </div>
+  </section>
+
+  <!-- Section 4: Featured Works -->
+  <section class="portfolio-section works-section" id="worksSection">
+    <h2 class="section-title">Featured Works</h2>
+    <div class="works-grid" id="worksGrid">
+      <!-- Filled by portfolio.js -->
+    </div>
+  </section>
+
+  <!-- Section 5: Contact & CTA -->
+  <section class="portfolio-section contact-section" id="contactSection">
+    <h2 class="section-title">Get in Touch</h2>
+    <div class="contact-content">
+      <p class="contact-text">Let's collaborate or discuss opportunities</p>
+      <div class="socials-grid" id="socialsGrid">
+        <!-- Filled by portfolio.js from settings.json -->
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="portfolio-footer">
+  <p>© 2026 AritsiaZ. Built with Vanilla JS, Firebase & GitHub API.</p>
+  <div class="footer-links">
+    <a href="index.html">Gallery</a>
+    <a href="admin.html">Admin</a>
+    <a href="https://github.com/Aritsiaserlet" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+<!-- Help Modal -->
+<div class="modal" id="helpModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Portfolio Help</h3>
+      <button class="modal-close" onclick="closeModal('helpModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>🎨 Theme:</strong> Click the theme button to switch between 5 color themes (Blue, Purple, Green, Orange, Red)</p>
+      <p><strong>🔗 Navigation:</strong> Use CTA buttons to jump between sections or scroll manually</p>
+      <p><strong>📱 Responsive:</strong> This portfolio is optimized for desktop, tablet, and mobile</p>
+      <p><strong>⚡ Interactive:</strong> Hover over skill categories and project cards for interactions</p>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script type="module" src="js/portfolio.js"></script>
+
+</body>
+</html>
