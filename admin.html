@@ -561,14 +561,12 @@ function animateParticles(){
 animateParticles();
 
 // ── Auth ──
-window.addEventListener('DOMContentLoaded', () => {
-  const savedToken = sessionStorage.getItem('ghToken');
-  if(savedToken) {
-    document.getElementById('pwInput').value = PASS;
-    document.getElementById('tokenInput').value = savedToken;
-    checkPw();
-  }
-});
+const savedToken = sessionStorage.getItem('ghToken');
+if(savedToken) {
+  document.getElementById('pwInput').value = PASS;
+  document.getElementById('tokenInput').value = savedToken;
+  checkPw();
+}
 
 function checkPw(){
   const pw=document.getElementById('pwInput').value;
