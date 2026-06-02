@@ -1042,52 +1042,10 @@ function initImgDrag() {
   let dragging = false, startY = 0, posY = 50;
   wrap.addEventListener('mousedown', e => { dragging=true; startY=e.clientY; e.preventDefault(); });
   wrap.addEventListener('touchstart', e => { dragging=true; startY=e.touches[0].clientY; }, {passive:true});
+  window.addEventListener('mouseup', () => dragging=false);
+  window.addEventListener('touchend', () => dragging=false);
   
-  // Drag logic for Main Modal
-  const mBox = document.getElementById('modalBox');
-  const mDrag = document.getElementById('modalDragBar');
-  let isDraggingMain = false, mStartX, mStartY, mInitX, mInitY;
-
-  mDrag.addEventListener('mousedown', e => {
-    isDraggingMain = true;
-    mStartX = e.clientX; mStartY = e.clientY;
-    mInitX = mBox.offsetLeft; mInitY = mBox.offsetTop;
-    mBox.style.margin = '0';
-    document.body.style.userSelect = 'none';
-  });
-
-  // Drag logic for Team Modal
-  const tBox = document.getElementById('teamModalBox');
-  const tDrag = document.getElementById('teamDragBar');
-  let isDraggingTeam = false, tStartX, tStartY, tInitX, tInitY;
-
-  if (tDrag && tBox) {
-    tDrag.addEventListener('mousedown', e => {
-      isDraggingTeam = true;
-      tStartX = e.clientX; tStartY = e.clientY;
-      tInitX = tBox.offsetLeft; tInitY = tBox.offsetTop;
-      tBox.style.margin = '0';
-      // Bring to front
-      tBox.style.zIndex = parseInt(mBox.style.zIndex || 100) + 1;
-      document.body.style.userSelect = 'none';
-    });
-  }
-
   window.addEventListener('mousemove', e => {
-    if (isDraggingMain) {
-      const dx = e.clientX - mStartX;
-      const dy = e.clientY - mStartY;
-      mBox.style.left = (mInitX + dx) + 'px';
-      mBox.style.top = (mInitY + dy) + 'px';
-    }
-    if (isDraggingTeam) {
-      const dx = e.clientX - tStartX;
-      const dy = e.clientY - tStartY;
-      tBox.style.left = (tInitX + dx) + 'px';
-      tBox.style.top = (tInitY + dy) + 'px';
-    }
-    
-    // Image Focal Drag
     if (!dragging) return;
     posY = Math.max(0, Math.min(100, posY - (e.clientY - startY) * 0.3));
     startY = e.clientY;

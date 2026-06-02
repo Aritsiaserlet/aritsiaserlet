@@ -224,13 +224,6 @@ input[type="file"] {
           <button class="anav-btn" onclick="addTeamLibraryMember()">ADD MEMBER</button>
         </div>
         
-        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px;">
-          <label style="font-family:'VT323';font-size:20px;">TEAM Button Icon (Global):</label>
-          <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-            <option value="">-- Default --</option>
-          </select>
-        </div>
-        
         <button class="submit-btn" onclick="saveTeamLibrary()" style="margin-top:20px;">SAVE TEAM MEMBERS</button>
       </div>
     </div>
@@ -308,7 +301,13 @@ input[type="file"] {
         </div>
         <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
 
-        
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">TEAM BUTTON ICON</h3>
+        <div style="margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+          <label style="font-family:'VT323';font-size:20px;">Global TEAM Button Icon:</label>
+          <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="width:200px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+            <option value="">-- Default --</option>
+          </select>
+        </div>
 
         <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
         <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
