@@ -218,6 +218,8 @@ input[type="file"] {
           </select>
           <button class="anav-btn" onclick="addTeamLibraryMember()">ADD MEMBER</button>
         </div>
+        
+        <button class="submit-btn" onclick="saveTeamLibrary()" style="margin-top:20px;">SAVE TEAM MEMBERS</button>
       </div>
     </div>
 
@@ -562,8 +564,8 @@ function logout(){
 }
 
 // ── GitHub helpers ──
-async function ghGet(path){
-  const r=await fetch(`${API}/${path}`,{headers:getHeaders()});
+async function ghGet(path) {
+  const r=await fetch(`${API}/${path}?t=${Date.now()}`,{headers:getHeaders()});
   if(r.status===404)return null;
   if(!r.ok)throw new Error(`GitHub error ${r.status}`);
   return r.json();
@@ -1680,23 +1682,37 @@ async function addTeamLibraryMember() {
     document.getElementById('newTeamLink').value = '';
     document.getElementById('newTeamIcon').value = '';
     
-    await saveSettings();
     renderTeamLibrary();
     renderTeamCheckboxList();
   } catch(e) {
-    alert("Error saving team member: " + e.message);
+    alert("Error adding team member: " + e.message);
   }
 }
 
 async function deleteTeamLibraryMember(id) {
-  if(!confirm("Delete this team member?")) return;
+  if(!confirm("Delete this team member? Don't forget to click SAVE TEAM MEMBERS afterwards.")) return;
   settings.teams = settings.teams.filter(t => t.id !== id);
   try {
-    await saveSettings();
     renderTeamLibrary();
     renderTeamCheckboxList();
   } catch(e) {
     alert("Error deleting team member: " + e.message);
+  }
+}
+
+async function saveTeamLibrary() {
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = 'SAVING...';
+  btn.disabled = true;
+  try {
+    await saveSettings();
+    btn.textContent = '✓ SAVED!';
+    setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2000);
+  } catch(e) {
+    alert("Error saving team library: " + e.message);
+    btn.textContent = originalText;
+    btn.disabled = false;
   }
 }
 
