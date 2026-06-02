@@ -190,12 +190,18 @@
     {
       "id": "snd_1780414348838",
       "name": "Mace Smash Air",
-      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780414348838.ogg"
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780414348838.ogg",
+      "iconId": ""
     },
     {
       "id": "snd_1780414370587",
       "name": "Mace Smash Ground",
       "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780414370587.ogg"
+    },
+    {
+      "id": "snd_1780422189064",
+      "name": "Wind Burst",
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780422189064.mp3"
     }
   ]
 }
