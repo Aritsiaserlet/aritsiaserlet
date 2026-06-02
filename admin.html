@@ -212,6 +212,31 @@ input[type="file"] {
       </div>
     </div>
 
+    
+    <!-- Team Library Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>TEAM LIBRARY</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Manage your team members here. You can pick them when adding a Work.</p>
+        
+        <div id="teamLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <!-- Filled by JS -->
+        </div>
+        
+        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="newTeamName" placeholder="Name (e.g. John)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <input type="url" id="newTeamLink" placeholder="Link URL" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <select id="newTeamIcon" style="width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+            <option value="">-- Icon --</option>
+          </select>
+          <button class="anav-btn" onclick="addTeamLibraryMember()">ADD MEMBER</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Sound Library Panel -->
     <div class="panel-card collapsed" style="grid-column: 1 / -1;" id="soundLibraryPanel">
       <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
@@ -439,8 +464,10 @@ input[type="file"] {
 
         <div class="field">
           <label>Team Members (Optional)</label>
-          <div id="wTeamBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
-          <button class="anav-btn" onclick="addTeamMember()">+ ADD TEAM MEMBER</button>
+          <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select team members from your Team Library</div>
+          <div id="teamCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
+            <!-- Filled by JS -->
+          </div>
         </div>
 
         <div class="field">
@@ -749,6 +776,9 @@ async function addIconToLibrary() {
       const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       
       if(!settings.icons) settings.icons = [];
+
+  if(!settings.teams) settings.teams = [];
+
       settings.icons.push({ id, name: nameInput.value.trim(), url });
       
       const json = JSON.stringify(settings, null, 2);
@@ -1311,7 +1341,7 @@ async function addWork(){
       if (idx !== -1) {
         works[idx] = { ...works[idx], name, cat,
           subcat: (cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
-          desc, links: currentWorkLinks, team: currentTeam.filter(t => t.name.trim() !== ''),
+          desc, links: currentWorkLinks, team: selectedTeams,
           imageFocal: currentImgFocal,
           image: imagePath,
           model: modelPath,
@@ -1323,7 +1353,7 @@ async function addWork(){
         id:Date.now(),name,cat,
         subcat:(cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
         desc,image:imagePath,model:modelPath,
-        links:currentWorkLinks, team: currentTeam.filter(t => t.name.trim() !== ''),
+        links:currentWorkLinks, team: selectedTeams,
         imageFocal:currentImgFocal,
         tools:selectedTools,
         date:new Date().toISOString()
@@ -1410,41 +1440,7 @@ function renderAdminList(){
 
 let currentWorkLinks = [];
 
-let currentTeam = [];
 
-window.addTeamMember = function() {
-  currentTeam.push({ name: '', url: '', iconId: '' });
-  window.renderTeam();
-};
-
-window.removeTeamMember = function(i) {
-  currentTeam.splice(i, 1);
-  window.renderTeam();
-};
-
-window.renderTeam = function() {
-  const box = document.getElementById('wTeamBox');
-  if(!box) return;
-  box.innerHTML = '';
-  currentTeam.forEach((member, i) => {
-    let opts = '<option value="">-- No Icon --</option>';
-    if (typeof settings !== 'undefined' && settings.icons) {
-      settings.icons.forEach(ic => {
-        opts += `<option value="${ic.id}" ${ic.id === member.iconId ? 'selected' : ''}>${ic.name}</option>`;
-      });
-    }
-    box.innerHTML += `
-      <div style="display:flex; gap:8px; align-items:center; background:var(--sky4); padding:8px; border:2px solid var(--dark);">
-        <input type="text" placeholder="Name" value="${member.name||''}" onchange="currentTeam[${i}].name=this.value" style="flex:1;">
-        <input type="text" placeholder="Link URL" value="${member.url||''}" onchange="currentTeam[${i}].url=this.value" style="flex:1;">
-        <select onchange="currentTeam[${i}].iconId=this.value" style="width:120px;">
-          ${opts}
-        </select>
-        <button class="game-btn" onclick="window.removeTeamMember(${i})" style="padding:4px 8px; font-size:12px; background:var(--danger); color:white;">X</button>
-      </div>
-    `;
-  });
-};
 
 
 function renderWorkLinks() {
@@ -1531,11 +1527,20 @@ function editWork(id) {
   }
 
   if (w.team) {
-    currentTeam = JSON.parse(JSON.stringify(w.team));
+    
+  if(w.team) {
+    // legacy array of objects check
+    if (w.team.length > 0 && typeof w.team[0] === 'object') {
+      // Map legacy to nothing for now, or you could do it if you want. We assume new saves use IDs.
+      selectedTeams = [];
+    } else {
+      selectedTeams = [...w.team];
+    }
   } else {
-    currentTeam = [];
+    selectedTeams = [];
   }
-  window.renderTeam();
+  renderTeamCheckboxList();
+  
 
   renderWorkLinks();
   
