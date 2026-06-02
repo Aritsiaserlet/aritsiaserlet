@@ -174,9 +174,11 @@ input[type="file"] {
   </nav>
 
   <div class="admin-content">
-    <div style="grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center; border:4px solid var(--dark); padding:12px; background:var(--white); box-shadow:8px 8px 0 rgba(0,0,0,0.5);">
-      <div id="ghStatus" class="gh-status ok" style="margin:0; border:none; padding:0; background:transparent; font-size:20px; text-align:left;">✓ Connected to GitHub</div>
-      <button class="anav-btn" onclick="const t = prompt('Enter new GitHub Token:'); if(t) { sessionStorage.setItem('ghToken', t.trim()); location.reload(); }">EDIT TOKEN</button>
+    <div style="grid-column: 1 / -1; display:flex; justify-content:center; align-items:center; border:4px solid var(--dark); padding:12px; background:var(--white); box-shadow:8px 8px 0 rgba(0,0,0,0.5); cursor:pointer; transition:0.2s;"
+         onclick="const t = prompt('Enter new GitHub Personal Access Token:'); if(t) { sessionStorage.setItem('ghToken', t.trim()); location.reload(); }"
+         onmouseover="this.style.background='var(--gold-l)'; this.querySelector('#ghStatus').textContent='✎ Click here to edit Token'"
+         onmouseout="this.style.background='var(--white)'; this.querySelector('#ghStatus').textContent=window.ghConnected ? '✓ Connected to GitHub' : '✗ GitHub connection failed'">
+      <div id="ghStatus" class="gh-status ok" style="margin:0; border:none; padding:0; background:transparent; font-size:20px; text-align:center;">Checking connection...</div>
     </div>
     <!-- Icon Library Panel -->
     <div class="panel-card collapsed" style="grid-column: 1 / -1;">
@@ -612,14 +614,16 @@ async function loadWorks(){
     if(data){
       worksSha=data.sha;
       works=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+      window.ghConnected = true;
+      document.getElementById('ghStatus').className='gh-status ok';
+      document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
     } else {
       works=[];worksSha=null;
     }
     renderAdminList();
     updateStats();
-    document.getElementById('ghStatus').className='gh-status ok';
-    document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
   } catch(e){
+    window.ghConnected = false;
     document.getElementById('ghStatus').className='gh-status err';
     document.getElementById('ghStatus').textContent='✗ GitHub connection failed';
     works=[];renderAdminList();
@@ -718,6 +722,8 @@ function onModelSelect(input){
 // ── Settings ──
 let profileBase64=null, profileExt='png';
 let bgBase64=null, bgExt='png';
+let gSpriteBase64=null, gSpriteExt='png';
+let gAttackBase64=null, gAttackExt='png';
 
 async function addIconToLibrary() {
   const nameInput = document.getElementById('newIconName');
