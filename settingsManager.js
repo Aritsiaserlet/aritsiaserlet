@@ -1,5 +1,20 @@
+// =============================================================================
+// ARITSIA PORTFOLIO - Settings Manager
 // settingsManager.js
-// Handles all user settings (Theme, Graphics, Audio) under a single localStorage key: "portfolioSettings"
+//
+// Manages all user-facing settings (Theme, Graphics Quality, Audio volumes)
+// persisted under a single localStorage key: 'portfolioSettings'.
+// Also applies CSS variable themes to the document root on load.
+//
+// Storage Key: 'portfolioSettings'
+// Default: { theme:'Blue', graphics:'High', masterVolume:100, musicVolume:100,
+//            sfxVolume:100, masterMute:false, musicMute:false, sfxMute:false }
+//
+// Exports:
+//   initSettings() — load from localStorage, apply theme to :root
+//   getSettings()  — returns current settings object
+//   updateSettings(partial) — merge + save + re-apply theme
+// =============================================================================
 
 const SETTINGS_KEY = 'portfolioSettings';
 

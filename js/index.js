@@ -1,4 +1,9 @@
+// =============================================================================
+// ARITSIA PORTFOLIO - Main JavaScript
+// index.js
+// =============================================================================
 
+// ── Admin Password Check ──
 window.checkAdminPassword = function() {
   const pw = document.getElementById('adminPasswordInput').value;
   if(pw === '7964') {
@@ -29,7 +34,7 @@ window.goToAdmin = function() {
   }
 };
 
-// ── Pixel particles animation ──
+// ── Wind / Pixel Particles Animation ──
 const canvas = document.getElementById('windCanvas');
 const ctx = canvas.getContext('2d');
 let W, H, particles = [];
@@ -81,7 +86,7 @@ function animateParticles() {
 }
 animateParticles();
 
-// ── Works data from GitHub ──
+// ── Works Data from GitHub ──
 let works = [];
 let settings = {};
 let currentMainCat = 'all';
@@ -94,23 +99,41 @@ const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/
 const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json`;
 
 async function loadData() {
+  const t = sessionStorage.getItem('ghToken');
   // Load Works
   try {
-    const r = await fetch(WORKS_URL + '?t=' + Date.now());
+    let r;
+    if (t) {
+      r = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/works.json?ref=main&t=`+Date.now(), { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' } });
+      if (!r.ok) r = await fetch(WORKS_URL + '?t=' + Date.now());
+    } else {
+      r = await fetch(WORKS_URL + '?t=' + Date.now());
+    }
     if (r.ok) works = await r.json();
     else works = [];
   } catch(e) { works = []; }
   
   // Load Settings
   try {
-    const sr = await fetch(SETTINGS_URL + '?t=' + Date.now());
-    if (sr.ok) settings = await sr.json();
+    let sr;
+    if (t) {
+      sr = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/settings.json?ref=main&t=`+Date.now(), { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' } });
+      if (!sr.ok) sr = await fetch(SETTINGS_URL + '?t=' + Date.now());
+    } else {
+      sr = await fetch(SETTINGS_URL + '?t=' + Date.now());
+    }
+    if (sr.ok) {
+      settings = await sr.json();
+      if(window.portfolioSettingsManager) window.portfolioSettingsManager.updateSettings(settings);
+    }
   } catch(e) { console.log('No settings found'); }
   
   applySettings();
   renderGallery();
+  if(window.initSoundBtns) window.initSoundBtns();
 }
 
+// ── Apply Settings (Profile, Background, Socials, Categories) ──
 function applySettings() {
   if (settings.profileImage) {
     document.getElementById('avatarInner').innerHTML = `<img src="${settings.profileImage}" alt="Profile">`;
@@ -153,6 +176,7 @@ function applySettings() {
   });
 }
 
+// ── Work Gallery Rendering ──
 function renderGallery() {
   const gallery = document.getElementById('gallery');
   const emptyState = document.getElementById('emptyState');
@@ -166,9 +190,6 @@ function renderGallery() {
   // Sorting Logic
   filtered.sort((a, b) => {
     if (currentSort === 'random') {
-      // Very simple deterministic shuffle based on length (just for visual variation on load)
-      // Actual random sort on every re-render is annoying, so we use a pseudo-random hash or simple random if we really want true random.
-      // But let's stick to true random for now, since it was requested.
       return Math.random() - 0.5;
     }
     
@@ -263,6 +284,7 @@ function renderGallery() {
   }
 }
 
+// ── Gallery Filter Controls ──
 function setMainCat(cat, btn) {
   currentMainCat = cat;
   currentSubCat = 'all';
@@ -300,7 +322,7 @@ function handleSortChange() {
 
 loadData();
 
-// ── Modal ──
+// ── Modal Logic ──
 function openModal(w) {
   const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
   const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
@@ -369,7 +391,8 @@ function openModal(w) {
   const tpList = document.getElementById('teamPopupList');
   if (w.team && w.team.length > 0 && settings && settings.teams) {
     const teamMembers = w.team.map(id => settings.teams.find(t => t.id === id)).filter(Boolean);
-      let teamBtnIconHtml = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#4B0082"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>';
+    if (teamMembers.length > 0) {
+      let teamBtnIconHtml = '';
       if (settings.teamBtnIconId && settings.icons) {
         const globalIc = settings.icons.find(x => x.id === settings.teamBtnIconId);
         if (globalIc) teamBtnIconHtml = `<img src="${globalIc.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;">`;
@@ -384,7 +407,7 @@ function openModal(w) {
       if (tpList) {
         tpList.innerHTML = '';
         teamMembers.forEach(member => {
-          let iconHtml = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+          let iconHtml = '';
           if (member.iconId && settings.icons) {
             const ic = settings.icons.find(x => x.id === member.iconId);
             if (ic) iconHtml = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;">`;
@@ -395,18 +418,14 @@ function openModal(w) {
               <div style="flex:1; font-family:'Press Start 2P', cursive; font-size:12px; color:var(--dark);">${member.name}</div>
             </div>
           `;
-          if (member.url) {
-            tpList.innerHTML += `<a href="${member.url}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">${content}</a>`;
+          if (member.link) {
+            tpList.innerHTML += `<a href="${member.link}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">${content}</a>`;
           } else {
             tpList.innerHTML += content;
           }
         });
       }
-    } else {
-      document.getElementById('teamPopup').style.display = 'none';
     }
-  } else {
-    document.getElementById('teamPopup').style.display = 'none';
   }
 
   // Center modal
@@ -424,7 +443,7 @@ function openModal(w) {
   });
 }
 
-// ── Image focal drag ──
+// ── Image Focal Drag (Modal) ──
 function initImgDrag() {
   const wrap = document.getElementById('imgWrap');
   const img = document.getElementById('modalImgEl');
@@ -434,6 +453,7 @@ function initImgDrag() {
   wrap.addEventListener('touchstart', e => { dragging=true; startY=e.touches[0].clientY; }, {passive:true});
   window.addEventListener('mouseup', () => dragging=false);
   window.addEventListener('touchend', () => dragging=false);
+  
   window.addEventListener('mousemove', e => {
     if (!dragging) return;
     posY = Math.max(0, Math.min(100, posY - (e.clientY - startY) * 0.3));
@@ -448,40 +468,67 @@ function initImgDrag() {
   }, {passive:true});
 }
 
-// ── Modal drag ──
+// ── Modal Drag Logic ──
 (function() {
-  let dragging=false, ox=0, oy=0;
-  document.addEventListener('mousedown', e => {
-    const bar = document.getElementById('modalDragBar');
-    if (!bar || !bar.contains(e.target)) return;
-    dragging=true;
-    const box=document.getElementById('modalBox');
-    ox=e.clientX-box.offsetLeft; oy=e.clientY-box.offsetTop;
-    e.preventDefault();
-  });
-  document.addEventListener('touchstart', e => {
-    const bar = document.getElementById('modalDragBar');
-    if (!bar || !bar.contains(e.target)) return;
-    dragging=true;
-    const box=document.getElementById('modalBox');
-    ox=e.touches[0].clientX-box.offsetLeft; oy=e.touches[0].clientY-box.offsetTop;
-  }, {passive:true});
-  document.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    const box=document.getElementById('modalBox');
-    const maxX=window.innerWidth-box.offsetWidth, maxY=window.innerHeight-60;
-    box.style.left=Math.max(0,Math.min(maxX,e.clientX-ox))+'px';
-    box.style.top=Math.max(0,Math.min(maxY,e.clientY-oy))+'px';
-  });
-  document.addEventListener('touchmove', e => {
-    if (!dragging) return;
-    const box=document.getElementById('modalBox');
-    const maxX=window.innerWidth-box.offsetWidth, maxY=window.innerHeight-60;
-    box.style.left=Math.max(0,Math.min(maxX,e.touches[0].clientX-ox))+'px';
-    box.style.top=Math.max(0,Math.min(maxY,e.touches[0].clientY-oy))+'px';
-  }, {passive:true});
-  document.addEventListener('mouseup', () => dragging=false);
-  document.addEventListener('touchend', () => dragging=false);
+  let draggingM=false, draggingT=false, oxM=0, oyM=0, oxT=0, oyT=0;
+  
+  function getEventPos(e) {
+    return e.touches ? {x: e.touches[0].clientX, y: e.touches[0].clientY} : {x: e.clientX, y: e.clientY};
+  }
+
+  function handleDown(e) {
+    const barM = document.getElementById('modalDragBar');
+    const barT = document.getElementById('teamDragBar');
+    const pos = getEventPos(e);
+    
+    if (barT && barT.contains(e.target)) {
+      draggingT = true;
+      const tbox = document.getElementById('teamModalBox');
+      const mbox = document.getElementById('modalBox');
+      tbox.style.zIndex = parseInt(mbox.style.zIndex || 100) + 1;
+      oxT = pos.x - tbox.offsetLeft;
+      oyT = pos.y - tbox.offsetTop;
+      if(!e.touches) e.preventDefault();
+      return;
+    }
+    
+    if (barM && barM.contains(e.target)) {
+      draggingM = true;
+      const mbox = document.getElementById('modalBox');
+      oxM = pos.x - mbox.offsetLeft;
+      oyM = pos.y - mbox.offsetTop;
+      if(!e.touches) e.preventDefault();
+    }
+  }
+
+  function handleMove(e) {
+    if (!draggingM && !draggingT) return;
+    const pos = getEventPos(e);
+    
+    if (draggingT) {
+      const box = document.getElementById('teamModalBox');
+      const maxX = window.innerWidth - box.offsetWidth, maxY = window.innerHeight - 60;
+      box.style.left = Math.max(0, Math.min(maxX, pos.x - oxT)) + 'px';
+      box.style.top = Math.max(0, Math.min(maxY, pos.y - oyT)) + 'px';
+    } else if (draggingM) {
+      const box = document.getElementById('modalBox');
+      const maxX = window.innerWidth - box.offsetWidth, maxY = window.innerHeight - 60;
+      box.style.left = Math.max(0, Math.min(maxX, pos.x - oxM)) + 'px';
+      box.style.top = Math.max(0, Math.min(maxY, pos.y - oyM)) + 'px';
+    }
+  }
+
+  function handleUp() {
+    draggingM = false;
+    draggingT = false;
+  }
+
+  document.addEventListener('mousedown', handleDown);
+  document.addEventListener('touchstart', handleDown, {passive:true});
+  document.addEventListener('mousemove', handleMove);
+  document.addEventListener('touchmove', handleMove, {passive:true});
+  document.addEventListener('mouseup', handleUp);
+  document.addEventListener('touchend', handleUp);
 })();
 
 function closeModal(e) {
@@ -489,12 +536,21 @@ function closeModal(e) {
 }
 
 function toggleTeamPopup() {
-  document.getElementById('teamModalOverlay').classList.add('open');
+  const tb = document.getElementById('teamModalBox');
+  if (tb.style.display === 'block') {
+    tb.style.display = 'none';
+  } else {
+    tb.style.display = 'block';
+    // Center it slightly offset from the main modal
+    const vw = window.innerWidth, vh = window.innerHeight;
+    tb.style.left = Math.max(0, (vw - Math.min(400, vw-40))/2 + 40) + 'px';
+    tb.style.top = Math.max(20, (vh - tb.offsetHeight)/2 + 40) + 'px';
+  }
 }
   
 function closeModalDirect() {
   document.getElementById('modalOverlay').classList.remove('open');
-  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('teamModalBox').style.display = 'none';
   document.body.style.overflow = '';
   disposeThreeViewer();
   document.getElementById('modalMedia').innerHTML = '';
@@ -637,6 +693,32 @@ function startGame() {
 }
 
 // ── Settings Modal Logic ──
+window.updateSoundBtn = function(btn, isMuted) {
+  if(!btn) return;
+  const set = window.portfolioSettingsManager ? window.portfolioSettingsManager.getSettings() : {};
+  let iconUrl = '';
+  if (set && set.soundBtnIconId && set.icons) {
+    const ic = set.icons.find(x => x.id === set.soundBtnIconId);
+    if (ic) iconUrl = ic.url;
+  }
+  if (iconUrl) {
+    btn.innerHTML = `<img src="${iconUrl}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;opacity:${isMuted ? '0.5' : '1'};filter:${isMuted ? 'grayscale(100%)' : 'none'};">`;
+  } else {
+    btn.textContent = isMuted ? '🔇' : '🔊';
+  }
+};
+
+window.initSoundBtns = function() {
+  const btns = ['masterMuteBtn', 'musicMuteBtn', 'sfxMuteBtn', 'bgmTogglePortfolio'];
+  btns.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      const isMuted = btn.textContent.includes('🔇') || btn.innerHTML.includes('opacity: 0.5') || btn.innerHTML.includes('opacity:0.5');
+      window.updateSoundBtn(btn, isMuted);
+    }
+  });
+};
+
 function openSettingsModal() {
   const modal = document.getElementById('settingsModal');
   const set = window.portfolioSettingsManager.getSettings();
@@ -681,9 +763,7 @@ window.togglePortfolioBGM = function() {
   _bgmOn = isNowOn;
   const btn = document.getElementById('bgmTogglePortfolio');
   if (btn) {
-    btn.textContent = _bgmOn ? '🔊' : '🔇';
+    if(window.updateSoundBtn) window.updateSoundBtn(btn, !_bgmOn);
+    else btn.textContent = _bgmOn ? '🔊' : '🔇';
   }
 };
-
-
-

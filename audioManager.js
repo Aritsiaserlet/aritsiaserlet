@@ -1,6 +1,18 @@
+// =============================================================================
+// ARITSIA PORTFOLIO - Audio Manager
 // audioManager.js
-// File-based audio engine — plays sounds from URLs stored in settings.json
-// Sounds are assigned via Admin Panel → Sounds Library
+//
+// File-based audio engine — plays sounds from URLs stored in settings.json.
+// Sounds are uploaded via Admin Panel → Sound Library, then assigned to events
+// (e.g. 'bgm', 'sfxHit', 'sfxScore') in the Sound Picker.
+//
+// Exports:
+//   loadSoundAssignments() — fetch sound assignments from GitHub settings.json
+//   startBGM() / stopBGM() / toggleBGM() / togglePortfolioBGM()
+//   sfxHit() / sfxScore() / sfxBoost() / sfxCombo() / sfxLike() / sfxLogin()
+//   setVolumes({ master, music, sfx, mute }) — sync volume state
+//   toggleMute(channel) — toggle mute for 'master', 'music', or 'sfx'
+// =============================================================================
 
 let audioCtx = null;
 let masterGain = null;

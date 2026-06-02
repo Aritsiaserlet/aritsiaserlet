@@ -1,5 +1,27 @@
-// ── Portfolio Minigame Engine ──
-// Standalone game.js — designed for game.html
+// =============================================================================
+// ARITSIA PORTFOLIO - Minigame Engine
+// game.js
+//
+// Standalone pixel-art minigame engine for game.html.
+// Implements an Elytra-style dive-attack game where the player slices
+// through portfolio work cards (enemies) to score points.
+//
+// Architecture:
+//   - Pure Canvas 2D rendering (no frameworks)
+//   - Works data is loaded by game.html (via GitHub API) and passed in
+//     via window.initGame(portfolioWorks, settings)
+//   - Audio is handled by audioManager.js (injected via ES module in game.html)
+//
+// Key Globals exposed on window:
+//   window.initGame(works, settings) — initialize and start game loop
+//   window.resetGame()               — reset state and restart
+//   window.stopGame()                — stop game and clean up listeners
+//   window.gameAudio                 — set by game.html audio module
+//   window.gameStartTime             — timestamp for leaderboard scoring
+//
+// Tunable constants at the top of this file:
+//   MIN_ENEMY_GAP, DIVE_SPEED, VX_DIVE, STRIKE_FRAMES, ASCENT_SPEED, etc.
+// =============================================================================
 
 // ─────────────────────────────────────────────
 // ── Tunable Constants (attack — UNCHANGED)

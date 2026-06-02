@@ -1,5 +1,21 @@
+// =============================================================================
+// ARITSIA PORTFOLIO - Auth Manager
 // authManager.js
-// Handles Firebase Initialization, Authentication, and abstracting Firestore calls
+//
+// Handles Firebase initialization, Google Authentication, and Firestore
+// operations for the likes system.
+//
+// Dependencies:
+//   Firebase App, Auth, Firestore (loaded from gstatic CDN)
+//   Firebase config is embedded inline — see firebaseConfig below.
+//
+// Exports:
+//   loginWithGoogle() / logout() / onUserChange(callback)
+//   fetchLikeCounts() — returns { [workId]: count } from Firestore
+//   fetchUserLikes(uid) — returns { [workId]: true } set for a user
+//   toggleLike(workId, isLiking) — add or remove a like in Firestore
+//   db — the Firestore instance (for advanced use)
+// =============================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 

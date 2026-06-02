@@ -1,0 +1,51 @@
+# ── OS & Editor ──────────────────────────────────────────────────────────────
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# ── Node.js (if any tooling is added) ────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+
+# ── Local dev tools ───────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Sensitive / Secrets ───────────────────────────────────────────────────────
+# Never commit GitHub tokens or Firebase service account keys
+*.pem
+*.key
+serviceAccountKey.json
+firebase-admin-*.json
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# ── Temp / Scratch files ──────────────────────────────────────────────────────
+*.tmp
+*.bak
+*.swp
+*~

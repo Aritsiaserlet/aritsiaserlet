@@ -1,3 +1,7 @@
+﻿// =============================================================================
+// ARITSIA PORTFOLIO - Admin Panel JavaScript
+// admin.js
+// =============================================================================
 
 // ── Config ──
 const GH_USER = 'Aritsiaserlet';
@@ -57,8 +61,8 @@ function logout(){
 }
 
 // ── GitHub helpers ──
-async function ghGet(path){
-  const r=await fetch(`${API}/${path}`,{headers:getHeaders()});
+async function ghGet(path) {
+  const r=await fetch(`${API}/${path}?t=${Date.now()}`,{headers:getHeaders()});
   if(r.status===404)return null;
   if(!r.ok)throw new Error(`GitHub error ${r.status}`);
   return r.json();
@@ -94,6 +98,7 @@ async function ghDelete(path, message, sha){
 
 // ── Load works.json ──
 let works=[], worksSha=null;
+let selectedTeams=[];
 
 async function loadWorks(){
   try{
@@ -101,14 +106,18 @@ async function loadWorks(){
     if(data){
       worksSha=data.sha;
       works=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+      window.ghConnected = true;
+      document.getElementById('ghStatusBox').style.background = '#abebc6';
+      document.getElementById('ghStatus').className='gh-status ok';
+      document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
     } else {
       works=[];worksSha=null;
     }
     renderAdminList();
     updateStats();
-    document.getElementById('ghStatus').className='gh-status ok';
-    document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
   } catch(e){
+    window.ghConnected = false;
+    document.getElementById('ghStatusBox').style.background = '#fadbd8';
     document.getElementById('ghStatus').className='gh-status err';
     document.getElementById('ghStatus').textContent='✗ GitHub connection failed';
     works=[];renderAdminList();
@@ -139,6 +148,7 @@ async function loadSettings(){
   renderToolsCheckboxList();
   renderSoundLibrary();
   renderSoundPicker();
+  renderTeamLibrary();
 }
 
 async function saveWorks(){
@@ -206,6 +216,8 @@ function onModelSelect(input){
 // ── Settings ──
 let profileBase64=null, profileExt='png';
 let bgBase64=null, bgExt='png';
+let gSpriteBase64=null, gSpriteExt='png';
+let gAttackBase64=null, gAttackExt='png';
 
 async function addIconToLibrary() {
   const nameInput = document.getElementById('newIconName');
@@ -279,17 +291,18 @@ function renderIconLibrary() {
 }
 
 async function deleteIcon(idx) {
-  if(!confirm("Delete this icon? It will be removed from any links or categories using it.")) return;
-  settings.icons.splice(idx, 1);
-  try {
-    const json = JSON.stringify(settings, null, 2);
-    await ghPut(JSON_PATH, json, 'Delete icon from library');
-    renderIconLibrary();
-    renderSettingsUI();
-    renderToolsCheckboxList();
-  } catch(e) {
-    alert("Error deleting icon: " + e.message);
-  }
+  customConfirm("Delete this icon? It will be removed from any links or categories using it.", async () => {
+    settings.icons.splice(idx, 1);
+    try {
+      const json = JSON.stringify(settings, null, 2);
+      await ghPut(JSON_PATH, json, 'Delete icon from library');
+      renderIconLibrary();
+      renderSettingsUI();
+      renderToolsCheckboxList();
+    } catch(e) {
+      alert("Error deleting icon: " + e.message);
+    }
+  });
 }
 
 function generateIconOptions(selectedId) {
@@ -326,17 +339,17 @@ function renderToolsCheckboxList() {
 
 // ── Sound Library ──────────────────────────────────────
 const SOUND_EVENTS = [
-  { key: 'game_hit',       label: '🎮 Game: Hit Enemy' },
-  { key: 'game_score',     label: '🎮 Game: Score Point' },
-  { key: 'game_combo',     label: '🎮 Game: Combo!' },
-  { key: 'game_dive',      label: '🎮 Game: Dive' },
-  { key: 'game_boost',     label: '🎮 Game: Boost Activate' },
-  { key: 'game_miss',      label: '🎮 Game: Miss Penalty' },
-  { key: 'game_gameover',  label: '🎮 Game: Game Over' },
-  { key: 'game_bgm',       label: '🎮 Game: Background Music (loops)' },
-  { key: 'portfolio_like', label: '🌐 Portfolio: Like' },
-  { key: 'portfolio_login',label: '🌐 Portfolio: Login' },
-  { key: 'portfolio_bgm',  label: '🌐 Portfolio: Background Music (loops)' },
+  { key: 'game_hit',       label: 'Game: Hit Enemy' },
+  { key: 'game_score',     label: 'Game: Score Point' },
+  { key: 'game_combo',     label: 'Game: Combo!' },
+  { key: 'game_dive',      label: 'Game: Dive' },
+  { key: 'game_boost',     label: 'Game: Boost Activate' },
+  { key: 'game_miss',      label: 'Game: Miss Penalty' },
+  { key: 'game_gameover',  label: 'Game: Game Over' },
+  { key: 'game_bgm',       label: 'Game: Background Music (loops)' },
+  { key: 'portfolio_like', label: 'Portfolio: Like' },
+  { key: 'portfolio_login',label: 'Portfolio: Login' },
+  { key: 'portfolio_bgm',  label: 'Portfolio: Background Music (loops)' },
 ];
 
 async function addSoundToLibrary() {
@@ -386,33 +399,60 @@ function renderSoundLibrary() {
     return;
   }
   sounds.forEach((snd, i) => {
+    let iconHtml = `<div style="font-size:28px;margin-bottom:4px;">🔊</div>`;
+    if (snd.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === snd.iconId);
+      if (ic) iconHtml = `<img src="${ic.url}" style="width:32px;height:32px;object-fit:contain;image-rendering:pixelated;margin-bottom:4px;">`;
+    }
+    let selectHtml = `<select onchange="updateSoundIcon(${i}, this.value)" style="width:100%;font-family:'VT323';font-size:14px;border:2px solid var(--dark);margin-bottom:4px;background:var(--sky4);cursor:pointer;outline:none;">
+      <option value="">- No Icon (🔊) -</option>`;
+    if (settings.icons) {
+      settings.icons.forEach(ic => {
+        selectHtml += `<option value="${ic.id}" ${snd.iconId === ic.id ? 'selected' : ''}>${ic.name}</option>`;
+      });
+    }
+    selectHtml += `</select>`;
+
     box.innerHTML += `
-      <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;">
-        <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
-        <div style="font-size:28px;margin-bottom:4px;">🔊</div>
-        <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;">${snd.name}</div>
-        <audio controls src="${snd.url}" style="width:100%;height:28px;"></audio>
+      <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;">
+        <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:2;">X</button>
+        ${iconHtml}
+        ${selectHtml}
+        <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;line-height:1;">${snd.name}</div>
+        <audio controls src="${snd.url}" style="width:100%;height:28px;margin-top:auto;"></audio>
       </div>
     `;
   });
 }
 
-async function deleteSound(idx) {
-  if(!confirm('Delete this sound? It will be unassigned from all events.')) return;
-  const deletedId = settings.sounds[idx].id;
-  settings.sounds.splice(idx, 1);
-  // Unassign from all events
-  if(settings.soundAssignments) {
-    for(const key of Object.keys(settings.soundAssignments)) {
-      if(settings.soundAssignments[key] === deletedId) settings.soundAssignments[key] = null;
-    }
-  }
+window.updateSoundIcon = async function(idx, iconId) {
+  settings.sounds[idx].iconId = iconId;
   try {
     const json = JSON.stringify(settings, null, 2);
-    await ghPut(JSON_PATH, json, 'Delete sound from library');
+    await ghPut(JSON_PATH, json, 'Update sound icon');
     renderSoundLibrary();
-    renderSoundPicker();
-  } catch(e) { alert('Error: ' + e.message); }
+  } catch(e) {
+    alert("Error updating icon: " + e.message);
+  }
+}
+
+async function deleteSound(idx) {
+  customConfirm('Delete this sound? It will be unassigned from all events.', async () => {
+    const deletedId = settings.sounds[idx].id;
+    settings.sounds.splice(idx, 1);
+    // Remove assignments
+    for(const key in settings.soundAssignments) {
+      if(settings.soundAssignments[key] === deletedId) settings.soundAssignments[key] = null;
+    }
+    try {
+      const json = JSON.stringify(settings, null, 2);
+      await ghPut(JSON_PATH, json, 'Delete sound from library');
+      renderSoundLibrary();
+      renderSettingsUI();
+    } catch(e) {
+      alert("Error deleting sound: " + e.message);
+    }
+  });
 }
 
 function renderSoundPicker() {
@@ -837,23 +877,24 @@ async function addWork(){
 
 async function deleteWork(id){
   const w=works.find(x=>x.id===id);
-  if(!w||!confirm(`Delete "${w.name}"?`))return;
-
-  try{
-    // Delete image file from GitHub if hosted there
-    if(w.image&&w.image.includes('raw.githubusercontent.com')){
-      const path=w.image.split(`/main/`)[1];
-      if(path){
-        const file=await ghGet(path);
-        if(file)await ghDelete(path,`Remove image for ${w.name}`,file.sha);
+  if(!w)return;
+  customConfirm(`Delete "${w.name}"?`, async () => {
+    try{
+      // Delete image file from GitHub if hosted there
+      if(w.image&&w.image.includes('raw.githubusercontent.com')){
+        const path=w.image.split(`/main/`)[1];
+        if(path){
+          const file=await ghGet(path);
+          if(file)await ghDelete(path,`Remove image for ${w.name}`,file.sha);
+        }
       }
-    }
-    works=works.filter(x=>x.id!==id);
-    await saveWorks();
-    renderAdminList();
-    updateStats();
-    showMsg('✓ Work deleted.','ok');
-  } catch(e){showMsg('Error: '+e.message,'err')}
+      works=works.filter(x=>x.id!==id);
+      await saveWorks();
+      renderAdminList();
+      updateStats();
+      showMsg('✓ Work deleted.','ok');
+    } catch(e){showMsg('Error: '+e.message,'err')}
+  });
 }
 
 function updateStats(){
@@ -941,7 +982,6 @@ function resetForm(){
   document.getElementById('imgFileInput').value='';
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
-  document.getElementById('pwError').textContent='';
   renderToolsCheckboxList();
   currentImageBase64=null;
   currentModelBase64=null;
@@ -951,8 +991,8 @@ function resetForm(){
   document.getElementById('editBanner').classList.remove('visible');
   document.getElementById('focalHint').style.display='none';
   const sl=document.getElementById('focalSlider'); if(sl) sl.value=50;
-  document.getElementById('submitBtn').textContent='＋ PUBLISH TO PORTFOLIO';
-  document.getElementById('previewBtn').textContent='👁 PREVIEW';
+  document.getElementById('submitBtn').textContent='PUBLISH TO PORTFOLIO';
+  document.getElementById('previewBtn').textContent='PREVIEW';
 }
 
 function showMsg(text,type){
@@ -1013,8 +1053,8 @@ function editWork(id) {
   }
 
   document.getElementById('editBanner').classList.add('visible');
-  document.getElementById('submitBtn').textContent = '✓ SAVE CHANGES';
-  document.getElementById('previewBtn').textContent = '👁 PREVIEW CHANGES';
+  document.getElementById('submitBtn').textContent = 'SAVE CHANGES';
+  document.getElementById('previewBtn').textContent = 'PREVIEW CHANGES';
 
   // Scroll to form
   document.getElementById('imgPreview').scrollIntoView({behavior:'smooth', block:'center'});
@@ -1114,4 +1154,155 @@ function closePrev() {
 function confirmPublish() {
   closePrev();
   addWork();
+}
+
+// ── Team Library ──────────────────────────────────────
+function renderTeamLibrary() {
+  const select = document.getElementById('newTeamIcon');
+  if(select) {
+    select.innerHTML = generateIconOptions('');
+  }
+  const btnSelect = document.getElementById('teamBtnIcon');
+  if (btnSelect) {
+    btnSelect.innerHTML = generateIconOptions(settings.teamBtnIconId || '');
+  }
+  const sBtnSelect = document.getElementById('soundBtnIcon');
+  if (sBtnSelect) {
+    sBtnSelect.innerHTML = generateIconOptions(settings.soundBtnIconId || '');
+  }
+  
+  const box = document.getElementById('teamLibraryList');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!settings.teams || settings.teams.length === 0) {
+    box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No team members added yet.</div>';
+    return;
+  }
+  
+  settings.teams.forEach((tm) => {
+    let iconHtml = '';
+    if(tm.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === tm.iconId);
+      if(ic) {
+        iconHtml = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;margin-right:8px;">`;
+      }
+    }
+    
+    box.innerHTML += `
+      <div style="border:3px solid var(--dark);background:var(--white);padding:8px 12px;display:flex;align-items:center;position:relative;">
+        <button onclick="deleteTeamLibraryMember('${tm.id}')" style="position:absolute;top:-10px;right:-10px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:2;">X</button>
+        ${iconHtml}
+        <div style="display:flex;flex-direction:column;">
+          <span style="font-family:'VT323';font-size:18px;line-height:1;">${tm.name}</span>
+          ${tm.link ? `<a href="${tm.link}" target="_blank" style="font-size:12px;color:var(--dark);text-decoration:none;">🔗 Link</a>` : ''}
+        </div>
+      </div>
+    `;
+  });
+}
+
+async function addTeamLibraryMember() {
+  const name = document.getElementById('newTeamName').value.trim();
+  const link = document.getElementById('newTeamLink').value.trim();
+  const iconId = document.getElementById('newTeamIcon').value;
+  
+  if(!name) return alert("Please enter a team member name.");
+  
+  if(!settings.teams) settings.teams = [];
+  const newTeam = {
+    id: 'team_' + Date.now(),
+    name: name,
+    link: link,
+    iconId: iconId
+  };
+  
+  settings.teams.push(newTeam);
+  try {
+    document.getElementById('newTeamName').value = '';
+    document.getElementById('newTeamLink').value = '';
+    document.getElementById('newTeamIcon').value = '';
+    
+    renderTeamLibrary();
+    renderTeamCheckboxList();
+    await saveSettings(); // autosave
+  } catch(e) {
+    alert("Error adding team member: " + e.message);
+  }
+}
+
+async function deleteTeamLibraryMember(id) {
+  customConfirm("Delete this team member?", async () => {
+    settings.teams = settings.teams.filter(t => t.id !== id);
+    try {
+      renderTeamLibrary();
+      renderTeamCheckboxList();
+      await saveSettings(); // autosave
+    } catch(e) {
+      alert("Error deleting team member: " + e.message);
+    }
+  });
+}
+
+async function saveTeamLibrary() {
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = 'SAVING...';
+  btn.disabled = true;
+  try {
+    await saveSettings();
+    btn.textContent = '✓ SAVED!';
+    setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2000);
+  } catch(e) {
+    alert("Error saving team library: " + e.message);
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+function renderTeamCheckboxList() {
+  const box = document.getElementById('teamCheckboxList');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!settings.teams || settings.teams.length === 0) {
+    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No team members available. Add some in the Team Library.</div>';
+    return;
+  }
+  
+  settings.teams.forEach(tm => {
+    const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
+    
+    let iconHtml = '';
+    if(tm.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === tm.iconId);
+      if(ic) iconHtml = `<img src="${ic.url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">`;
+    }
+
+    box.innerHTML += `
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">
+        <input type="checkbox" value="${tm.id}" class="team-checkbox" ${checked} onchange="toggleTeamSelection('${tm.id}', this.checked)">
+        ${iconHtml}
+        <span style="font-family:'VT323';font-size:18px;">${tm.name}</span>
+      </label>
+    `;
+  });
+}
+
+function toggleTeamSelection(id, isChecked) {
+  if(isChecked) {
+    if(!selectedTeams.includes(id)) selectedTeams.push(id);
+  } else {
+    selectedTeams = selectedTeams.filter(t => t !== id);
+  }
+}
+
+
+// ── Custom Confirm Dialog ──
+function customConfirm(msg, callback) {
+  const overlay = document.getElementById('customConfirmOverlay');
+  document.getElementById('customConfirmMsg').textContent = msg;
+  overlay.style.display = 'flex';
+  document.getElementById('customConfirmYes').onclick = () => {
+    overlay.style.display = 'none';
+    callback();
+  };
 }
