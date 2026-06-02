@@ -105,13 +105,6 @@
     "playerAttackFps": 15,
     "playerAttackLoop": false
   },
-  "teams": [
-    {
-      "id": "team_1780392054240",
-      "name": "dsada",
-      "link": "dada",
-      "iconId": "icon_1780139577983"
-    }
-  ],
+  "teams": [],
   "teamBtnIconId": "icon_1780403259826"
 }
