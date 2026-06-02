@@ -645,6 +645,7 @@ async function loadSettings(){
   renderToolsCheckboxList();
   renderSoundLibrary();
   renderSoundPicker();
+  renderTeamLibrary();
 }
 
 async function saveWorks(){
@@ -1620,6 +1621,120 @@ function closePrev() {
 function confirmPublish() {
   closePrev();
   addWork();
+}
+
+// ── Team Library ──────────────────────────────────────
+function renderTeamLibrary() {
+  const select = document.getElementById('newTeamIcon');
+  if(select) {
+    select.innerHTML = generateIconOptions('');
+  }
+  
+  const box = document.getElementById('teamLibraryList');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!settings.teams || settings.teams.length === 0) {
+    box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No team members added yet.</div>';
+    return;
+  }
+  
+  settings.teams.forEach((tm) => {
+    let iconHtml = '';
+    if(tm.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === tm.iconId);
+      if(ic) {
+        iconHtml = `<img src="${ic.url}" style="width:24px;height:24px;object-fit:cover;image-rendering:pixelated;margin-right:8px;">`;
+      }
+    }
+    
+    box.innerHTML += `
+      <div style="border:3px solid var(--dark);background:var(--white);padding:8px 12px;display:flex;align-items:center;position:relative;">
+        <button onclick="deleteTeamLibraryMember('${tm.id}')" style="position:absolute;top:-10px;right:-10px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:2;">X</button>
+        ${iconHtml}
+        <div style="display:flex;flex-direction:column;">
+          <span style="font-family:'VT323';font-size:18px;line-height:1;">${tm.name}</span>
+          ${tm.link ? `<a href="${tm.link}" target="_blank" style="font-size:12px;color:var(--dark);text-decoration:none;">🔗 Link</a>` : ''}
+        </div>
+      </div>
+    `;
+  });
+}
+
+async function addTeamLibraryMember() {
+  const name = document.getElementById('newTeamName').value.trim();
+  const link = document.getElementById('newTeamLink').value.trim();
+  const iconId = document.getElementById('newTeamIcon').value;
+  
+  if(!name) return alert("Please enter a team member name.");
+  
+  if(!settings.teams) settings.teams = [];
+  const newTeam = {
+    id: 'team_' + Date.now(),
+    name: name,
+    link: link,
+    iconId: iconId
+  };
+  
+  settings.teams.push(newTeam);
+  try {
+    document.getElementById('newTeamName').value = '';
+    document.getElementById('newTeamLink').value = '';
+    document.getElementById('newTeamIcon').value = '';
+    
+    await saveSettings();
+    renderTeamLibrary();
+    renderTeamCheckboxList();
+  } catch(e) {
+    alert("Error saving team member: " + e.message);
+  }
+}
+
+async function deleteTeamLibraryMember(id) {
+  if(!confirm("Delete this team member?")) return;
+  settings.teams = settings.teams.filter(t => t.id !== id);
+  try {
+    await saveSettings();
+    renderTeamLibrary();
+    renderTeamCheckboxList();
+  } catch(e) {
+    alert("Error deleting team member: " + e.message);
+  }
+}
+
+function renderTeamCheckboxList() {
+  const box = document.getElementById('teamCheckboxList');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!settings.teams || settings.teams.length === 0) {
+    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No team members available. Add some in the Team Library.</div>';
+    return;
+  }
+  
+  settings.teams.forEach(tm => {
+    const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
+    
+    let iconHtml = '';
+    if(tm.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === tm.iconId);
+      if(ic) iconHtml = `<img src="${ic.url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">`;
+    }
+
+    box.innerHTML += `
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">
+        <input type="checkbox" value="${tm.id}" class="team-checkbox" ${checked} onchange="toggleTeamSelection('${tm.id}', this.checked)">
+        ${iconHtml}
+        <span style="font-family:'VT323';font-size:18px;">${tm.name}</span>
+      </label>
+    `;
+  });
+}
+
+function toggleTeamSelection(id, isChecked) {
+  if(isChecked) {
+    if(!selectedTeams.includes(id)) selectedTeams.push(id);
+  } else {
+    selectedTeams = selectedTeams.filter(t => t !== id);
+  }
 }
 </script>
 <!-- Preview Modal -->
