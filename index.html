@@ -1027,8 +1027,8 @@ function openModal(w) {
               <div style="flex:1; font-family:'Press Start 2P', cursive; font-size:12px; color:var(--dark);">${member.name}</div>
             </div>
           `;
-          if (member.url) {
-            tpList.innerHTML += `<a href="${member.url}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">${content}</a>`;
+          if (member.link) {
+            tpList.innerHTML += `<a href="${member.link}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">${content}</a>`;
           } else {
             tpList.innerHTML += content;
           }

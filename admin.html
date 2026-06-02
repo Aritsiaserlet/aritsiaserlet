@@ -175,7 +175,7 @@ input[type="file"] {
 
   <div class="admin-content">
     <div id="ghStatusBox" style="grid-column: 1 / -1; display:flex; justify-content:center; align-items:center; border:4px solid var(--dark); padding:12px; background:var(--white); box-shadow:8px 8px 0 rgba(0,0,0,0.5); cursor:pointer; transition:0.2s;"
-         onclick="if(!this.classList.contains('editing')){ this.classList.add('editing'); this.innerHTML=`<input type='text' id='ghTokenInput' placeholder='Enter new Token' style='flex:1;font-family:\\'Press Start 2P\\',cursive;font-size:16px;padding:16px;border:4px dashed var(--dark);background:var(--sky4);color:var(--dark);outline:none;box-shadow:inset 4px 4px 0 rgba(0,0,0,0.2);'><button onclick='event.stopPropagation(); const t=document.getElementById(\\'ghTokenInput\\').value; if(t){sessionStorage.setItem(\\'ghToken\\',t.trim());location.reload();}' class='submit-btn' style='width:auto;margin-left:16px;margin-top:0;padding:12px 16px;font-size:12px;font-family:\\'Press Start 2P\\',cursive;box-shadow:4px 4px 0 var(--dark);'>SAVE</button><button onclick='event.stopPropagation(); location.reload();' class='submit-btn' style='width:auto;background:var(--danger);margin-left:8px;margin-top:0;padding:12px 16px;font-size:12px;font-family:\\'Press Start 2P\\',cursive;box-shadow:4px 4px 0 var(--dark);'>CANCEL</button>`; document.getElementById('ghTokenInput').focus(); }"
+         onclick="if(!this.classList.contains('editing')){ this.classList.add('editing'); this.innerHTML=`<input type='text' id='ghTokenInput' placeholder='Enter new Token' style='flex:1;font-family:&quot;Press Start 2P&quot;,cursive;font-size:16px;padding:16px;border:4px dashed var(--dark);background:var(--sky4);color:var(--dark);outline:none;box-shadow:inset 4px 4px 0 rgba(0,0,0,0.2);'><button onclick='event.stopPropagation(); const t=document.getElementById(\\'ghTokenInput\\').value; if(t){sessionStorage.setItem(\\'ghToken\\',t.trim());location.reload();}' class='submit-btn' style='width:auto;margin-left:16px;margin-top:0;padding:12px 16px;font-size:12px;font-family:&quot;Press Start 2P&quot;,cursive;box-shadow:4px 4px 0 var(--dark);'>SAVE</button><button onclick='event.stopPropagation(); location.reload();' class='submit-btn' style='width:auto;background:var(--danger);margin-left:8px;margin-top:0;padding:12px 16px;font-size:12px;font-family:&quot;Press Start 2P&quot;,cursive;box-shadow:4px 4px 0 var(--dark);'>CANCEL</button>`; document.getElementById('ghTokenInput').focus(); }"
          onmouseover="if(!this.classList.contains('editing')){ this.style.background='var(--gold-l)'; this.querySelector('#ghStatus').textContent='✎ Click here to edit Token'; }"
          onmouseout="if(!this.classList.contains('editing')){ this.style.background=window.ghConnected ? '#abebc6' : '#fadbd8'; this.querySelector('#ghStatus').textContent=window.ghConnected ? '✓ Connected to GitHub' : '✗ GitHub connection failed'; }">
       <div id="ghStatus" style="margin:0; border:none; padding:0; background:transparent; font-size:28px; width:100%; text-align:center; color:var(--dark);">Checking connection...</div>
@@ -860,17 +860,17 @@ function renderToolsCheckboxList() {
 
 // ── Sound Library ──────────────────────────────────────
 const SOUND_EVENTS = [
-  { key: 'game_hit',       label: '🎮 Game: Hit Enemy' },
-  { key: 'game_score',     label: '🎮 Game: Score Point' },
-  { key: 'game_combo',     label: '🎮 Game: Combo!' },
-  { key: 'game_dive',      label: '🎮 Game: Dive' },
-  { key: 'game_boost',     label: '🎮 Game: Boost Activate' },
-  { key: 'game_miss',      label: '🎮 Game: Miss Penalty' },
-  { key: 'game_gameover',  label: '🎮 Game: Game Over' },
-  { key: 'game_bgm',       label: '🎮 Game: Background Music (loops)' },
-  { key: 'portfolio_like', label: '🌐 Portfolio: Like' },
-  { key: 'portfolio_login',label: '🌐 Portfolio: Login' },
-  { key: 'portfolio_bgm',  label: '🌐 Portfolio: Background Music (loops)' },
+  { key: 'game_hit',       label: 'Game: Hit Enemy' },
+  { key: 'game_score',     label: 'Game: Score Point' },
+  { key: 'game_combo',     label: 'Game: Combo!' },
+  { key: 'game_dive',      label: 'Game: Dive' },
+  { key: 'game_boost',     label: 'Game: Boost Activate' },
+  { key: 'game_miss',      label: 'Game: Miss Penalty' },
+  { key: 'game_gameover',  label: 'Game: Game Over' },
+  { key: 'game_bgm',       label: 'Game: Background Music (loops)' },
+  { key: 'portfolio_like', label: 'Portfolio: Like' },
+  { key: 'portfolio_login',label: 'Portfolio: Login' },
+  { key: 'portfolio_bgm',  label: 'Portfolio: Background Music (loops)' },
 ];
 
 async function addSoundToLibrary() {
@@ -920,15 +920,41 @@ function renderSoundLibrary() {
     return;
   }
   sounds.forEach((snd, i) => {
+    let iconHtml = `<div style="font-size:28px;margin-bottom:4px;">🔊</div>`;
+    if (snd.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === snd.iconId);
+      if (ic) iconHtml = `<img src="${ic.url}" style="width:32px;height:32px;object-fit:contain;image-rendering:pixelated;margin-bottom:4px;">`;
+    }
+    let selectHtml = `<select onchange="updateSoundIcon(${i}, this.value)" style="width:100%;font-family:'VT323';font-size:14px;border:2px solid var(--dark);margin-bottom:4px;background:var(--sky4);cursor:pointer;outline:none;">
+      <option value="">- No Icon (🔊) -</option>`;
+    if (settings.icons) {
+      settings.icons.forEach(ic => {
+        selectHtml += `<option value="${ic.id}" ${snd.iconId === ic.id ? 'selected' : ''}>${ic.name}</option>`;
+      });
+    }
+    selectHtml += `</select>`;
+
     box.innerHTML += `
-      <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;">
-        <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
-        <div style="font-size:28px;margin-bottom:4px;">🔊</div>
-        <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;">${snd.name}</div>
-        <audio controls src="${snd.url}" style="width:100%;height:28px;"></audio>
+      <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;">
+        <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:2;">X</button>
+        ${iconHtml}
+        ${selectHtml}
+        <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;line-height:1;">${snd.name}</div>
+        <audio controls src="${snd.url}" style="width:100%;height:28px;margin-top:auto;"></audio>
       </div>
     `;
   });
+}
+
+window.updateSoundIcon = async function(idx, iconId) {
+  settings.sounds[idx].iconId = iconId;
+  try {
+    const json = JSON.stringify(settings, null, 2);
+    await ghPut(JSON_PATH, json, 'Update sound icon');
+    renderSoundLibrary();
+  } catch(e) {
+    alert("Error updating icon: " + e.message);
+  }
 }
 
 async function deleteSound(idx) {
