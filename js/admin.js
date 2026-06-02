@@ -1,4 +1,4 @@
-﻿// =============================================================================
+// =============================================================================
 // ARITSIA PORTFOLIO - Admin Panel JavaScript
 // admin.js
 // =============================================================================
@@ -295,7 +295,8 @@ async function deleteIcon(idx) {
     settings.icons.splice(idx, 1);
     try {
       const json = JSON.stringify(settings, null, 2);
-      await ghPut(JSON_PATH, json, 'Delete icon from library');
+      const res = await ghPut(JSON_PATH, json, 'Delete icon from library', settingsSha);
+      settingsSha = res.content.sha;
       renderIconLibrary();
       renderSettingsUI();
       renderToolsCheckboxList();
@@ -429,7 +430,8 @@ window.updateSoundIcon = async function(idx, iconId) {
   settings.sounds[idx].iconId = iconId;
   try {
     const json = JSON.stringify(settings, null, 2);
-    await ghPut(JSON_PATH, json, 'Update sound icon');
+    const res = await ghPut(JSON_PATH, json, 'Update sound icon', settingsSha);
+    settingsSha = res.content.sha;
     renderSoundLibrary();
   } catch(e) {
     alert("Error updating icon: " + e.message);
@@ -446,7 +448,8 @@ async function deleteSound(idx) {
     }
     try {
       const json = JSON.stringify(settings, null, 2);
-      await ghPut(JSON_PATH, json, 'Delete sound from library');
+      const res = await ghPut(JSON_PATH, json, 'Delete sound from library', settingsSha);
+      settingsSha = res.content.sha;
       renderSoundLibrary();
       renderSettingsUI();
     } catch(e) {
@@ -490,7 +493,7 @@ async function saveSoundAssignments() {
     msgEl.style.color = 'var(--mid)';
     msgEl.textContent = 'Saving...';
     const json = JSON.stringify(settings, null, 2);
-    const result = await ghPut(JSON_PATH, json, 'Update sound assignments');
+    const result = await ghPut(JSON_PATH, json, 'Update sound assignments', settingsSha);
     settingsSha = result.content.sha;
     msgEl.style.color = 'var(--success)';
     msgEl.textContent = '✓ Sound assignments saved!';

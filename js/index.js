@@ -97,7 +97,6 @@ const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
 const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/works.json`;
 const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json`;
-
 async function loadData() {
   const t = sessionStorage.getItem('ghToken');
   // Load Works
