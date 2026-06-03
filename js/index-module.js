@@ -10,13 +10,11 @@ import { initSettings, getSettings, updateSettings } from '../settingsManager.js
     toggleLike: toggleLike 
   };
 
-  let portfolioBgmStarted = false;
+  let userHasInteracted = false;
   window.addEventListener('click', () => {
-    if (!portfolioBgmStarted) {
-      portfolioBgmStarted = true;
-      startPortfolioBGM();
-    }
-  }, { once: true });
+    userHasInteracted = true;
+    startPortfolioBGM();
+  });
 
   // Setup Auth UI binding
   window.addEventListener('DOMContentLoaded', async () => {
@@ -49,6 +47,9 @@ import { initSettings, getSettings, updateSettings } from '../settingsManager.js
 
     // Load sound assignments from settings.json
     await loadSoundAssignments();
+    if (userHasInteracted) {
+      startPortfolioBGM();
+    }
 
     // Sync initial audio volumes from settings
     const initSet = getSettings();

@@ -196,7 +196,10 @@ let bgmAudios = [];
 export function startBGM() {
   const layers = soundUrls['game_bgm'] || soundUrls['portfolio_bgm'];
   if (!layers || layers.length === 0) return;
-  if (musicIsPlaying && bgmAudios.length > 0) return;
+  if (musicIsPlaying && bgmAudios.length > 0) {
+    bgmAudios.forEach(a => a.play().catch(e => console.warn('Resume BGM error:', e)));
+    return;
+  }
   stopBGM();
   layers.forEach(urls => {
     if (!urls || urls.length === 0) return;
@@ -215,7 +218,10 @@ export function startBGM() {
 export function startPortfolioBGM() {
   const layers = soundUrls['portfolio_bgm'] || soundUrls['game_bgm'];
   if (!layers || layers.length === 0) return;
-  if (musicIsPlaying && bgmAudios.length > 0) return;
+  if (musicIsPlaying && bgmAudios.length > 0) {
+    bgmAudios.forEach(a => a.play().catch(e => console.warn('Resume Portfolio BGM error:', e)));
+    return;
+  }
   stopBGM();
   layers.forEach(urls => {
     if (!urls || urls.length === 0) return;
@@ -234,7 +240,10 @@ export function startPortfolioBGM() {
 export function startLobbyBGM() {
   const layers = soundUrls['lobby_bgm'] || soundUrls['game_bgm'];
   if (!layers || layers.length === 0) return;
-  if (musicIsPlaying && bgmAudios.length > 0) return;
+  if (musicIsPlaying && bgmAudios.length > 0) {
+    bgmAudios.forEach(a => a.play().catch(e => console.warn('Resume Lobby BGM error:', e)));
+    return;
+  }
   stopBGM();
   layers.forEach(urls => {
     if (!urls || urls.length === 0) return;
