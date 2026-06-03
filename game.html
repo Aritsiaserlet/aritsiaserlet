@@ -194,13 +194,13 @@
 <script type="module" src="js/game-module.js"></script>
 <script>
   // Lobby BGM starts on first interaction
-  let lobbyBgmStarted = false;
-  document.addEventListener('click', () => {
-    if (!lobbyBgmStarted && window.gameAudio && window.gameAudio.startLobbyBGM && document.getElementById('lobbyScreen').style.display !== 'none') {
-      lobbyBgmStarted = true;
+  const lobbyInteractionHandler = () => {
+    if (window.gameAudio && window.gameAudio.startLobbyBGM && document.getElementById('lobbyScreen').style.display !== 'none') {
       window.gameAudio.startLobbyBGM();
     }
-  }, { once: true });
+  };
+  document.addEventListener('click', lobbyInteractionHandler);
+  document.addEventListener('touchstart', lobbyInteractionHandler, { passive: true });
 
   // BGM starts only after the game container is shown (user gesture already happened at loading click)
   document.addEventListener('gameReady', () => {

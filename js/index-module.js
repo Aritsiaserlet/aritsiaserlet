@@ -11,10 +11,12 @@ import { initSettings, getSettings, updateSettings } from '../settingsManager.js
   };
 
   let userHasInteracted = false;
-  window.addEventListener('click', () => {
+  const interactionHandler = () => {
     userHasInteracted = true;
     startPortfolioBGM();
-  });
+  };
+  window.addEventListener('click', interactionHandler);
+  window.addEventListener('touchstart', interactionHandler, { passive: true });
 
   // Setup Auth UI binding
   window.addEventListener('DOMContentLoaded', async () => {
