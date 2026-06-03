@@ -290,6 +290,11 @@
       "name": "Game Background Music",
       "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780481512230.mp3",
       "volume": 65
+    },
+    {
+      "id": "snd_1780482914979",
+      "name": "Score Point",
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780482914979.wav"
     }
   ],
   "profileFit": "cover",
