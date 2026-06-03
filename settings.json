@@ -294,7 +294,8 @@
     {
       "id": "snd_1780482914979",
       "name": "Score Point",
-      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780482914979.wav"
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780482914979.wav",
+      "volume": 42
     }
   ],
   "profileFit": "cover",
