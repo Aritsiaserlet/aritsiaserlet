@@ -192,9 +192,12 @@
 <script src="js/game-lobby.js"></script>
 
 <script type="module" src="js/game-module.js"></script>
+<script>
   // BGM starts only after the game container is shown (user gesture already happened at loading click)
   document.addEventListener('gameReady', () => {
-    startBGM();
+    if (window.gameAudio && window.gameAudio.startBGM) {
+      window.gameAudio.startBGM();
+    }
   });
 </script>
 

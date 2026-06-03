@@ -518,7 +518,10 @@ window.initGame = function (portfolioWorks, settings) {
   canvas.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     if (!isPlaying) return;
-    if (fireworks > 0) { fireworks--; boostTimer += 180; boostStacks = Math.min(boostStacks + 1, 64); multiplier = boostStacks > 0 ? boostStacks * 2 : 1; maxMultiplier = Math.max(maxMultiplier, boostStacks); updateHUD(); }
+    if (fireworks > 0) { 
+      fireworks--; boostTimer += 180; boostStacks = Math.min(boostStacks + 1, 64); multiplier = boostStacks > 0 ? boostStacks * 2 : 1; maxMultiplier = Math.max(maxMultiplier, boostStacks); updateHUD(); 
+      if (window.gameAudio) window.gameAudio.sfxBoost();
+    }
   });
 
   // ── Touch: left half = dive, right half = boost
