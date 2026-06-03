@@ -1,221 +1,507 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="OzonZ (Chanon Thongduang) - Game Developer, 2D Artist, Programmer, Game Designer">
-  <meta name="theme-color" content="#FFF8F0">
-  
-  <title>OzonZ — Portfolio</title>
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Design System & Base Styles -->
-  <link rel="stylesheet" href="css/portfolio-ozonz.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Chanon Thongduang | OzonZ Portfolio</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Mitr:wght@400;600&display=swap" rel="stylesheet"/>
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#eae4b1",
+                        "on-primary": "#10141a",
+                        "background": "#10141a",
+                        "on-background": "#dfe2eb",
+                        "surface": "#1c2026",
+                        "on-surface": "#dfe2eb",
+                        "surface-variant": "#31353c",
+                        "on-surface-variant": "#cac3d8",
+                        "outline": "#494455",
+                        "secondary": "#eae4b1",
+                        "on-secondary": "#10141a",
+                        "tertiary": "#904500",
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "max-width": "1280px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Mitr", "sans-serif"],
+                        "body-md": ["Space Grotesk", "sans-serif"],
+                        "display-lg": ["Mitr", "sans-serif"],
+                        "label-sm": ["Space Grotesk", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --background: #10141a;
+            --on-background: #dfe2eb;
+            --primary: #eae4b1;
+            --on-primary: #10141a;
+            --surface: #1c2026;
+            --on-surface: #dfe2eb;
+            --outline: #494455;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--background);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Mitr', sans-serif;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pixel-card {
+            background: rgba(28, 32, 38, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--outline);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+    <style>
+        @keyframes float-tilt {
+            0%, 100% { transform: translateY(-8px) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(-12px) translateX(4px) rotate(2deg); }
+            50% { transform: translateY(-8px) translateX(0px) rotate(0deg); }
+            75% { transform: translateY(-12px) translateX(-4px) rotate(-2deg); }
+        }
+        .hover\:animate-float-tilt:hover {
+            animation: float-tilt 3s ease-in-out infinite;
+        }
+    </style>
+    <style>
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+    </style>
+    <style>
+        @keyframes borderGlow {
+            0%, 100% { border-color: rgba(234, 228, 177, 0.2); box-shadow: 0 0 5px rgba(234, 228, 177, 0.1); }
+            50% { border-color: rgba(234, 228, 177, 0.6); box-shadow: 0 0 20px rgba(234, 228, 177, 0.3); }
+        }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        @keyframes card-glow-ambient {
+            0%, 100% { box-shadow: 0 0 15px rgba(234, 228, 177, 0.05); }
+            50% { box-shadow: 0 0 40px rgba(234, 228, 177, 0.15); }
+        }
+        .animate-border-glow { animation: borderGlow 4s infinite; }
+        .animate-card-ambient { animation: card-glow-ambient 6s infinite ease-in-out; }
+        .bg-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-background text-on-background selection:bg-primary/30 font-body-md">
+<canvas id="bg-canvas"></canvas>
 
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     NAVIGATION BAR (Sticky)
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<nav class="ozonz-navbar" id="navbar">
-  <div class="container flex-between">
-    <!-- Logo / Brand -->
-    <div class="navbar-brand">
-      <span class="brand-mark">◆</span>
-      <span class="brand-text">OzonZ</span>
-    </div>
+<!-- Theme Toggle -->
+<button class="theme-toggle bg-primary text-on-primary" id="theme-toggle" title="Toggle Theme">
+    <span class="material-symbols-outlined" id="theme-icon">light_mode</span>
+</button>
 
-    <!-- Navigation Links -->
-    <div class="navbar-links">
-      <a href="#hero" class="nav-link">Home</a>
-      <a href="#disciplines" class="nav-link">Disciplines</a>
-      <a href="#projects" class="nav-link">Work</a>
-      <a href="#contact" class="nav-link">Contact</a>
+<!-- Navigation -->
+<nav class="sticky top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline/20">
+    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-max-width mx-auto">
+        <a class="text-2xl font-bold text-primary" href="#">OzonZ</a>
+        <div class="hidden md:flex items-center gap-8">
+            <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium" href="#work">Work</a>
+            <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium" href="#about">About</a>
+            <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium" href="#contact">Contact</a>
+        </div>
+        <button class="md:hidden text-primary" id="menu-toggle">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
     </div>
-
-    <!-- Theme Switcher & Menu -->
-    <div class="navbar-actions">
-      <button class="nav-btn icon" id="themeBtn" title="Toggle Theme" aria-label="Toggle theme">
-        🌙
-      </button>
-      <button class="nav-btn icon" id="helpBtn" title="Help" aria-label="Help">
-        ?
-      </button>
-    </div>
-  </div>
 </nav>
 
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     HERO SECTION (Cinematic Introduction)
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<section class="hero" id="hero">
-  <div class="hero-bg" id="heroBg"></div>
-  
-  <div class="container-sm hero-content">
-    <!-- Primary Identity -->
-    <div class="hero-intro">
-      <div class="hero-handle">OzonZ</div>
-      <h1 class="hero-title">Chanon Thongduang</h1>
-    </div>
+<main>
+    <!-- Hero Section -->
+    <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pt-24 pb-16 reveal active">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7">
+                <h1 class="text-6xl md:text-8xl font-bold leading-tight mb-6 uppercase tracking-tight">
+                    Chanon <span class="text-primary block">Thongduang</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-on-surface-variant font-medium mb-10 max-w-2xl leading-relaxed">
+                    Game Developer | 2D Artist | Programmer | Game Designer
+                </p>
+                <div class="flex flex-wrap gap-6">
+                    <a class="bg-primary text-on-primary px-10 py-5 text-xl font-bold rounded-lg hover:scale-105 transition-all shadow-lg shadow-primary/20" href="#work">PROJECTS</a>
+                    <a class="border-2 border-outline text-on-background px-10 py-5 text-xl font-bold rounded-lg hover:bg-surface-variant transition-all" href="#contact">CONNECT</a>
+                </div>
+            </div>
 
-    <!-- Role Statement (Scannable at a glance) -->
-    <div class="hero-roles">
-      <div class="role-tag game-dev-tag">
-        <span class="role-icon">🎮</span>
-        <span class="role-title">Game Developer</span>
-      </div>
-      <div class="role-tag artist-tag">
-        <span class="role-icon">🎨</span>
-        <span class="role-title">2D Artist</span>
-      </div>
-      <div class="role-tag programmer-tag">
-        <span class="role-icon">💻</span>
-        <span class="role-title">Programmer</span>
-      </div>
-      <div class="role-tag designer-tag">
-        <span class="role-icon">🎭</span>
-        <span class="role-title">Game Designer</span>
-      </div>
-    </div>
+            <!-- GitHub Profile Card -->
+            <div class="lg:col-span-5 relative">
+                <div class="relative group p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
+                    <!-- Texture & Icon Overlays -->
+                    <div class="absolute inset-0 bg-grain z-0"></div>
+                    <div class="absolute top-4 right-4 opacity-10 group-hover:opacity-30 transition-opacity z-10">
+                        <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+                    </div>
+                    <div class="relative z-10">
+                        <!-- Header: Avatar & Info -->
+                        <div class="flex items-center gap-6 mb-10">
+                            <div class="relative w-28 h-28 shrink-0">
+                                <div class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse"></div>
+                                <div class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(234,228,177,0.2)]">
+                                    <img alt="OzonZ Profile" class="w-full h-full object-cover" src="https://avatars.githubusercontent.com/u/255675901?v=4" />
+                                </div>
+                                <!-- Status Indicator -->
+                                <div class="absolute bottom-1 right-1 w-5 h-5 bg-[#10141a] rounded-full flex items-center justify-center border border-white/10">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-3xl font-bold text-on-background font-headline leading-tight tracking-tight">OzonZ_Dev</h3>
+                                <p class="text-primary/70 font-body-md text-sm tracking-wide">@chanon-thongduang</p>
+                            </div>
+                        </div>
 
-    <!-- Tagline -->
-    <p class="hero-tagline">
-      Crafting immersive game experiences through art, code, and design
-    </p>
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-2 gap-4 mb-10">
+                            <div class="bg-white/5 border border-white/10 p-5 rounded-xl hover:bg-white/10 transition-colors">
+                                <div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-sm">show_chart</span>
+                                    <span class="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60">Contributions</span>
+                                </div>
+                                <span class="text-3xl font-bold text-primary font-headline">150+</span>
+                            </div>
+                            <div class="bg-white/5 border border-white/10 p-5 rounded-xl hover:bg-white/10 transition-colors">
+                                <div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-sm">folder</span>
+                                    <span class="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60">Repositories</span>
+                                </div>
+                                <span class="text-3xl font-bold text-primary font-headline">42</span>
+                            </div>
+                        </div>
 
-    <!-- Bio (Brief, Scannable) -->
-    <div class="hero-bio">
-      <p>
-        I create cohesive game experiences where programming, visual design, and game architecture intersect. 
-        Passionate about pixel art aesthetics, clean code architecture, and meaningful gameplay.
-      </p>
-    </div>
+                        <!-- Action Button -->
+                        <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-4 rounded-lg font-bold text-xs tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(234,228,177,0.4)] relative overflow-hidden" href="https://github.com/OzonZ" target="_blank">
+                            <span class="relative z-10 flex items-center gap-2">
+                                FOLLOW ON GITHUB
+                                <span class="material-symbols-outlined text-base">open_in_new</span>
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none"></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- CTA Buttons -->
-    <div class="hero-cta">
-      <a href="#disciplines" class="btn btn-primary btn-lg">
-        Explore Disciplines
-      </a>
-      <a href="#projects" class="btn btn-secondary btn-lg">
-        View My Work
-      </a>
-    </div>
+    <!-- Work Section -->
+    <section class="py-32 reveal active" id="work">
+        <div class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <div>
+                    <h2 class="text-5xl font-bold mb-4 uppercase">Selected Archives</h2>
+                    <p class="text-on-surface-variant text-xl">A chronicle of interactive experiences and digital creations.</p>
+                </div>
+                <button class="text-lg font-bold text-primary flex items-center gap-3 tracking-widest transition-all duration-300 hover:-translate-y-2 hover:animate-float-tilt">
+                    EXPLORE ALL WORK <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                </button>
+            </div>
 
-    <!-- Quick Stats (Optional - Scannable metrics) -->
-    <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-number">50+</div>
-        <div class="stat-label">Projects</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">30+</div>
-        <div class="stat-label">Game Jams</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">8y</div>
-        <div class="stat-label">Experience</div>
-      </div>
-    </div>
-  </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Featured Large Card -->
+                <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30">
+                    <div class="absolute inset-0 bg-black/50 z-10 transition-opacity group-hover:opacity-30"></div>
+                    <img alt="Project: Neon Dreams" class="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A" />
+                    <div class="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-background via-background/60 to-transparent">
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary [text-shadow:_0px_1px_4px_rgb(0_0_0_/_80%)]">NARRATIVE ADVENTURE</span>
+                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-white [text-shadow:_0px_1px_4px_rgb(0_0_0_/_80%)]">PIXEL ART</span>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-bold mb-4 uppercase">Project: Neon Dreams</h3>
+                        <p class="text-on-surface-variant text-lg max-w-2xl mb-8">A cinematic exploration of memory and connection set in a vibrant post-human cityscape.</p>
+                        <button class="group/btn relative bg-primary text-on-primary px-8 py-4 font-headline font-bold text-sm transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-105 border-4 border-primary hover:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-y-0 overflow-hidden">
+                            <span class="relative z-10 uppercase tracking-widest">Go Itch.io</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] pointer-events-none"></div>
+                        </button>
+                    </div>
+                </div>
 
-  <!-- Scroll Indicator -->
-  <div class="scroll-indicator" id="scrollIndicator">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="6 9 12 15 18 9"></polyline>
-    </svg>
-  </div>
-</section>
+                <!-- Side Bento Cards -->
+                <div class="lg:col-span-4 flex flex-col gap-10">
+                    <div class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-6">
+                                <span class="material-symbols-outlined text-primary text-4xl">architecture</span>
+                                <span class="text-on-surface-variant font-mono text-sm">2024</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3 uppercase">Engine Architecture</h3>
+                            <p class="text-on-surface-variant text-base mb-6">Custom rendering pipeline for retro-style shaders and pixel-perfect scaling.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">C++</span>
+                            <span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">HLSL</span>
+                        </div>
+                    </div>
+                    <div class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-6">
+                                <span class="material-symbols-outlined text-primary text-4xl">brush</span>
+                                <span class="text-on-surface-variant font-mono text-sm">2025</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3 uppercase">Concept Gallery</h3>
+                            <p class="text-on-surface-variant text-base mb-6">A collection of environment sketches and sprites inspired by 90s anime.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">ASEPRITE</span>
+                            <span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">ILLUSTRATION</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     DISCIPLINES SECTION (Multi-Discipline Hub)
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<section class="disciplines" id="disciplines">
-  <div class="container">
-    <div class="section-header">
-      <h2>Disciplines</h2>
-      <p class="section-subtitle">
-        How I combine four complementary skills to create cohesive game experiences
-      </p>
-    </div>
+    <!-- About Section -->
+    <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-32 reveal active" id="about">
+        <div class="max-w-4xl">
+            <h2 class="text-4xl md:text-5xl font-bold mb-10 uppercase text-primary">About the Dev</h2>
+            <p class="text-2xl md:text-3xl text-on-surface leading-relaxed mb-8">
+                Game Developer. 2D Artist. Programmer. Game Designer.
+            </p>
+            <p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                I started my journey in Game Jams and deepened my roots through <strong>Hamster Hub's</strong> courses, mastering Game Design, <strong>Unity development</strong>, and the core philosophy of effective presentation. Building on that foundation through self-study, I expanded into web development, web for education and game programming, collaborating closely with peers and mentors from the community to transform creative concepts into reality.
+            </p>
+        </div>
+    </section>
 
-    <!-- Discipline Grid (4 Cards) -->
-    <div class="disciplines-grid" id="disciplinesGrid">
-      <!-- Filled by portfolio-ozonz.js -->
-    </div>
-  </div>
-</section>
+    <!-- Technical Archetype -->
+    <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-32 border-t border-outline/10 reveal active">
+        <h2 class="text-sm font-bold tracking-[0.4em] text-primary uppercase mb-16 text-center">Technical Archetype</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <div class="group">
+                <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                    <span class="material-symbols-outlined text-3xl">sports_esports</span>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase">Game Dev</h3>
+                <p class="text-sm text-on-surface-variant px-4">Robust systems &amp; gameplay logic.</p>
+            </div>
+            <div class="group">
+                <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                    <span class="material-symbols-outlined text-3xl">palette</span>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase">2D Art</h3>
+                <p class="text-sm text-on-surface-variant px-4">Pixel art &amp; character design.</p>
+            </div>
+            <div class="group">
+                <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                    <span class="material-symbols-outlined text-3xl">terminal</span>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase">Coding</h3>
+                <p class="text-sm text-on-surface-variant px-4">Clean, performant architectures.</p>
+            </div>
+            <div class="group">
+                <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                    <span class="material-symbols-outlined text-3xl">lightbulb</span>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase">Design</h3>
+                <p class="text-sm text-on-surface-variant px-4">Player psychology &amp; engagement.</p>
+            </div>
+        </div>
+    </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     PROJECTS SECTION (Work Gallery)
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<section class="projects" id="projects">
-  <div class="container">
-    <div class="section-header">
-      <h2>Featured Work</h2>
-      <p class="section-subtitle">
-        Projects showcasing my multi-disciplinary approach
-      </p>
-    </div>
+    <!-- Contact Section -->
+    <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-32 flex flex-col items-center reveal active" id="contact">
+        <h2 class="text-5xl font-bold mb-12 uppercase text-center">CONTACT ME</h2>
+        <div class="inline-flex flex-wrap justify-center items-center gap-10 px-12 py-6 bg-surface/50 backdrop-blur rounded-full border border-outline/20 shadow-2xl">
+            <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-3" href="https://github.com/OzonZ" target="_blank" title="GitHub">
+                <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+                <span class="text-sm font-bold">GITHUB</span>
+            </a>
+            <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-3" href="https://www.facebook.com/chanon.thongduang?locale=th_TH" target="_blank" title="Facebook">
+                <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+                <span class="text-sm font-bold">FACEBOOK</span>
+            </a>
+            <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-3" href="https://discordapp.com/users/1018888909419204658" target="_blank" title="Discord">
+                <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"></path></svg>
+                <span class="text-sm font-bold">DISCORD</span>
+            </a>
+            <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-3" href="https://hamsterhub.co/profile/eaya" target="_blank" title="Hamster Hub">
+                <img alt="Hamster Hub" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB28xM_dBayCLAVqTONkkKMUSaTEG8lR6VgchYOz5Vqm3BZty-p_mMaXkJFdcxIcE88a1fT29unmzFYJJtN3AGKI7j8b4o67waVZxt2WaMZqpZHEnKypfVk8fVFPGAs7xriT_TaN9j6aAlpcl_Vhs-BGinMRDTvHSqq_cHUAIAsNvA9n8ftdBIcgLhZ0OzZuy-jhSXLky1DCfU-guF6-fqU9RRJ2jXGF3B6xN8UZU2Oecrcu8cyPXidBOHJqb0yLOmGvZSWpMKO_fpo" />
+                <span class="text-sm font-bold">HAMSTER HUB</span>
+            </a>
+        </div>
+    </section>
+</main>
 
-    <!-- Project Filter Tabs -->
-    <div class="project-filters" id="projectFilters">
-      <!-- Filled by portfolio-ozonz.js -->
-    </div>
-
-    <!-- Project Grid -->
-    <div class="projects-grid" id="projectsGrid">
-      <!-- Filled by portfolio-ozonz.js -->
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     CONTACT SECTION (CTA & Social Links)
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<section class="contact" id="contact">
-  <div class="container-sm">
-    <div class="contact-content">
-      <h2>Let's Collaborate</h2>
-      <p class="contact-subtitle">
-        Interested in working together? I'd love to hear from you.
-      </p>
-
-      <!-- Social Links -->
-      <div class="social-links" id="socialLinks">
-        <!-- Filled by portfolio-ozonz.js -->
-      </div>
-
-      <!-- CTA Button -->
-      <a href="mailto:contact@ozonz.dev" class="btn btn-primary btn-lg mt-lg">
-        Get in Touch
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     FOOTER
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<footer class="footer">
-  <div class="container footer-content">
-    <div class="footer-info">
-      <p>&copy; 2026 OzonZ (Chanon Thongduang). All rights reserved.</p>
-    </div>
-    <div class="footer-links">
-      <a href="#hero">Home</a>
-      <a href="#disciplines">Disciplines</a>
-      <a href="#projects">Work</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </div>
+<footer class="bg-surface/30 py-12 border-t border-outline/10 text-center">
+    <p class="text-on-surface-variant text-base tracking-widest font-bold uppercase">© 2026 Chanon Thongduang. Built with Precision.</p>
 </footer>
 
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     SCRIPTS
-     ══════════════════════════════════════════════════════════════════════════════ -->
-<script type="module" src="js/portfolio-ozonz.js"></script>
+<!-- WebGL Shader Script -->
+<script>
+    const canvas = document.getElementById('bg-canvas');
+    const gl = canvas.getContext('webgl');
 
+    const vertexShaderSource = `
+        attribute vec2 a_position;
+        varying vec2 v_texCoord;
+        void main() {
+            v_texCoord = a_position * 0.5 + 0.5;
+            v_texCoord.y = 1.0 - v_texCoord.y;
+            gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+    `;
+
+    const fragmentShaderSource = `
+        precision highp float;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        varying vec2 v_texCoord;
+
+        void main() {
+            vec2 uv = v_texCoord;
+            vec3 color1 = vec3(0.06, 0.08, 0.1); 
+            vec3 color2 = vec3(0.12, 0.1, 0.05); 
+            
+            float noise = sin(uv.x * 3.0 + u_time * 0.3) * cos(uv.y * 3.0 + u_time * 0.3);
+            vec3 color = mix(color1, color2, noise * 0.15 + 0.05);
+            
+            gl_FragColor = vec4(color, 1.0);
+        }
+    `;
+
+    function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return shader;
+    }
+
+    const program = gl.createProgram();
+    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexShaderSource));
+    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource));
+    gl.linkProgram(program);
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+    const positionLocation = gl.getAttribLocation(program, "a_position");
+    const timeLocation = gl.getUniformLocation(program, "u_time");
+    const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+
+    function render(time) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+
+        gl.useProgram(program);
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1f(timeLocation, time * 0.001);
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
+
+    // Entrance Transitions Observer
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = document.getElementById('theme-icon');
+        icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    menuToggle.addEventListener('click', () => {
+        console.log('Mobile menu clicked');
+    });
+</script>
 </body>
 </html>
