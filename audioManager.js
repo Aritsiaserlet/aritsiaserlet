@@ -28,6 +28,7 @@ let volumes = { master: 1.0, music: 1.0, sfx: 1.0, masterMute: false, musicMute:
 // ── Sound URL cache (loaded from settings.json)
 // Keys match the soundAssignments keys in settings.json
 let soundUrls = {};
+let soundVolumes = {};
 
 export let globalSoundBtnIconUrl = '';
 export function updateGameSoundBtn(btn, isMuted) {
@@ -63,6 +64,9 @@ export async function loadSoundAssignments() {
     }
 
     const library = settings.sounds || [];
+    library.forEach(s => {
+      soundVolumes[s.url] = s.volume !== undefined ? s.volume / 100 : 1.0;
+    });
     const assignments = settings.soundAssignments || {};
     // Map each assignment key → URL
     // Map each assignment key → Array of Layers (Array of Arrays of URLs)
@@ -152,13 +156,14 @@ function playSound(key) {
   if (!layers || layers.length === 0) return; // No sound assigned — silent
   if (volumes.masterMute || volumes.sfxMute) return;
   try {
-    layers.forEach(urls => {
-      if (!urls || urls.length === 0) return;
-      const url = urls[Math.floor(Math.random() * urls.length)];
-      const audio = new Audio(url);
-      audio.volume = Math.min(1, volumes.master * volumes.sfx);
-      audio.play().catch(() => {});
-    });
+      layers.forEach(urls => {
+        if (!urls || urls.length === 0) return;
+        const url = urls[Math.floor(Math.random() * urls.length)];
+        const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
+        const audio = new Audio(url);
+        audio.volume = Math.min(1, volumes.master * volumes.sfx * sndVol);
+        audio.play().catch(() => {});
+      });
   } catch(e) {}
 }
 
@@ -175,25 +180,31 @@ export function sfxLogin()    { playSound('portfolio_login'); }
 
 // ── BGM — file-based looping audio
 export function startBGM() {
-  const url = soundUrls['game_bgm'] || soundUrls['portfolio_bgm'];
-  if (!url) return; // No BGM assigned — silent
+  const layers = soundUrls['game_bgm'] || soundUrls['portfolio_bgm'];
+  if (!layers || layers.length === 0 || layers[0].length === 0) return;
+  const url = layers[0][Math.floor(Math.random() * layers[0].length)];
+  if (!url) return;
   if (musicIsPlaying && musicAudio) return;
   stopBGM();
+  const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
   musicAudio = new Audio(url);
   musicAudio.loop = true;
-  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1));
+  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1) * sndVol);
   musicAudio.play().catch(() => {});
   musicIsPlaying = true;
 }
 
 export function startPortfolioBGM() {
-  const url = soundUrls['portfolio_bgm'] || soundUrls['game_bgm'];
+  const layers = soundUrls['portfolio_bgm'] || soundUrls['game_bgm'];
+  if (!layers || layers.length === 0 || layers[0].length === 0) return;
+  const url = layers[0][Math.floor(Math.random() * layers[0].length)];
   if (!url) return;
   if (musicIsPlaying && musicAudio) return;
   stopBGM();
+  const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
   musicAudio = new Audio(url);
   musicAudio.loop = true;
-  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1));
+  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1) * sndVol);
   musicAudio.play().catch(() => {});
   musicIsPlaying = true;
 }

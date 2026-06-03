@@ -639,6 +639,7 @@ function getStrikeY() { return player.groundY - player.h - 80; }
 function triggerDive() {
   player.vy = DIVE_SPEED; player.vxDive = VX_DIVE;
   attack.phase = 'dive'; attack.frameCount = 0; attack.canChain = false;
+  attack.hasHit = false;
   if (window.gameAudio) window.gameAudio.sfxDive();
 }
 
@@ -659,6 +660,16 @@ function updateAttack() {
   } else if (attack.phase === 'strike') {
     player.y = strikeY;
     if (attack.frameCount >= STRIKE_FRAMES) {
+      if (!attack.hasHit) {
+        const basePen = (gameSettings && gameSettings.game && gameSettings.game.missPenalty !== undefined) ? gameSettings.game.missPenalty : 5;
+        const penalty = basePen * (boostStacks > 0 ? boostStacks * 4 : 1);
+        score = Math.max(0, score - penalty); updateHUD();
+        const offsetY = floatingTexts.length * 20;
+        floatingTexts.push({ x: 30, y: 70 + offsetY, text: "-" + penalty, life: 40, maxLife: 40, color: '#e74c3c', isHud: true });
+        if (window.gameAudio) window.gameAudio.sfxMiss();
+        shakeScreen();
+        if (score === 0) { gameOver(); return; }
+      }
       attack.chainY = player.startY + (strikeY - player.startY) * (1 - CHAIN_THRESHOLD);
       player.vy = -ASCENT_SPEED;
       attack.phase = 'ascend'; attack.frameCount = 0;
@@ -684,6 +695,7 @@ function checkDiveCollision() {
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
     if (hx < e.x + e.w && hx + hw > e.x && hy < e.y + e.h && hy + hh > e.y) {
+      attack.hasHit = true;
       const basePts = (gameSettings && gameSettings.game && gameSettings.game.pointsPerHit !== undefined) ? gameSettings.game.pointsPerHit : 15;
       const pts = basePts * multiplier;
       score += pts;
@@ -949,7 +961,7 @@ function loop() {
 
     ctx.restore();
 
-    // Miss penalty
+    // Miss penalty (letting enemy pass)
     if (e.x + e.w < player.x && !e.passed) {
       e.passed = true;
       const basePen = (gameSettings && gameSettings.game && gameSettings.game.missPenalty !== undefined) ? gameSettings.game.missPenalty : 5;

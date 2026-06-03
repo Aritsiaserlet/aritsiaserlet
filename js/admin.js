@@ -396,6 +396,18 @@ async function addSoundToLibrary() {
   reader.readAsDataURL(file);
 }
 
+window.updateSoundVolume = async function(idx, val) {
+  if (!settings.sounds[idx]) return;
+  settings.sounds[idx].volume = parseInt(val, 10);
+  try {
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update sound volume', settingsSha);
+    settingsSha = res.content.sha;
+  } catch (e) {
+    alert("Error updating volume: " + e.message);
+  }
+};
+
 function renderSoundLibrary() {
   const box = document.getElementById('soundLibraryList');
   if(!box) return;
@@ -406,11 +418,17 @@ function renderSoundLibrary() {
     return;
   }
   sounds.forEach((snd, i) => {
+    const vol = snd.volume !== undefined ? snd.volume : 100;
     box.innerHTML += `
       <div style="border:3px solid var(--dark);background:var(--white);padding:10px;width:160px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;">
         <button onclick="deleteSound(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:2;">X</button>
         <div style="font-family:'VT323';font-size:17px;word-break:break-all;margin-bottom:8px;line-height:1;">${snd.name}</div>
-        <audio controls src="${snd.url}" style="width:100%;height:28px;margin-top:auto;"></audio>
+        <audio controls src="${snd.url}" style="width:100%;height:28px;margin-top:auto;margin-bottom:8px;"></audio>
+        <div style="width:100%;display:flex;align-items:center;gap:4px;">
+          <span style="font-family:'VT323';font-size:14px;color:var(--dark);">VOL</span>
+          <input type="range" min="0" max="100" value="${vol}" oninput="this.nextElementSibling.textContent=this.value+'%'" onchange="updateSoundVolume(${i}, this.value)" style="flex:1;width:100%;">
+          <span style="font-family:'VT323';font-size:14px;color:var(--dark);width:32px;text-align:right;">${vol}%</span>
+        </div>
       </div>
     `;
   });
