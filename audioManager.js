@@ -177,6 +177,7 @@ export function sfxGameOver() { playSound('game_gameover'); }
 export function sfxDive()     { playSound('game_dive'); }
 export function sfxLike()     { playSound('portfolio_like'); }
 export function sfxLogin()    { playSound('portfolio_login'); }
+export function sfxBtn()      { playSound('portfolio_btn'); }
 
 // ── BGM — file-based looping audio
 export function startBGM() {
@@ -189,7 +190,7 @@ export function startBGM() {
   const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
   musicAudio = new Audio(url);
   musicAudio.loop = true;
-  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1) * sndVol);
+  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
   musicAudio.play().catch(() => {});
   musicIsPlaying = true;
 }
@@ -204,7 +205,7 @@ export function startPortfolioBGM() {
   const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
   musicAudio = new Audio(url);
   musicAudio.loop = true;
-  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.mute ? 0 : 1) * sndVol);
+  musicAudio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
   musicAudio.play().catch(() => {});
   musicIsPlaying = true;
 }
@@ -228,4 +229,15 @@ export function togglePortfolioBGM() {
   if (musicIsPlaying) stopBGM();
   else startPortfolioBGM();
   return musicIsPlaying;
+}
+
+// ── Global Button Click Listener ──
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', e => {
+    // Check if the clicked target or its parent is a button, link, or common clickable class
+    const clickable = e.target.closest('button, a, .tab, .social-btn, .modal-link, .menu-item, .cat-badge');
+    if (clickable) {
+      sfxBtn();
+    }
+  });
 }

@@ -356,6 +356,7 @@ const SOUND_EVENTS = [
   { key: 'game_bgm',       label: 'Game: Background Music (loops)' },
   { key: 'portfolio_like', label: 'Portfolio: Like' },
   { key: 'portfolio_login',label: 'Portfolio: Login' },
+  { key: 'portfolio_btn',  label: 'Portfolio: Button Click' },
   { key: 'portfolio_bgm',  label: 'Portfolio: Background Music (loops)' },
 ];
 
