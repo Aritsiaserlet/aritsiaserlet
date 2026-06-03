@@ -93,20 +93,53 @@
       "id": "icon_1780412487582",
       "name": "Sound",
       "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/icon_1780412487582.png"
+    },
+    {
+      "id": "icon_1780477195747",
+      "name": "Game",
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/icon_1780477195747.png"
     }
   ],
   "soundAssignments": {
-    "game_hit": "snd_1780414348838",
-    "game_score": null,
-    "game_combo": null,
-    "game_dive": null,
-    "game_boost": "snd_1780422209438",
-    "game_miss": null,
-    "game_gameover": null,
-    "game_bgm": null,
-    "portfolio_like": null,
-    "portfolio_login": null,
-    "portfolio_bgm": null
+    "game_hit": [
+      [
+        "snd_1780414348838",
+        "snd_1780414370587"
+      ],
+      []
+    ],
+    "game_score": [
+      []
+    ],
+    "game_combo": [
+      []
+    ],
+    "game_dive": [
+      []
+    ],
+    "game_boost": [
+      [
+        "snd_1780422209438"
+      ]
+    ],
+    "game_miss": [
+      []
+    ],
+    "game_gameover": [
+      []
+    ],
+    "game_bgm": [
+      []
+    ],
+    "portfolio_like": [
+      []
+    ],
+    "portfolio_login": [
+      []
+    ],
+    "portfolio_bgm": [
+      []
+    ]
   },
   "profileImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/profile_1780412544854.webp",
   "backgroundImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/bg_1780419980830.jpg",
@@ -227,5 +260,6 @@
   "profileFit": "cover",
   "profilePos": "center",
   "bgSize": "cover",
-  "bgPos": "center"
+  "bgPos": "center",
+  "gameCategoryIconId": ""
 }
