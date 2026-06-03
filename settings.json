@@ -306,7 +306,8 @@
     {
       "id": "snd_1780483105587",
       "name": "Game Over",
-      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780483105587.mp3"
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780483105587.mp3",
+      "volume": 32
     }
   ],
   "profileFit": "cover",
