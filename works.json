@@ -233,30 +233,5 @@
     "date": "2026-05-31T05:37:33.538Z",
     "featured": false,
     "tags": []
-  },
-  {
-    "id": 1780323477295,
-    "name": "edwaedad",
-    "cat": "game",
-    "subcat": "platformer",
-    "desc": "dasdad",
-    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780323473197.png",
-    "model": null,
-    "links": [
-      {
-        "url": "dada",
-        "iconId": "icon_1780139586547",
-        "label": "dad"
-      }
-    ],
-    "imageFocal": 50,
-    "tools": [
-      "icon_1780139577983",
-      "icon_1780139595048",
-      "icon_1780139603464",
-      "icon_1780139614213",
-      "icon_1780139648730"
-    ],
-    "date": "2026-06-01T14:17:57.295Z"
   }
 ]
