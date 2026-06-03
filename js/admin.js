@@ -366,6 +366,7 @@ const SOUND_EVENTS = [
   { key: 'game_miss',      label: 'Game: Miss Penalty' },
   { key: 'game_gameover',  label: 'Game: Game Over' },
   { key: 'game_bgm',       label: 'Game: Background Music (loops)' },
+  { key: 'lobby_bgm',      label: 'Game Lobby: Background Music (loops)' },
   { key: 'portfolio_like', label: 'Portfolio: Like' },
   { key: 'portfolio_login',label: 'Portfolio: Login' },
   { key: 'portfolio_btn',  label: 'Portfolio: Button Click' },

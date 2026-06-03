@@ -81,7 +81,7 @@ import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from '../au
     }
   };
 
-  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute, updateGameSoundBtn } from '../audioManager.js';
+  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute, updateGameSoundBtn, startLobbyBGM } from '../audioManager.js';
   
   // Read volume settings from localStorage on load
   function loadAudioSettings() {
@@ -103,6 +103,7 @@ import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from '../au
   window.gameAudio = {
     startBGM,
     stopBGM,
+    startLobbyBGM,
     sfxHit,
     sfxScore,
     sfxCombo,

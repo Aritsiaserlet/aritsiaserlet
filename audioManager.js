@@ -231,6 +231,25 @@ export function startPortfolioBGM() {
   musicIsPlaying = true;
 }
 
+export function startLobbyBGM() {
+  const layers = soundUrls['lobby_bgm'] || soundUrls['game_bgm'];
+  if (!layers || layers.length === 0) return;
+  if (musicIsPlaying && bgmAudios.length > 0) return;
+  stopBGM();
+  layers.forEach(urls => {
+    if (!urls || urls.length === 0) return;
+    const url = urls[Math.floor(Math.random() * urls.length)];
+    if (!url) return;
+    const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
+    const audio = new Audio(url);
+    audio.loop = true;
+    audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    audio.play().catch(e => console.warn('Lobby BGM play error:', e));
+    bgmAudios.push(audio);
+  });
+  musicIsPlaying = true;
+}
+
 export function stopBGM() {
   bgmAudios.forEach(a => {
     a.pause();
