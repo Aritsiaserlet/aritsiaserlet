@@ -116,13 +116,17 @@
       ]
     ],
     "game_score": [
-      []
+      [
+        "snd_1780482914979"
+      ]
     ],
     "game_combo": [
       []
     ],
     "game_dive": [
-      []
+      [
+        "snd_1780481420113"
+      ]
     ],
     "game_boost": [
       [
@@ -135,7 +139,9 @@
       ]
     ],
     "game_gameover": [
-      []
+      [
+        "snd_1780483105587"
+      ]
     ],
     "game_bgm": [
       [
@@ -152,7 +158,9 @@
       []
     ],
     "portfolio_bgm": [
-      []
+      [
+        "snd_1780482993193"
+      ]
     ]
   },
   "profileImage": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/profile_1780412544854.webp",
