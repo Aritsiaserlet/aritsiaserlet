@@ -409,16 +409,26 @@ async function addSoundToLibrary() {
   reader.readAsDataURL(file);
 }
 
-window.updateSoundVolume = async function(idx, val) {
+let volumeSaveTimeout = null;
+window.updateSoundVolume = function(idx, val) {
   if (!settings.sounds[idx]) return;
   settings.sounds[idx].volume = parseInt(val, 10);
-  try {
-    const json = JSON.stringify(settings, null, 2);
-    const res = await ghPut(JSON_PATH, json, 'Update sound volume', settingsSha);
-    settingsSha = res.content.sha;
-  } catch (e) {
-    alert("Error updating volume: " + e.message);
-  }
+  
+  if (volumeSaveTimeout) clearTimeout(volumeSaveTimeout);
+  volumeSaveTimeout = setTimeout(async () => {
+    try {
+      // Always fetch latest SHA to prevent 409 before saving
+      const latest = await ghGet(JSON_PATH);
+      if (latest && latest.sha) settingsSha = latest.sha;
+      
+      const json = JSON.stringify(settings, null, 2);
+      const res = await ghPut(JSON_PATH, json, 'Update sound volume', settingsSha);
+      settingsSha = res.content.sha;
+    } catch (e) {
+      console.error("Volume save error:", e);
+      alert("Error updating volume: " + e.message);
+    }
+  }, 1000); // 1-second debounce
 };
 
 function renderSoundLibrary() {
