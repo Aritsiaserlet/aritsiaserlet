@@ -558,6 +558,7 @@ function resizeGame() {
 // ── Reset
 // ─────────────────────────────────────────────
 window.resetGame = function () {
+  if (window.gameAudio && window.gameAudio.stopSfxGameOver) window.gameAudio.stopSfxGameOver();
   score = 0; fireworks = 0; multiplier = 1; maxMultiplier = 1; boostStacks = 0;
   boostTimer   = 0; baseSpeed    = 5; currentSpeed = baseSpeed;
   enemies      = []; particles   = [];

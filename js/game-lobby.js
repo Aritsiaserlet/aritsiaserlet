@@ -164,6 +164,7 @@
     window.gameStartTime = null; // reset
 
     if (window.stopGame) window.stopGame();
+    if (window.gameAudio && window.gameAudio.stopSfxGameOver) window.gameAudio.stopSfxGameOver();
     document.getElementById('gameContainer').style.display = 'none';
     document.getElementById('lobbyScreen').style.display = 'flex';
     document.getElementById('gameTopNav').style.display = 'flex';

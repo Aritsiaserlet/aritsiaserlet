@@ -71,8 +71,20 @@ async function ghGet(path) {
 async function ghPut(path, content, message, sha){
   const body={message, content: btoa(unescape(encodeURIComponent(content)))};
   if(sha)body.sha=sha;
-  const r=await fetch(`${API}/${path}`,{method:'PUT',headers:getHeaders(),body:JSON.stringify(body)});
-  if(!r.ok){const t=await r.text();throw new Error(`GitHub PUT error ${r.status}: ${t}`)}
+  let r=await fetch(`${API}/${path}`,{method:'PUT',headers:getHeaders(),body:JSON.stringify(body)});
+  if(!r.ok) {
+    if (r.status === 409) {
+      // Auto-retry once on 409 Conflict by fetching the latest SHA
+      const latest = await ghGet(path);
+      if (latest && latest.sha) {
+        body.sha = latest.sha;
+        r = await fetch(`${API}/${path}`,{method:'PUT',headers:getHeaders(),body:JSON.stringify(body)});
+      }
+    }
+    if(!r.ok) {
+      const t=await r.text();throw new Error(`GitHub PUT error ${r.status}: ${t}`);
+    }
+  }
   return r.json();
 }
 
