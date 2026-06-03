@@ -316,6 +316,11 @@
       "name": "Game Over",
       "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780483105587.mp3",
       "volume": 32
+    },
+    {
+      "id": "snd_1780491725793",
+      "name": "UI Click",
+      "url": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/snd_1780491725793.mp3"
     }
   ],
   "profileFit": "cover",
