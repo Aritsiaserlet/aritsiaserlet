@@ -1,0 +1,160 @@
+{
+  "projects": [
+    {
+      "id": "project_001",
+      "title": "Pixel Adventure - The Lost Kingdom",
+      "disciplines": ["Game Developer", "2D Artist", "Game Designer"],
+      "category": "game-dev",
+      "year": 2025,
+      "thumbnail": "/images/projects/adventure-kingdom.jpg",
+      "images": [
+        "/images/projects/adventure-1.jpg",
+        "/images/projects/adventure-2.jpg"
+      ],
+      "description": "A retro-inspired pixel art adventure game with tight controls, challenging puzzles, and a compelling narrative.",
+      "tags": ["game-dev", "pixel-art", "godot", "adventure"],
+      "proficiencies": {
+        "Game Developer": 0.85,
+        "2D Artist": 0.90,
+        "Game Designer": 0.88
+      },
+      "highlights": [
+        "50+ hand-crafted levels",
+        "500+ pixel art sprites",
+        "Original soundtrack"
+      ],
+      "links": {
+        "github": "https://github.com/OzonZ/adventure-kingdom",
+        "itch": "https://ozonz.itch.io/adventure-kingdom",
+        "demo": "https://demo.ozonz.dev/adventure"
+      },
+      "timeline": "3 months solo development"
+    },
+    {
+      "id": "project_002",
+      "title": "Character Sprite Sheet Collection",
+      "disciplines": ["2D Artist"],
+      "category": "2d-artist",
+      "year": 2024,
+      "thumbnail": "/images/projects/sprites-collection.jpg",
+      "images": [
+        "/images/projects/sprites-1.jpg",
+        "/images/projects/sprites-2.jpg"
+      ],
+      "description": "Comprehensive RPG character sprite sheets with 8-directional movement and emotion variations.",
+      "tags": ["pixel-art", "sprites", "animation", "rpg"],
+      "proficiencies": {
+        "2D Artist": 1.0
+      },
+      "highlights": [
+        "20 unique character designs",
+        "100+ animation frames",
+        "Perfect pixel consistency"
+      ],
+      "links": {
+        "artstation": "https://www.artstation.com/artwork/ozonz-sprites",
+        "gumroad": "https://gumroad.com/ozonz#sprites"
+      },
+      "timeline": "2 months creation"
+    },
+    {
+      "id": "project_003",
+      "title": "Game Engine Architecture",
+      "disciplines": ["Programmer", "Game Developer"],
+      "category": "programmer",
+      "year": 2024,
+      "thumbnail": "/images/projects/engine-arch.jpg",
+      "images": [],
+      "description": "Custom game engine with ECS architecture, built for performance and scalability.",
+      "tags": ["programming", "architecture", "c-sharp", "open-source"],
+      "proficiencies": {
+        "Programmer": 0.95,
+        "Game Developer": 0.80
+      },
+      "highlights": [
+        "Entity Component System",
+        "60 FPS performance on mobile",
+        "Modular plugin system"
+      ],
+      "links": {
+        "github": "https://github.com/OzonZ/game-engine",
+        "documentation": "https://docs.ozonz.dev"
+      },
+      "timeline": "Ongoing open-source project"
+    },
+    {
+      "id": "project_004",
+      "title": "Animated UI System Design",
+      "disciplines": ["2D Artist", "Game Designer"],
+      "category": "2d-artist",
+      "year": 2024,
+      "thumbnail": "/images/projects/ui-system.jpg",
+      "images": [
+        "/images/projects/ui-1.jpg",
+        "/images/projects/ui-2.jpg"
+      ],
+      "description": "Complete animated UI system with transitions, tooltips, and feedback animations.",
+      "tags": ["ui-design", "animation", "game-design"],
+      "proficiencies": {
+        "2D Artist": 0.88,
+        "Game Designer": 0.92
+      },
+      "highlights": [
+        "50+ UI components",
+        "Smooth animations",
+        "Accessible design"
+      ],
+      "links": {
+        "figma": "https://figma.com/ozonz/ui-system"
+      },
+      "timeline": "1 month design sprint"
+    },
+    {
+      "id": "project_005",
+      "title": "Performance Optimization Study",
+      "disciplines": ["Programmer"],
+      "category": "programmer",
+      "year": 2024,
+      "thumbnail": "/images/projects/optimization.jpg",
+      "images": [],
+      "description": "Deep analysis and optimization of rendering pipelines achieving 3x performance improvement.",
+      "tags": ["optimization", "profiling", "performance"],
+      "proficiencies": {
+        "Programmer": 0.92
+      },
+      "highlights": [
+        "3x performance gain",
+        "Memory reduction by 40%",
+        "Published case study"
+      ],
+      "links": {
+        "blog": "https://blog.ozonz.dev/optimization",
+        "github": "https://github.com/OzonZ/perf-study"
+      },
+      "timeline": "6 weeks research"
+    },
+    {
+      "id": "project_006",
+      "title": "Game Narrative Design Document",
+      "disciplines": ["Game Designer"],
+      "category": "game-designer",
+      "year": 2025,
+      "thumbnail": "/images/projects/narrative.jpg",
+      "images": [],
+      "description": "Complete narrative arc for story-driven indie game with branching dialogue trees.",
+      "tags": ["narrative", "game-design", "storytelling"],
+      "proficiencies": {
+        "Game Designer": 0.89
+      },
+      "highlights": [
+        "3 story branches",
+        "50+ dialogue interactions",
+        "Emotional narrative arc"
+      ],
+      "links": {
+        "gdoc": "https://docs.google.com/document/ozonz-narrative"
+      },
+      "timeline": "2 months design"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "profile": {
+    "name": "Chanon Thongduang",
+    "handle": "OzonZ",
+    "title": "Game Developer | 2D Artist | Programmer | Game Designer",
+    "email": "contact@ozonz.dev",
+    "bio": "I create cohesive game experiences where programming, visual design, and game architecture intersect. Passionate about pixel art aesthetics, clean code architecture, and meaningful gameplay.",
+    "location": "Thailand",
+    "profileImage": "/images/ozonz-profile.jpg",
+    "stats": {
+      "projects": 50,
+      "gamejams": 30,
+      "yearsExperience": 8
+    },
+    "links": {
+      "github": "https://github.com/OzonZ",
+      "artstation": "https://www.artstation.com/ozonz",
+      "itch": "https://ozonz.itch.io",
+      "linkedin": "https://linkedin.com/in/ozonz",
+      "email": "contact@ozonz.dev"
+    }
+  }
+}

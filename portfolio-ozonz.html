@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OzonZ (Chanon Thongduang) - Game Developer, 2D Artist, Programmer, Game Designer">
+  <meta name="theme-color" content="#FFF8F0">
+  
+  <title>OzonZ — Portfolio</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Design System & Base Styles -->
+  <link rel="stylesheet" href="css/portfolio-ozonz.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     NAVIGATION BAR (Sticky)
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<nav class="ozonz-navbar" id="navbar">
+  <div class="container flex-between">
+    <!-- Logo / Brand -->
+    <div class="navbar-brand">
+      <span class="brand-mark">◆</span>
+      <span class="brand-text">OzonZ</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="navbar-links">
+      <a href="#hero" class="nav-link">Home</a>
+      <a href="#disciplines" class="nav-link">Disciplines</a>
+      <a href="#projects" class="nav-link">Work</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <!-- Theme Switcher & Menu -->
+    <div class="navbar-actions">
+      <button class="nav-btn icon" id="themeBtn" title="Toggle Theme" aria-label="Toggle theme">
+        🌙
+      </button>
+      <button class="nav-btn icon" id="helpBtn" title="Help" aria-label="Help">
+        ?
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     HERO SECTION (Cinematic Introduction)
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  
+  <div class="container-sm hero-content">
+    <!-- Primary Identity -->
+    <div class="hero-intro">
+      <div class="hero-handle">OzonZ</div>
+      <h1 class="hero-title">Chanon Thongduang</h1>
+    </div>
+
+    <!-- Role Statement (Scannable at a glance) -->
+    <div class="hero-roles">
+      <div class="role-tag game-dev-tag">
+        <span class="role-icon">🎮</span>
+        <span class="role-title">Game Developer</span>
+      </div>
+      <div class="role-tag artist-tag">
+        <span class="role-icon">🎨</span>
+        <span class="role-title">2D Artist</span>
+      </div>
+      <div class="role-tag programmer-tag">
+        <span class="role-icon">💻</span>
+        <span class="role-title">Programmer</span>
+      </div>
+      <div class="role-tag designer-tag">
+        <span class="role-icon">🎭</span>
+        <span class="role-title">Game Designer</span>
+      </div>
+    </div>
+
+    <!-- Tagline -->
+    <p class="hero-tagline">
+      Crafting immersive game experiences through art, code, and design
+    </p>
+
+    <!-- Bio (Brief, Scannable) -->
+    <div class="hero-bio">
+      <p>
+        I create cohesive game experiences where programming, visual design, and game architecture intersect. 
+        Passionate about pixel art aesthetics, clean code architecture, and meaningful gameplay.
+      </p>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="hero-cta">
+      <a href="#disciplines" class="btn btn-primary btn-lg">
+        Explore Disciplines
+      </a>
+      <a href="#projects" class="btn btn-secondary btn-lg">
+        View My Work
+      </a>
+    </div>
+
+    <!-- Quick Stats (Optional - Scannable metrics) -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">30+</div>
+        <div class="stat-label">Game Jams</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">8y</div>
+        <div class="stat-label">Experience</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" id="scrollIndicator">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     DISCIPLINES SECTION (Multi-Discipline Hub)
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<section class="disciplines" id="disciplines">
+  <div class="container">
+    <div class="section-header">
+      <h2>Disciplines</h2>
+      <p class="section-subtitle">
+        How I combine four complementary skills to create cohesive game experiences
+      </p>
+    </div>
+
+    <!-- Discipline Grid (4 Cards) -->
+    <div class="disciplines-grid" id="disciplinesGrid">
+      <!-- Filled by portfolio-ozonz.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     PROJECTS SECTION (Work Gallery)
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<section class="projects" id="projects">
+  <div class="container">
+    <div class="section-header">
+      <h2>Featured Work</h2>
+      <p class="section-subtitle">
+        Projects showcasing my multi-disciplinary approach
+      </p>
+    </div>
+
+    <!-- Project Filter Tabs -->
+    <div class="project-filters" id="projectFilters">
+      <!-- Filled by portfolio-ozonz.js -->
+    </div>
+
+    <!-- Project Grid -->
+    <div class="projects-grid" id="projectsGrid">
+      <!-- Filled by portfolio-ozonz.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     CONTACT SECTION (CTA & Social Links)
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<section class="contact" id="contact">
+  <div class="container-sm">
+    <div class="contact-content">
+      <h2>Let's Collaborate</h2>
+      <p class="contact-subtitle">
+        Interested in working together? I'd love to hear from you.
+      </p>
+
+      <!-- Social Links -->
+      <div class="social-links" id="socialLinks">
+        <!-- Filled by portfolio-ozonz.js -->
+      </div>
+
+      <!-- CTA Button -->
+      <a href="mailto:contact@ozonz.dev" class="btn btn-primary btn-lg mt-lg">
+        Get in Touch
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container footer-content">
+    <div class="footer-info">
+      <p>&copy; 2026 OzonZ (Chanon Thongduang). All rights reserved.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#hero">Home</a>
+      <a href="#disciplines">Disciplines</a>
+      <a href="#projects">Work</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<script type="module" src="js/portfolio-ozonz.js"></script>
+
+</body>
+</html>

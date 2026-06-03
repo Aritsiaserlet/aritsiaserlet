@@ -1,0 +1,100 @@
+{
+  "disciplines": [
+    {
+      "id": "game-dev",
+      "name": "Game Developer",
+      "icon": "🎮",
+      "color": "#FF8C6B",
+      "proficiency": 88,
+      "description": "Systems architecture, gameplay mechanics, and creating cohesive game feel through code",
+      "skills": [
+        { "name": "C# / Unity", "level": 90 },
+        { "name": "Godot Engine", "level": 85 },
+        { "name": "Game Architecture", "level": 88 },
+        { "name": "Physics & Mechanics", "level": 82 }
+      ],
+      "tools": ["Unity", "Godot", "C#", "C++"],
+      "recentProjects": [
+        "project_001",
+        "project_003"
+      ],
+      "timeline": [
+        { "year": 2023, "milestone": "First published commercial game" },
+        { "year": 2024, "milestone": "10+ game jam entries" },
+        { "year": 2025, "milestone": "Lead gameplay programmer on team project" }
+      ]
+    },
+    {
+      "id": "2d-artist",
+      "name": "2D Artist",
+      "icon": "🎨",
+      "color": "#F4D35E",
+      "proficiency": 92,
+      "description": "Pixel art creation, sprite animation, and visual asset production",
+      "skills": [
+        { "name": "Pixel Art (Aseprite)", "level": 95 },
+        { "name": "Sprite Animation", "level": 92 },
+        { "name": "Asset Pipeline", "level": 88 },
+        { "name": "Color Theory", "level": 90 }
+      ],
+      "tools": ["Aseprite", "Photoshop", "Krita", "GIMP"],
+      "recentProjects": [
+        "project_002",
+        "project_004"
+      ],
+      "timeline": [
+        { "year": 2020, "milestone": "First pixel art commission" },
+        { "year": 2022, "milestone": "Art lead on indie title" },
+        { "year": 2024, "milestone": "100+ sprite animations created" }
+      ]
+    },
+    {
+      "id": "programmer",
+      "name": "Programmer",
+      "icon": "💻",
+      "color": "#A8E6D8",
+      "proficiency": 85,
+      "description": "Clean code architecture, algorithms, and technical implementation",
+      "skills": [
+        { "name": "Data Structures", "level": 87 },
+        { "name": "Algorithm Design", "level": 85 },
+        { "name": "Performance Optimization", "level": 82 },
+        { "name": "Code Architecture", "level": 88 }
+      ],
+      "tools": ["C#", "Python", "JavaScript", "Git"],
+      "recentProjects": [
+        "project_005",
+        "project_006"
+      ],
+      "timeline": [
+        { "year": 2018, "milestone": "Started learning game dev" },
+        { "year": 2020, "milestone": "First GitHub contribution" },
+        { "year": 2023, "milestone": "Architecture patterns mastery" }
+      ]
+    },
+    {
+      "id": "game-designer",
+      "name": "Game Designer",
+      "icon": "🎭",
+      "color": "#D4A5D9",
+      "proficiency": 87,
+      "description": "Narrative design, level design, and player experience architecture",
+      "skills": [
+        { "name": "Level Design", "level": 88 },
+        { "name": "Narrative Design", "level": 85 },
+        { "name": "Game Feel", "level": 89 },
+        { "name": "UX Design", "level": 84 }
+      ],
+      "tools": ["Twine", "Tiled", "Design Docs", "Prototyping"],
+      "recentProjects": [
+        "project_007",
+        "project_008"
+      ],
+      "timeline": [
+        { "year": 2019, "milestone": "Designed first game prototype" },
+        { "year": 2021, "milestone": "Game design lead on project" },
+        { "year": 2024, "milestone": "200+ players feedback integrated" }
+      ]
+    }
+  ]
+}
