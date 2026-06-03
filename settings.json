@@ -130,13 +130,18 @@
       ]
     ],
     "game_miss": [
-      []
+      [
+        "snd_1780480508191"
+      ]
     ],
     "game_gameover": [
       []
     ],
     "game_bgm": [
-      []
+      [],
+      [
+        "snd_1780481420113"
+      ]
     ],
     "portfolio_like": [
       []
