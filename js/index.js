@@ -50,15 +50,12 @@ function randBetween(a, b) { return a + Math.random() * (b - a); }
 
 function createParticle(yStart) {
   return {
-    x: Math.random() * W,
-    y: yStart ?? (H + 150),
-    length: randBetween(80, 250),
-    speedY: randBetween(2.0, 4.5),
+    x: Math.floor(Math.random() * W),
+    y: yStart ?? Math.floor(H + 100),
+    length: Math.floor(randBetween(20, 50)) * 6,
+    speedY: randBetween(3.0, 8.0),
     phase: Math.random() * Math.PI * 2,
-    opacity: randBetween(0.15, 0.45),
-    thickness: randBetween(1.5, 3.5),
-    amp: randBetween(15, 30),
-    freq: randBetween(0.008, 0.015)
+    opacity: randBetween(0.4, 0.9)
   };
 }
 
@@ -68,39 +65,20 @@ for (let i = 0; i < 25; i++) {
 
 function animateParticles() {
   ctx.clearRect(0, 0, W, H);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  
   particles.forEach((p, i) => {
     p.y -= p.speedY;
-    p.phase += 0.01;
-    
-    ctx.beginPath();
-    ctx.lineWidth = p.thickness;
     
     let currentY = p.y;
-    let waveX = Math.sin(currentY * p.freq + p.phase) * p.amp;
-    ctx.moveTo(p.x + waveX, currentY);
-    
-    const segments = 12;
-    const step = p.length / segments;
-    
-    for (let j = 1; j <= segments; j++) {
-      currentY += step;
-      waveX = Math.sin(currentY * p.freq + p.phase) * p.amp;
-      ctx.lineTo(p.x + waveX, currentY);
+    let segCount = Math.floor(p.length / 6);
+    for (let j=0; j<segCount; j++) {
+      let alpha = p.opacity * (1 - j/segCount); // fade out tail
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      let waveX = Math.floor(Math.sin(currentY * 0.015 + p.phase) * 12);
+      ctx.fillRect(Math.floor(p.x + waveX), Math.floor(currentY), 6, 6);
+      currentY += 8;
     }
     
-    let grad = ctx.createLinearGradient(0, p.y, 0, p.y + p.length);
-    grad.addColorStop(0, 'rgba(255,255,255,0)');
-    grad.addColorStop(0.3, `rgba(255,255,255,${p.opacity})`);
-    grad.addColorStop(0.7, `rgba(255,255,255,${p.opacity})`);
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
-    
-    ctx.strokeStyle = grad;
-    ctx.stroke();
-    
-    if (p.y + p.length < -50) {
+    if (p.y + p.length < 0) {
       particles[i] = createParticle();
     }
   });

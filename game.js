@@ -349,19 +349,39 @@ function drawGround() {
   drawClumps(grassBack, 0.4, 0);
 
   // 2. Dirt base & Stones (normal speed)
-  ctx.fillStyle = '#8b5530';
-  ctx.fillRect(0, gy + grassH, W, H - gy - grassH);
+  const dirtBands = ['#6a3f21', '#5c351b', '#522e16', '#452510', '#3b1f0c'];
+  const bandH = Math.ceil((H - gy - grassH) / dirtBands.length);
+  for (let i = 0; i < dirtBands.length; i++) {
+    ctx.fillStyle = dirtBands[i];
+    ctx.fillRect(0, gy + grassH + i * bandH, W, bandH);
+  }
+  
   for (const s of dirtStones) {
     const sx = ((s.relX - off) % W + W) % W;
     ctx.fillStyle = s.color;
     ctx.fillRect(Math.round(sx), gy + grassH + s.dy, s.w, s.h);
     if (sx < 8) ctx.fillRect(Math.round(sx + W), gy + grassH + s.dy, s.w, s.h);
+    // Draw a dark shadow under stones to blend them in
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(Math.round(sx), gy + grassH + s.dy + s.h, s.w, 2);
+    if (sx < 8) ctx.fillRect(Math.round(sx + W), gy + grassH + s.dy + s.h, s.w, 2);
   }
 
-  // 3. Dark transition & Mid solid fill
-  ctx.fillStyle = '#1e5022'; ctx.fillRect(0, gy + grassH - 8, W, 10);
-  ctx.fillStyle = '#4a9b3a'; ctx.fillRect(0, gy, W, grassH - 8);
-  ctx.fillStyle = '#6abf50'; ctx.fillRect(0, gy, W, 8); // bright top strip
+  // 3. Dark transition & Mid solid fill (Grass block)
+  ctx.fillStyle = '#2b6329'; ctx.fillRect(0, gy + grassH - 12, W, 12);
+  ctx.fillStyle = '#3a8536'; ctx.fillRect(0, gy + 8, W, grassH - 20);
+  ctx.fillStyle = '#4a9b3a'; ctx.fillRect(0, gy, W, 8); // bright top strip
+  
+  // Pixelated dangling roots / jagged edge at the bottom of the grass block
+  ctx.fillStyle = '#1e5022';
+  const jaggedStep = 16;
+  const rootOff = off % jaggedStep;
+  for (let x = -rootOff; x < W + jaggedStep; x += jaggedStep) {
+    // Generate deterministic drop height based on X coordinate
+    const hash = Math.sin((x + groundOffset - rootOff) * 0.1) * 10000;
+    const drop = 4 + Math.abs(hash - Math.floor(hash)) * 8;
+    ctx.fillRect(Math.round(x), gy + grassH - 4, 8, drop);
+  }
 
   // 4. Mid Grass (normal speed)
   drawClumps(grassMid, 1.0, 0);
