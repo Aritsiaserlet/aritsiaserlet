@@ -28,13 +28,13 @@
 // ─────────────────────────────────────────────
 const MIN_ENEMY_GAP   = 380;
 const DIVE_SPEED      = 22;
-const VX_DIVE         = 3;
-const STRIKE_FRAMES   = 4;
+const VX_DIVE         = 0;
+const STRIKE_FRAMES   = 10;
 const ASCENT_SPEED    = 16;
 const CHAIN_THRESHOLD = 0.38;
 const HITBOX_PAD      = 8;
-const TILT_DIVE       = 15;
-const TILT_STRIKE     = 25;
+const TILT_DIVE       = 0;
+const TILT_STRIKE     = -10;
 const DEG             = Math.PI / 180;
 
 // ─────────────────────────────────────────────
@@ -322,7 +322,7 @@ function drawGround() {
   const boostM = boostTimer > 0 ? 2.5 : 1.0;
   const windAmp = boostTimer > 0 ? 6   : 2.8;
 
-  // Helper to draw clumps
+  // Helper to draw clumps with smooth paths
   const drawClumps = (clumps, parallax, offsetMod = 0) => {
     const pOff = (groundOffset * parallax + offsetMod) % W;
     for (const clump of clumps) {
@@ -331,16 +331,16 @@ function drawGround() {
         const bx  = cx + b.dx;
         if (bx < -12 || bx > W + 12) continue;
         const sway = Math.sin(t * 1.5 * boostM + b.swayPhase) * windAmp * b.swayFactor;
-        const seg1H = Math.max(1, Math.round(b.h * 0.38));
-        const seg2H = Math.max(1, Math.round(b.h * 0.34));
-        const seg3H = Math.max(1, b.h - seg1H - seg2H);
-        const x0 = Math.round(bx);
-        const x1 = Math.round(bx + sway * 0.45);
-        const x2 = Math.round(bx + sway);
-
-        ctx.fillStyle = b.cBot; ctx.fillRect(x0, gy - seg1H, b.w, seg1H);
-        ctx.fillStyle = b.cMid; ctx.fillRect(x1, gy - seg1H - seg2H, b.w, seg2H);
-        ctx.fillStyle = b.cTop; ctx.fillRect(x2, gy - seg1H - seg2H - seg3H, b.w, seg3H);
+        const baseW = b.w + 1.5; // Thicker base for path grass
+        
+        ctx.beginPath();
+        ctx.moveTo(bx, gy);
+        // Curve up to the tip
+        ctx.quadraticCurveTo(bx + sway * 0.6, gy - b.h * 0.5, bx + sway, gy - b.h);
+        // Curve back down to the right side of the base
+        ctx.quadraticCurveTo(bx + sway * 0.6 + baseW * 0.4, gy - b.h * 0.5, bx + baseW, gy);
+        ctx.fillStyle = b.cTop; // Use top color for vibrant look
+        ctx.fill();
       }
     }
   };

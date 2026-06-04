@@ -62,8 +62,26 @@ import { initSettings, getSettings, updateSettings } from '../settingsManager.js
       mute:   initSet.mute
     });
     if(window.initSoundBtns) window.initSoundBtns();
-  }
-);
+  });
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+      // Re-trigger audio if it was playing
+      if (userHasInteracted) {
+        startPortfolioBGM();
+      }
+      // Remove fade-out if returning from Minigame
+      const pageEl = document.querySelector('.page');
+      if (pageEl) pageEl.classList.remove('fade-out');
+      const adminBtn = document.querySelector('.admin-fixed');
+      if (adminBtn) adminBtn.style.opacity = '1';
+
+      // Re-render gallery just in case state got stuck
+      if (window.renderGallery) {
+        window.renderGallery();
+      }
+    }
+  });
 
   window.handleLikeClick = async (e, workId) => {
     if (e) e.stopPropagation();

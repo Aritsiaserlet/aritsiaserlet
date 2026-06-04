@@ -218,6 +218,7 @@ body{
   box-shadow:8px 8px 0 rgba(0,0,0,0.5);
   transform:scale(.97);transition:transform .2s;
   user-select:none;
+  padding-top: 40px;
 }
 .modal-overlay.open .modal-box{transform:scale(1)}
 .modal-drag-bar{

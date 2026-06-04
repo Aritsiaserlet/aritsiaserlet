@@ -176,23 +176,39 @@ async function saveWorks(){
 }
 
 // ── Image ──
-let currentImageBase64=null, currentImageExt='jpg';
+let currentImages = [];
 
 function previewImage(input){
-  const file=input.files[0];
-  if(!file)return;
-  if(file.size>4*1024*1024){alert('Image too large (max 4MB). Please resize it first.');return}
-  currentImageExt=file.name.split('.').pop().toLowerCase()||'jpg';
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const full=e.target.result;
-    currentImageBase64=full.split(',')[1];
-    const prev=document.getElementById('imgPreview');
-    prev.innerHTML=`<img src="${full}" style="object-position:center 50%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
-    showFocalSlider(50);
-    initAdminImgDrag();
-  };
-  reader.readAsDataURL(file);
+  if(!input.files || input.files.length===0) return;
+  currentImages = [];
+  const prev = document.getElementById('imgPreview');
+  prev.innerHTML = '';
+  
+  let validFiles = Array.from(input.files).filter(f => f.size <= 4*1024*1024);
+  if(validFiles.length < input.files.length) alert('Some images were too large (max 4MB) and were skipped.');
+  if(validFiles.length === 0) {
+    prev.innerHTML = `<span style="font-size:32px">🖼️</span><span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+    return;
+  }
+
+  validFiles.forEach((file, idx) => {
+    const ext = file.name.split('.').pop().toLowerCase()||'jpg';
+    const reader = new FileReader();
+    reader.onload = e => {
+      const full = e.target.result;
+      const base64 = full.split(',')[1];
+      currentImages.push({ ext, base64 });
+      if (idx === 0) {
+        prev.innerHTML=`<img src="${full}" style="object-position:center 50%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
+        if (validFiles.length > 1) {
+          prev.innerHTML += `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;font-size:16px;z-index:10;border-radius:4px;font-family:'VT323';">+${validFiles.length-1} more</div>`;
+        }
+        showFocalSlider(50);
+        initAdminImgDrag();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function onCatChange(){
@@ -749,6 +765,18 @@ function previewBg(input){
   reader.readAsDataURL(file);
 }
 
+async function deleteOldFile(url, msg) {
+  if (url && url.includes('raw.githubusercontent.com')) {
+    const path = url.split('/main/')[1];
+    if (path) {
+      try {
+        const file = await ghGet(path);
+        if (file && file.sha) await ghDelete(path, msg, file.sha);
+      } catch (e) { console.warn('Failed to delete old file:', e); }
+    }
+  }
+}
+
 async function saveSettings(){
   const btn=document.getElementById('saveSettingsBtn');
   const bar=document.getElementById('settingsProgressBar');
@@ -763,6 +791,7 @@ async function saveSettings(){
       msg.textContent='Uploading profile image...';
       const fname=`works/profile_${Date.now()}.${profileExt}`;
       await ghPutBinary(fname, profileBase64, 'Update profile image');
+      if (settings.profileImage) await deleteOldFile(settings.profileImage, 'Remove old profile image');
       settings.profileImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       fill.style.width='40%';
     }
@@ -771,6 +800,7 @@ async function saveSettings(){
       msg.textContent='Uploading background image...';
       const fname=`works/bg_${Date.now()}.${bgExt}`;
       await ghPutBinary(fname, bgBase64, 'Update background image');
+      if (settings.backgroundImage) await deleteOldFile(settings.backgroundImage, 'Remove old background image');
       settings.backgroundImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       fill.style.width='50%';
     }
@@ -913,13 +943,17 @@ async function addWork(){
     modelPath = existing.model || null;
 
     // Upload image to GitHub if exists
-    if(currentImageBase64){
-      showMsg('Uploading image...','ok');
+    if(currentImages.length > 0){
+      showMsg('Uploading images...','ok');
       fill.style.width='30%';
-      const fname=`works/${Date.now()}.${currentImageExt}`;
-      await ghPutBinary(fname, currentImageBase64, `Add image for ${name}`);
-      imagePath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
-      fill.style.width='55%';
+      imagePath = [];
+      for(let i=0; i<currentImages.length; i++) {
+        const img = currentImages[i];
+        const fname=`works/${Date.now()}_${i}.${img.ext}`;
+        await ghPutBinary(fname, img.base64, `Add image ${i+1} for ${name}`);
+        imagePath.push(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`);
+        fill.style.width = (30 + ((i+1)/currentImages.length)*25) + '%';
+      }
     }
 
     // Upload 3D model to GitHub if exists
@@ -1083,7 +1117,8 @@ function resetForm(){
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
   renderToolsCheckboxList();
-  currentImageBase64=null;
+  currentImages = [];
+
   currentModelBase64=null;
   currentModelName=null;
   currentImgFocal=50;

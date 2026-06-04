@@ -50,12 +50,15 @@ function randBetween(a, b) { return a + Math.random() * (b - a); }
 
 function createParticle(yStart) {
   return {
-    x: Math.floor(Math.random() * W),
-    y: yStart ?? Math.floor(H + 100),
-    length: Math.floor(randBetween(20, 50)) * 6,
-    speedY: randBetween(3.0, 8.0),
+    x: Math.random() * W,
+    y: yStart ?? (H + 150),
+    length: randBetween(80, 250),
+    speedY: randBetween(2.0, 4.5),
     phase: Math.random() * Math.PI * 2,
-    opacity: randBetween(0.4, 0.9)
+    opacity: randBetween(0.15, 0.45),
+    thickness: randBetween(1.5, 3.5),
+    amp: randBetween(15, 30),
+    freq: randBetween(0.008, 0.015)
   };
 }
 
@@ -65,20 +68,39 @@ for (let i = 0; i < 25; i++) {
 
 function animateParticles() {
   ctx.clearRect(0, 0, W, H);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  
   particles.forEach((p, i) => {
     p.y -= p.speedY;
+    p.phase += 0.01;
+    
+    ctx.beginPath();
+    ctx.lineWidth = p.thickness;
     
     let currentY = p.y;
-    let segCount = Math.floor(p.length / 6);
-    for (let j=0; j<segCount; j++) {
-      let alpha = p.opacity * (1 - j/segCount); // fade out tail
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      let waveX = Math.floor(Math.sin(currentY * 0.015 + p.phase) * 12);
-      ctx.fillRect(Math.floor(p.x + waveX), Math.floor(currentY), 6, 6);
-      currentY += 8;
+    let waveX = Math.sin(currentY * p.freq + p.phase) * p.amp;
+    ctx.moveTo(p.x + waveX, currentY);
+    
+    const segments = 12;
+    const step = p.length / segments;
+    
+    for (let j = 1; j <= segments; j++) {
+      currentY += step;
+      waveX = Math.sin(currentY * p.freq + p.phase) * p.amp;
+      ctx.lineTo(p.x + waveX, currentY);
     }
     
-    if (p.y + p.length < 0) {
+    let grad = ctx.createLinearGradient(0, p.y, 0, p.y + p.length);
+    grad.addColorStop(0, 'rgba(255,255,255,0)');
+    grad.addColorStop(0.3, `rgba(255,255,255,${p.opacity})`);
+    grad.addColorStop(0.7, `rgba(255,255,255,${p.opacity})`);
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    
+    ctx.strokeStyle = grad;
+    ctx.stroke();
+    
+    if (p.y + p.length < -50) {
       particles[i] = createParticle();
     }
   });
@@ -268,7 +290,11 @@ function renderGallery() {
 
       card.innerHTML = `
         <div class="card-thumb">
-          ${w.image ? `<img src="${w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
+          ${w.image ? `<img src="${Array.isArray(w.image) ? w.image[0] : w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
+          ${w.cat === '3d' ? `<div style="position:absolute;top:8px;left:8px;background:var(--white);border:2px solid var(--dark);padding:2px 6px;font-size:14px;display:flex;align-items:center;gap:4px;box-shadow:2px 2px 0 var(--dark);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            3D
+          </div>` : ''}
           <div class="like-btn" onclick="window.handleLikeClick(event, '${w.id}')" style="color:${heartColor};">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
@@ -344,8 +370,25 @@ function openModal(w) {
     media.innerHTML = '<canvas class="modal-viewer" id="threeCanvas"></canvas><p class="viewer-hint">🖱 Drag = Rotate &nbsp;·&nbsp; Shift+Drag = Pan &nbsp;·&nbsp; Scroll = Zoom</p>';
     setTimeout(() => initThreeViewer(w.model), 80);
   } else if (w.image) {
-    media.innerHTML = `<div class="modal-img-wrap" id="imgWrap"><img class="modal-img" id="modalImgEl" src="${w.image}" alt="${w.name}" style="object-position:center ${w.imageFocal||50}%"></div><p class="viewer-hint">↕ Drag image up/down to adjust</p>`;
-    initImgDrag();
+    let images = Array.isArray(w.image) ? w.image : [w.image];
+    if (images.length > 1) {
+      window.currentGalleryImages = images;
+      window.currentGalleryIndex = 0;
+      media.innerHTML = `
+        <div class="modal-carousel" style="position:relative; width:100%; aspect-ratio:16/9; background:#000; border-bottom:4px solid var(--dark);">
+          <button onclick="prevGalleryImage(event)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:10;background:var(--white);border:3px solid var(--dark);padding:8px 12px;cursor:pointer;font-weight:bold;font-size:20px;box-shadow:2px 2px 0 var(--dark);">❮</button>
+          <img class="modal-img" id="modalImgEl" src="${images[0]}" alt="${w.name}" style="object-fit:contain; width:100%; height:100%; image-rendering:pixelated; display:block;">
+          <button onclick="nextGalleryImage(event)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:10;background:var(--white);border:3px solid var(--dark);padding:8px 12px;cursor:pointer;font-weight:bold;font-size:20px;box-shadow:2px 2px 0 var(--dark);">❯</button>
+          <div id="galleryDots" style="position:absolute;bottom:10px;left:0;right:0;text-align:center;pointer-events:none;">
+            ${images.map((_, i) => `<span style="display:inline-block;width:10px;height:10px;margin:0 4px;background:${i===0?'var(--gold)':'var(--white)'};border:2px solid var(--dark);border-radius:50%;"></span>`).join('')}
+          </div>
+        </div>
+        <p class="viewer-hint">Use arrows to view more images</p>
+      `;
+    } else {
+      media.innerHTML = `<div class="modal-img-wrap" id="imgWrap"><img class="modal-img" id="modalImgEl" src="${images[0]}" alt="${w.name}" style="object-position:center ${w.imageFocal||50}%"></div><p class="viewer-hint">↕ Drag image up/down to adjust</p>`;
+      initImgDrag();
+    }
   } else {
     media.innerHTML = `<div class="modal-img-placeholder">${catIcon||''}</div>`;
   }
@@ -444,6 +487,32 @@ function openModal(w) {
   requestAnimationFrame(() => {
     box.style.top = Math.max(20, (vh - box.offsetHeight)/2) + 'px';
   });
+}
+
+window.nextGalleryImage = function(e) {
+  if (e) e.stopPropagation();
+  if (!window.currentGalleryImages) return;
+  window.currentGalleryIndex = (window.currentGalleryIndex + 1) % window.currentGalleryImages.length;
+  updateGalleryCarousel();
+};
+
+window.prevGalleryImage = function(e) {
+  if (e) e.stopPropagation();
+  if (!window.currentGalleryImages) return;
+  window.currentGalleryIndex = (window.currentGalleryIndex - 1 + window.currentGalleryImages.length) % window.currentGalleryImages.length;
+  updateGalleryCarousel();
+};
+
+function updateGalleryCarousel() {
+  const imgEl = document.getElementById('modalImgEl');
+  if (imgEl) imgEl.src = window.currentGalleryImages[window.currentGalleryIndex];
+  const dotsContainer = document.getElementById('galleryDots');
+  if (dotsContainer) {
+    const dots = dotsContainer.children;
+    for (let i = 0; i < dots.length; i++) {
+      dots[i].style.background = i === window.currentGalleryIndex ? 'var(--gold)' : 'var(--white)';
+    }
+  }
 }
 
 // ── Image Focal Drag (Modal) ──
@@ -584,6 +653,22 @@ function initThreeViewer(modelUrl) {
   const fill = new THREE.DirectionalLight(0x88aaff, 0.4);
   fill.position.set(-3,0,-3); scene.add(fill);
 
+  // Resize handling
+  const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      const { width, height } = entry.contentRect;
+      if (width > 0 && height > 0) {
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        threeRenderer.setSize(width, height, false);
+      }
+    }
+  });
+  resizeObserver.observe(canvas);
+  
+  // Store observer so we can disconnect it
+  canvas._resizeObserver = resizeObserver;
+
   // Orbit + Pan controls
   let isDragging=false, prevX=0, prevY=0;
   let rotX=0, rotY=0, zoom=4;
@@ -682,7 +767,15 @@ function initThreeViewer(modelUrl) {
 
 function disposeThreeViewer(){
   if(threeAnimId){ cancelAnimationFrame(threeAnimId); threeAnimId=null; }
-  if(threeRenderer){ threeRenderer.dispose(); threeRenderer=null; }
+  if(threeRenderer){ 
+    const canvas = threeRenderer.domElement;
+    if (canvas && canvas._resizeObserver) {
+      canvas._resizeObserver.disconnect();
+      canvas._resizeObserver = null;
+    }
+    threeRenderer.dispose(); 
+    threeRenderer=null; 
+  }
 }
 
 // ── Game Navigation ──

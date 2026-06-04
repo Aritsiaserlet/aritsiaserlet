@@ -126,10 +126,12 @@ function applyVolumes() {
   if (musicGain) musicGain.gain.setTargetAtTime(volumes.music * musicMute, audioCtx.currentTime, 0.05);
   if (sfxGain) sfxGain.gain.setTargetAtTime(volumes.sfx * sfxMute, audioCtx.currentTime, 0.05);
   
-  // Also apply to HTMLAudio BGM if playing
-  if (musicAudio) {
-    musicAudio.volume = Math.min(1, volumes.master * masterMute * volumes.music * musicMute);
-  }
+  bgmAudios.forEach(audio => {
+    if (audio) {
+      const baseVol = audio.baseVolume !== undefined ? audio.baseVolume : 1.0;
+      audio.volume = Math.min(1, volumes.master * masterMute * volumes.music * musicMute * baseVol);
+    }
+  });
 }
 
 export function setVolumes({ master, music, sfx, masterMute, musicMute, sfxMute } = {}) {
@@ -207,6 +209,7 @@ export function startBGM() {
     if (!url) return;
     const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
     const audio = new Audio(url);
+    audio.baseVolume = sndVol;
     audio.loop = true;
     audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
     audio.play().catch(e => console.warn('BGM play error:', e));
@@ -229,6 +232,7 @@ export function startPortfolioBGM() {
     if (!url) return;
     const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
     const audio = new Audio(url);
+    audio.baseVolume = sndVol;
     audio.loop = true;
     audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
     audio.play().catch(e => console.warn('Portfolio BGM play error:', e));
@@ -251,6 +255,7 @@ export function startLobbyBGM() {
     if (!url) return;
     const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
     const audio = new Audio(url);
+    audio.baseVolume = sndVol;
     audio.loop = true;
     audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
     audio.play().catch(e => console.warn('Lobby BGM play error:', e));

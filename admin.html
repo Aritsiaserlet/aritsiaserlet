@@ -335,8 +335,11 @@
               <label style="font-size:16px;color:var(--dark);display:block;margin-bottom:4px">Focal Point (up/down)</label>
               <input type="range" id="focalSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--dark)" oninput="updateFocal(this.value)">
             </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewImage(this)" style="display:none">
+              <button class="nav-btn" onclick="document.getElementById('imgFileInput').click()">CHOOSE IMAGES</button>
+            </div>
           </div>
-          <input type="file" id="imgFileInput" accept="image/*" onchange="previewImage(this)" style="display:none">
         </div>
 
         <div class="field">
