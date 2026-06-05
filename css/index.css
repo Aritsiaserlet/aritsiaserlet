@@ -200,7 +200,7 @@ body{
   background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark);
   display:flex; align-items:center; gap:6px; padding:2px 6px;
   cursor:pointer; transition:transform 0.1s;
-  position:relative;overflow:hidden;
+  overflow:hidden;
 }
 .like-btn:hover{ transform:translate(-1px,-1px); }
 .like-btn:active{ transform:translate(1px,1px); box-shadow:0 0 0 var(--dark); }

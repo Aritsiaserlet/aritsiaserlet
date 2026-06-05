@@ -891,8 +891,6 @@ function closeSettingsModal() {
 
 function saveSettingsUI() {
   const newSet = {
-    theme: document.getElementById('setTheme').value,
-    graphics: document.getElementById('setGraphics').value,
     masterVolume: parseInt(document.getElementById('setMasterVol').value, 10),
     musicVolume: parseInt(document.getElementById('setMusicVol').value, 10),
     sfxVolume: parseInt(document.getElementById('setSfxVol').value, 10)

@@ -180,7 +180,10 @@ function previewImage(input){
   if(!input.files || input.files.length===0) return;
   currentImages = [];
   const prev = document.getElementById('imgPreview');
+  const extraWrap = document.getElementById('extraImgWrap');
   prev.innerHTML = '';
+  extraWrap.innerHTML = '';
+  extraWrap.style.display = 'none';
   
   let validFiles = Array.from(input.files).filter(f => f.size <= 4*1024*1024);
   if(validFiles.length < input.files.length) alert('Some images were too large (max 4MB) and were skipped.');
@@ -189,17 +192,29 @@ function previewImage(input){
     return;
   }
 
+  let loadedCount = 0;
   validFiles.forEach((file, idx) => {
     const ext = file.name.split('.').pop().toLowerCase()||'jpg';
     const reader = new FileReader();
     reader.onload = e => {
       const full = e.target.result;
       const base64 = full.split(',')[1];
-      currentImages.push({ ext, base64 });
-      if (idx === 0) {
-        prev.innerHTML=`<img src="${full}" style="object-position:center 50%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
+      // Keep track of order since it's async
+      currentImages[idx] = { ext, base64 };
+      loadedCount++;
+      
+      if (loadedCount === validFiles.length) {
+        // All loaded, render them
+        prev.innerHTML=`<img src="${currentImages[0].base64 ? 'data:image/'+currentImages[0].ext+';base64,'+currentImages[0].base64 : ''}" style="object-position:center 50%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
         if (validFiles.length > 1) {
           prev.innerHTML += `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;font-size:16px;z-index:10;border-radius:4px;font-family:'VT323';">+${validFiles.length-1} more</div>`;
+          extraWrap.style.display = 'flex';
+          for (let i = 1; i < currentImages.length; i++) {
+             const imgSrc = 'data:image/'+currentImages[i].ext+';base64,'+currentImages[i].base64;
+             extraWrap.innerHTML += `<div style="min-width:60px; height:40px; border:2px solid var(--dark); border-radius:4px; overflow:hidden; box-shadow:2px 2px 0 var(--dark);">
+               <img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">
+             </div>`;
+          }
         }
         showFocalSlider(50);
         initAdminImgDrag();
@@ -1190,9 +1205,24 @@ function editWork(id) {
 
   // Show existing image
   const prev = document.getElementById('imgPreview');
+  const extraWrap = document.getElementById('extraImgWrap');
+  extraWrap.innerHTML = '';
+  extraWrap.style.display = 'none';
+
   if (w.image) {
+    let images = Array.isArray(w.image) ? w.image : [w.image];
     const focal = w.imageFocal !== undefined ? w.imageFocal : 50;
-    prev.innerHTML = `<img src="${w.image}" style="object-position:center ${focal}%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"><span style="position:absolute;bottom:6px;right:8px;font-size:10px;background:rgba(0,0,0,.4);color:#fff;padding:2px 6px;border-radius:4px;pointer-events:none">Dbl-click to replace</span>`;
+    prev.innerHTML = `<img src="${images[0]}" style="object-position:center ${focal}%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"><span style="position:absolute;bottom:6px;right:8px;font-size:10px;background:rgba(0,0,0,.4);color:#fff;padding:2px 6px;border-radius:4px;pointer-events:none">Dbl-click to replace</span>`;
+    
+    if (images.length > 1) {
+      extraWrap.style.display = 'flex';
+      for (let i = 1; i < images.length; i++) {
+         extraWrap.innerHTML += `<div style="min-width:60px; height:40px; border:2px solid var(--dark); border-radius:4px; overflow:hidden; box-shadow:2px 2px 0 var(--dark);">
+           <img src="${images[i]}" style="width:100%; height:100%; object-fit:cover;">
+         </div>`;
+      }
+    }
+    
     showFocalSlider(focal);
     initAdminImgDrag();
   } else {
