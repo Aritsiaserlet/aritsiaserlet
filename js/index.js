@@ -137,14 +137,35 @@ function applySettings() {
   if (settings.profileImage) {
     const pFit = settings.profileFit || 'cover';
     const pPos = settings.profilePos || 'center';
-    document.getElementById('avatarInner').innerHTML = `<img src="${settings.profileImage}" alt="Profile" style="width:100%; height:100%; object-fit:${pFit}; object-position:${pPos};">`;
+    const isVideo = settings.profileImage.toLowerCase().includes('.mp4') || settings.profileImage.startsWith('data:video');
+    if (isVideo) {
+      document.getElementById('avatarInner').innerHTML = `<video src="${settings.profileImage}" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:${pFit}; object-position:${pPos};"></video>`;
+    } else {
+      document.getElementById('avatarInner').innerHTML = `<img src="${settings.profileImage}" alt="Profile" style="width:100%; height:100%; object-fit:${pFit}; object-position:${pPos};">`;
+    }
   }
   if (settings.backgroundImage) {
     const bg = document.getElementById('customBg');
-    bg.style.backgroundImage = `url('${settings.backgroundImage}')`;
-    if (settings.bgSize) bg.style.backgroundSize = settings.bgSize;
-    if (settings.bgPos) bg.style.backgroundPosition = settings.bgPos;
-    bg.style.opacity = '1';
+    const bgVid = document.getElementById('customBgVideo');
+    const bFit = settings.bgSize || 'cover';
+    const bPos = settings.bgPos || 'center';
+    const isVideo = settings.backgroundImage.toLowerCase().includes('.mp4') || settings.backgroundImage.startsWith('data:video');
+    
+    if (isVideo) {
+      bg.style.opacity = '0';
+      if(bgVid) {
+        bgVid.src = settings.backgroundImage;
+        bgVid.style.objectFit = bFit;
+        bgVid.style.objectPosition = bPos;
+        bgVid.style.opacity = '1';
+      }
+    } else {
+      if(bgVid) { bgVid.style.opacity = '0'; bgVid.src = ''; }
+      bg.style.backgroundImage = `url('${settings.backgroundImage}')`;
+      bg.style.backgroundSize = bFit;
+      bg.style.backgroundPosition = bPos;
+      bg.style.opacity = '1';
+    }
     canvas.style.opacity = '0.4'; // Dim particles slightly when bg is loaded
   }
 

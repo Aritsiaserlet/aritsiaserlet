@@ -144,15 +144,13 @@ async function loadSettings(){
       settingsSha=data.sha;
       settings=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
       if(settings.profileImage){
-        document.getElementById('profilePreview').src = settings.profileImage;
-        document.getElementById('profilePreview').style.display = 'block';
+        setMediaPreview('profilePreview', settings.profileImage);
       }
       if(settings.profileFit) document.getElementById('profileFit').value = settings.profileFit;
       if(settings.profilePos) document.getElementById('profilePos').value = settings.profilePos;
       
       if(settings.backgroundImage){
-        document.getElementById('bgPreview').src = settings.backgroundImage;
-        document.getElementById('bgPreview').style.display = 'block';
+        setMediaPreview('bgPreview', settings.backgroundImage);
       }
       if(settings.bgSize) document.getElementById('bgSize').value = settings.bgSize;
       if(settings.bgPos) document.getElementById('bgPos').value = settings.bgPos;
@@ -621,12 +619,10 @@ function renderSettingsUI() {
   
   
   if (settings.profileImage) {
-    document.getElementById('profilePreview').src = settings.profileImage;
-    document.getElementById('profilePreview').style.display = 'block';
+    setMediaPreview('profilePreview', settings.profileImage);
   }
   if (settings.backgroundImage) {
-    document.getElementById('bgPreview').src = settings.backgroundImage;
-    document.getElementById('bgPreview').style.display = 'block';
+    setMediaPreview('bgPreview', settings.backgroundImage);
   }
   
   // Render Game Settings
@@ -735,17 +731,34 @@ function removeSocialLink(idx) {
   renderSettingsUI();
 }
 
+function setMediaPreview(idBase, url) {
+  const img = document.getElementById(idBase);
+  const vid = document.getElementById(idBase + 'Video');
+  if (!url) {
+    img.style.display = 'none';
+    if(vid) vid.style.display = 'none';
+    return;
+  }
+  if (url.toLowerCase().includes('.mp4') || url.startsWith('data:video/mp4')) {
+    img.style.display = 'none';
+    if(vid) { vid.src = url; vid.style.display = 'block'; }
+  } else {
+    if(vid) { vid.style.display = 'none'; vid.src = ''; }
+    img.src = url;
+    img.style.display = 'block';
+  }
+}
+
 function previewProfile(input){
   const file=input.files[0];
   if(!file)return;
-  if(file.size>2*1024*1024){alert('Image too large (max 2MB).');return}
+  if(file.size>10*1024*1024){alert('File too large (max 10MB).');return}
   profileExt=file.name.split('.').pop().toLowerCase()||'png';
   const reader=new FileReader();
   reader.onload=e=>{
     const full=e.target.result;
     profileBase64=full.split(',')[1];
-    document.getElementById('profilePreview').src=full;
-    document.getElementById('profilePreview').style.display='block';
+    setMediaPreview('profilePreview', full);
   };
   reader.readAsDataURL(file);
 }
@@ -753,14 +766,13 @@ function previewProfile(input){
 function previewBg(input){
   const file=input.files[0];
   if(!file)return;
-  if(file.size>4*1024*1024){alert('Image too large (max 4MB).');return}
+  if(file.size>15*1024*1024){alert('File too large (max 15MB).');return}
   bgExt=file.name.split('.').pop().toLowerCase()||'png';
   const reader=new FileReader();
   reader.onload=e=>{
     const full=e.target.result;
     bgBase64=full.split(',')[1];
-    document.getElementById('bgPreview').src=full;
-    document.getElementById('bgPreview').style.display='block';
+    setMediaPreview('bgPreview', full);
   };
   reader.readAsDataURL(file);
 }
