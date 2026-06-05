@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Aritsia</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text x=%220%22 y=%2214%22 font-size=%2214%22>⚠️</text></svg>">
+<style>
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sky4: #cceeff; --dark: #1a2a3a; --danger: #e74c3c;
+  }
+  body {
+    font-family: 'Press Start 2P', cursive;
+    background: var(--sky4);
+    color: var(--dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    padding: 20px;
+  }
+  .error-code {
+    font-size: clamp(60px, 15vw, 120px);
+    color: var(--danger);
+    text-shadow: 6px 6px 0 var(--dark);
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+  }
+  .error-text {
+    font-family: 'VT323', monospace;
+    font-size: clamp(24px, 5vw, 36px);
+    margin-bottom: 40px;
+  }
+  .game-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 16px 24px;
+    background: var(--dark);
+    color: #fff;
+    border: 4px solid var(--dark);
+    cursor: pointer;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+    text-decoration: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  }
+  .game-btn:active {
+    transform: translate(6px, 6px);
+    box-shadow: 0 0 0 rgba(0,0,0,0.3);
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+</style>
+</head>
+<body>
+  <div class="error-code">404</div>
+  <div class="error-text">LEVEL NOT FOUND!</div>
+  <a href="index.html" class="game-btn">⬅ RETURN TO LOBBY</a>
+</body>
+</html>

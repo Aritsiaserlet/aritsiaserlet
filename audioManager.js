@@ -211,9 +211,16 @@ export function startBGM() {
     const audio = new Audio(url);
     audio.baseVolume = sndVol;
     audio.loop = true;
-    audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    const targetVol = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    audio.volume = 0;
     audio.play().catch(e => console.warn('BGM play error:', e));
     bgmAudios.push(audio);
+    let step = 0;
+    const fadeInterval = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, Math.min(1, targetVol * (step/20)));
+      if(step >= 20 || !musicIsPlaying) { clearInterval(fadeInterval); audio.volume = targetVol; }
+    }, 50);
   });
   musicIsPlaying = true;
 }
@@ -234,9 +241,16 @@ export function startPortfolioBGM() {
     const audio = new Audio(url);
     audio.baseVolume = sndVol;
     audio.loop = true;
-    audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    const targetVol = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    audio.volume = 0;
     audio.play().catch(e => console.warn('Portfolio BGM play error:', e));
     bgmAudios.push(audio);
+    let step = 0;
+    const fadeInterval = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, Math.min(1, targetVol * (step/20)));
+      if(step >= 20 || !musicIsPlaying) { clearInterval(fadeInterval); audio.volume = targetVol; }
+    }, 50);
   });
   musicIsPlaying = true;
 }
@@ -257,21 +271,39 @@ export function startLobbyBGM() {
     const audio = new Audio(url);
     audio.baseVolume = sndVol;
     audio.loop = true;
-    audio.volume = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    const targetVol = Math.min(1, volumes.master * volumes.music * (volumes.masterMute || volumes.musicMute ? 0 : 1) * sndVol);
+    audio.volume = 0;
     audio.play().catch(e => console.warn('Lobby BGM play error:', e));
     bgmAudios.push(audio);
+    let step = 0;
+    const fadeInterval = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, Math.min(1, targetVol * (step/20)));
+      if(step >= 20 || !musicIsPlaying) { clearInterval(fadeInterval); audio.volume = targetVol; }
+    }, 50);
   });
   musicIsPlaying = true;
 }
 
 export function stopBGM() {
-  bgmAudios.forEach(a => {
-    a.pause();
-    a.currentTime = 0;
-  });
+  const oldAudios = [...bgmAudios];
   bgmAudios = [];
-  musicAudio = null; // for backwards compatibility check, though not used anymore
+  musicAudio = null;
   musicIsPlaying = false;
+  
+  oldAudios.forEach(a => {
+    const startVol = a.volume;
+    let step = 0;
+    const fadeInterval = setInterval(() => {
+      step++;
+      a.volume = Math.max(0, startVol * (1 - step/20));
+      if (step >= 20) {
+        clearInterval(fadeInterval);
+        a.pause();
+        a.currentTime = 0;
+      }
+    }, 50);
+  });
 }
 
 

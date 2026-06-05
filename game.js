@@ -1024,10 +1024,93 @@ function gameOver() {
   isPlaying = false; animId = null;
   const finEl = document.getElementById('finalScore');
   const goEl  = document.getElementById('gameOverScreen');
-  if (finEl) finEl.textContent = score;
-  if (goEl)  goEl.style.display = 'flex';
+  
+  if (goEl) {
+    goEl.style.display = 'flex';
+    goEl.classList.remove('animating');
+    void goEl.offsetWidth; // trigger reflow
+    goEl.classList.add('animating');
+  }
+  
+  if (finEl) {
+    finEl.textContent = '0';
+    let currentCount = 0;
+    const targetCount = score;
+    const duration = 1500; // 1.5s
+    const start = performance.now();
+    function step(timestamp) {
+      const progress = Math.min((timestamp - start) / duration, 1);
+      // easeOutExpo
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      currentCount = Math.floor(ease * targetCount);
+      finEl.textContent = currentCount;
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        finEl.textContent = targetCount;
+        spawnGoParticles(); // Particle burst when score finishes
+      }
+    }
+    // Delay score count up slightly to match CSS animation
+    setTimeout(() => requestAnimationFrame(step), 300);
+  }
   
   if (window.gameAudio) window.gameAudio.sfxGameOver();
   const playTimeSeconds = Math.floor((Date.now() - gameStartTime) / 1000);
   if (window.saveScore) window.saveScore(score, playTimeSeconds, maxMultiplier);
 }
+
+function spawnGoParticles() {
+  const canvas = document.getElementById('goParticleCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  for (let i=0; i<60; i++) {
+    particles.push({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      vx: (Math.random() - 0.5) * 20,
+      vy: (Math.random() - 0.5) * 20 - 5,
+      size: Math.random() * 6 + 2,
+      color: Math.random() > 0.5 ? '#e8c87a' : '#fff',
+      life: 1
+    });
+  }
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.5; // gravity
+      p.life -= 0.02;
+      if (p.life > 0) {
+        alive = true;
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+    });
+    ctx.globalAlpha = 1;
+    if (alive) requestAnimationFrame(animate);
+    else canvas.style.display = 'none';
+  }
+  animate();
+}
+
+// ── Global Micro-interactions ──
+document.addEventListener('mousedown', (e) => {
+  const btn = e.target.closest('button, .game-btn, .modal-close');
+  if (btn) {
+    const ripple = document.createElement('div');
+    ripple.className = 'px-ripple';
+    const rect = btn.getBoundingClientRect();
+    ripple.style.left = (e.clientX - rect.left - 4) + 'px';
+    ripple.style.top = (e.clientY - rect.top - 4) + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
+  }
+});

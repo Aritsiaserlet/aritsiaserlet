@@ -3,29 +3,14 @@
 // index.js
 // =============================================================================
 
-// ── Admin Password Check ──
-window.checkAdminPassword = function() {
-  const pw = document.getElementById('adminPasswordInput').value;
-  if(pw === '7964') {
-    document.getElementById('adminPasswordInput').style.display = 'none';
-    const lbl = document.getElementById('adminAuthLabel');
-    if (lbl) lbl.innerText = 'GitHub Token';
-    document.getElementById('adminTokenDiv').style.display = 'flex';
-    document.getElementById('adminErrorMsg').innerText = '';
-    document.getElementById('adminTokenInput').focus();
-  } else {
-    document.getElementById('adminErrorMsg').innerText = 'You are not allowed to access.';
-    document.getElementById('adminPasswordInput').value = '';
-    setTimeout(() => {
-      document.getElementById('adminErrorMsg').innerText = '';
-    }, 2000);
-  }
-};
 window.goToAdmin = function() {
   const token = document.getElementById('adminTokenInput').value.trim();
   if(token && token.startsWith('ghp_')) {
     sessionStorage.setItem('ghToken', token);
-    window.location.href = 'admin.html';
+    document.querySelector('.page').classList.add('fade-out');
+    setTimeout(() => {
+      window.location.href = 'admin.html';
+    }, 500);
   } else {
     document.getElementById('adminErrorMsg').innerText = 'Please enter a valid GitHub token.';
     setTimeout(() => {
@@ -33,6 +18,17 @@ window.goToAdmin = function() {
     }, 2000);
   }
 };
+
+// ── Security Utils ──
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 // ── Wind / Pixel Particles Animation ──
 const canvas = document.getElementById('windCanvas');
@@ -63,7 +59,15 @@ for (let i = 0; i < 25; i++) {
   particles.push(createParticle(Math.random() * H));
 }
 
+let windAnimId;
 function animateParticles() {
+  if (document.hidden) {
+    // Check again later, don't update canvas
+    setTimeout(() => {
+      windAnimId = requestAnimationFrame(animateParticles);
+    }, 500);
+    return;
+  }
   ctx.clearRect(0, 0, W, H);
   particles.forEach((p, i) => {
     p.y -= p.speedY;
@@ -82,9 +86,17 @@ function animateParticles() {
       particles[i] = createParticle();
     }
   });
-  requestAnimationFrame(animateParticles);
+  windAnimId = requestAnimationFrame(animateParticles);
 }
 animateParticles();
+
+// Restart immediately if user comes back
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && windAnimId) {
+    cancelAnimationFrame(windAnimId);
+    animateParticles();
+  }
+});
 
 // ── Works Data from GitHub ──
 let works = [];
@@ -97,7 +109,26 @@ const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
 const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/works.json`;
 const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json`;
+// ── Skeleton Loading ──
+function showSkeletons(count = 6) {
+  const gallery = document.getElementById('gallery');
+  gallery.querySelectorAll('.work-card,.skeleton-card').forEach(c => c.remove());
+  document.getElementById('emptyState').style.display = 'none';
+  for (let i = 0; i < count; i++) {
+    const sk = document.createElement('div');
+    sk.className = 'skeleton-card';
+    sk.style.animationDelay = `${i * 0.06}s`;
+    sk.innerHTML = `<div class="skeleton-thumb"></div><div class="skeleton-info"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>`;
+    gallery.appendChild(sk);
+  }
+}
+
+function hideSkeletons() {
+  document.getElementById('gallery').querySelectorAll('.skeleton-card').forEach(c => c.remove());
+}
+
 async function loadData() {
+  showSkeletons(6);
   const t = sessionStorage.getItem('ghToken');
   // Load Works
   try {
@@ -128,6 +159,7 @@ async function loadData() {
   } catch(e) { console.log('No settings found'); }
   
   applySettings();
+  hideSkeletons();
   renderGallery();
   if(window.initSoundBtns) window.initSoundBtns();
 }
@@ -258,10 +290,13 @@ function renderGallery() {
     emptyState.style.display = '';
   } else {
     emptyState.style.display = 'none';
-    filtered.forEach(w => {
+    filtered.forEach((w, idx) => {
       const card = document.createElement('div');
       card.className = 'work-card';
+      card.tabIndex = 0;
+      card.style.animationDelay = `${idx * 0.05}s`;
       card.onclick = () => openModal(w);
+      card.onkeydown = (e) => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); openModal(w); } };
       const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
       const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
       
@@ -287,23 +322,27 @@ function renderGallery() {
       const heartFill = isLiked ? 'currentColor' : 'none';
       const heartColor = isLiked ? 'var(--danger)' : 'var(--dark)';
 
+      const safeName = escapeHTML(w.name);
+      const safeLabel = escapeHTML(catLabel);
+      const safeSub = escapeHTML(subLabel);
+
       card.innerHTML = `
         <div class="card-thumb">
-          ${w.image ? `<img src="${Array.isArray(w.image) ? w.image[0] : w.image}" alt="${w.name}" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
+          ${w.image ? `<img src="${Array.isArray(w.image) ? w.image[0] : w.image}" alt="${safeName}" loading="lazy" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
           ${w.cat === '3d' ? `<div style="position:absolute;top:8px;left:8px;background:var(--white);border:2px solid var(--dark);padding:2px 6px;font-size:14px;display:flex;align-items:center;gap:4px;box-shadow:2px 2px 0 var(--dark);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
             3D
           </div>` : ''}
-          <div class="like-btn" onclick="window.handleLikeClick(event, '${w.id}')" style="color:${heartColor};">
+          <div class="like-btn" tabindex="0" onclick="window.handleLikeClick(event, '${w.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); window.handleLikeClick(event, '${w.id}'); }" style="color:${heartColor};">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
           </div>
         </div>
         <div class="card-info">
-          <p class="card-name">${w.name}</p>
+          <p class="card-name">${safeName}</p>
           <div class="card-cats" style="align-items:center;">
-            <span class="cat-badge">${catIcon}${catLabel}</span>
-            ${subLabel ? `<span class="cat-badge sub">${subLabel}</span>` : ''}
+            <span class="cat-badge">${catIcon}${safeLabel}</span>
+            ${safeSub ? `<span class="cat-badge sub">${safeSub}</span>` : ''}
             ${toolsHtml ? `<div style="display:flex;gap:4px;margin-left:auto;">${toolsHtml}</div>` : ''}
           </div>
         </div>`;
@@ -392,12 +431,6 @@ function openModal(w) {
     media.innerHTML = `<div class="modal-img-placeholder">${catIcon||''}</div>`;
   }
 
-  document.getElementById('modalTitle').textContent = w.name;
-  document.getElementById('modalDesc').textContent = w.desc || '';
-  
-  window.currentModalWorkId = w.id;
-  window.updateModalLikeBtn();
-
   let toolsHtml = '';
   if(w.tools && w.tools.length > 0 && settings.icons) {
     w.tools.forEach(tid => {
@@ -406,10 +439,23 @@ function openModal(w) {
     });
   }
 
+  const safeName = escapeHTML(w.name);
+  const safeDesc = escapeHTML(w.desc || '');
+  const safeLabel = escapeHTML(catLabel);
+  const safeSub = escapeHTML(subLabel);
+
+  document.getElementById('modalTitle').innerText = safeName;
+  document.getElementById('modalDesc').innerText = safeDesc;
+
+  document.getElementById('modalCats').innerHTML = `
+    <span class="cat-badge">${catIcon}${safeLabel}</span>
+    ${safeSub ? `<span class="cat-badge sub">${safeSub}</span>` : ''}
+  `;
   const badges = document.getElementById('modalBadges');
-  badges.innerHTML = `<span class="cat-badge">${catIcon}${catLabel}</span>`;
-  if (subLabel) badges.innerHTML += `<span class="cat-badge sub">${subLabel}</span>`;
   if (toolsHtml) badges.innerHTML += `<div style="display:flex;gap:6px;align-items:center;margin-left:8px;padding-left:8px;border-left:3px solid var(--dark);">${toolsHtml}</div>`;
+
+  window.currentModalWorkId = w.id;
+  window.updateModalLikeBtn();
 
   const linksContainer = document.getElementById('modalLinksContainer');
   linksContainer.innerHTML = '';
@@ -632,7 +678,28 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModalDir
 let threeRenderer=null, threeAnimId=null;
 function initThreeViewer(modelUrl) {
   const canvas = document.getElementById('threeCanvas');
-  if (!canvas || typeof THREE === 'undefined') return;
+  if (!canvas) return;
+
+  if (typeof THREE === 'undefined' || typeof THREE.GLTFLoader === 'undefined') {
+    // Show loading text
+    const ctx = canvas.getContext('2d');
+    if(ctx) { ctx.fillStyle = '#fff'; ctx.fillText('Loading 3D Engine...', 20, 30); }
+    
+    if (typeof THREE === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      script.onload = () => initThreeViewer(modelUrl);
+      document.head.appendChild(script);
+      return;
+    }
+    if (typeof THREE.GLTFLoader === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+      script.onload = () => initThreeViewer(modelUrl);
+      document.head.appendChild(script);
+      return;
+    }
+  }
 
   const W = canvas.clientWidth, H = canvas.clientHeight;
   const scene = new THREE.Scene();
@@ -720,34 +787,25 @@ function initThreeViewer(modelUrl) {
   },{passive:false});
 
   // Load GLB
-  const loader = new THREE.FileLoader();
-  loader.setResponseType('arraybuffer');
-  // Use GLTFLoader via dynamic import or inline parse
-  // Fallback: load script then parse
-  const script = document.createElement('script');
-  script.src='https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
-  script.onload = () => {
-    const gltfLoader = new THREE.GLTFLoader();
-    gltfLoader.load(modelUrl, gltf => {
-      const model = gltf.scene;
-      // Auto-center and scale
-      const box = new THREE.Box3().setFromObject(model);
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2.5 / maxDim;
-      model.scale.setScalar(scale);
-      const center = box.getCenter(new THREE.Vector3());
-      model.position.sub(center.multiplyScalar(scale));
-      group.add(model);
-    }, undefined, err => {
-      console.warn('GLB load error:', err);
-      // Show placeholder cube if model fails
-      const geo = new THREE.BoxGeometry(1.5,1.5,1.5);
-      const mat = new THREE.MeshStandardMaterial({color:0x4a9fd4,roughness:.4,metalness:.3});
-      group.add(new THREE.Mesh(geo,mat));
-    });
-  };
-  document.head.appendChild(script);
+  const gltfLoader = new THREE.GLTFLoader();
+  gltfLoader.load(modelUrl, gltf => {
+    const model = gltf.scene;
+    // Auto-center and scale
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 2.5 / maxDim;
+    model.scale.setScalar(scale);
+    const center = box.getCenter(new THREE.Vector3());
+    model.position.sub(center.multiplyScalar(scale));
+    group.add(model);
+  }, undefined, err => {
+    console.warn('GLB load error:', err);
+    // Show placeholder cube if model fails
+    const geo = new THREE.BoxGeometry(1.5,1.5,1.5);
+    const mat = new THREE.MeshStandardMaterial({color:0x4a9fd4,roughness:.4,metalness:.3});
+    group.add(new THREE.Mesh(geo,mat));
+  });
 
   let autoRotY = 0;
   function animate(){
@@ -862,3 +920,17 @@ window.togglePortfolioBGM = function() {
     else btn.textContent = _bgmOn ? '🔊' : '🔇';
   }
 };
+
+// ── Global Micro-interactions ──
+document.addEventListener('mousedown', (e) => {
+  const btn = e.target.closest('button, .tab, .work-card, .like-btn, .admin-btn, .game-btn, .social-btn, .modal-link');
+  if (btn) {
+    const ripple = document.createElement('div');
+    ripple.className = 'px-ripple';
+    const rect = btn.getBoundingClientRect();
+    ripple.style.left = (e.clientX - rect.left - 4) + 'px';
+    ripple.style.top = (e.clientY - rect.top - 4) + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
+  }
+});

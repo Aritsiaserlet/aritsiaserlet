@@ -3,10 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Aritsia's Pixel Art Portfolio & Minigame">
+<meta property="og:title" content="Aritsia — Portfolio">
+<meta property="og:description" content="Pixel Art Developer Portfolio and Minigame">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text x=%220%22 y=%2214%22 font-size=%2214%22>✨</text></svg>">
 <title>Aritsia — Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/index.css">
 
+<script src="js/toastManager.js"></script>
 <script type="module" src="js/index-module.js"></script>
 </head>
 <body>
@@ -161,11 +167,9 @@
 
     <!-- Admin Access Row -->
     <div class="set-row" style="margin-top: 20px; border-top: 3px dashed var(--dark); padding-top: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
-      <input type="password" id="adminPasswordInput" placeholder="Panel Password" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.checkAdminPassword()">
-      <div id="adminTokenDiv" style="display:none; width:100%; flex-direction:column; gap:8px;">
-         <input type="password" id="adminTokenInput" placeholder="ghp_xxxxxxxxxxxx" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.goToAdmin()">
-         <button class="nav-btn" onclick="window.goToAdmin()" style="width:100%; padding:10px; font-size:20px; justify-content:center; background:var(--gold);">ENTER ADMIN PANEL</button>
-      </div>
+      <div style="font-size:16px; color:var(--dark);">Admin Access</div>
+      <input type="password" id="adminTokenInput" placeholder="GitHub Token (ghp_...)" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.goToAdmin()">
+      <button class="nav-btn" onclick="window.goToAdmin()" style="width:100%; padding:10px; font-size:20px; justify-content:center; background:var(--gold);">ENTER ADMIN PANEL</button>
       <p id="adminErrorMsg" style="color:var(--danger);font-family:'VT323',monospace;font-size:16px;margin:0;"></p>
     </div>
   </div>
@@ -218,9 +222,5 @@
     </div>
   </div>
 </div>
-<!-- Page transition styles are now in css/index.css -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
 </body>
 </html>

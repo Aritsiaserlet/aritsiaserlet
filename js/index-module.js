@@ -99,11 +99,34 @@ import { initSettings, getSettings, updateSettings } from '../settingsManager.js
       window.globalLikes[workId] = (window.globalLikes[workId] || 0) + 1;
       btn.style.color = 'var(--danger)';
       btn.querySelector('svg').style.fill = 'currentColor';
+      // Add heart burst animation
+      btn.style.animation = 'none';
+      void btn.offsetWidth; // trigger reflow
+      btn.style.animation = 'heartBurst 0.3s ease-out forwards';
+      // Spawn heart particles
+      for(let i=0; i<6; i++) {
+        const p = document.createElement('div');
+        p.innerHTML = '<svg viewBox="0 0 24 24" fill="var(--danger)" style="width:12px;height:12px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+        p.style.position = 'fixed';
+        p.style.pointerEvents = 'none';
+        p.style.zIndex = '1000';
+        const rect = btn.getBoundingClientRect();
+        p.style.left = (rect.left + rect.width/2 - 6) + 'px';
+        p.style.top = (rect.top + rect.height/2 - 6) + 'px';
+        const tx = (Math.random() - 0.5) * 60 + 'px';
+        const ty = (Math.random() - 0.5) * 60 - 20 + 'px';
+        p.style.setProperty('--tx', tx);
+        p.style.setProperty('--ty', ty);
+        p.style.animation = 'heartParticle 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 600);
+      }
     } else {
       delete window.userLikes[workId];
       window.globalLikes[workId] = Math.max(0, (window.globalLikes[workId] || 0) - 1);
       btn.style.color = 'var(--dark)';
       btn.querySelector('svg').style.fill = 'none';
+      btn.style.animation = 'none';
     }
     span.textContent = window.globalLikes[workId];
     

@@ -5,6 +5,7 @@
 
 /* ── Base Reset ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 
 /* ── CSS Variables ── */
 :root{
@@ -23,6 +24,7 @@ body{
   font-size: 20px;
   background:var(--sky2);
   min-height:100vh;position:relative;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* ── Wind lines ── */
@@ -93,6 +95,7 @@ body{
   color:var(--dark);
   transition:transform .1s,background .1s,box-shadow .1s;
   box-shadow:4px 4px 0 var(--dark);
+  position:relative;overflow:hidden;
 }
 .social-btn:hover{transform:translate(2px,2px);background:var(--gold-l);box-shadow:2px 2px 0 var(--dark)}
 .social-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--dark)}
@@ -128,6 +131,7 @@ body{
   white-space:nowrap;
   box-shadow:2px 2px 0 var(--dark);
   display:inline-flex;align-items:center;gap:6px;
+  position:relative;overflow:hidden;
 }
 .tab:hover{background:var(--gold-l);transform:translate(1px,1px);box-shadow:1px 1px 0 var(--dark)}
 .tab.active{background:var(--gold);transform:translate(2px,2px);box-shadow:0 0 0 var(--dark)}
@@ -146,11 +150,41 @@ body{
   border:3px solid var(--dark);
   background:var(--white);
   box-shadow:4px 4px 0 rgba(26,42,58,0.5);
-  cursor:pointer;transition:transform .1s,box-shadow .1s;
+  cursor:pointer;transition:transform .1s,box-shadow .1s,opacity .25s;
+  animation:cardIn 0.4s ease both;
+  position:relative;overflow:hidden;
 }
 .work-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(26,42,58,0.7);background:var(--gold-l)}
+.work-card:hover .card-thumb img{transform:scale(1.06);transition:transform 0.3s ease}
 .work-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 rgba(26,42,58,0.7)}
+.work-card:focus-visible{outline:4px dashed var(--danger);outline-offset:4px}
+.tab:focus-visible, .nav-btn:focus-visible, .game-btn:focus-visible, .social-btn:focus-visible, .like-btn:focus-visible { outline: 4px dashed var(--danger); outline-offset: 4px; }
 .work-card.hidden{display:none}
+.work-card.fade-out{opacity:0;transform:translateY(10px)}
+
+/* ── Skeleton Cards ── */
+.skeleton-card{
+  border:3px solid var(--dark);
+  background:var(--white);
+  box-shadow:4px 4px 0 rgba(26,42,58,0.5);
+  overflow:hidden;
+  animation:cardIn 0.3s ease both;
+}
+.skeleton-thumb{
+  width:100%;aspect-ratio:16/10;
+  background:linear-gradient(90deg,#cce8f8 25%,#e0f2ff 50%,#cce8f8 75%);
+  background-size:400px 100%;
+  animation:shimmer 1.4s infinite linear;
+}
+.skeleton-info{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.skeleton-line{
+  height:12px;
+  border-radius:0;
+  background:linear-gradient(90deg,#cce8f8 25%,#e0f2ff 50%,#cce8f8 75%);
+  background-size:400px 100%;
+  animation:shimmer 1.4s infinite linear;
+}
+.skeleton-line.short{width:55%}
 .card-thumb{
   width:100%;aspect-ratio:16/10;
   background:#a8d4f0;
@@ -158,7 +192,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   font-size:38px;overflow:hidden;position:relative;
 }
-.card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;image-rendering:pixelated}
+.card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;image-rendering:pixelated;transition:transform 0.3s ease}
 
 /* ── Like Button ── */
 .like-btn{
@@ -166,6 +200,7 @@ body{
   background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark);
   display:flex; align-items:center; gap:6px; padding:2px 6px;
   cursor:pointer; transition:transform 0.1s;
+  position:relative;overflow:hidden;
 }
 .like-btn:hover{ transform:translate(-1px,-1px); }
 .like-btn:active{ transform:translate(1px,1px); box-shadow:0 0 0 var(--dark); }
@@ -195,6 +230,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   box-shadow:4px 4px 0 var(--dark);
   color:var(--dark);transition:all .1s;cursor:pointer;
+  position:relative;overflow:hidden;
 }
 .admin-btn:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
 .admin-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--dark)}
@@ -202,6 +238,41 @@ body{
 
 /* ── Animations ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{
+  0%{background-position:-400px 0}
+  100%{background-position:400px 0}
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* Pixel ripple */
+.px-ripple {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: rgba(255,255,255,0.7);
+  pointer-events: none;
+  animation: pxRipple 0.5s ease-out forwards;
+  z-index: 10;
+}
+@keyframes pxRipple {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(15);  opacity: 0; }
+}
+@keyframes modalSpring {
+  0%   { transform: scale(0.8); opacity: 0; }
+  60%  { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes heartBurst {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+@keyframes heartParticle {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
 
 /* ── Work Modal ── */
 .modal-overlay{
@@ -219,8 +290,12 @@ body{
   transform:scale(.97);transition:transform .2s;
   user-select:none;
   padding-top: 40px;
+  transition: background-color 0.4s ease;
 }
-.modal-overlay.open .modal-box{transform:scale(1)}
+.modal-overlay.open .modal-box{
+  transform:scale(1);
+  animation: modalSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
 .modal-drag-bar{
   position:absolute;top:0;left:0;right:0;height:40px;
   cursor:grab;z-index:3;
@@ -278,6 +353,11 @@ body{
   width:calc(100vw - 40px);max-width:500px;
   box-shadow:8px 8px 0 rgba(0,0,0,0.5);
   padding:24px;
+  transform:scale(.97);transition:transform .2s, background-color 0.4s ease;
+}
+.settings-modal.open .settings-box{
+  transform:scale(1);
+  animation: modalSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 .settings-title {font-family:'Press Start 2P',cursive;font-size:16px;color:var(--dark);margin-bottom:20px;text-align:center;border-bottom:3px solid var(--dark);padding-bottom:12px;}
 .set-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
@@ -351,8 +431,28 @@ body{
   .team-popup {
     left: 0; top: 100%; margin-top: 20px; width: 100%; box-sizing: border-box;
   }
+  .top-nav { padding: 0 10px; height: 60px; }
+  .nav-btn { font-size: 11px; padding: 6px 10px; }
+  .logo-text { font-size: 24px; }
+  .social-btn { width: 36px; height: 36px; font-size: 16px; }
 }
 
 /* ── Page Transition ── */
 .page { transition: opacity 0.5s ease; }
 .fade-out { opacity: 0 !important; }
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--sky4); border-left: 2px solid var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--gold); border: 2px solid var(--dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-d); }
+
+/* ── Prefers Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
