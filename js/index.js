@@ -422,7 +422,14 @@ function openModal(w) {
             ${images.map((_, i) => `<span style="display:inline-block;width:10px;height:10px;margin:0 4px;background:${i===0?'var(--gold)':'var(--white)'};border:2px solid var(--dark);border-radius:50%;"></span>`).join('')}
           </div>
         </div>
-        <p class="viewer-hint">Use arrows to view more images</p>
+        <div id="galleryThumbnails" style="display:flex; gap:8px; padding:12px; overflow-x:auto; background:var(--sky1); border-bottom:4px solid var(--dark);">
+          ${images.map((imgUrl, i) => `
+            <div onclick="setGalleryImage(${i})" style="flex-shrink:0; width:80px; height:60px; border:3px solid ${i===0?'var(--gold)':'var(--dark)'}; border-radius:4px; overflow:hidden; cursor:pointer; box-shadow:2px 2px 0 var(--dark); transition:transform 0.1s;">
+              <img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+          `).join('')}
+        </div>
+        <p class="viewer-hint">Use arrows or click thumbnails to view more images</p>
       `;
     } else {
       media.innerHTML = `<div class="modal-img-wrap" id="imgWrap"><img class="modal-img" id="modalImgEl" src="${images[0]}" alt="${w.name}" style="object-position:center ${w.imageFocal||50}%"></div><p class="viewer-hint">↕ Drag image up/down to adjust</p>`;
@@ -549,14 +556,29 @@ window.prevGalleryImage = function(e) {
   updateGalleryCarousel();
 };
 
+window.setGalleryImage = function(index) {
+  if (!window.currentGalleryImages) return;
+  window.currentGalleryIndex = index;
+  updateGalleryCarousel();
+};
+
 function updateGalleryCarousel() {
   const imgEl = document.getElementById('modalImgEl');
   if (imgEl) imgEl.src = window.currentGalleryImages[window.currentGalleryIndex];
+  
   const dotsContainer = document.getElementById('galleryDots');
   if (dotsContainer) {
     const dots = dotsContainer.children;
     for (let i = 0; i < dots.length; i++) {
       dots[i].style.background = i === window.currentGalleryIndex ? 'var(--gold)' : 'var(--white)';
+    }
+  }
+
+  const thumbContainer = document.getElementById('galleryThumbnails');
+  if (thumbContainer) {
+    const thumbs = thumbContainer.children;
+    for (let i = 0; i < thumbs.length; i++) {
+      thumbs[i].style.borderColor = i === window.currentGalleryIndex ? 'var(--gold)' : 'var(--dark)';
     }
   }
 }
