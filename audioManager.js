@@ -117,21 +117,21 @@ function ensureContext() {
 }
 
 function applyVolumes() {
-  if (!masterGain) return;
   const masterMute = volumes.masterMute ? 0 : 1;
   const musicMute = volumes.musicMute ? 0 : 1;
   const sfxMute = volumes.sfxMute ? 0 : 1;
-  
-  masterGain.gain.setTargetAtTime(volumes.master * masterMute, audioCtx.currentTime, 0.05);
-  if (musicGain) musicGain.gain.setTargetAtTime(volumes.music * musicMute, audioCtx.currentTime, 0.05);
-  if (sfxGain) sfxGain.gain.setTargetAtTime(volumes.sfx * sfxMute, audioCtx.currentTime, 0.05);
-  
+
   bgmAudios.forEach(audio => {
     if (audio) {
       const baseVol = audio.baseVolume !== undefined ? audio.baseVolume : 1.0;
       audio.volume = Math.min(1, volumes.master * masterMute * volumes.music * musicMute * baseVol);
     }
   });
+  
+  if (!masterGain) return;
+  masterGain.gain.setTargetAtTime(volumes.master * masterMute, audioCtx.currentTime, 0.05);
+  if (musicGain) musicGain.gain.setTargetAtTime(volumes.music * musicMute, audioCtx.currentTime, 0.05);
+  if (sfxGain) sfxGain.gain.setTargetAtTime(volumes.sfx * sfxMute, audioCtx.currentTime, 0.05);
 }
 
 export function setVolumes({ master, music, sfx, masterMute, musicMute, sfxMute } = {}) {
