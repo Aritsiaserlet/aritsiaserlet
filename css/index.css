@@ -292,7 +292,8 @@ body{
   padding-top: 40px;
   transition: background-color 0.4s ease;
 }
-.modal-overlay.open .modal-box{
+.modal-overlay.open .modal-box,
+#teamModalBox.open {
   transform:scale(1);
   animation: modalSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }

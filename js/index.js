@@ -391,6 +391,7 @@ loadData();
 
 // ── Modal Logic ──
 function openModal(w) {
+  if (window.portfolioAudioManager && window.portfolioAudioManager.sfxBtn) window.portfolioAudioManager.sfxBtn();
   const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
   const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
   
@@ -653,11 +654,14 @@ function closeModal(e) {
 }
 
 function toggleTeamPopup() {
+  if (window.portfolioAudioManager && window.portfolioAudioManager.sfxBtn) window.portfolioAudioManager.sfxBtn();
   const tb = document.getElementById('teamModalBox');
   if (tb.style.display === 'block') {
     tb.style.display = 'none';
+    tb.classList.remove('open');
   } else {
     tb.style.display = 'block';
+    tb.classList.add('open');
     // Center it slightly offset from the main modal
     const vw = window.innerWidth, vh = window.innerHeight;
     tb.style.left = Math.max(0, (vw - Math.min(400, vw-40))/2 + 40) + 'px';
@@ -667,7 +671,11 @@ function toggleTeamPopup() {
   
 function closeModalDirect() {
   document.getElementById('modalOverlay').classList.remove('open');
-  document.getElementById('teamModalBox').style.display = 'none';
+  const tb = document.getElementById('teamModalBox');
+  if (tb) {
+    tb.style.display = 'none';
+    tb.classList.remove('open');
+  }
   document.body.style.overflow = '';
   disposeThreeViewer();
   document.getElementById('modalMedia').innerHTML = '';

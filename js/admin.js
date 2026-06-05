@@ -174,50 +174,71 @@ async function saveWorks(){
 }
 
 // ── Image ──
-let currentImages = [];
+let currentImagesArray = [];
 
-function previewImage(input){
-  if(!input.files || input.files.length===0) return;
-  currentImages = [];
+window.removeImage = function(idx) {
+  currentImagesArray.splice(idx, 1);
+  renderImagePreview();
+};
+
+function renderImagePreview() {
   const prev = document.getElementById('imgPreview');
   const extraWrap = document.getElementById('extraImgWrap');
   prev.innerHTML = '';
   extraWrap.innerHTML = '';
   extraWrap.style.display = 'none';
-  
-  let validFiles = Array.from(input.files).filter(f => f.size <= 4*1024*1024);
-  if(validFiles.length < input.files.length) alert('Some images were too large (max 4MB) and were skipped.');
-  if(validFiles.length === 0) {
+
+  if (currentImagesArray.length === 0) {
     prev.innerHTML = `<span style="font-size:32px">🖼️</span><span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
     return;
   }
 
+  const getImgSrc = (img) => img.type === 'url' ? img.url : `data:image/${img.ext};base64,${img.base64}`;
+  const focal = currentImgFocal !== undefined ? currentImgFocal : 50;
+
+  prev.innerHTML = `<img src="${getImgSrc(currentImagesArray[0])}" style="object-position:center ${focal}%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
+    <button onclick="event.stopPropagation(); window.removeImage(0)" style="position:absolute;top:4px;right:4px;background:var(--danger);color:white;border:2px solid var(--dark);cursor:pointer;padding:2px 6px;z-index:20;">✕</button>
+  `;
+
+  if (currentImagesArray.length > 1) {
+    prev.innerHTML += `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;font-size:16px;z-index:10;border-radius:4px;font-family:'VT323';">+${currentImagesArray.length-1} more</div>`;
+    extraWrap.style.display = 'flex';
+    for (let i = 1; i < currentImagesArray.length; i++) {
+       extraWrap.innerHTML += `<div style="min-width:60px; height:40px; border:2px solid var(--dark); border-radius:4px; overflow:hidden; box-shadow:2px 2px 0 var(--dark); position:relative;">
+         <img src="${getImgSrc(currentImagesArray[i])}" style="width:100%; height:100%; object-fit:cover;">
+         <button onclick="event.stopPropagation(); window.removeImage(${i})" style="position:absolute;top:0;right:0;background:var(--danger);color:white;border:none;border-radius:0 0 0 4px;font-size:10px;cursor:pointer;padding:2px 4px;">✕</button>
+       </div>`;
+    }
+  }
+
+  showFocalSlider(focal);
+  initAdminImgDrag();
+}
+
+function previewImage(input, isAppend = false) {
+  if(!input.files || input.files.length===0) return;
+  if(!isAppend) currentImagesArray = [];
+  
+  let validFiles = Array.from(input.files).filter(f => f.size <= 4*1024*1024);
+  if(validFiles.length < input.files.length) alert('Some images were too large (max 4MB) and were skipped.');
+  if(validFiles.length === 0) {
+    renderImagePreview();
+    return;
+  }
+
   let loadedCount = 0;
-  validFiles.forEach((file, idx) => {
+  validFiles.forEach((file) => {
     const ext = file.name.split('.').pop().toLowerCase()||'jpg';
     const reader = new FileReader();
     reader.onload = e => {
       const full = e.target.result;
       const base64 = full.split(',')[1];
-      // Keep track of order since it's async
-      currentImages[idx] = { ext, base64 };
+      currentImagesArray.push({ type: 'file', ext, base64 });
       loadedCount++;
       
       if (loadedCount === validFiles.length) {
-        // All loaded, render them
-        prev.innerHTML=`<img src="${currentImages[0].base64 ? 'data:image/'+currentImages[0].ext+';base64,'+currentImages[0].base64 : ''}" style="object-position:center 50%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
-        if (validFiles.length > 1) {
-          prev.innerHTML += `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;font-size:16px;z-index:10;border-radius:4px;font-family:'VT323';">+${validFiles.length-1} more</div>`;
-          extraWrap.style.display = 'flex';
-          for (let i = 1; i < currentImages.length; i++) {
-             const imgSrc = 'data:image/'+currentImages[i].ext+';base64,'+currentImages[i].base64;
-             extraWrap.innerHTML += `<div style="min-width:60px; height:40px; border:2px solid var(--dark); border-radius:4px; overflow:hidden; box-shadow:2px 2px 0 var(--dark);">
-               <img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">
-             </div>`;
-          }
-        }
-        showFocalSlider(50);
-        initAdminImgDrag();
+        renderImagePreview();
+        input.value = '';
       }
     };
     reader.readAsDataURL(file);
@@ -970,17 +991,28 @@ async function addWork(){
     modelPath = existing.model || null;
 
     // Upload image to GitHub if exists
-    if(currentImages.length > 0){
+    if(currentImagesArray.length > 0){
       showMsg('Uploading images...','ok');
       fill.style.width='30%';
-      imagePath = [];
-      for(let i=0; i<currentImages.length; i++) {
-        const img = currentImages[i];
-        const fname=`works/${Date.now()}_${i}.${img.ext}`;
-        await ghPutBinary(fname, img.base64, `Add image ${i+1} for ${name}`);
-        imagePath.push(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`);
-        fill.style.width = (30 + ((i+1)/currentImages.length)*25) + '%';
+      let fileImagesCount = currentImagesArray.filter(i=>i.type==='file').length;
+      let filesUploaded = 0;
+      let newImagePathArray = [];
+
+      for(let i=0; i<currentImagesArray.length; i++) {
+        const img = currentImagesArray[i];
+        if (img.type === 'url') {
+           newImagePathArray.push(img.url);
+        } else {
+           const fname=`works/${Date.now()}_${i}.${img.ext}`;
+           await ghPutBinary(fname, img.base64, `Add image ${i+1} for ${name}`);
+           newImagePathArray.push(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`);
+           filesUploaded++;
+           fill.style.width = (30 + (filesUploaded/Math.max(1,fileImagesCount))*25) + '%';
+        }
       }
+      imagePath = newImagePathArray.length === 1 ? newImagePathArray[0] : newImagePathArray;
+    } else {
+      imagePath = null;
     }
 
     // Upload 3D model to GitHub if exists
@@ -1144,7 +1176,7 @@ function resetForm(){
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
   renderToolsCheckboxList();
-  currentImages = [];
+  currentImagesArray = [];
 
   currentModelBase64=null;
   currentModelName=null;
@@ -1204,30 +1236,15 @@ function editWork(id) {
   renderToolsCheckboxList();
 
   // Show existing image
-  const prev = document.getElementById('imgPreview');
-  const extraWrap = document.getElementById('extraImgWrap');
-  extraWrap.innerHTML = '';
-  extraWrap.style.display = 'none';
-
+  currentImagesArray = [];
   if (w.image) {
     let images = Array.isArray(w.image) ? w.image : [w.image];
-    const focal = w.imageFocal !== undefined ? w.imageFocal : 50;
-    prev.innerHTML = `<img src="${images[0]}" style="object-position:center ${focal}%;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"><span style="position:absolute;bottom:6px;right:8px;font-size:10px;background:rgba(0,0,0,.4);color:#fff;padding:2px 6px;border-radius:4px;pointer-events:none">Dbl-click to replace</span>`;
-    
-    if (images.length > 1) {
-      extraWrap.style.display = 'flex';
-      for (let i = 1; i < images.length; i++) {
-         extraWrap.innerHTML += `<div style="min-width:60px; height:40px; border:2px solid var(--dark); border-radius:4px; overflow:hidden; box-shadow:2px 2px 0 var(--dark);">
-           <img src="${images[i]}" style="width:100%; height:100%; object-fit:cover;">
-         </div>`;
-      }
-    }
-    
-    showFocalSlider(focal);
-    initAdminImgDrag();
-  } else {
-    prev.innerHTML = `<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>`;
+    images.forEach(url => currentImagesArray.push({ type: 'url', url }));
   }
+  
+  if (w.imageFocal !== undefined) currentImgFocal = w.imageFocal;
+  
+  renderImagePreview();
 
   document.getElementById('editBanner').classList.add('visible');
   document.getElementById('submitBtn').textContent = 'SAVE CHANGES';
@@ -1285,11 +1302,12 @@ function openPreview() {
   const subLabel = subcat ? subcat.charAt(0).toUpperCase()+subcat.slice(1) : '';
 
   const media = document.getElementById('prevMedia');
-  const existingImg = document.querySelector('#imgPreview img');
-  if (currentImageBase64) {
-    media.innerHTML = `<img class="prev-img" src="data:image/${currentImageExt};base64,${currentImageBase64}">`;
-  } else if (existingImg) {
-    media.innerHTML = `<img class="prev-img" src="${existingImg.src}" style="object-position:${existingImg.style.objectPosition||'center 50%'}">`;
+  if (currentImagesArray.length > 0) {
+    const getImgSrc = (img) => img.type === 'url' ? img.url : `data:image/${img.ext};base64,${img.base64}`;
+    media.innerHTML = `<img class="prev-img" src="${getImgSrc(currentImagesArray[0])}" style="object-position:center ${currentImgFocal||50}%">`;
+    if (currentImagesArray.length > 1) {
+      media.innerHTML += `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;font-size:16px;z-index:10;border-radius:4px;font-family:'VT323';">+${currentImagesArray.length-1} more</div>`;
+    }
   } else {
     media.innerHTML = `<div class="prev-img-ph"></div>`;
   }

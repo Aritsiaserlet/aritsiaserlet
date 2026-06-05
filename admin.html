@@ -342,8 +342,11 @@
               <input type="range" id="focalSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--dark)" oninput="updateFocal(this.value)">
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewImage(this)" style="display:none">
-              <button class="nav-btn" onclick="document.getElementById('imgFileInput').click()">CHOOSE IMAGES</button>
+              <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewImage(this, false)" style="display:none">
+              <button class="nav-btn" onclick="document.getElementById('imgFileInput').click()">REPLACE ALL</button>
+              
+              <input type="file" id="imgFileAppend" accept="image/*" multiple onchange="previewImage(this, true)" style="display:none">
+              <button class="nav-btn" onclick="document.getElementById('imgFileAppend').click()" style="background:var(--gold);color:var(--dark);">➕ ADD MORE</button>
             </div>
           </div>
         </div>
