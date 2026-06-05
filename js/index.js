@@ -447,11 +447,11 @@ function openModal(w) {
   document.getElementById('modalTitle').innerText = safeName;
   document.getElementById('modalDesc').innerText = safeDesc;
 
-  document.getElementById('modalCats').innerHTML = `
+  const badges = document.getElementById('modalBadges');
+  badges.innerHTML = `
     <span class="cat-badge">${catIcon}${safeLabel}</span>
     ${safeSub ? `<span class="cat-badge sub">${safeSub}</span>` : ''}
   `;
-  const badges = document.getElementById('modalBadges');
   if (toolsHtml) badges.innerHTML += `<div style="display:flex;gap:6px;align-items:center;margin-left:8px;padding-left:8px;border-left:3px solid var(--dark);">${toolsHtml}</div>`;
 
   window.currentModalWorkId = w.id;
@@ -876,8 +876,7 @@ function openSettingsModal() {
   const modal = document.getElementById('settingsModal');
   const set = window.portfolioSettingsManager.getSettings();
   
-  document.getElementById('setTheme').value = set.theme;
-  document.getElementById('setGraphics').value = set.graphics;
+
   document.getElementById('setMasterVol').value = set.masterVolume;
   document.getElementById('setMusicVol').value = set.musicVolume;
   document.getElementById('setSfxVol').value = set.sfxVolume;
