@@ -55,8 +55,15 @@
     "name": "Icy Delight",
     "cat": "game",
     "subcat": "action",
-    "desc": "I make this game with friends in Thailand Game Jam",
-    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159557905.png",
+    "desc": "Icy Delight is a fast-paced action game where you play as an ice cream vendor in the middle of a scorching summer. People are collapsing from extreme heat, and it’s your job to save them by throwing ice cream to cool them down! \n\nGameplay Run around the map and help overheated civilians before it’s too late. Throw ice cream to reduce their heat and keep them alive, while avoiding enemies that make things even worse. But be careful even you are affected by the heat.\n\nHeat System Your character has a heat level: Throwing ice cream increases your heat Getting hit by enemies increases your heat even more \n\nIf your heat gets too high, you’ll be in danger You must manage your actions carefully to survive and save others.",
+    "image": [
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159557905.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780669736336_1.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780669739894_2.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780669742468_3.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780669745416_4.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780669748385_5.png"
+    ],
     "model": null,
     "link": "https://roboticscool01gmailcom.itch.io/icy-delight",
     "imageFocal": 45,
