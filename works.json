@@ -97,11 +97,19 @@
     "name": "Non Lea",
     "cat": "game",
     "subcat": "platformer",
-    "desc": "This game, I make with friends and join GameJamX",
-    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159620205.png",
+    "desc": "What if you are the guy who has Heatstroke ,having only 2 minutes to live, but he imagine that he is hero who needs to lick citizens to safe them from the heat before he dies ?",
+    "image": [
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780159620205.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780769276866_1.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780769285064_2.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780769287690_3.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780769290323_4.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780769293269_5.png",
+      "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1780769295443_6.png"
+    ],
     "model": null,
     "link": "https://aimuanginwza007.itch.io/non-leah-licking-to-save-the-world",
-    "imageFocal": 50,
+    "imageFocal": 29,
     "tools": [
       "icon_1780139577983",
       "icon_1780139614213"
