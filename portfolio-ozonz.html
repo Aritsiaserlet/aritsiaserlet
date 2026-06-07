@@ -214,6 +214,31 @@
             box-shadow: 0 0 14px rgba(234, 228, 177, 0.35);
             transform: translateY(-1px);
         }
+        /* Archetype tooltip */
+        .archetype-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: rgba(28, 32, 38, 0.95);
+            border: 1px solid rgba(234, 228, 177, 0.25);
+            color: #eae4b1;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            padding: 0.3rem 0.7rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .archetype-item:hover .archetype-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
     <style>
         @keyframes borderGlow {
@@ -516,50 +541,32 @@
         </section>
 
         <!-- Technical Archetype Section -->
-        <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-20 reveal" id="archetypes">
-            <div class="relative p-8 md:p-10 rounded-2xl border animate-border-glow bg-surface/30 backdrop-blur-xl"
-                style="box-shadow: 0 0 40px rgba(234,228,177,0.08), inset 0 0 40px rgba(234,228,177,0.03);">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Game Dev Box -->
-                    <div
-                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
-                        <div
-                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                            <span class="material-symbols-outlined text-3xl">sports_esports</span>
-                        </div>
-                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">Game Developer</h3>
-                        <p class="text-xs text-on-surface-variant">Robust systems &amp; gameplay logic.</p>
-                    </div>
-                    <!-- 2D Art Box -->
-                    <div
-                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
-                        <div
-                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                            <span class="material-symbols-outlined text-3xl">palette</span>
-                        </div>
-                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">2D Artist</h3>
-                        <p class="text-xs text-on-surface-variant">Pixel art &amp; character design.</p>
-                    </div>
-                    <!-- Coding Box -->
-                    <div
-                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
-                        <div
-                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                            <span class="material-symbols-outlined text-3xl">terminal</span>
-                        </div>
-                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">Programmer</h3>
-                        <p class="text-xs text-on-surface-variant">Clean, performant architectures.</p>
-                    </div>
-                    <!-- Design Box -->
-                    <div
-                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
-                        <div
-                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                            <span class="material-symbols-outlined text-3xl">lightbulb</span>
-                        </div>
-                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">Game Designer</h3>
-                        <p class="text-xs text-on-surface-variant">Player psychology &amp; engagement.</p>
-                    </div>
+        <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pb-20 reveal" id="archetypes">
+            <p class="text-xs uppercase font-bold tracking-[0.25em] text-primary/50 mb-4">Technical Archetype</p>
+            <div class="flex flex-wrap items-center gap-6">
+                <!-- Game Developer -->
+                <div class="archetype-item group relative flex items-center gap-2 cursor-default">
+                    <span class="material-symbols-outlined text-xl text-primary/70 group-hover:text-primary transition-colors duration-300">sports_esports</span>
+                    <span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors duration-300">Game Developer</span>
+                    <div class="archetype-tooltip">Robust systems &amp; gameplay logic.</div>
+                </div>
+                <!-- 2D Artist -->
+                <div class="archetype-item group relative flex items-center gap-2 cursor-default">
+                    <span class="material-symbols-outlined text-xl text-primary/70 group-hover:text-primary transition-colors duration-300">palette</span>
+                    <span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors duration-300">2D Artist</span>
+                    <div class="archetype-tooltip">Pixel art &amp; character design.</div>
+                </div>
+                <!-- Programmer -->
+                <div class="archetype-item group relative flex items-center gap-2 cursor-default">
+                    <span class="material-symbols-outlined text-xl text-primary/70 group-hover:text-primary transition-colors duration-300">terminal</span>
+                    <span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors duration-300">Programmer</span>
+                    <div class="archetype-tooltip">Clean, performant architectures.</div>
+                </div>
+                <!-- Game Designer -->
+                <div class="archetype-item group relative flex items-center gap-2 cursor-default">
+                    <span class="material-symbols-outlined text-xl text-primary/70 group-hover:text-primary transition-colors duration-300">lightbulb</span>
+                    <span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors duration-300">Game Designer</span>
+                    <div class="archetype-tooltip">Player psychology &amp; engagement.</div>
                 </div>
             </div>
         </section>
