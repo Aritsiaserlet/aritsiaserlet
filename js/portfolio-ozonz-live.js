@@ -311,7 +311,7 @@
       },
       { threshold: 0.1 }
     );
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => observer.observe(el));
 
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
@@ -331,10 +331,29 @@
     }
   }
 
+  function initNavbarScroll() {
+    const nav = document.getElementById('main-nav');
+    if (!nav) return;
+
+    function handleScroll() {
+      if (window.scrollY > 80) {
+        nav.classList.remove('-translate-y-full');
+        nav.classList.add('translate-y-0');
+      } else {
+        nav.classList.remove('translate-y-0');
+        nav.classList.add('-translate-y-full');
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+  }
+
   function init() {
     initBackground();
     startGitHubSync();
     initRevealAndTheme();
+    initNavbarScroll();
   }
 
   if (document.readyState === 'loading') {

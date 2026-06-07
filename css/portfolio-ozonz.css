@@ -36,113 +36,148 @@ body {
 /* ── Design Tokens (Color Palette) ── */
 :root {
   /* === PRIMARY WARM PALETTE === */
-  --cream:           #FFF8F0;       /* Soft cream background */
-  --cream-alt:       #FAF4EE;       /* Slightly darker cream */
-  --coral:           #FF8C6B;       /* Warm coral - energetic accent */
-  --coral-light:     #FFB3A0;       /* Lighter coral tint */
-  --coral-dark:      #E67856;       /* Darker coral for contrast */
-  --gold:            #F4D35E;       /* Golden accent - creative */
-  --gold-light:      #F9E5A0;       /* Light gold for backgrounds */
-  --gold-dark:       #D4B037;       /* Dark gold for text */
-  --lilac:           #D4A5D9;       /* Soft purple - imaginative */
-  --lilac-light:     #E8D5ED;       /* Light lilac background */
-  --lilac-dark:      #B57FB3;       /* Dark lilac for contrast */
-  --mint:            #A8E6D8;       /* Soft mint - technical */
-  --mint-light:      #D4F5F0;       /* Light mint background */
-  --mint-dark:       #7DBFB3;       /* Dark mint for contrast */
-  --warm-gray:       #D4C4B9;       /* Soft shadow/border */
-  --warm-gray-light: #E8DDD4;       /* Very light gray */
-  --warm-gray-dark:  #A89E95;       /* Darker gray for text */
+  --cream: #FFF8F0;
+  /* Soft cream background */
+  --cream-alt: #FAF4EE;
+  /* Slightly darker cream */
+  --coral: #FF8C6B;
+  /* Warm coral - energetic accent */
+  --coral-light: #FFB3A0;
+  /* Lighter coral tint */
+  --coral-dark: #E67856;
+  /* Darker coral for contrast */
+  --gold: #F4D35E;
+  /* Golden accent - creative */
+  --gold-light: #F9E5A0;
+  /* Light gold for backgrounds */
+  --gold-dark: #D4B037;
+  /* Dark gold for text */
+  --lilac: #D4A5D9;
+  /* Soft purple - imaginative */
+  --lilac-light: #E8D5ED;
+  /* Light lilac background */
+  --lilac-dark: #B57FB3;
+  /* Dark lilac for contrast */
+  --mint: #A8E6D8;
+  /* Soft mint - technical */
+  --mint-light: #D4F5F0;
+  /* Light mint background */
+  --mint-dark: #7DBFB3;
+  /* Dark mint for contrast */
+  --warm-gray: #D4C4B9;
+  /* Soft shadow/border */
+  --warm-gray-light: #E8DDD4;
+  /* Very light gray */
+  --warm-gray-dark: #A89E95;
+  /* Darker gray for text */
 
   /* === NEUTRAL RANGE === */
-  --text-dark:       #2D3142;       /* Primary text color */
-  --text-medium:     #68717C;       /* Secondary text */
-  --text-light:      #99A3AF;       /* Tertiary text */
-  --white:           #FEFDFB;       /* Near-white background */
-  --black:           #1A1F28;       /* Near-black for deep text */
+  --text-dark: #2D3142;
+  /* Primary text color */
+  --text-medium: #68717C;
+  /* Secondary text */
+  --text-light: #99A3AF;
+  /* Tertiary text */
+  --white: #FEFDFB;
+  /* Near-white background */
+  --black: #1A1F28;
+  /* Near-black for deep text */
 
   /* === DISCIPLINE COLORS (Mapped to OzonZ's 4 Disciplines) === */
-  --game-dev:        #FF8C6B;       /* Coral - Game Developer (energetic) */
-  --artist:          #F4D35E;       /* Gold - 2D Artist (creative) */
-  --programmer:      #A8E6D8;       /* Mint - Programmer (technical) */
-  --designer:        #D4A5D9;       /* Lilac - Game Designer (imaginative) */
+  --game-dev: #FF8C6B;
+  /* Coral - Game Developer (energetic) */
+  --artist: #F4D35E;
+  /* Gold - 2D Artist (creative) */
+  --programmer: #A8E6D8;
+  /* Mint - Programmer (technical) */
+  --designer: #D4A5D9;
+  /* Lilac - Game Designer (imaginative) */
 
   /* === SEMANTIC COLORS === */
-  --success:         #52C41A;       /* Green for success states */
-  --warning:         #FAAD14;       /* Amber for warnings */
-  --error:           #FF7875;       /* Red for errors */
-  --info:            #1890FF;       /* Blue for info */
+  --success: #52C41A;
+  /* Green for success states */
+  --warning: #FAAD14;
+  /* Amber for warnings */
+  --error: #FF7875;
+  /* Red for errors */
+  --info: #1890FF;
+  /* Blue for info */
 
   /* === SPACING SCALE (Golden Ratio Inspired) === */
-  --space-xs:        4px;
-  --space-sm:        8px;
-  --space-md:        16px;
-  --space-lg:        24px;
-  --space-xl:        32px;
-  --space-2xl:       48px;
-  --space-3xl:       64px;
-  --space-4xl:       96px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
 
   /* === TYPOGRAPHY SCALE === */
-  --text-xs:         12px;
-  --text-sm:         14px;
-  --text-base:       16px;
-  --text-lg:         18px;
-  --text-xl:         20px;
-  --text-2xl:        24px;
-  --text-3xl:        32px;
-  --text-4xl:        40px;
-  --text-5xl:        48px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+  --text-4xl: 40px;
+  --text-5xl: 48px;
 
   /* === FONT WEIGHTS === */
-  --fw-light:        300;
-  --fw-normal:       400;
-  --fw-medium:       500;
-  --fw-semibold:     600;
-  --fw-bold:         700;
-  --fw-extrabold:    800;
+  --fw-light: 300;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
 
   /* === BORDER RADIUS (Soft, Organic) === */
-  --radius-sm:       6px;
-  --radius-md:       12px;
-  --radius-lg:       16px;
-  --radius-xl:       24px;
-  --radius-full:     9999px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 
   /* === SHADOW SYSTEM (Soft, Diffused) === */
-  --shadow-xs:       0 2px 8px rgba(45, 49, 66, 0.06);
-  --shadow-sm:       0 4px 12px rgba(45, 49, 66, 0.08);
-  --shadow-md:       0 8px 24px rgba(45, 49, 66, 0.12);
-  --shadow-lg:       0 12px 32px rgba(45, 49, 66, 0.15);
-  --shadow-xl:       0 16px 48px rgba(45, 49, 66, 0.18);
-  --shadow-2xl:      0 20px 64px rgba(45, 49, 66, 0.20);
+  --shadow-xs: 0 2px 8px rgba(45, 49, 66, 0.06);
+  --shadow-sm: 0 4px 12px rgba(45, 49, 66, 0.08);
+  --shadow-md: 0 8px 24px rgba(45, 49, 66, 0.12);
+  --shadow-lg: 0 12px 32px rgba(45, 49, 66, 0.15);
+  --shadow-xl: 0 16px 48px rgba(45, 49, 66, 0.18);
+  --shadow-2xl: 0 20px 64px rgba(45, 49, 66, 0.20);
 
   /* === GLOW EFFECTS (Warm Lighting) === */
-  --glow-coral:      0 0 20px rgba(255, 140, 107, 0.4);
-  --glow-gold:       0 0 20px rgba(244, 211, 94, 0.3);
-  --glow-lilac:      0 0 20px rgba(212, 165, 217, 0.3);
-  --glow-mint:       0 0 20px rgba(168, 230, 216, 0.3);
-  --glow-warm:       0 0 24px rgba(255, 184, 160, 0.25);
+  --glow-coral: 0 0 20px rgba(255, 140, 107, 0.4);
+  --glow-gold: 0 0 20px rgba(244, 211, 94, 0.3);
+  --glow-lilac: 0 0 20px rgba(212, 165, 217, 0.3);
+  --glow-mint: 0 0 20px rgba(168, 230, 216, 0.3);
+  --glow-warm: 0 0 24px rgba(255, 184, 160, 0.25);
 
   /* === TRANSITIONS === */
-  --transition-fast:  150ms ease-out;
-  --transition-base:  250ms ease-out;
-  --transition-slow:  350ms ease-out;
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
 
   /* === Z-INDEX SCALE === */
-  --z-hide:          -1;
-  --z-base:          0;
-  --z-dropdown:      100;
-  --z-sticky:        200;
-  --z-fixed:         300;
-  --z-modal-bg:      400;
-  --z-modal:         500;
-  --z-popover:       600;
-  --z-tooltip:       700;
+  --z-hide: -1;
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-bg: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
 }
 
 /* ── Typography System ── */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Poppins', 'Inter', sans-serif;
   font-weight: var(--fw-bold);
   line-height: 1.2;
@@ -299,24 +334,60 @@ a:hover {
 }
 
 /* ── Spacing Utilities ── */
-.mt-sm { margin-top: var(--space-sm); }
-.mt-md { margin-top: var(--space-md); }
-.mt-lg { margin-top: var(--space-lg); }
-.mt-xl { margin-top: var(--space-xl); }
-.mb-sm { margin-bottom: var(--space-sm); }
-.mb-md { margin-bottom: var(--space-md); }
-.mb-lg { margin-bottom: var(--space-lg); }
-.mb-xl { margin-bottom: var(--space-xl); }
-.p-sm  { padding: var(--space-sm); }
-.p-md  { padding: var(--space-md); }
-.p-lg  { padding: var(--space-lg); }
-.p-xl  { padding: var(--space-xl); }
+.mt-sm {
+  margin-top: var(--space-sm);
+}
+
+.mt-md {
+  margin-top: var(--space-md);
+}
+
+.mt-lg {
+  margin-top: var(--space-lg);
+}
+
+.mt-xl {
+  margin-top: var(--space-xl);
+}
+
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--space-lg);
+}
+
+.mb-xl {
+  margin-bottom: var(--space-xl);
+}
+
+.p-sm {
+  padding: var(--space-sm);
+}
+
+.p-md {
+  padding: var(--space-md);
+}
+
+.p-lg {
+  padding: var(--space-lg);
+}
+
+.p-xl {
+  padding: var(--space-xl);
+}
 
 /* ── Animations ── */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -327,6 +398,7 @@ a:hover {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -338,6 +410,7 @@ a:hover {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -349,6 +422,7 @@ a:hover {
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -360,6 +434,7 @@ a:hover {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -367,18 +442,24 @@ a:hover {
 }
 
 @keyframes glow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.8;
   }
+
   50% {
     opacity: 1;
   }
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-8px);
   }
@@ -1135,6 +1216,7 @@ body.dark-theme .section-subtitle {
    ACCESSIBILITY & PRINT STYLES
    ══════════════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1145,6 +1227,7 @@ body.dark-theme .section-subtitle {
 }
 
 @media print {
+
   .ozonz-navbar,
   .footer,
   .scroll-indicator,
