@@ -260,128 +260,93 @@
 
     <main>
         <!-- Hero Section -->
-    <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pt-24 pb-16 flex flex-col items-center">
-        <!-- GitHub Profile Card -->
-        <div class="w-full max-w-2xl relative reveal mb-16">
-            <div
-                class="relative group p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
-                <!-- Texture & Icon Overlays -->
-                <div class="absolute inset-0 bg-grain z-0"></div>
-                <div class="absolute top-6 right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
-                    <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24">
-                        <path
-                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
-                        </path>
-                    </svg>
-                </div>
-                <div class="relative z-10">
-                    <!-- Header: Avatar & Info -->
-                    <div
-                        class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-8 mb-12">
-                        <div class="relative w-36 h-36 shrink-0">
-                            <div
-                                class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
-                            </div>
-                            <div
-                                class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(234,228,177,0.2)]">
-                                <img id="ghAvatar" alt="OzonZ Profile" class="w-full h-full object-cover"
-                                    src="https://avatars.githubusercontent.com/u/255675901?v=4" />
-                            </div>
-                            <!-- Status Indicator -->
-                            <div class="absolute bottom-2 right-2 w-6 h-6 bg-[#10141a] rounded-full flex items-center justify-center border border-white/10"
-                                title="Live from GitHub">
-                                <div id="ghLiveDot"
-                                    class="w-4 h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
+        <section
+            class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pt-24 pb-16 flex flex-col items-center">
+            <!-- GitHub Profile Card -->
+            <div class="w-full max-w-2xl relative reveal mb-16">
+                <div
+                    class="relative group p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
+                    <!-- Texture & Icon Overlays -->
+                    <div class="absolute inset-0 bg-grain z-0"></div>
+                    <div class="absolute top-6 right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
+                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="relative z-10">
+                        <!-- Header: Avatar & Info -->
+                        <div class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-8 mb-12">
+                            <div class="relative w-36 h-36 shrink-0">
+                                <div
+                                    class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
+                                </div>
+                                <div
+                                    class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(234,228,177,0.2)]">
+                                    <img id="ghAvatar" alt="OzonZ Profile" class="w-full h-full object-cover"
+                                        src="https://avatars.githubusercontent.com/u/255675901?v=4" />
+                                </div>
+                                <!-- Status Indicator -->
+                                <div class="absolute bottom-2 right-2 w-6 h-6 bg-[#10141a] rounded-full flex items-center justify-center border border-white/10"
+                                    title="Live from GitHub">
+                                    <div id="ghLiveDot"
+                                        class="w-4 h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-center md:text-left">
-                            <h3 id="ghDisplayName"
-                                class="text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight">
-                                OzonZ_Dev</h3>
-                            <p id="ghHandle"
-                                class="text-primary/70 font-body-md text-xl md:text-2xl tracking-wide mt-2">
-                                @OzonZ</p>
-                        </div>
-                    </div>
-
-                    <!-- Stats Grid -->
-                    <div class="grid grid-cols-2 gap-6 mb-12">
-                        <div
-                            class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-xl hover:bg-white/10 transition-colors">
-                            <div
-                                class="flex items-center justify-center md:justify-start gap-3 mb-3 text-on-surface-variant">
-                                <span class="material-symbols-outlined text-lg">show_chart</span>
-                                <span
-                                    class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Contributions</span>
+                            <div class="text-center md:text-left">
+                                <h3 id="ghDisplayName"
+                                    class="text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight">
+                                    OzonZ_Dev</h3>
+                                <p id="ghHandle"
+                                    class="text-primary/70 font-body-md text-xl md:text-2xl tracking-wide mt-2">
+                                    @OzonZ</p>
                             </div>
-                            <span id="ghContributions"
-                                class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
                         </div>
-                        <div
-                            class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-xl hover:bg-white/10 transition-colors">
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-2 gap-6 mb-12">
                             <div
-                                class="flex items-center justify-center md:justify-start gap-3 mb-3 text-on-surface-variant">
-                                <span class="material-symbols-outlined text-lg">folder</span>
-                                <span
-                                    class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Repositories</span>
+                                class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-xl hover:bg-white/10 transition-colors">
+                                <div
+                                    class="flex items-center justify-center md:justify-start gap-3 mb-3 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-lg">show_chart</span>
+                                    <span
+                                        class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Contributions</span>
+                                </div>
+                                <span id="ghContributions"
+                                    class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
                             </div>
-                            <span id="ghRepositories"
-                                class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                            <div
+                                class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-xl hover:bg-white/10 transition-colors">
+                                <div
+                                    class="flex items-center justify-center md:justify-start gap-3 mb-3 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-lg">folder</span>
+                                    <span
+                                        class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Repositories</span>
+                                </div>
+                                <span id="ghRepositories"
+                                    class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                            </div>
                         </div>
+
+                        <!-- Action Button -->
+                        <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-5 md:py-6 rounded-xl font-bold text-sm md:text-base tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(234,228,177,0.4)] relative overflow-hidden"
+                            href="https://github.com/OzonZ" target="_blank">
+                            <span class="relative z-10 flex items-center gap-2">
+                                FOLLOW ON GITHUB
+                                <span class="material-symbols-outlined text-lg">open_in_new</span>
+                            </span>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
+                            </div>
+                        </a>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Action Button -->
-                    <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-5 md:py-6 rounded-xl font-bold text-sm md:text-base tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(234,228,177,0.4)] relative overflow-hidden"
-                        href="https://github.com/OzonZ" target="_blank">
-                        <span class="relative z-10 flex items-center gap-2">
-                            FOLLOW ON GITHUB
-                            <span class="material-symbols-outlined text-lg">open_in_new</span>
-                        </span>
-                        <div
-                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Technical Archetype Boxes -->
-        <div class="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
-            <!-- Game Dev Box -->
-            <div class="group pixel-card p-6 rounded-2xl border border-outline/30 flex flex-col items-center text-center hover:border-primary/50 transition-all duration-300">
-                <div class="w-16 h-16 mb-4 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                    <span class="material-symbols-outlined text-3xl">sports_esports</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 uppercase text-primary">Game Dev</h3>
-                <p class="text-sm text-on-surface-variant px-4">Robust systems &amp; gameplay logic.</p>
-            </div>
-            <!-- 2D Art Box -->
-            <div class="group pixel-card p-6 rounded-2xl border border-outline/30 flex flex-col items-center text-center hover:border-primary/50 transition-all duration-300">
-                <div class="w-16 h-16 mb-4 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                    <span class="material-symbols-outlined text-3xl">palette</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 uppercase text-primary">2D Art</h3>
-                <p class="text-sm text-on-surface-variant px-4">Pixel art &amp; character design.</p>
-            </div>
-            <!-- Coding Box -->
-            <div class="group pixel-card p-6 rounded-2xl border border-outline/30 flex flex-col items-center text-center hover:border-primary/50 transition-all duration-300">
-                <div class="w-16 h-16 mb-4 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                    <span class="material-symbols-outlined text-3xl">terminal</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 uppercase text-primary">Coding</h3>
-                <p class="text-sm text-on-surface-variant px-4">Clean, performant architectures.</p>
-            </div>
-            <!-- Design Box -->
-            <div class="group pixel-card p-6 rounded-2xl border border-outline/30 flex flex-col items-center text-center hover:border-primary/50 transition-all duration-300">
-                <div class="w-16 h-16 mb-4 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                    <span class="material-symbols-outlined text-3xl">lightbulb</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 uppercase text-primary">Design</h3>
-                <p class="text-sm text-on-surface-variant px-4">Player psychology &amp; engagement.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
         <!-- Work Section -->
         <section class="py-32 reveal active" id="work">
@@ -485,6 +450,55 @@
                     development, web for education and game programming, collaborating closely with peers and mentors
                     from the community to transform creative concepts into reality.
                 </p>
+            </div>
+        </section>
+
+        <!-- Technical Archetype Section -->
+        <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-20 reveal" id="archetypes">
+            <div class="relative p-8 md:p-10 rounded-2xl border animate-border-glow bg-surface/30 backdrop-blur-xl"
+                style="box-shadow: 0 0 40px rgba(234,228,177,0.08), inset 0 0 40px rgba(234,228,177,0.03);">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Game Dev Box -->
+                    <div
+                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
+                        <div
+                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                            <span class="material-symbols-outlined text-3xl">sports_esports</span>
+                        </div>
+                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">Game Developer</h3>
+                        <p class="text-xs text-on-surface-variant">Robust systems &amp; gameplay logic.</p>
+                    </div>
+                    <!-- 2D Art Box -->
+                    <div
+                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
+                        <div
+                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                            <span class="material-symbols-outlined text-3xl">palette</span>
+                        </div>
+                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">2D Artist</h3>
+                        <p class="text-xs text-on-surface-variant">Pixel art &amp; character design.</p>
+                    </div>
+                    <!-- Coding Box -->
+                    <div
+                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
+                        <div
+                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                            <span class="material-symbols-outlined text-3xl">terminal</span>
+                        </div>
+                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">Programmer</h3>
+                        <p class="text-xs text-on-surface-variant">Clean, performant architectures.</p>
+                    </div>
+                    <!-- Design Box -->
+                    <div
+                        class="group pixel-card p-6 rounded-xl border border-primary/20 flex flex-col items-center text-center hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,228,177,0.15)]">
+                        <div
+                            class="w-14 h-14 mb-4 flex items-center justify-center rounded-xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                            <span class="material-symbols-outlined text-3xl">lightbulb</span>
+                        </div>
+                        <h3 class="text-base font-bold mb-1 uppercase text-primary tracking-widest">Game Designer</h3>
+                        <p class="text-xs text-on-surface-variant">Player psychology &amp; engagement.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
