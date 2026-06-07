@@ -59,67 +59,62 @@
     }, 400);
   }
 
-  async function fetchGraphQL() {
-    const query = `
-      query($login: String!) {
-        user(login: $login) {
-          name
-          login
-          avatarUrl
-          contributionsCollection {
-            contributionCalendar { totalContributions }
-          }
-          repositories(ownerAffiliations: OWNER, privacy: PUBLIC) {
-            totalCount
-          }
-        }
-      }`;
-    const res = await fetch('https://api.github.com/graphql', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables: { login: GITHUB_USER } }),
-    });
-    if (!res.ok) throw new Error('GraphQL HTTP ' + res.status);
-    const json = await res.json();
-    if (json.errors?.length) throw new Error(json.errors[0].message);
-    const u = json.data?.user;
-    if (!u) throw new Error('User not found');
-    return {
-      contributions:
-        u.contributionsCollection?.contributionCalendar?.totalContributions ?? 0,
-      repositories: u.repositories?.totalCount ?? 0,
-      name: u.name,
-      login: u.login,
-      avatarUrl: u.avatarUrl,
-    };
-  }
-
-  async function fetchRestFallback() {
+  async function fetchGitHubData() {
+    // 1. Fetch profile info
     const res = await fetch(
       `https://api.github.com/users/${GITHUB_USER}`,
       { headers: { Accept: 'application/vnd.github+json' } }
     );
     if (!res.ok) throw new Error('REST HTTP ' + res.status);
     const u = await res.json();
+
+    // 2. Fetch contributions
     let contributions = null;
+    
+    // Try jogruber API first (highly reliable)
     try {
       const cr = await fetch(
-        `https://github-contributions-api.deno.dev/${GITHUB_USER}.json`
+        `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}`
       );
       if (cr.ok) {
         const cal = await cr.json();
-        contributions = (cal.contributions || []).reduce(
-          (sum, w) => sum + (w.contributionCount || 0),
-          0
-        );
+        if (cal.total) {
+          contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+        }
       }
-    } catch (_) {
-      /* optional */
+    } catch (err) {
+      console.warn('[GitHub sync] jogruber API failed, trying deno.dev:', err.message);
     }
+
+    // Fallback to deno.dev API if jogruber failed or returned null
+    if (contributions === null) {
+      try {
+        const cr = await fetch(
+          `https://github-contributions-api.deno.dev/${GITHUB_USER}.json`
+        );
+        if (cr.ok) {
+          const cal = await cr.json();
+          let count = 0;
+          if (Array.isArray(cal.contributions)) {
+            for (const week of cal.contributions) {
+              if (Array.isArray(week)) {
+                for (const day of week) {
+                  count += (day.contributionCount || 0);
+                }
+              }
+            }
+          }
+          contributions = count;
+        }
+      } catch (err) {
+        console.warn('[GitHub sync] deno.dev API failed:', err.message);
+      }
+    }
+
     return {
       contributions: contributions ?? lastContributions ?? 0,
       repositories: u.public_repos ?? 0,
-      name: u.name,
+      name: u.name ?? u.login,
       login: u.login,
       avatarUrl: u.avatar_url,
     };
@@ -127,22 +122,15 @@
 
   async function syncGitHub() {
     try {
-      const data = await fetchGraphQL();
+      const data = await fetchGitHubData();
       applyStats(data);
       pulseLive();
     } catch (err) {
-      console.warn('[GitHub sync] GraphQL failed, trying REST:', err.message);
-      try {
-        const data = await fetchRestFallback();
-        applyStats(data);
-        pulseLive();
-      } catch (err2) {
-        console.warn('[GitHub sync] REST failed:', err2.message);
-        if (els.contributions?.textContent === '…')
-          els.contributions.textContent = '—';
-        if (els.repositories?.textContent === '…')
-          els.repositories.textContent = '—';
-      }
+      console.warn('[GitHub sync] sync failed:', err.message);
+      if (els.contributions?.textContent === '…')
+        els.contributions.textContent = '—';
+      if (els.repositories?.textContent === '…')
+        els.repositories.textContent = '—';
     }
   }
 
