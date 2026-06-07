@@ -835,9 +835,7 @@ function spawnEnemy() {
   const size = 160 + Math.random() * 60; // ✦ 160–220px
   const img  = new Image();
   img.crossOrigin = 'anonymous';
-  const images = Array.isArray(w.image) ? w.image : [w.image];
-  const chosenImg = images[Math.floor(Math.random() * images.length)];
-  img.src = chosenImg;
+  img.src = w.image;
   enemies.push({
     x: W + 80, y: player.groundY - size + 30,
     w: size, h: size, img,
