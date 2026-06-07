@@ -1074,16 +1074,11 @@ async function deleteWork(id){
   customConfirm(`Delete "${w.name}"?`, async () => {
     try{
       // Delete image file from GitHub if hosted there
-      if(w.image){
-        const imgUrls = Array.isArray(w.image) ? w.image : [w.image];
-        for (const imgUrl of imgUrls) {
-          if(imgUrl && imgUrl.includes('raw.githubusercontent.com')){
-            const path = imgUrl.split(`/main/`)[1];
-            if(path){
-              const file = await ghGet(path);
-              if(file) await ghDelete(path, `Remove image for ${w.name}`, file.sha);
-            }
-          }
+      if(w.image&&w.image.includes('raw.githubusercontent.com')){
+        const path=w.image.split(`/main/`)[1];
+        if(path){
+          const file=await ghGet(path);
+          if(file)await ghDelete(path,`Remove image for ${w.name}`,file.sha);
         }
       }
       works=works.filter(x=>x.id!==id);
@@ -1121,10 +1116,9 @@ function renderAdminList(){
 
     const label={game:'Game',mod:'Minecraft Mod','3d':'3D Model'}[w.cat]||w.cat;
     const sub=w.subcat?' · '+w.subcat.charAt(0).toUpperCase()+w.subcat.slice(1):'';
-    const displayImg = w.image ? (Array.isArray(w.image) ? w.image[0] : w.image) : null;
     const el=document.createElement('div');el.className='witem';
     el.innerHTML=`
-      <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${displayImg?`<img src="${displayImg}">`:catIcon}</div>
+      <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${w.image}">`:catIcon}</div>
       <div class="witem-info">
         <div class="witem-name">${w.name}</div>
         <div class="witem-cat" style="display:flex;align-items:center;gap:6px;">${catIcon} ${label}${sub}</div>
