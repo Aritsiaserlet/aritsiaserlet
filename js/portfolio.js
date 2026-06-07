@@ -104,10 +104,10 @@ async function loadFeaturedWorks() {
 // ── Load Socials from settings.json ──
 async function loadSocials() {
   try {
-    const socials = getSocials();
-    portforesponse = await fetch('settings.json?t=' + Date.now());
+    const response = await fetch('settings.json?t=' + Date.now());
     const settings = await response.json();
-    portfolioState.socials = settings.
+    portfolioState.socials = settings.socials || [];
+  } catch (e) {
     console.error('Error loading socials:', e);
     portfolioState.socials = [];
   }
@@ -170,7 +170,7 @@ function renderSocials() {
 }
 
 // ── Scroll to Section ──
-window.scrollToSection = function(sectionId) {
+window.scrollToSection = function (sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -178,7 +178,7 @@ window.scrollToSection = function(sectionId) {
 };
 
 // ── Modal Functions ──
-window.closeModal = function(modalId) {
+window.closeModal = function (modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
     modal.classList.remove('active');

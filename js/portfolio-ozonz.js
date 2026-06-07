@@ -41,7 +41,7 @@ const DOMUtils = (() => {
     // Query Selectors
     qs: (selector) => document.querySelector(selector),
     qsa: (selector) => Array.from(document.querySelectorAll(selector)),
-    
+
     // Element Creation
     create: (tag, attrs = {}, content = '') => {
       const element = document.createElement(tag);
@@ -219,10 +219,10 @@ const ThemeManager = (() => {
   const setTheme = (themeName) => {
     if (!themes.includes(themeName)) themeName = 'light';
     currentTheme = themeName;
-    
+
     DOMUtils.toggleClass(document.body, 'dark-theme', themeName === 'dark');
     localStorage.setItem('ozonz-theme', themeName);
-    
+
     updateThemeButton();
     OzonZState.setState({ theme: themeName });
   };

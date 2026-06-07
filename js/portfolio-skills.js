@@ -134,7 +134,7 @@ export function renderSkillTree() {
     // Toggle expand on click
     skillCard.addEventListener('click', () => {
       const isExpanded = skillCard.classList.contains('expanded');
-      
+
       // Close all other categories
       document.querySelectorAll('.skill-category').forEach(card => {
         card.classList.remove('expanded');

@@ -94,9 +94,9 @@ export function renderTimeline() {
 
     // Format date (YYYY-MM to Month Year)
     const dateObj = new Date(item.date + '-01');
-    const formattedDate = dateObj.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short' 
+    const formattedDate = dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short'
     });
 
     content.innerHTML = `
