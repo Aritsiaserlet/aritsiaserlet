@@ -668,8 +668,7 @@
     document.body.style.overflow = 'hidden';
   }
 
-  // Bind close buttons for Detail Modal
-  document.addEventListener('DOMContentLoaded', () => {
+  function initProjectDetailModal() {
     const closeBtn = document.getElementById('project-detail-close-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
@@ -686,7 +685,7 @@
         }
       });
     }
-  });
+  }
 
   function checkHashRoute() {
     if (window.location.hash === '#admin') {
@@ -1242,6 +1241,7 @@
     renderContacts();
     checkHashRoute();
     initAdminHooks();
+    initProjectDetailModal();
     
     // Listen to hash change for admin panel route
     window.addEventListener('hashchange', checkHashRoute);
