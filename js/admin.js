@@ -154,6 +154,7 @@ async function loadWorks(){
     renderAdminList();
     updateStats();
   } catch(e){
+    console.error("loadWorks error:", e);
     window.ghConnected = false;
     document.getElementById('ghStatusBox').style.background = '#fadbd8';
     document.getElementById('ghStatus').className='gh-status err';
@@ -194,7 +195,6 @@ async function loadSettings(){
       }
       if(settings.bgSize) document.getElementById('bgSize').value = settings.bgSize;
       if(settings.bgPos) document.getElementById('bgPos').value = settings.bgPos;
-    }
   } catch(e){
     console.log('No settings.json found or error loading:', e);
   }
