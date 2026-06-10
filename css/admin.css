@@ -59,6 +59,14 @@ body.theme-ozonz textarea {
   border-radius: 6px;
 }
 
+body.theme-ozonz input:focus, 
+body.theme-ozonz select:focus, 
+body.theme-ozonz textarea:focus {
+  background: var(--sky3) !important;
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
 body.theme-ozonz .submit-btn {
   background: var(--gold) !important;
   color: #161a20 !important;

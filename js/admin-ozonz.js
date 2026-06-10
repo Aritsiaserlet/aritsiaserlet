@@ -178,7 +178,6 @@ async function loadSettings(){
       }
       if(settings.bgSize) document.getElementById('bgSize').value = settings.bgSize;
       if(settings.bgPos) document.getElementById('bgPos').value = settings.bgPos;
-    }
   } catch(e){
     console.log('No settings.json found or error loading:', e);
   }
