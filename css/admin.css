@@ -16,22 +16,53 @@
 html,body{min-height:100%;overflow-x:hidden}
 
 body.theme-ozonz {
-  --sky1: #000000;
-  --sky2: #050505;
-  --sky3: #0a0a0a;
-  --sky4: #111111;
-  --gold: #00ff00;
-  --gold-d: #00cc00;
-  --gold-l: #33ff33;
-  --dark: #00ff00;
-  --mid: #00aa00;
-  --white: #000000;
-  --glass: rgba(0,255,0,0.1);
-  --glass2: rgba(0,255,0,0.2);
-  --danger: #ff0000;
-  --success: #00ff00;
-  --pixel-shadow: 4px 4px 0 rgba(0,255,0,0.2);
+  --sky1: #0f1318;
+  --sky2: #161a20;
+  --sky3: #1c222a;
+  --sky4: #232a33;
+  --gold: #eaddb5;
+  --gold-d: #d0c095;
+  --gold-l: #fdf5d3;
+  --dark: #f0f0f0;
+  --mid: #a0aab5;
+  --white: #161a20;
+  --glass: rgba(255,255,255,0.05);
+  --glass2: rgba(255,255,255,0.1);
+  --danger: #ff5555;
+  --success: #55ff55;
+  --pixel-shadow: 0 4px 12px rgba(0,0,0,0.5);
   color: var(--dark);
+}
+
+body.theme-ozonz * {
+  font-family: 'Space Grotesk', 'Mitr', sans-serif !important;
+}
+
+body.theme-ozonz button, 
+body.theme-ozonz input, 
+body.theme-ozonz select, 
+body.theme-ozonz textarea {
+  border-radius: 6px;
+  box-shadow: none !important;
+  border-color: var(--glass2) !important;
+}
+
+body.theme-ozonz .submit-btn {
+  background: var(--gold) !important;
+  color: #161a20 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+}
+
+body.theme-ozonz .panel-card {
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.theme-ozonz .anav {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 body{
   font-family:'VT323', monospace;

@@ -118,13 +118,13 @@ async function loadWorks(){
     if(data){
       worksSha=data.sha;
       works=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
-      window.ghConnected = true;
-      document.getElementById('ghStatusBox').style.background = '#abebc6';
-      document.getElementById('ghStatus').className='gh-status ok';
-      document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
     } else {
       works=[];worksSha=null;
     }
+    window.ghConnected = true;
+    document.getElementById('ghStatusBox').style.background = '#abebc6';
+    document.getElementById('ghStatus').className='gh-status ok';
+    document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
     renderAdminList();
     updateStats();
   } catch(e){
