@@ -687,10 +687,19 @@
       autofillStatus.textContent = '';
     }
 
+    // Reset AI write status
+    const aiStatus = document.getElementById('work-ai-status');
+    if (aiStatus) {
+      aiStatus.classList.add('hidden');
+      aiStatus.textContent = '';
+    }
+
     idxInput.value = index;
     if (index === -1) {
       title.textContent = 'Add New Work';
       document.getElementById('work-form').reset();
+      document.getElementById('work-form-contributors-input').value = '';
+      window.tempAutofilledContributors = [];
     } else {
       title.textContent = 'Edit Work';
       const works = JSON.parse(localStorage.getItem('works') || '[]');
@@ -700,6 +709,10 @@
       document.getElementById('work-form-link-input').value = w.link;
       document.getElementById('work-form-tags-input').value = w.tags;
       document.getElementById('work-form-detail-input').value = w.detail;
+      
+      const contributors = w.contributors || [];
+      document.getElementById('work-form-contributors-input').value = contributors.map(c => c.name).join(', ');
+      window.tempAutofilledContributors = contributors;
     }
     modal.classList.remove('hidden');
   }
