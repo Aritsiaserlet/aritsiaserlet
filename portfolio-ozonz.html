@@ -616,6 +616,21 @@
                 </button>
             </div>
 
+            <!-- Admin Settings / API Key -->
+            <div class="pixel-card p-4 rounded-xl mb-8 border border-primary/20 bg-surface/30 flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">key</span>
+                    <div>
+                        <h4 class="font-bold text-xs uppercase text-on-background">Gemini AI Settings</h4>
+                        <p class="text-[10px] text-on-surface-variant">Enter Gemini API Key to enable ✨ AI Writing</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 flex-1 md:max-w-md">
+                    <input type="password" id="admin-gemini-key" placeholder="AI Studio Key (AIzaSy...)" class="flex-1 py-1.5 px-3 rounded-lg border border-outline bg-background/50 text-on-background text-xs focus:outline-none focus:border-primary">
+                    <button id="admin-save-settings-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Save Key</button>
+                </div>
+            </div>
+
             <!-- Two Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <!-- Column 1: Selected Archives (Works) -->
