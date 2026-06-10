@@ -502,7 +502,7 @@
     const featured = works[0];
     const isFeaturedImg = featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.');
     const featuredHTML = `
-        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30">
+        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger" data-index="0">
             <div class="absolute inset-0 bg-black/50 z-10 transition-opacity group-hover:opacity-30"></div>
             ${
               isFeaturedImg
@@ -534,7 +534,7 @@
         const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
 
         const cardHTML = `
-            <div class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between">
+            <div class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger" data-index="${i}">
                 <div>
                     <div class="flex justify-between items-start mb-6">
                         ${
@@ -559,6 +559,15 @@
       }
       grid.appendChild(bentoContainer);
     }
+
+    // Bind click listeners to work-card-trigger
+    grid.querySelectorAll('.work-card-trigger').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const index = parseInt(card.getAttribute('data-index'));
+        openProjectDetailModal(index);
+      });
+    });
   }
 
   function renderContacts() {
