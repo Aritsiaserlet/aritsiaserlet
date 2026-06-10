@@ -952,12 +952,21 @@
       const index = parseInt(document.getElementById('work-form-index').value);
       const works = JSON.parse(localStorage.getItem('works') || '[]');
 
+      const contributorsInput = document.getElementById('work-form-contributors-input').value;
+      const names = contributorsInput.split(',').map(n => n.trim()).filter(Boolean);
+      const existingContributors = window.tempAutofilledContributors || [];
+      const contributors = names.map(name => {
+        const match = existingContributors.find(c => c.name.toLowerCase() === name.toLowerCase());
+        return match ? match : { name: name };
+      });
+
       const newWork = {
         title: document.getElementById('work-form-title-input').value,
         image: document.getElementById('work-form-image-input').value,
         link: document.getElementById('work-form-link-input').value,
         tags: document.getElementById('work-form-tags-input').value,
         detail: document.getElementById('work-form-detail-input').value,
+        contributors: contributors,
       };
 
       if (index === -1) {
