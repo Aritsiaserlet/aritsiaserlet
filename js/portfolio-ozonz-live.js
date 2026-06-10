@@ -389,11 +389,39 @@
     handleScroll();
   }
 
+  function initSmoothScroll() {
+    const navLinks = document.querySelectorAll('#main-nav a');
+    navLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        if (href === '#' || href === '') {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } else if (href.startsWith('#')) {
+          e.preventDefault();
+          const targetElement = document.querySelector(href);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+  }
+
   function init() {
     initBackground();
     startGitHubSync();
     initRevealAndTheme();
     initNavbarScroll();
+    initSmoothScroll();
   }
 
   if (document.readyState === 'loading') {
