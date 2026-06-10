@@ -793,6 +793,53 @@
         </div>
     </div>
 
+    <!-- Project Detail Popup Modal -->
+    <div id="project-detail-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+        <div class="pixel-card rounded-2xl border border-primary/30 max-w-2xl w-full max-h-[92vh] overflow-hidden flex flex-col" style="background: rgba(var(--surface-rgb),0.97); box-shadow: 0 0 60px rgba(var(--primary-rgb),0.18), 0 24px 64px rgba(0,0,0,0.5);">
+            <!-- Hero Image -->
+            <div id="project-detail-image-container" class="w-full h-56 md:h-72 bg-surface-variant overflow-hidden relative flex-shrink-0">
+                <!-- filled by JS -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10 pointer-events-none"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 md:p-8 overflow-y-auto flex-1">
+                <!-- Tags -->
+                <div id="project-detail-tags" class="flex flex-wrap gap-2 mb-4">
+                    <!-- filled by JS -->
+                </div>
+
+                <!-- Title -->
+                <h2 id="project-detail-title" class="text-3xl md:text-4xl font-bold uppercase text-on-background font-headline mb-3 leading-tight"></h2>
+
+                <!-- Description -->
+                <p id="project-detail-description" class="text-on-surface-variant text-base md:text-lg leading-relaxed mb-6"></p>
+
+                <!-- Contributors Section -->
+                <div id="project-detail-contributors-section" class="mb-6 hidden">
+                    <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Contributors</h4>
+                    <div id="project-detail-contributors-list" class="flex flex-wrap gap-2">
+                        <!-- filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 flex-wrap">
+                    <a id="project-detail-link" href="#" target="_blank"
+                        class="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-widest hover:scale-105 hover:shadow-[0_0_24px_rgba(var(--primary-rgb),0.4)] transition-all duration-200">
+                        <span class="material-symbols-outlined text-base">open_in_new</span>
+                        View Project
+                    </a>
+                    <button id="project-detail-close-btn"
+                        class="inline-flex items-center gap-2 bg-surface-variant text-on-surface-variant px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-widest hover:scale-105 transition-all duration-200">
+                        <span class="material-symbols-outlined text-base">close</span>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/config.js" onerror="console.warn('Local config.js not found. Fallback to browser storage for API keys.')"></script>
     <script src="js/portfolio-ozonz-live.js" defer></script>
 </body>
