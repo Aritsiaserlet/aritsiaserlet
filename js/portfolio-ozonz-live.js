@@ -1230,11 +1230,22 @@
 
   async function fetchPortfolioData() {
     try {
-      const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/works.json?t=${Date.now()}`);
-      const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/settings.json?t=${Date.now()}`);
+      const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/ozonz_works.json?t=${Date.now()}`);
+      const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/ozonz_settings.json?t=${Date.now()}`);
+      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/settings.json?t=${Date.now()}`);
+      
       if (worksRes.ok) globalWorks = await worksRes.json();
       if (settingsRes.ok) globalSettings = await settingsRes.json();
-    } catch(err) {
+      
+      let sharedSettings = {};
+      if (sharedSettingsRes.ok) sharedSettings = await sharedSettingsRes.json();
+      
+      // Inject shared icons and teams
+      globalSettings.icons = sharedSettings.icons || [];
+      globalSettings.teams = sharedSettings.teams || [];
+      globalSettings.sounds = sharedSettings.sounds || [];
+      
+    } catch (err) {
       console.error("Failed to fetch portfolio data from GitHub:", err);
     }
   }

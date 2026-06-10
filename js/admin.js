@@ -8,8 +8,32 @@ const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
 
 const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
-const JSON_PATH = 'settings.json';
+let WORKS_PATH = 'works.json';
+let SETTINGS_PATH = 'settings.json';
+const SHARED_SETTINGS_PATH = 'settings.json';
+let adminMode = 'aritsia';
 let GH_TOKEN  = '';
+
+window.switchAdminMode = async function(mode) {
+  if (adminMode === mode) return;
+  adminMode = mode;
+  
+  document.getElementById('btnModeAritsia').style.background = (mode === 'aritsia') ? 'var(--gold)' : 'var(--white)';
+  document.getElementById('btnModeOzonz').style.background = (mode === 'ozonz') ? 'var(--sky2)' : 'var(--white)';
+  
+  if (mode === 'aritsia') {
+    WORKS_PATH = 'works.json';
+    SETTINGS_PATH = 'settings.json';
+  } else {
+    WORKS_PATH = 'ozonz_works.json';
+    SETTINGS_PATH = 'ozonz_settings.json';
+  }
+  
+  document.getElementById('ghStatus').textContent = 'Loading ' + mode.toUpperCase() + '...';
+  await loadWorks();
+  await loadSettings();
+  document.getElementById('ghStatus').textContent = '✓ Connected (' + mode.toUpperCase() + ')';
+};
 function getHeaders(){
   return {
     'Authorization': `token ${GH_TOKEN}`,
@@ -114,17 +138,19 @@ let selectedTeams=[];
 
 async function loadWorks(){
   try{
-    const data=await ghGet('works.json');
+    const data=await ghGet(WORKS_PATH);
     if(data){
       worksSha=data.sha;
       works=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
-      window.ghConnected = true;
-      document.getElementById('ghStatusBox').style.background = '#abebc6';
-      document.getElementById('ghStatus').className='gh-status ok';
-      document.getElementById('ghStatus').textContent='✓ Connected to GitHub';
     } else {
       works=[];worksSha=null;
     }
+    window.ghConnected = true;
+    document.getElementById('ghStatusBox').style.background = '#abebc6';
+    document.getElementById('ghStatus').className='gh-status ok';
+    document.getElementById('ghStatus').textContent='✓ Connected (' + adminMode.toUpperCase() + ')';
+    const modeSel = document.getElementById('adminModeSelector');
+    if (modeSel) modeSel.style.display = 'flex';
     renderAdminList();
     updateStats();
   } catch(e){
@@ -137,12 +163,26 @@ async function loadWorks(){
 }
 
 let settings={}, settingsSha=null;
+let sharedSettings = {};
 async function loadSettings(){
+  try {
+    const sharedData = await ghGet(SHARED_SETTINGS_PATH);
+    if (sharedData) sharedSettings = JSON.parse(decodeURIComponent(escape(atob(sharedData.content.replace(/\n/g,'')))));
+  } catch(e) {}
+
   try{
-    const data=await ghGet(JSON_PATH);
+    const data=await ghGet(SETTINGS_PATH);
     if(data){
       settingsSha=data.sha;
       settings=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    } else {
+      settings={}; settingsSha=null;
+    }
+    // Inject shared
+    settings.icons = sharedSettings.icons || [];
+    settings.teams = sharedSettings.teams || [];
+    settings.sounds = sharedSettings.sounds || [];
+
       if(settings.profileImage){
         setMediaPreview('profilePreview', settings.profileImage);
       }
@@ -169,7 +209,7 @@ async function loadSettings(){
 
 async function saveWorks(){
   const json=JSON.stringify(works,null,2);
-  const result=await ghPut('works.json', json, 'Update works.json', worksSha);
+  const result=await ghPut(WORKS_PATH, json, `Update ${WORKS_PATH}`, worksSha);
   worksSha=result.content.sha;
 }
 
@@ -312,15 +352,14 @@ async function addIconToLibrary() {
       await ghPutBinary(fname, base64, `Upload icon ${nameInput.value}`);
       const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
       
-      if(!settings.icons) settings.icons = [];
-
-  if(!settings.teams) settings.teams = [];
-
-      settings.icons.push({ id, name: nameInput.value.trim(), url });
+      if(!sharedSettings.icons) sharedSettings.icons = [];
+      sharedSettings.icons.push({ id, name: nameInput.value.trim(), url });
       
-      const json = JSON.stringify(settings, null, 2);
-      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new icon', settingsSha);
-      settingsSha = saveResult.content.sha;
+      const sharedData = await ghGet(SHARED_SETTINGS_PATH);
+      const sha = sharedData ? sharedData.sha : null;
+      const json = JSON.stringify(sharedSettings, null, 2);
+      await ghPut(SHARED_SETTINGS_PATH, json, 'Update shared settings.json with new icon', sha);
+      settings.icons = sharedSettings.icons;
       
       nameInput.value = '';
       fileInput.value = '';
@@ -360,11 +399,13 @@ function renderIconLibrary() {
 
 async function deleteIcon(idx) {
   customConfirm("Delete this icon? It will be removed from any links or categories using it.", async () => {
-    settings.icons.splice(idx, 1);
+    sharedSettings.icons.splice(idx, 1);
     try {
-      const json = JSON.stringify(settings, null, 2);
-      const res = await ghPut(JSON_PATH, json, 'Delete icon from library', settingsSha);
-      settingsSha = res.content.sha;
+      const sharedData = await ghGet(SHARED_SETTINGS_PATH);
+      const sha = sharedData ? sharedData.sha : null;
+      const json = JSON.stringify(sharedSettings, null, 2);
+      await ghPut(SHARED_SETTINGS_PATH, json, 'Delete icon from shared library', sha);
+      settings.icons = sharedSettings.icons;
       renderIconLibrary();
       renderSettingsUI();
       renderToolsCheckboxList();
@@ -445,7 +486,7 @@ async function addSoundToLibrary() {
       if(!settings.sounds) settings.sounds = [];
       settings.sounds.push({ id, name: nameInput.value.trim(), url });
       const json = JSON.stringify(settings, null, 2);
-      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new sound', settingsSha);
+      const saveResult = await ghPut(SETTINGS_PATH, json, 'Update settings.json with new sound', settingsSha);
       settingsSha = saveResult.content.sha;
       nameInput.value = ''; fileInput.value = '';
       btn.textContent = 'UPLOAD SOUND'; btn.disabled = false;
@@ -469,11 +510,11 @@ window.updateSoundVolume = function(idx, val) {
   volumeSaveTimeout = setTimeout(async () => {
     try {
       // Always fetch latest SHA to prevent 409 before saving
-      const latest = await ghGet(JSON_PATH);
+      const latest = await ghGet(SETTINGS_PATH);
       if (latest && latest.sha) settingsSha = latest.sha;
       
       const json = JSON.stringify(settings, null, 2);
-      const res = await ghPut(JSON_PATH, json, 'Update sound volume', settingsSha);
+      const res = await ghPut(SETTINGS_PATH, json, 'Update sound volume', settingsSha);
       settingsSha = res.content.sha;
     } catch (e) {
       console.error("Volume save error:", e);
@@ -520,7 +561,7 @@ async function deleteSound(idx) {
     }
     try {
       const json = JSON.stringify(settings, null, 2);
-      const res = await ghPut(JSON_PATH, json, 'Delete sound from library', settingsSha);
+      const res = await ghPut(SETTINGS_PATH, json, 'Delete sound from library', settingsSha);
       settingsSha = res.content.sha;
       renderSoundLibrary();
       renderSettingsUI();
@@ -635,7 +676,7 @@ async function saveSoundAssignments() {
     msgEl.style.color = 'var(--mid)';
     msgEl.textContent = 'Saving...';
     const json = JSON.stringify(settings, null, 2);
-    const result = await ghPut(JSON_PATH, json, 'Update sound assignments', settingsSha);
+    const result = await ghPut(SETTINGS_PATH, json, 'Update sound assignments', settingsSha);
     settingsSha = result.content.sha;
     msgEl.style.color = 'var(--success)';
     msgEl.textContent = '✓ Sound assignments saved!';
@@ -883,7 +924,7 @@ async function saveSettings(){
 
     msg.textContent='Updating settings.json...';
     const json=JSON.stringify(settings,null,2);
-    const result=await ghPut(JSON_PATH, json, 'Update settings.json', settingsSha);
+    const result=await ghPut(SETTINGS_PATH, json, 'Update settings.json', settingsSha);
     settingsSha=result.content.sha;
 
     fill.style.width='100%';
@@ -929,7 +970,7 @@ async function saveGameAnimations() {
     settings.game.playerAttackFps = parseInt(document.getElementById('gsetAttackFps').value) || 15;
     settings.game.playerAttackLoop = document.getElementById('gsetAttackLoop').checked;
     const json=JSON.stringify(settings,null,2);
-    const result=await ghPut(JSON_PATH, json, 'Update Game Animations', settingsSha);
+    const result=await ghPut(SETTINGS_PATH, json, 'Update Game Animations', settingsSha);
     settingsSha=result.content.sha;
     fill.style.width='100%';
     msg.textContent='Animations saved!';
@@ -953,7 +994,7 @@ async function saveGameBalance() {
     settings.game.missPenalty = parseInt(document.getElementById('gsetMissPen').value) || 5;
     settings.game.fwIconId = document.getElementById('gsetFwIcon').value || '';
     const json=JSON.stringify(settings,null,2);
-    const result=await ghPut(JSON_PATH, json, 'Update Game Balance', settingsSha);
+    const result=await ghPut(SETTINGS_PATH, json, 'Update Game Balance', settingsSha);
     settingsSha=result.content.sha;
     fill.style.width='100%';
     msg.textContent='Balance saved!';
@@ -1449,7 +1490,7 @@ async function addTeamLibraryMember() {
   
   if(!name) return alert("Please enter a team member name.");
   
-  if(!settings.teams) settings.teams = [];
+  if(!sharedSettings.teams) sharedSettings.teams = [];
   const newTeam = {
     id: 'team_' + Date.now(),
     name: name,
@@ -1457,15 +1498,20 @@ async function addTeamLibraryMember() {
     iconId: iconId
   };
   
-  settings.teams.push(newTeam);
+  sharedSettings.teams.push(newTeam);
   try {
+    const sharedData = await ghGet(SHARED_SETTINGS_PATH);
+    const sha = sharedData ? sharedData.sha : null;
+    const json = JSON.stringify(sharedSettings, null, 2);
+    await ghPut(SHARED_SETTINGS_PATH, json, 'Add team member to shared library', sha);
+    settings.teams = sharedSettings.teams;
+
     document.getElementById('newTeamName').value = '';
     document.getElementById('newTeamLink').value = '';
     document.getElementById('newTeamIcon').value = '';
     
     renderTeamLibrary();
     renderTeamCheckboxList();
-    await saveSettings(); // autosave
   } catch(e) {
     alert("Error adding team member: " + e.message);
   }
@@ -1473,11 +1519,16 @@ async function addTeamLibraryMember() {
 
 async function deleteTeamLibraryMember(id) {
   customConfirm("Delete this team member?", async () => {
-    settings.teams = settings.teams.filter(t => t.id !== id);
+    sharedSettings.teams = sharedSettings.teams.filter(t => t.id !== id);
     try {
+      const sharedData = await ghGet(SHARED_SETTINGS_PATH);
+      const sha = sharedData ? sharedData.sha : null;
+      const json = JSON.stringify(sharedSettings, null, 2);
+      await ghPut(SHARED_SETTINGS_PATH, json, 'Delete team member from shared library', sha);
+      settings.teams = sharedSettings.teams;
+
       renderTeamLibrary();
       renderTeamCheckboxList();
-      await saveSettings(); // autosave
     } catch(e) {
       alert("Error deleting team member: " + e.message);
     }
