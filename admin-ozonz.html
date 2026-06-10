@@ -278,16 +278,17 @@
           <label>Work Name</label>
           <input type="text" id="wName" placeholder="e.g. Space Shooter">
         </div>
-        <div class="field">
+        <div class="field" style="display:none;">
           <label>Main Category</label>
           <select id="wCat" onchange="onCatChange()">
+            <option value="ozonz" selected>OzonZ Work</option>
             <option value="">— select —</option>
             <option value="game">Game</option>
             <option value="mod">Minecraft Mod</option>
             <option value="3d">3D Model</option>
           </select>
         </div>
-        <div class="field subcat-wrap" id="subcatWrap">
+        <div class="field subcat-wrap" id="subcatWrap" style="display:none;">
           <label>Sub-category</label>
           <select id="wSubcat">
             <option value="">— select type —</option>
