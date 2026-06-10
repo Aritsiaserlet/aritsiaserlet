@@ -357,6 +357,23 @@
             opacity: 0.05;
             pointer-events: none;
         }
+        /* Scroll Down Indicator */
+        #scroll-indicator {
+            color: rgb(var(--on-background-rgb));
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        #scroll-indicator.hidden-indicator {
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+        }
+        .scroll-arrow {
+            animation: scroll-bounce 1.8s ease-in-out infinite;
+        }
+        @keyframes scroll-bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
     </style>
 </head>
 
@@ -490,6 +507,14 @@
             </div>
 
         </section>
+
+        <!-- Scroll Down Indicator -->
+        <div id="scroll-indicator" class="flex flex-col items-center gap-2 pb-8 -mt-8 pointer-events-none select-none" aria-hidden="true">
+            <span class="text-on-surface-variant/50 text-xs font-bold tracking-[0.25em] uppercase">Scroll down for more</span>
+            <svg class="scroll-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
 
         <!-- Work Section -->
         <section class="py-32 reveal active" id="work">
@@ -795,6 +820,24 @@
 
     <script src="js/config.js" onerror="console.warn('Local config.js not found. Fallback to browser storage for API keys.')"></script>
     <script src="js/portfolio-ozonz-live.js" defer></script>
+    <script>
+        // Hide scroll indicator once user scrolls down
+        (function() {
+            const indicator = document.getElementById('scroll-indicator');
+            if (!indicator) return;
+            let hidden = false;
+            function onScroll() {
+                if (!hidden && window.scrollY > 60) {
+                    hidden = true;
+                    indicator.classList.add('hidden-indicator');
+                } else if (hidden && window.scrollY <= 10) {
+                    hidden = false;
+                    indicator.classList.remove('hidden-indicator');
+                }
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+        })();
+    </script>
 </body>
 
 </html>
