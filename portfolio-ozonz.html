@@ -374,6 +374,20 @@
             0%, 100% { transform: translateY(0); opacity: 0.4; }
             50% { transform: translateY(8px); opacity: 1; }
         }
+        /* GitHub Skeleton loading */
+        .gh-skeleton {
+            background: linear-gradient(90deg,
+                rgba(var(--surface-variant-rgb), 0.6) 25%,
+                rgba(var(--surface-variant-rgb), 0.9) 50%,
+                rgba(var(--surface-variant-rgb), 0.6) 75%);
+            background-size: 200% 100%;
+            animation: gh-shimmer 1.5s infinite;
+            display: inline-block;
+        }
+        @keyframes gh-shimmer {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
     </style>
 </head>
 
@@ -444,11 +458,14 @@
                             </div>
                             <div class="text-center">
                                 <h3 id="ghDisplayName"
-                                    class="text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight">
-                                    OzonZ_Dev</h3>
+                                    class="text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em]">
+                                    <span class="gh-skeleton inline-block w-48 h-10 rounded-lg"></span></h3>
                                 <p id="ghHandle"
                                     class="text-primary/70 font-body-md text-xl md:text-2xl tracking-wide mt-2">
-                                    @OzonZ</p>
+                                    <span class="gh-skeleton inline-block w-24 h-6 rounded-md"></span></p>
+                                <p id="ghBio"
+                                    class="text-on-surface-variant text-sm mt-2 max-w-xs mx-auto leading-relaxed">
+                                    <span class="gh-skeleton inline-block w-56 h-4 rounded"></span></p>
                             </div>
                         </div>
 

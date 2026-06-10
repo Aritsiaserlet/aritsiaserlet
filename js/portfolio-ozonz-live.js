@@ -70,6 +70,7 @@
     avatar: document.getElementById('ghAvatar'),
     displayName: document.getElementById('ghDisplayName'),
     handle: document.getElementById('ghHandle'),
+    bio: document.getElementById('ghBio'),
     liveDot: document.getElementById('ghLiveDot'),
   };
 
@@ -175,6 +176,8 @@
       name: u.name ?? u.login,
       login: u.login,
       avatarUrl: u.avatar_url,
+      bio: u.bio ?? '',
+      profileUrl: u.html_url ?? `https://github.com/${u.login}`,
     };
   }
 
@@ -196,9 +199,28 @@
     setStat(els.contributions, data.contributions, 'c');
     setStat(els.repositories, data.repositories, 'r');
     if (data.avatarUrl && els.avatar) els.avatar.src = data.avatarUrl;
-    if (data.name && els.displayName) els.displayName.textContent = data.name;
-    if (data.login && els.handle)
-      els.handle.textContent = '@' + data.login;
+
+    // Display name — clear skeleton, apply real data
+    if (data.name && els.displayName) {
+      els.displayName.innerHTML = data.profileUrl
+        ? `<a href="${data.profileUrl}" target="_blank" rel="noopener"
+              class="hover:text-primary transition-colors">${data.name}</a>`
+        : data.name;
+    }
+
+    // Handle @login — clear skeleton
+    if (data.login && els.handle) {
+      els.handle.innerHTML = data.profileUrl
+        ? `<a href="${data.profileUrl}" target="_blank" rel="noopener"
+              class="hover:text-primary transition-colors">@${data.login}</a>`
+        : `@${data.login}`;
+    }
+
+    // Bio — clear skeleton
+    if (els.bio) {
+      els.bio.textContent = data.bio || '';
+      els.bio.style.display = data.bio ? '' : 'none';
+    }
   }
 
   function startGitHubSync() {
