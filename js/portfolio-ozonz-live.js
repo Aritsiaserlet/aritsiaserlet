@@ -764,6 +764,125 @@
     }
   }
 
+  function handleWorkAutofill() {
+    const urlInput = document.getElementById('work-autofill-url');
+    const statusEl = document.getElementById('work-autofill-status');
+    if (!urlInput || !statusEl) return;
+
+    const url = urlInput.value.trim();
+    if (!url) {
+      statusEl.textContent = 'Please enter a URL first.';
+      statusEl.className = 'text-red-500 text-xs mt-2 block';
+      statusEl.classList.remove('hidden');
+      return;
+    }
+
+    statusEl.textContent = 'Fetching data...';
+    statusEl.className = 'text-on-surface-variant text-xs mt-2 block';
+    statusEl.classList.remove('hidden');
+
+    // Check if it is a GitHub repo link
+    const githubRegex = /github\.com\/([^/]+)\/([^/]+)/i;
+    const githubMatch = url.match(githubRegex);
+
+    if (githubMatch) {
+      const owner = githubMatch[1];
+      let repo = githubMatch[2].split(/[#?]/)[0];
+      if (repo.endsWith('.git')) repo = repo.slice(0, -4);
+
+      fetch(`https://api.github.com/repos/${owner}/${repo}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`GitHub API returned status ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          const formattedTitle = data.name
+            .replace(/[-_]/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+          document.getElementById('work-form-title-input').value = formattedTitle;
+          document.getElementById('work-form-detail-input').value = data.description || '';
+          document.getElementById('work-form-link-input').value = data.html_url || url;
+          document.getElementById('work-form-image-input').value = 'terminal';
+          
+          const tags = [];
+          if (data.language) tags.push(data.language.toUpperCase());
+          tags.push('GITHUB');
+          document.getElementById('work-form-tags-input').value = tags.join(', ');
+
+          statusEl.textContent = 'Autofill successful!';
+          statusEl.className = 'text-green-500 text-xs mt-2 block';
+        })
+        .catch(err => {
+          console.error(err);
+          statusEl.textContent = `Error: ${err.message}`;
+          statusEl.className = 'text-red-500 text-xs mt-2 block';
+        });
+      return;
+    }
+
+    // Check if it is an Itch.io link
+    const itchRegex = /itch\.io/i;
+    if (itchRegex.test(url)) {
+      fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`Proxy server returned status ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (!data || !data.contents) {
+            throw new Error('No content returned from proxy');
+          }
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(data.contents, 'text/html');
+
+          let title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                      doc.querySelector('h1.game_title')?.textContent ||
+                      doc.title;
+          
+          if (title) {
+            title = title.replace(/\s+/g, ' ').trim();
+            if (title.toLowerCase().endsWith(' by itch.io')) {
+              title = title.slice(0, -11);
+            }
+          }
+
+          const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+                        doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
+                        doc.querySelector('.header_image')?.getAttribute('src') ||
+                        'brush';
+
+          let detail = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+                       doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
+                       '';
+          if (detail) {
+            detail = detail.replace(/\s+/g, ' ').trim();
+          }
+
+          document.getElementById('work-form-title-input').value = title || '';
+          document.getElementById('work-form-image-input').value = image || 'brush';
+          document.getElementById('work-form-link-input').value = url;
+          document.getElementById('work-form-detail-input').value = detail || '';
+          document.getElementById('work-form-tags-input').value = 'ITCH.IO';
+
+          statusEl.textContent = 'Autofill successful!';
+          statusEl.className = 'text-green-500 text-xs mt-2 block';
+        })
+        .catch(err => {
+          console.error(err);
+          statusEl.textContent = `Error: ${err.message}`;
+          statusEl.className = 'text-red-500 text-xs mt-2 block';
+        });
+      return;
+    }
+
+    statusEl.textContent = 'Invalid URL. Please input a valid GitHub or Itch.io link.';
+    statusEl.className = 'text-red-500 text-xs mt-2 block';
+  }
+
   function initAdminHooks() {
     // Auth Modal
     document.getElementById('admin-auth-submit').addEventListener('click', () => {
@@ -804,6 +923,12 @@
     // Add buttons
     document.getElementById('admin-add-work-btn').addEventListener('click', () => openWorkForm(-1));
     document.getElementById('admin-add-contact-btn').addEventListener('click', () => openContactForm(-1));
+
+    // Autofill button
+    const autofillBtn = document.getElementById('work-autofill-btn');
+    if (autofillBtn) {
+      autofillBtn.addEventListener('click', handleWorkAutofill);
+    }
 
     // Icon select type change
     document.getElementById('contact-form-icon-type').addEventListener('change', updateContactIconLabels);
