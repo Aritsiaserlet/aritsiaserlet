@@ -186,9 +186,9 @@
         // Background colors
         vec3 bgDark = vec3(0.063, 0.078, 0.102);
         
-        // Subtle yellowish-green gradient for light mode
+        // Yellowish-white gradient for light mode
         float grad = clamp(v_texCoord.x * 0.5 + v_texCoord.y * 0.5, 0.0, 1.0);
-        vec3 bgLight = mix(vec3(0.902, 0.941, 0.847), vec3(0.961, 0.973, 0.941), grad);
+        vec3 bgLight = mix(vec3(0.98, 0.965, 0.922), vec3(1.0, 0.992, 0.969), grad);
         
         vec3 bg = mix(bgLight, bgDark, u_isDark);
 
@@ -204,8 +204,8 @@
         vec3 dotColorDimDark = vec3(0.22, 0.24, 0.28);
         vec3 dotColorLitDark = vec3(0.82, 0.84, 0.88);
         
-        vec3 dotColorDimLight = vec3(0.765, 0.82, 0.702);
-        vec3 dotColorLitLight = vec3(1.0, 1.0, 1.0);
+        vec3 dotColorDimLight = vec3(0.878, 0.855, 0.784); // Soft warm gray/beige dots
+        vec3 dotColorLitLight = vec3(0.22, 0.42, 0.25); // Rich green dots under spotlight
         
         vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
         vec3 dotColorLit = mix(dotColorLitLight, dotColorLitDark, u_isDark);
@@ -217,8 +217,16 @@
         float lit = dim + spotlight * 0.42;
         float brightness = mix(dim, lit, dotShape);
         
+        // Spotlight cursor glow color
+        vec3 glowColorDark = vec3(0.918, 0.894, 0.694); // #eae4b1 (warm cream)
+        vec3 glowColorLight = vec3(0.702, 0.859, 0.502); // #b3db80 (vibrant lime green)
+        vec3 glowColor = mix(glowColorLight, glowColorDark, u_isDark);
+        
+        // Add ambient glow to the background around the cursor
+        float ambientGlow = spotlight * spotlight * 0.08;
+        
         // Final color mix
-        vec3 color = bg + dotColor * brightness * dotShape;
+        vec3 color = bg + glowColor * ambientGlow + dotColor * brightness * dotShape;
 
         gl_FragColor = vec4(color, 1.0);
       }
