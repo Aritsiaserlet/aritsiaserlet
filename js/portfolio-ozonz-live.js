@@ -12,7 +12,14 @@
       image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A",
       link: "https://github.com/OzonZ",
       tags: "NARRATIVE ADVENTURE, PIXEL ART",
-      detail: "A cinematic exploration of memory and connection set in a vibrant post-human cityscape."
+      detail: "A cinematic exploration of memory and connection set in a vibrant post-human cityscape.",
+      contributors: [
+        {
+          name: "OzonZ",
+          avatar: "https://avatars.githubusercontent.com/u/101888890?v=4",
+          url: "https://github.com/OzonZ"
+        }
+      ]
     },
     {
       title: "Engine Architecture",
@@ -894,91 +901,124 @@
       let repo = githubMatch[2].split(/[#?]/)[0];
       if (repo.endsWith('.git')) repo = repo.slice(0, -4);
 
-      fetch(`https://api.github.com/repos/${owner}/${repo}`)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`GitHub API returned status ${res.status}`);
-          }
+      // Fetch repo details and contributors in parallel
+      Promise.all([
+        fetch(`https://api.github.com/repos/${owner}/${repo}`).then(res => {
+          if (!res.ok) throw new Error(`GitHub Repo API returned status ${res.status}`);
           return res.json();
-        })
-        .then(data => {
-          const formattedTitle = data.name
-            .replace(/[-_]/g, ' ')
-            .replace(/\b\w/g, c => c.toUpperCase());
-          document.getElementById('work-form-title-input').value = formattedTitle;
-          document.getElementById('work-form-detail-input').value = data.description || '';
-          document.getElementById('work-form-link-input').value = data.html_url || url;
-          document.getElementById('work-form-image-input').value = 'terminal';
-          
-          const tags = [];
-          if (data.language) tags.push(data.language.toUpperCase());
-          tags.push('GITHUB');
-          document.getElementById('work-form-tags-input').value = tags.join(', ');
+        }),
+        fetch(`https://api.github.com/repos/${owner}/${repo}/contributors`).then(res => {
+          if (!res.ok) return []; // Fallback if endpoint fails
+          return res.json();
+        }).catch(() => []) // Catch network errors on contributors and return empty
+      ])
+      .then(([repoData, contributorsData]) => {
+        const formattedTitle = repoData.name
+          .replace(/[-_]/g, ' ')
+          .replace(/\b\w/g, c => c.toUpperCase());
+        document.getElementById('work-form-title-input').value = formattedTitle;
+        document.getElementById('work-form-detail-input').value = repoData.description || '';
+        document.getElementById('work-form-link-input').value = repoData.html_url || url;
+        document.getElementById('work-form-image-input').value = 'terminal';
+        
+        const tags = [];
+        if (repoData.language) tags.push(repoData.language.toUpperCase());
+        tags.push('GITHUB');
+        document.getElementById('work-form-tags-input').value = tags.join(', ');
 
-          statusEl.textContent = 'Autofill successful!';
-          statusEl.className = 'text-green-500 text-xs mt-2 block';
-        })
-        .catch(err => {
-          console.error(err);
-          statusEl.textContent = `Error: ${err.message}`;
-          statusEl.className = 'text-red-500 text-xs mt-2 block';
-        });
+        const list = Array.isArray(contributorsData) ? contributorsData : [];
+        const mappedContributors = list.map(c => ({
+          name: c.login,
+          avatar: c.avatar_url,
+          url: c.html_url
+        }));
+
+        document.getElementById('work-form-contributors-input').value = mappedContributors.map(c => c.name).join(', ');
+        window.tempAutofilledContributors = mappedContributors;
+
+        statusEl.textContent = 'Autofill successful!';
+        statusEl.className = 'text-green-500 text-xs mt-2 block';
+      })
+      .catch(err => {
+        console.error(err);
+        statusEl.textContent = `Error: ${err.message}`;
+        statusEl.className = 'text-red-500 text-xs mt-2 block';
+      });
       return;
     }
 
     // Check if it is an Itch.io link
     const itchRegex = /itch\.io/i;
     if (itchRegex.test(url)) {
-      fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`Proxy server returned status ${res.status}`);
+      const tryFetch = (proxyUrl, isRaw) => {
+        return fetch(proxyUrl)
+          .then(res => {
+            if (!res.ok) throw new Error(`Proxy error ${res.status}`);
+            return isRaw ? res.text() : res.json();
+          });
+      };
+
+      const parseItchHtml = (html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        let title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                    doc.querySelector('h1.game_title')?.textContent ||
+                    doc.title;
+        
+        if (title) {
+          title = title.replace(/\s+/g, ' ').trim();
+          if (title.toLowerCase().endsWith(' by itch.io')) {
+            title = title.slice(0, -11);
           }
-          return res.json();
-        })
-        .then(data => {
-          if (!data || !data.contents) {
-            throw new Error('No content returned from proxy');
-          }
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(data.contents, 'text/html');
+        }
 
-          let title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
-                      doc.querySelector('h1.game_title')?.textContent ||
-                      doc.title;
-          
-          if (title) {
-            title = title.replace(/\s+/g, ' ').trim();
-            if (title.toLowerCase().endsWith(' by itch.io')) {
-              title = title.slice(0, -11);
-            }
-          }
+        const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+                      doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
+                      doc.querySelector('.header_image')?.getAttribute('src') ||
+                      'brush';
 
-          const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
-                        doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
-                        doc.querySelector('.header_image')?.getAttribute('src') ||
-                        'brush';
+        let detail = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+                     doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
+                     '';
+        if (detail) {
+          detail = detail.replace(/\s+/g, ' ').trim();
+        }
 
-          let detail = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
-                       doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
-                       '';
-          if (detail) {
-            detail = detail.replace(/\s+/g, ' ').trim();
-          }
+        document.getElementById('work-form-title-input').value = title || '';
+        document.getElementById('work-form-image-input').value = image || 'brush';
+        document.getElementById('work-form-link-input').value = url;
+        document.getElementById('work-form-detail-input').value = detail || '';
+        document.getElementById('work-form-tags-input').value = 'ITCH.IO';
+        document.getElementById('work-form-contributors-input').value = '';
+        window.tempAutofilledContributors = [];
 
-          document.getElementById('work-form-title-input').value = title || '';
-          document.getElementById('work-form-image-input').value = image || 'brush';
-          document.getElementById('work-form-link-input').value = url;
-          document.getElementById('work-form-detail-input').value = detail || '';
-          document.getElementById('work-form-tags-input').value = 'ITCH.IO';
+        statusEl.textContent = 'Autofill successful!';
+        statusEl.className = 'text-green-500 text-xs mt-2 block';
+      };
 
-          statusEl.textContent = 'Autofill successful!';
-          statusEl.className = 'text-green-500 text-xs mt-2 block';
-        })
+      // Try corsproxy.io first
+      tryFetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, true)
+        .then(html => parseItchHtml(html))
         .catch(err => {
-          console.error(err);
-          statusEl.textContent = `Error: ${err.message}`;
-          statusEl.className = 'text-red-500 text-xs mt-2 block';
+          console.warn('corsproxy.io failed, trying allorigins...', err);
+          // Try allorigins.win second
+          tryFetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, false)
+            .then(data => {
+              if (!data || !data.contents) throw new Error('No content from allorigins');
+              parseItchHtml(data.contents);
+            })
+            .catch(err2 => {
+              console.warn('allorigins failed, trying codetabs...', err2);
+              // Try codetabs third
+              tryFetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, true)
+                .then(html => parseItchHtml(html))
+                .catch(err3 => {
+                  console.error('All proxies failed:', err3);
+                  statusEl.textContent = 'Error: Failed to fetch Itch.io page (Proxy connection failed)';
+                  statusEl.className = 'text-red-500 text-xs mt-2 block';
+                });
+            });
         });
       return;
     }
@@ -1095,6 +1135,87 @@
       renderContacts();
       renderAdminDashboard();
     });
+
+    // AI Write button logic
+    const aiWriteBtn = document.getElementById('work-ai-write-btn');
+    if (aiWriteBtn) {
+      aiWriteBtn.addEventListener('click', () => {
+        const title = document.getElementById('work-form-title-input').value.trim();
+        const tags = document.getElementById('work-form-tags-input').value.trim();
+        const detailInput = document.getElementById('work-form-detail-input');
+        const aiStatus = document.getElementById('work-ai-status');
+
+        if (!title) {
+          aiStatus.textContent = 'Please enter a Project Name first.';
+          aiStatus.className = 'text-red-500 text-[10px] mt-1 block';
+          aiStatus.classList.remove('hidden');
+          return;
+        }
+
+        const apiKey = localStorage.getItem('gemini_api_key') || '';
+        if (!apiKey) {
+          aiStatus.textContent = 'Please enter your Gemini API Key in the settings first.';
+          aiStatus.className = 'text-red-500 text-[10px] mt-1 block';
+          aiStatus.classList.remove('hidden');
+          return;
+        }
+
+        aiStatus.textContent = 'Generating description with AI...';
+        aiStatus.className = 'text-on-surface-variant text-[10px] mt-1 block';
+        aiStatus.classList.remove('hidden');
+
+        const promptText = `Write a professional, short, and engaging description (1-2 sentences, in English) for a portfolio project named "${title}" with tags "${tags}". Do not include markdown formatting, quotes, or any prefix/suffix. Just output the description itself.`;
+
+        fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptText }] }]
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error(`API returned status ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            text = text.trim();
+            detailInput.value = text;
+            aiStatus.textContent = 'AI Generation successful!';
+            aiStatus.className = 'text-green-500 text-[10px] mt-1 block';
+          } else {
+            throw new Error('Invalid response structure from Gemini API');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          aiStatus.textContent = `AI Error: ${err.message}`;
+          aiStatus.className = 'text-red-500 text-[10px] mt-1 block';
+        });
+      });
+    }
+
+    // Save Settings
+    const saveSettingsBtn = document.getElementById('admin-save-settings-btn');
+    const geminiKeyInput = document.getElementById('admin-gemini-key');
+    if (geminiKeyInput) {
+      geminiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
+    }
+    if (saveSettingsBtn && geminiKeyInput) {
+      saveSettingsBtn.addEventListener('click', () => {
+        const key = geminiKeyInput.value.trim();
+        localStorage.setItem('gemini_api_key', key);
+        saveSettingsBtn.textContent = 'Saved!';
+        saveSettingsBtn.classList.remove('bg-primary/20', 'text-primary');
+        saveSettingsBtn.classList.add('bg-green-600/20', 'text-green-500');
+        setTimeout(() => {
+          saveSettingsBtn.textContent = 'Save Key';
+          saveSettingsBtn.classList.remove('bg-green-600/20', 'text-green-500');
+          saveSettingsBtn.classList.add('bg-primary/20', 'text-primary');
+        }, 1500);
+      });
+    }
   }
 
   function init() {
