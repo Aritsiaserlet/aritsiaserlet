@@ -111,6 +111,10 @@
             --tertiary-rgb: 144, 69, 0;
         }
 
+        html {
+            font-size: 90%;
+        }
+
         body {
             font-family: 'Space Grotesk', sans-serif;
             overflow-x: hidden;
@@ -527,8 +531,8 @@
 
         <!-- Scroll Down Indicator -->
         <div id="scroll-indicator" class="flex flex-col items-center gap-2 pb-8 -mt-8 pointer-events-none select-none" aria-hidden="true">
-            <span style="color: rgb(var(--tertiary-rgb));" class="text-sm font-bold tracking-[0.25em] uppercase">Scroll down for more</span>
-            <svg class="scroll-arrow" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: rgb(var(--tertiary-rgb));">
+            <span style="color: #FFD700;" class="text-sm font-bold tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">Scroll down for more</span>
+            <svg class="scroll-arrow" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #FFD700; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));">
                 <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
