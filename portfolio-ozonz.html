@@ -653,6 +653,14 @@
             <h3 id="work-form-title" class="text-2xl font-bold mb-6 text-on-surface uppercase tracking-wider">Add New Work</h3>
             <form id="work-form" class="flex flex-col gap-4">
                 <input type="hidden" id="work-form-index">
+                <div class="border-b border-outline/20 pb-4 mb-2">
+                    <label class="block text-xs font-bold uppercase text-primary mb-2">Autofill from URL (Itch.io or GitHub)</label>
+                    <div class="flex gap-2">
+                        <input type="url" id="work-autofill-url" placeholder="https://username.itch.io/game OR https://github.com/user/repo" class="flex-1 py-2 px-3 rounded-xl border border-outline bg-background/50 text-on-background text-xs focus:outline-none focus:border-primary">
+                        <button type="button" id="work-autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all">Autofill</button>
+                    </div>
+                    <p id="work-autofill-status" class="text-xs mt-2 hidden"></p>
+                </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Project Name</label>
                     <input type="text" id="work-form-title-input" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">

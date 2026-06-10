@@ -679,6 +679,14 @@
     const title = document.getElementById('work-form-title');
     const idxInput = document.getElementById('work-form-index');
 
+    const autofillUrl = document.getElementById('work-autofill-url');
+    if (autofillUrl) autofillUrl.value = '';
+    const autofillStatus = document.getElementById('work-autofill-status');
+    if (autofillStatus) {
+      autofillStatus.classList.add('hidden');
+      autofillStatus.textContent = '';
+    }
+
     idxInput.value = index;
     if (index === -1) {
       title.textContent = 'Add New Work';
