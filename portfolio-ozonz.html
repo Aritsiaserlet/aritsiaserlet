@@ -506,75 +506,8 @@
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    <!-- Featured Large Card -->
-                    <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30">
-                        <div class="absolute inset-0 bg-black/50 z-10 transition-opacity group-hover:opacity-30"></div>
-                        <img alt="Project: Neon Dreams"
-                            class="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A" />
-                        <div
-                            class="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-background via-background/60 to-transparent">
-                            <div class="flex flex-wrap gap-3 mb-6">
-                                <span
-                                    class="text-xs font-bold uppercase tracking-[0.2em] text-white mix-blend-difference">NARRATIVE
-                                    ADVENTURE</span>
-                                <span
-                                    class="text-xs font-bold uppercase tracking-[0.2em] text-white mix-blend-difference">PIXEL
-                                    ART</span>
-                            </div>
-                            <h3 class="text-4xl md:text-5xl font-bold mb-4 uppercase mix-blend-difference text-white">Project: Neon Dreams</h3>
-                            <p class="text-white text-lg max-w-2xl mb-8 mix-blend-difference">A cinematic exploration of memory
-                                and connection set in a vibrant post-human cityscape.</p>
-                            <button
-                                class="group/btn relative bg-primary text-on-primary px-8 py-4 font-headline font-bold text-sm transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-105 border-4 border-primary hover:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-y-0 overflow-hidden">
-                                <span class="relative z-10 uppercase tracking-widest">Go Itch.io</span>
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] pointer-events-none">
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Side Bento Cards -->
-                    <div class="lg:col-span-4 flex flex-col gap-10">
-                        <div
-                            class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <span class="material-symbols-outlined text-primary text-4xl">architecture</span>
-                                    <span class="text-on-surface-variant font-mono text-sm">2024</span>
-                                </div>
-                                <h3 class="text-2xl font-bold mb-3 uppercase">Engine Architecture</h3>
-                                <p class="text-on-surface-variant text-base mb-6">Custom rendering pipeline for
-                                    retro-style shaders and pixel-perfect scaling.</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <span
-                                    class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">C++</span>
-                                <span
-                                    class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">HLSL</span>
-                            </div>
-                        </div>
-                        <div
-                            class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <span class="material-symbols-outlined text-primary text-4xl">brush</span>
-                                    <span class="text-on-surface-variant font-mono text-sm">2025</span>
-                                </div>
-                                <h3 class="text-2xl font-bold mb-3 uppercase">Concept Gallery</h3>
-                                <p class="text-on-surface-variant text-base mb-6">A collection of environment sketches
-                                    and sprites inspired by 90s anime.</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <span
-                                    class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">ASEPRITE</span>
-                                <span
-                                    class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">ILLUSTRATION</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10" id="archives-grid">
+                    <!-- Dynamically filled by JS -->
                 </div>
             </div>
         </section>
