@@ -6,6 +6,18 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Chanon Thongduang | OzonZ Portfolio</title>
     <link rel="icon" type="image/jpeg" href="favicon.jpg">
+    <!-- FOUC Prevention Script -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (savedTheme === null && systemPrefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -22,18 +34,18 @@
             theme: {
                 extend: {
                     "colors": {
-                        "primary": "#eae4b1",
-                        "on-primary": "#10141a",
-                        "background": "#10141a",
-                        "on-background": "#dfe2eb",
-                        "surface": "#1c2026",
-                        "on-surface": "#dfe2eb",
-                        "surface-variant": "#31353c",
-                        "on-surface-variant": "#cac3d8",
-                        "outline": "#494455",
-                        "secondary": "#eae4b1",
-                        "on-secondary": "#10141a",
-                        "tertiary": "#904500",
+                        "primary": "rgb(var(--primary-rgb))",
+                        "on-primary": "rgb(var(--on-primary-rgb))",
+                        "background": "rgb(var(--background-rgb))",
+                        "on-background": "rgb(var(--on-background-rgb))",
+                        "surface": "rgb(var(--surface-rgb))",
+                        "on-surface": "rgb(var(--on-surface-rgb))",
+                        "surface-variant": "rgb(var(--surface-variant-rgb))",
+                        "on-surface-variant": "rgb(var(--on-surface-variant-rgb))",
+                        "outline": "rgb(var(--outline-rgb))",
+                        "secondary": "rgb(var(--secondary-rgb))",
+                        "on-secondary": "rgb(var(--on-secondary-rgb))",
+                        "tertiary": "rgb(var(--tertiary-rgb))",
                     },
                     "borderRadius": {
                         "DEFAULT": "0.125rem",
@@ -60,19 +72,50 @@
     </script>
     <style>
         :root {
-            --background: #10141a;
-            --on-background: #dfe2eb;
-            --primary: #eae4b1;
-            --on-primary: #10141a;
-            --surface: #1c2026;
-            --on-surface: #dfe2eb;
-            --outline: #494455;
+            /* Light mode RGB values (yellowish-green base) */
+            --primary-rgb: 56, 107, 64; /* #386B40 */
+            --on-primary-rgb: 255, 255, 255;
+            --background-rgb: 241, 246, 233; /* #F1F6E9 */
+            --on-background-rgb: 30, 41, 27; /* #1E291B - High readability text */
+            --surface-rgb: 228, 237, 213; /* #E4EDD5 */
+            --on-surface-rgb: 30, 41, 27;
+            --surface-variant-rgb: 214, 226, 195; /* #D6E2C3 */
+            --on-surface-variant-rgb: 45, 61, 41; /* #2D3D29 */
+            --outline-rgb: 176, 194, 159; /* #B0C29F */
+            --secondary-rgb: 83, 141, 92; /* #538D5C */
+            --on-secondary-rgb: 255, 255, 255;
+            --tertiary-rgb: 161, 131, 33; /* #A18321 */
+
+            --background: rgb(var(--background-rgb));
+            --on-background: rgb(var(--on-background-rgb));
+            --primary: rgb(var(--primary-rgb));
+            --on-primary: rgb(var(--on-primary-rgb));
+            --surface: rgb(var(--surface-rgb));
+            --on-surface: rgb(var(--on-surface-rgb));
+            --outline: rgb(var(--outline-rgb));
+        }
+
+        html.dark {
+            /* Dark mode RGB values */
+            --primary-rgb: 234, 228, 177; /* #eae4b1 */
+            --on-primary-rgb: 16, 20, 26;
+            --background-rgb: 16, 20, 26;
+            --on-background-rgb: 223, 226, 235;
+            --surface-rgb: 28, 32, 38;
+            --on-surface-rgb: 223, 226, 235;
+            --surface-variant-rgb: 49, 53, 60;
+            --on-surface-variant-rgb: 202, 195, 216;
+            --outline-rgb: 73, 68, 85;
+            --secondary-rgb: 234, 228, 177;
+            --on-secondary-rgb: 16, 20, 26;
+            --tertiary-rgb: 144, 69, 0;
         }
 
         body {
             font-family: 'Space Grotesk', sans-serif;
             overflow-x: hidden;
             background-color: var(--background);
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         h1,
@@ -115,9 +158,10 @@
         }
 
         .pixel-card {
-            background: rgba(28, 32, 38, 0.8);
+            background: rgba(var(--surface-rgb), 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid var(--outline);
+            transition: background 0.5s ease, border-color 0.5s ease;
         }
 
         .material-symbols-outlined {
@@ -178,28 +222,29 @@
 
             0%,
             100% {
-                box-shadow: 0 0 6px rgba(234, 228, 177, 0.15), inset 0 0 6px rgba(234, 228, 177, 0.05);
-                border-color: rgba(234, 228, 177, 0.2);
+                box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.15), inset 0 0 6px rgba(var(--primary-rgb), 0.05);
+                border-color: rgba(var(--primary-rgb), 0.2);
             }
 
             50% {
-                box-shadow: 0 0 18px rgba(234, 228, 177, 0.45), inset 0 0 12px rgba(234, 228, 177, 0.12);
-                border-color: rgba(234, 228, 177, 0.65);
+                box-shadow: 0 0 18px rgba(var(--primary-rgb), 0.45), inset 0 0 12px rgba(var(--primary-rgb), 0.12);
+                border-color: rgba(var(--primary-rgb), 0.65);
             }
         }
 
         #roles-bar {
             animation: roles-glow 3.5s ease-in-out infinite;
-            border: 1px solid rgba(234, 228, 177, 0.2);
+            border: 1px solid rgba(var(--primary-rgb), 0.2);
             border-radius: 1rem;
             padding: 0.65rem 1.5rem;
-            background: rgba(234, 228, 177, 0.03);
+            background: rgba(var(--primary-rgb), 0.03);
             backdrop-filter: blur(8px);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
             gap: 0;
+            transition: border-color 0.5s ease, background-color 0.5s ease;
         }
 
         .roles-tag {
@@ -207,27 +252,28 @@
             align-items: center;
             gap: 0.4rem;
             padding: 0.25rem 0.9rem;
-            color: #eae4b1;
+            color: rgb(var(--primary-rgb));
             font-family: 'Space Grotesk', sans-serif;
             font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease, color 0.5s ease;
             cursor: default;
         }
 
         .roles-tag:hover {
-            text-shadow: 0 0 12px rgba(234, 228, 177, 0.8);
+            text-shadow: 0 0 12px rgba(var(--primary-rgb), 0.8);
             transform: translateY(-1px);
         }
 
         .roles-tag-sep {
-            color: rgba(234, 228, 177, 0.3);
+            color: rgba(var(--primary-rgb), 0.3);
             font-size: 0.85rem;
             font-weight: 300;
             line-height: 1;
             user-select: none;
+            transition: color 0.5s ease;
         }
 
         /* Archetype tooltip */
@@ -236,9 +282,9 @@
             bottom: calc(100% + 8px);
             left: 50%;
             transform: translateX(-50%) translateY(4px);
-            background: rgba(28, 32, 38, 0.95);
-            border: 1px solid rgba(234, 228, 177, 0.25);
-            color: #eae4b1;
+            background: rgba(var(--surface-rgb), 0.95);
+            border: 1px solid rgba(var(--primary-rgb), 0.25);
+            color: rgb(var(--primary-rgb));
             font-size: 0.7rem;
             font-weight: 600;
             letter-spacing: 0.05em;
@@ -247,7 +293,7 @@
             white-space: nowrap;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
         }
@@ -262,13 +308,13 @@
 
             0%,
             100% {
-                border-color: rgba(234, 228, 177, 0.2);
-                box-shadow: 0 0 5px rgba(234, 228, 177, 0.1);
+                border-color: rgba(var(--primary-rgb), 0.2);
+                box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.1);
             }
 
             50% {
-                border-color: rgba(234, 228, 177, 0.6);
-                box-shadow: 0 0 20px rgba(234, 228, 177, 0.3);
+                border-color: rgba(var(--primary-rgb), 0.6);
+                box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
             }
         }
 
@@ -290,11 +336,11 @@
 
             0%,
             100% {
-                box-shadow: 0 0 15px rgba(234, 228, 177, 0.05);
+                box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.05);
             }
 
             50% {
-                box-shadow: 0 0 40px rgba(234, 228, 177, 0.15);
+                box-shadow: 0 0 40px rgba(var(--primary-rgb), 0.15);
             }
         }
 
@@ -367,12 +413,12 @@
                                     class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
                                 </div>
                                 <div
-                                    class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(234,228,177,0.2)]">
+                                    class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]">
                                     <img id="ghAvatar" alt="OzonZ Profile" class="w-full h-full object-cover"
                                         src="https://avatars.githubusercontent.com/u/255675901?v=4" />
                                 </div>
                                 <!-- Status Indicator -->
-                                <div class="absolute bottom-2 right-2 w-6 h-6 bg-[#10141a] rounded-full flex items-center justify-center border border-white/10"
+                                <div class="absolute bottom-2 right-2 w-6 h-6 bg-background rounded-full flex items-center justify-center border border-white/10"
                                     title="Live from GitHub">
                                     <div id="ghLiveDot"
                                         class="w-4 h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
@@ -392,7 +438,7 @@
                         <!-- Stats Grid -->
                         <div class="grid grid-cols-2 gap-6 mb-12">
                             <div
-                                class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-xl hover:bg-white/10 transition-colors text-center">
+                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center">
                                 <div
                                     class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
                                     <span class="material-symbols-outlined text-lg">show_chart</span>
@@ -403,7 +449,7 @@
                                     class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
                             </div>
                             <div
-                                class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-xl hover:bg-white/10 transition-colors text-center">
+                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center">
                                 <div
                                     class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
                                     <span class="material-symbols-outlined text-lg">folder</span>
@@ -416,8 +462,8 @@
                         </div>
 
                         <!-- Action Button -->
-                        <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-5 md:py-6 rounded-xl font-bold text-sm md:text-base tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(234,228,177,0.4)] relative overflow-hidden"
-                            href="https://github.com/OzonZ" target="_blank">
+                        <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-5 md:py-6 rounded-xl font-bold text-sm md:text-base tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
+                             href="https://github.com/OzonZ" target="_blank">
                             <span class="relative z-10 flex items-center gap-2">
                                 FOLLOW ON GITHUB
                                 <span class="material-symbols-outlined text-lg">open_in_new</span>
