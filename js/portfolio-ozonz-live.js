@@ -6,63 +6,10 @@
     document.body.dataset.githubUser || 'OzonZ';
   const POLL_MS = 60_000;
 
-  const defaultWorks = [
-    {
-      title: "Project: Neon Dreams",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A",
-      link: "https://github.com/OzonZ",
-      tags: "NARRATIVE ADVENTURE, PIXEL ART",
-      detail: "A cinematic exploration of memory and connection set in a vibrant post-human cityscape.",
-      contributors: [
-        {
-          name: "OzonZ",
-          avatar: "https://avatars.githubusercontent.com/u/101888890?v=4",
-          url: "https://github.com/OzonZ"
-        }
-      ]
-    },
-    {
-      title: "Engine Architecture",
-      image: "architecture",
-      link: "https://github.com/OzonZ",
-      tags: "C++, HLSL",
-      detail: "Custom rendering pipeline for retro-style shaders and pixel-perfect scaling."
-    },
-    {
-      title: "Concept Gallery",
-      image: "brush",
-      link: "https://github.com/OzonZ",
-      tags: "ASEPRITE, ILLUSTRATION",
-      detail: "A collection of environment sketches and sprites inspired by 90s anime."
-    }
-  ];
-
-  const defaultContacts = [
-    {
-      name: "GITHUB",
-      link: "https://github.com/OzonZ",
-      iconType: "svg",
-      iconVal: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-    },
-    {
-      name: "FACEBOOK",
-      link: "https://www.facebook.com/chanon.thongduang?locale=th_TH",
-      iconType: "svg",
-      iconVal: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-    },
-    {
-      name: "DISCORD",
-      link: "https://discordapp.com/users/1018888909419204658",
-      iconType: "svg",
-      iconVal: "M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"
-    },
-    {
-      name: "HAMSTER HUB",
-      link: "https://hamsterhub.co/profile/eaya",
-      iconType: "image",
-      iconVal: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A"
-    }
-  ];
+  let globalWorks = [];
+  let globalSettings = {};
+  const GH_REPO_OWNER = 'Aritsiaserlet';
+  const GH_REPO_NAME = 'aritsiaserlet';
 
   const els = {
     contributions: document.getElementById('ghContributions'),
@@ -497,12 +444,6 @@
   }
 
   function initLocalStorage() {
-    if (!localStorage.getItem('works')) {
-      localStorage.setItem('works', JSON.stringify(defaultWorks));
-    }
-    if (!localStorage.getItem('contacts')) {
-      localStorage.setItem('contacts', JSON.stringify(defaultContacts));
-    }
     const defaultApiKey = (typeof CONFIG !== 'undefined' && CONFIG.GEMINI_API_KEY) ? CONFIG.GEMINI_API_KEY : '';
     if (!localStorage.getItem('gemini_api_key') && defaultApiKey) {
       localStorage.setItem('gemini_api_key', defaultApiKey);
@@ -514,7 +455,27 @@
     if (!grid) return;
     grid.innerHTML = '';
 
-    const works = JSON.parse(localStorage.getItem('works') || '[]');
+    let works = globalWorks || [];
+    if (works.length > 0) {
+      works = works.map(w => {
+        let image = w.image;
+        if (Array.isArray(w.image)) image = w.image[0];
+        if (!image && w.model) image = 'view_in_ar';
+        let link = w.link;
+        if (!link && w.links && w.links.length > 0) link = w.links[0].url;
+        let tags = w.tags && w.tags.length > 0 ? w.tags.join(', ') : `${w.cat}, ${w.subcat}`;
+        let contributors = [];
+        if (w.team && globalSettings.teams) {
+          contributors = w.team.map(tid => {
+            const t = globalSettings.teams.find(x => x.id === tid);
+            return t ? { name: t.name, avatar: t.image, url: t.url } : null;
+          }).filter(Boolean);
+        }
+        return { ...w, title: w.name, detail: w.desc || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+      });
+      globalWorks = works;
+    }
+
     if (works.length === 0) {
       grid.innerHTML = '<div class="text-center text-on-surface-variant py-10 col-span-12">No works available.</div>';
       return;
@@ -597,7 +558,23 @@
     if (!container) return;
     container.innerHTML = '';
 
-    const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    let contacts = [];
+    if (globalSettings && globalSettings.socials) {
+      contacts = globalSettings.socials.map(s => {
+        let iconUrl = '';
+        if (s.iconId && globalSettings.icons) {
+          const ic = globalSettings.icons.find(x => x.id === s.iconId);
+          if (ic) iconUrl = ic.url;
+        }
+        return {
+          name: s.name,
+          link: s.url,
+          iconType: iconUrl ? 'image' : 'material',
+          iconVal: iconUrl ? iconUrl : 'link'
+        };
+      });
+    }
+
     contacts.forEach((c) => {
       let iconHTML = '';
       if (c.iconType === 'svg') {
@@ -620,7 +597,7 @@
   }
 
   function openProjectDetailModal(index) {
-    const works = JSON.parse(localStorage.getItem('works') || '[]');
+    const works = globalWorks || [];
     const w = works[index];
     if (!w) return;
 
@@ -711,13 +688,12 @@
 
   function checkHashRoute() {
     if (window.location.hash === '#admin') {
-      document.getElementById('admin-auth-modal').classList.remove('hidden');
-      document.getElementById('admin-passcode-input').value = '';
-      document.getElementById('admin-passcode-input').focus();
-      document.getElementById('admin-auth-error').classList.add('hidden');
+      window.location.href = 'admin.html';
     } else {
-      document.getElementById('admin-auth-modal').classList.add('hidden');
-      document.getElementById('admin-panel').classList.add('hidden');
+      const authModal = document.getElementById('admin-auth-modal');
+      const adminPanel = document.getElementById('admin-panel');
+      if (authModal) authModal.classList.add('hidden');
+      if (adminPanel) adminPanel.classList.add('hidden');
       document.body.style.overflow = '';
     }
   }
@@ -1252,15 +1228,29 @@
     }
   }
 
-  function init() {
+  async function fetchPortfolioData() {
+    try {
+      const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/works.json?t=${Date.now()}`);
+      const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/settings.json?t=${Date.now()}`);
+      if (worksRes.ok) globalWorks = await worksRes.json();
+      if (settingsRes.ok) globalSettings = await settingsRes.json();
+    } catch(err) {
+      console.error("Failed to fetch portfolio data from GitHub:", err);
+    }
+  }
+
+  async function init() {
     initLocalStorage();
     initBackground();
     startGitHubSync();
     initRevealAndTheme();
     initNavbarScroll();
     initSmoothScroll();
+    
+    await fetchPortfolioData();
     renderWorks();
     renderContacts();
+    
     checkHashRoute();
     initAdminHooks();
     initProjectDetailModal();
