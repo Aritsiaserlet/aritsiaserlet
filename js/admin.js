@@ -1097,15 +1097,38 @@ function updateStats(){
   document.getElementById('s3d').textContent=works.filter(w=>w.cat==='3d').length;
 }
 
+// ── Drag-and-drop reorder state ──
+let dragSrcIndex = null;
+let isSavingOrder = false;
+
 function renderAdminList(){
   const list=document.getElementById('worksList');
   const filter = document.getElementById('adminFilter') ? document.getElementById('adminFilter').value : 'all';
   
   const filteredWorks = works.filter(w => filter === 'all' || w.cat === filter);
+  const isFiltered = filter !== 'all';
   
   if(!filteredWorks.length){list.innerHTML='<p class="no-works">No works found.</p>';return}
   list.innerHTML='';
-  [...filteredWorks].reverse().forEach(w=>{
+
+  // Show hint bar when reorder is available
+  if(!isFiltered) {
+    const hint = document.createElement('div');
+    hint.className = 'reorder-hint';
+    hint.innerHTML = `<span>☰</span> ลาก ≡ เพื่อเรียงลำดับ — ลำดับจากบนลงล่าง = แสดงบนสุดในพอร์ตฟอลิโอ`;
+    list.appendChild(hint);
+  } else {
+    const hint = document.createElement('div');
+    hint.className = 'reorder-hint reorder-hint--warn';
+    hint.innerHTML = `⚠ เรียงลำดับได้เฉพาะตอน Filter = All`;
+    list.appendChild(hint);
+  }
+
+  // Show items in reverse so newest is at top (matching current behavior)
+  // For reorder we work on the global `works` array indices
+  const displayList = [...filteredWorks].reverse();
+
+  displayList.forEach(w=>{
     const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
     let iconUrl = '';
     if(catSetting.iconId && settings.icons) {
@@ -1116,9 +1139,27 @@ function renderAdminList(){
 
     const label={game:'Game',mod:'Minecraft Mod','3d':'3D Model'}[w.cat]||w.cat;
     const sub=w.subcat?' · '+w.subcat.charAt(0).toUpperCase()+w.subcat.slice(1):'';
-    const el=document.createElement('div');el.className='witem';
+    
+    // Real index in the global works array (not filtered)
+    const realIdx = works.indexOf(w);
+    
+    const el=document.createElement('div');
+    el.className='witem';
+    el.dataset.workId = w.id;
+    el.dataset.realIdx = realIdx;
+
+    if(!isFiltered) {
+      el.draggable = true;
+      el.addEventListener('dragstart', onDragStart);
+      el.addEventListener('dragover',  onDragOver);
+      el.addEventListener('dragleave', onDragLeave);
+      el.addEventListener('drop',      onDrop);
+      el.addEventListener('dragend',   onDragEnd);
+    }
+
     el.innerHTML=`
-      <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${w.image}">`:catIcon}</div>
+      ${!isFiltered ? `<div class="witem-drag" title="ลากเพื่อเรียงลำดับ">≡</div>` : ''}
+      <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${Array.isArray(w.image)?w.image[0]:w.image}">`:`${catIcon}`}</div>
       <div class="witem-info">
         <div class="witem-name">${w.name}</div>
         <div class="witem-cat" style="display:flex;align-items:center;gap:6px;">${catIcon} ${label}${sub}</div>
@@ -1130,9 +1171,6 @@ function renderAdminList(){
 }
 
 let currentWorkLinks = [];
-
-
-
 
 function renderWorkLinks() {
   const box = document.getElementById('wLinksBox');
