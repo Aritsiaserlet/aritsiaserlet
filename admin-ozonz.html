@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/admin.css">
 <script src="js/toastManager.js"></script>
 </head>
-<body>
+<body class="theme-ozonz">
 
 <canvas class="wind-canvas" id="windCanvas"></canvas>
 
@@ -20,7 +20,7 @@
   <nav class="anav">
     <span class="anav-title">⚙ ADMIN PANEL</span>
     <div class="anav-right">
-      <a href="admin-ozonz.html" class="anav-btn" style="background:var(--sky2);">Switch to OzonZ Admin</a>
+      <a href="admin.html" class="anav-btn" style="background:var(--sky2);">Switch to Aritsia Admin</a>
       <a href="index.html" class="anav-btn">← Portfolio</a>
       <button class="anav-btn danger" onclick="logout()">Logout</button>
     </div>
@@ -232,85 +232,7 @@
       </div>
     </div>
 
-    
-    <!-- Game Settings Panel -->
-    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
-      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
-        <span>ANIMATION SETTINGS</span>
-        <span class="toggle-icon">▼</span>
-      </h2>
-      <div class="panel-body">
-        
-        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">ANIMATIONS</h3>
-        <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
-          <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Configure custom Player Sprite and Attack Animation (upload horizontal spritesheets).</p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <div class="field" style="flex:1;min-width:200px;">
-              <label>Player Sprite (Idle/Fly)</label>
-              <input type="file" id="gsetSpriteFile" accept="image/*">
-              <img id="gsetSpritePreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" style="max-width:100%; height:auto; margin-top:8px; display:none; border:2px solid var(--dark); image-rendering:pixelated;">
-              <div style="display:flex;gap:8px;margin-top:8px;">
-                <div style="flex:1"><label style="font-size:12px;">Frames</label><input type="number" id="gsetSpriteFrames" min="1" value="1"></div>
-                <div style="flex:1"><label style="font-size:12px;">FPS</label><input type="number" id="gsetSpriteFps" min="1" value="12"></div>
-              </div>
-              <label style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="gsetSpriteLoop" checked> Loop Animation</label>
-            </div>
-            <div class="field" style="flex:1;min-width:200px;">
-              <label>Player Attack Sprite</label>
-              <input type="file" id="gsetAttackFile" accept="image/*">
-              <img id="gsetAttackPreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" style="max-width:100%; height:auto; margin-top:8px; display:none; border:2px solid var(--dark); image-rendering:pixelated;">
-              <div style="display:flex;gap:8px;margin-top:8px;">
-                <div style="flex:1"><label style="font-size:12px;">Frames</label><input type="number" id="gsetAttackFrames" min="1" value="1"></div>
-                <div style="flex:1"><label style="font-size:12px;">FPS</label><input type="number" id="gsetAttackFps" min="1" value="15"></div>
-              </div>
-              <label style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="gsetAttackLoop"> Loop Animation</label>
-            </div>
-          </div>
-        </div>
 
-        
-        
-        <button class="submit-btn" id="saveAnimBtn" onclick="saveGameAnimations()">SAVE ANIMATIONS</button>
-        <div class="progress-bar" id="animProgressBar"><div class="progress-fill" id="animProgressFill"></div></div>
-        <p class="form-msg" id="animMsg"></p>
-      </div>
-    </div>
-
-    <!-- Game Balance Panel -->
-    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
-      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
-        <span>GAME BALANCE & MECHANICS</span>
-        <span class="toggle-icon">▼</span>
-      </h2>
-      <div class="panel-body">
-        
-        <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
-            <div class="field">
-              <label>Firework Drop Chance (%)</label>
-              <input type="number" id="gsetFwDrop" min="0" max="100" value="10">
-            </div>
-            <div class="field">
-              <label>Points Per Hit</label>
-              <input type="number" id="gsetPtsHit" min="1" value="15">
-            </div>
-            <div class="field">
-              <label>Base Miss Penalty</label>
-              <input type="number" id="gsetMissPen" min="0" value="5">
-            </div>
-            <div class="field">
-              <label>Firework Icon (In-Game)</label>
-              <select id="gsetFwIcon" style="padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);width:100%;">
-              </select>
-            </div>
-          </div>
-        </div>
-        
-        <button class="submit-btn" id="saveBalBtn" onclick="saveGameBalance()">SAVE BALANCE</button>
-        <div class="progress-bar" id="balProgressBar"><div class="progress-fill" id="balProgressFill"></div></div>
-        <p class="form-msg" id="balMsg"></p>
-      </div>
-    </div>
 
     <!-- Add Work Panel -->
     <div class="panel-card">
@@ -440,7 +362,7 @@
   </div>
 </div>
 
-<script src="js/admin.js"></script>
+<script src="js/admin-ozonz.js"></script>
 <!-- Preview Modal -->
 <div class="prev-overlay" id="prevOverlay" onclick="if(event.target===this)closePrev()">
   <div class="prev-box">

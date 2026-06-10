@@ -8,7 +8,17 @@ const GH_USER = 'Aritsiaserlet';
 const GH_REPO = 'aritsiaserlet';
 
 const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
-const JSON_PATH = 'settings.json';
+const JSON_PATH = 'ozonz_settings.json';
+const SHARED_JSON_PATH = 'settings.json';
+let sharedSettings = {}, sharedSettingsSha = null;
+
+async function saveSharedSettings() {
+  sharedSettings.icons = settings.icons || [];
+  sharedSettings.teams = settings.teams || [];
+  const json = JSON.stringify(sharedSettings, null, 2);
+  const saveResult = await ghPut(SHARED_JSON_PATH, json, 'Update shared settings', sharedSettingsSha);
+  sharedSettingsSha = saveResult.content.sha;
+}
 let GH_TOKEN  = '';
 function getHeaders(){
   return {
@@ -114,7 +124,7 @@ let selectedTeams=[];
 
 async function loadWorks(){
   try{
-    const data=await ghGet('works.json');
+    const data=await ghGet('ozonz_works.json');
     if(data){
       worksSha=data.sha;
       works=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
@@ -138,11 +148,24 @@ async function loadWorks(){
 
 let settings={}, settingsSha=null;
 async function loadSettings(){
+  try {
+    const sharedData = await ghGet(SHARED_JSON_PATH);
+    if(sharedData) {
+      sharedSettingsSha = sharedData.sha;
+      sharedSettings = JSON.parse(decodeURIComponent(escape(atob(sharedData.content.replace(/\n/g,'')))));
+    }
+  } catch(e) { console.log('Error loading shared settings', e); }
+
   try{
     const data=await ghGet(JSON_PATH);
     if(data){
       settingsSha=data.sha;
       settings=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    } else { settings = {}; }
+    
+    settings.icons = sharedSettings.icons || [];
+    settings.teams = sharedSettings.teams || [];
+
       if(settings.profileImage){
         setMediaPreview('profilePreview', settings.profileImage);
       }
@@ -169,7 +192,7 @@ async function loadSettings(){
 
 async function saveWorks(){
   const json=JSON.stringify(works,null,2);
-  const result=await ghPut('works.json', json, 'Update works.json', worksSha);
+  const result=await ghPut('ozonz_works.json', json, 'Update ozonz_works.json', worksSha);
   worksSha=result.content.sha;
 }
 
@@ -318,9 +341,7 @@ async function addIconToLibrary() {
 
       settings.icons.push({ id, name: nameInput.value.trim(), url });
       
-      const json = JSON.stringify(settings, null, 2);
-      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new icon', settingsSha);
-      settingsSha = saveResult.content.sha;
+      await saveSharedSettings();
       
       nameInput.value = '';
       fileInput.value = '';
@@ -362,9 +383,7 @@ async function deleteIcon(idx) {
   customConfirm("Delete this icon? It will be removed from any links or categories using it.", async () => {
     settings.icons.splice(idx, 1);
     try {
-      const json = JSON.stringify(settings, null, 2);
-      const res = await ghPut(JSON_PATH, json, 'Delete icon from library', settingsSha);
-      settingsSha = res.content.sha;
+      await saveSharedSettings();
       renderIconLibrary();
       renderSettingsUI();
       renderToolsCheckboxList();
@@ -903,65 +922,9 @@ async function saveSettings(){
 }
 
 
-async function saveGameAnimations() {
-  const btn=document.getElementById('saveAnimBtn');
-  const bar=document.getElementById('animProgressBar');
-  const fill=document.getElementById('animProgressFill');
-  const msg=document.getElementById('animMsg');
-  btn.disabled=true; bar.style.display='block'; fill.style.width='10%';
-  msg.className='form-msg ok'; msg.textContent='Saving Animations...';
-  try{
-    if (!settings.game) settings.game = {};
-    if(gSpriteBase64){
-      const fname=`works/sprite_${Date.now()}.${gSpriteExt}`;
-      await ghPutBinary(fname, gSpriteBase64, 'Upload Player Sprite');
-      settings.game.playerSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
-    }
-    if(gAttackBase64){
-      const fname=`works/attack_${Date.now()}.${gAttackExt}`;
-      await ghPutBinary(fname, gAttackBase64, 'Upload Attack Sprite');
-      settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
-    }
-    settings.game.playerSpriteFrames = parseInt(document.getElementById('gsetSpriteFrames').value) || 1;
-    settings.game.playerSpriteFps = parseInt(document.getElementById('gsetSpriteFps').value) || 12;
-    settings.game.playerSpriteLoop = document.getElementById('gsetSpriteLoop').checked;
-    settings.game.playerAttackFrames = parseInt(document.getElementById('gsetAttackFrames').value) || 1;
-    settings.game.playerAttackFps = parseInt(document.getElementById('gsetAttackFps').value) || 15;
-    settings.game.playerAttackLoop = document.getElementById('gsetAttackLoop').checked;
-    const json=JSON.stringify(settings,null,2);
-    const result=await ghPut(JSON_PATH, json, 'Update Game Animations', settingsSha);
-    settingsSha=result.content.sha;
-    fill.style.width='100%';
-    msg.textContent='Animations saved!';
-    setTimeout(()=>{bar.style.display='none';msg.textContent='';},3000);
-  }catch(e){
-    msg.className='form-msg err'; msg.textContent='Error: '+e.message; bar.style.display='none';
-  }finally{ btn.disabled=false; }
-}
 
-async function saveGameBalance() {
-  const btn=document.getElementById('saveBalBtn');
-  const bar=document.getElementById('balProgressBar');
-  const fill=document.getElementById('balProgressFill');
-  const msg=document.getElementById('balMsg');
-  btn.disabled=true; bar.style.display='block'; fill.style.width='10%';
-  msg.className='form-msg ok'; msg.textContent='Saving Balance...';
-  try{
-    if (!settings.game) settings.game = {};
-    settings.game.fwDropChance = parseInt(document.getElementById('gsetFwDrop').value) || 0;
-    settings.game.pointsPerHit = parseInt(document.getElementById('gsetPtsHit').value) || 15;
-    settings.game.missPenalty = parseInt(document.getElementById('gsetMissPen').value) || 5;
-    settings.game.fwIconId = document.getElementById('gsetFwIcon').value || '';
-    const json=JSON.stringify(settings,null,2);
-    const result=await ghPut(JSON_PATH, json, 'Update Game Balance', settingsSha);
-    settingsSha=result.content.sha;
-    fill.style.width='100%';
-    msg.textContent='Balance saved!';
-    setTimeout(()=>{bar.style.display='none';msg.textContent='';},3000);
-  }catch(e){
-    msg.className='form-msg err'; msg.textContent='Error: '+e.message; bar.style.display='none';
-  }finally{ btn.disabled=false; }
-}
+
+
 
 
 // ── Add work ──
@@ -1465,6 +1428,7 @@ async function addTeamLibraryMember() {
     
     renderTeamLibrary();
     renderTeamCheckboxList();
+    await saveSharedSettings();
     await saveSettings(); // autosave
   } catch(e) {
     alert("Error adding team member: " + e.message);
@@ -1477,6 +1441,7 @@ async function deleteTeamLibraryMember(id) {
     try {
       renderTeamLibrary();
       renderTeamCheckboxList();
+      await saveSharedSettings();
       await saveSettings(); // autosave
     } catch(e) {
       alert("Error deleting team member: " + e.message);
