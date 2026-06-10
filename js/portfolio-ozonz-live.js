@@ -467,12 +467,404 @@
     });
   }
 
+  function initLocalStorage() {
+    if (!localStorage.getItem('works')) {
+      localStorage.setItem('works', JSON.stringify(defaultWorks));
+    }
+    if (!localStorage.getItem('contacts')) {
+      localStorage.setItem('contacts', JSON.stringify(defaultContacts));
+    }
+  }
+
+  function renderWorks() {
+    const grid = document.getElementById('archives-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const works = JSON.parse(localStorage.getItem('works') || '[]');
+    if (works.length === 0) {
+      grid.innerHTML = '<div class="text-center text-on-surface-variant py-10 col-span-12">No works available.</div>';
+      return;
+    }
+
+    // Featured Card (Index 0)
+    const featured = works[0];
+    const isFeaturedImg = featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.');
+    const featuredHTML = `
+        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30">
+            <div class="absolute inset-0 bg-black/50 z-10 transition-opacity group-hover:opacity-30"></div>
+            ${
+              isFeaturedImg
+                ? `<img alt="${featured.title}" class="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105" src="${featured.image}" />`
+                : `<div class="w-full h-[600px] bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${featured.image}</span></div>`
+            }
+            <div class="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-background via-background/60 to-transparent">
+                <div class="flex flex-wrap gap-3 mb-6">
+                    ${featured.tags.split(',').map(tag => `<span class="text-xs font-bold uppercase tracking-[0.2em] text-white mix-blend-difference">${tag.trim()}</span>`).join('')}
+                </div>
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 uppercase mix-blend-difference text-white">${featured.title}</h3>
+                <p class="text-white text-lg max-w-2xl mb-8 mix-blend-difference">${featured.detail}</p>
+                <a href="${featured.link}" target="_blank" class="group/btn inline-flex items-center justify-center relative bg-primary text-on-primary px-8 py-4 font-headline font-bold text-sm transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-105 border-4 border-primary hover:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-y-0 overflow-hidden">
+                    <span class="relative z-10 uppercase tracking-widest">Go Itch.io</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] pointer-events-none"></div>
+                </a>
+            </div>
+        </div>
+    `;
+    grid.innerHTML += featuredHTML;
+
+    // Bento Cards (Index 1 and later)
+    if (works.length > 1) {
+      const bentoContainer = document.createElement('div');
+      bentoContainer.className = 'lg:col-span-4 flex flex-col gap-10';
+
+      for (let i = 1; i < works.length; i++) {
+        const work = works[i];
+        const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
+
+        const cardHTML = `
+            <div class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-6">
+                        ${
+                          isImg
+                            ? `<img src="${work.image}" class="w-16 h-16 rounded-xl object-cover border border-outline/30" />`
+                            : `<span class="material-symbols-outlined text-primary text-4xl">${work.image}</span>`
+                        }
+                        <span class="text-on-surface-variant font-mono text-sm">${new Date().getFullYear()}</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 uppercase text-on-background">${work.title}</h3>
+                    <p class="text-on-surface-variant text-base mb-6">${work.detail}</p>
+                </div>
+                <div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${work.tags.split(',').map(tag => `<span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">${tag.trim()}</span>`).join('')}
+                    </div>
+                    <a href="${work.link}" target="_blank" class="text-sm font-bold text-primary hover:underline uppercase tracking-wider flex items-center gap-2">View Work <span class="material-symbols-outlined text-xs">open_in_new</span></a>
+                </div>
+            </div>
+        `;
+        bentoContainer.innerHTML += cardHTML;
+      }
+      grid.appendChild(bentoContainer);
+    }
+  }
+
+  function renderContacts() {
+    const container = document.getElementById('contact-links-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    contacts.forEach((c) => {
+      let iconHTML = '';
+      if (c.iconType === 'svg') {
+        iconHTML = `<svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
+      } else if (c.iconType === 'image') {
+        iconHTML = `<img alt="${c.name}" class="w-8 h-8 rounded-full object-cover border border-outline/20" src="${c.iconVal}" />`;
+      } else {
+        iconHTML = `<span class="material-symbols-outlined text-2xl">${c.iconVal}</span>`;
+      }
+
+      const linkHTML = `
+          <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-3"
+              href="${c.link}" target="_blank" title="${c.name}">
+              ${iconHTML}
+              <span class="text-sm font-bold">${c.name.toUpperCase()}</span>
+          </a>
+      `;
+      container.innerHTML += linkHTML;
+    });
+  }
+
+  function checkHashRoute() {
+    if (window.location.hash === '#admin') {
+      document.getElementById('admin-auth-modal').classList.remove('hidden');
+      document.getElementById('admin-passcode-input').value = '';
+      document.getElementById('admin-passcode-input').focus();
+      document.getElementById('admin-auth-error').classList.add('hidden');
+    } else {
+      document.getElementById('admin-auth-modal').classList.add('hidden');
+      document.getElementById('admin-panel').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function renderAdminWorksList() {
+    const list = document.getElementById('admin-works-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const works = JSON.parse(localStorage.getItem('works') || '[]');
+    works.forEach((w, idx) => {
+      const isImg = w.image.startsWith('http') || w.image.includes('/') || w.image.includes('.');
+      const item = document.createElement('div');
+      item.className = 'pixel-card p-4 rounded-xl flex justify-between items-center gap-4 bg-surface/40';
+      item.innerHTML = `
+          <div class="flex items-center gap-4 min-w-0">
+              ${
+                isImg
+                  ? `<img src="${w.image}" class="w-12 h-12 rounded object-cover border border-outline/20 flex-shrink-0" />`
+                  : `<span class="material-symbols-outlined text-primary text-3xl flex-shrink-0">${w.image}</span>`
+              }
+              <div class="min-w-0">
+                  <h4 class="font-bold text-sm text-on-background truncate">${w.title}</h4>
+                  <p class="text-xs text-on-surface-variant truncate max-w-[200px]">${w.detail}</p>
+              </div>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+              <button class="admin-edit-work-btn bg-surface-variant hover:bg-outline/20 text-on-surface text-xs py-1.5 px-3 rounded-lg font-bold" data-index="${idx}">Edit</button>
+              <button class="admin-delete-work-btn bg-red-600/80 hover:bg-red-600 text-white text-xs py-1.5 px-3 rounded-lg font-bold" data-index="${idx}">Delete</button>
+          </div>
+      `;
+      list.appendChild(item);
+    });
+
+    list.querySelectorAll('.admin-edit-work-btn').forEach(btn => {
+      btn.addEventListener('click', () => openWorkForm(parseInt(btn.dataset.index)));
+    });
+    list.querySelectorAll('.admin-delete-work-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteWork(parseInt(btn.dataset.index)));
+    });
+  }
+
+  function renderAdminContactsList() {
+    const list = document.getElementById('admin-contacts-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    contacts.forEach((c, idx) => {
+      const item = document.createElement('div');
+      item.className = 'pixel-card p-4 rounded-xl flex justify-between items-center gap-4 bg-surface/40';
+      item.innerHTML = `
+          <div class="flex items-center gap-4 min-w-0">
+              <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
+                  ${
+                    c.iconType === 'svg'
+                      ? `<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`
+                      : c.iconType === 'image'
+                      ? `<img class="w-4 h-4 rounded-full object-cover" src="${c.iconVal}" />`
+                      : `<span class="material-symbols-outlined text-base">${c.iconVal}</span>`
+                  }
+              </div>
+              <div class="min-w-0">
+                  <h4 class="font-bold text-sm text-on-background truncate">${c.name}</h4>
+                  <p class="text-xs text-on-surface-variant truncate max-w-[200px]">${c.link}</p>
+              </div>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+              <button class="admin-edit-contact-btn bg-surface-variant hover:bg-outline/20 text-on-surface text-xs py-1.5 px-3 rounded-lg font-bold" data-index="${idx}">Edit</button>
+              <button class="admin-delete-contact-btn bg-red-600/80 hover:bg-red-600 text-white text-xs py-1.5 px-3 rounded-lg font-bold" data-index="${idx}">Delete</button>
+          </div>
+      `;
+      list.appendChild(item);
+    });
+
+    list.querySelectorAll('.admin-edit-contact-btn').forEach(btn => {
+      btn.addEventListener('click', () => openContactForm(parseInt(btn.dataset.index)));
+    });
+    list.querySelectorAll('.admin-delete-contact-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteContact(parseInt(btn.dataset.index)));
+    });
+  }
+
+  function renderAdminDashboard() {
+    renderAdminWorksList();
+    renderAdminContactsList();
+  }
+
+  function openWorkForm(index = -1) {
+    const modal = document.getElementById('work-form-modal');
+    const title = document.getElementById('work-form-title');
+    const idxInput = document.getElementById('work-form-index');
+
+    idxInput.value = index;
+    if (index === -1) {
+      title.textContent = 'Add New Work';
+      document.getElementById('work-form').reset();
+    } else {
+      title.textContent = 'Edit Work';
+      const works = JSON.parse(localStorage.getItem('works') || '[]');
+      const w = works[index];
+      document.getElementById('work-form-title-input').value = w.title;
+      document.getElementById('work-form-image-input').value = w.image;
+      document.getElementById('work-form-link-input').value = w.link;
+      document.getElementById('work-form-tags-input').value = w.tags;
+      document.getElementById('work-form-detail-input').value = w.detail;
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function deleteWork(index) {
+    if (confirm('Are you sure you want to delete this work?')) {
+      const works = JSON.parse(localStorage.getItem('works') || '[]');
+      works.splice(index, 1);
+      localStorage.setItem('works', JSON.stringify(works));
+      renderWorks();
+      renderAdminDashboard();
+    }
+  }
+
+  function openContactForm(index = -1) {
+    const modal = document.getElementById('contact-form-modal');
+    const title = document.getElementById('contact-form-title');
+    const idxInput = document.getElementById('contact-form-index');
+
+    idxInput.value = index;
+    if (index === -1) {
+      title.textContent = 'Add Contact Channel';
+      document.getElementById('contact-form').reset();
+      updateContactIconLabels();
+    } else {
+      title.textContent = 'Edit Contact Channel';
+      const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+      const c = contacts[index];
+      document.getElementById('contact-form-name-input').value = c.name;
+      document.getElementById('contact-form-link-input').value = c.link;
+      document.getElementById('contact-form-icon-type').value = c.iconType;
+      document.getElementById('contact-form-icon-val').value = c.iconVal;
+      updateContactIconLabels();
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function updateContactIconLabels() {
+    const select = document.getElementById('contact-form-icon-type');
+    const label = document.getElementById('contact-icon-label');
+    const input = document.getElementById('contact-form-icon-val');
+
+    if (select.value === 'material') {
+      label.textContent = 'Material Symbol Name (e.g. terminal)';
+      input.placeholder = 'terminal';
+    } else if (select.value === 'svg') {
+      label.textContent = 'SVG Path D-Attribute Data';
+      input.placeholder = 'M12 0c-6...';
+    } else {
+      label.textContent = 'Image URL';
+      input.placeholder = 'https://example.com/icon.png';
+    }
+  }
+
+  function deleteContact(index) {
+    if (confirm('Are you sure you want to delete this contact channel?')) {
+      const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+      contacts.splice(index, 1);
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+      renderContacts();
+      renderAdminDashboard();
+    }
+  }
+
+  function initAdminHooks() {
+    // Auth Modal
+    document.getElementById('admin-auth-submit').addEventListener('click', () => {
+      const pin = document.getElementById('admin-passcode-input').value;
+      if (pin === '977254') {
+        document.getElementById('admin-auth-modal').classList.add('hidden');
+        document.getElementById('admin-panel').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        renderAdminDashboard();
+      } else {
+        document.getElementById('admin-auth-error').classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('admin-auth-cancel').addEventListener('click', () => {
+      window.location.hash = '';
+    });
+
+    document.getElementById('admin-close-btn').addEventListener('click', () => {
+      window.location.hash = '';
+    });
+
+    document.getElementById('admin-passcode-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('admin-auth-submit').click();
+      }
+    });
+
+    // Form modals cancel buttons
+    document.getElementById('work-form-cancel').addEventListener('click', () => {
+      document.getElementById('work-form-modal').classList.add('hidden');
+    });
+
+    document.getElementById('contact-form-cancel').addEventListener('click', () => {
+      document.getElementById('contact-form-modal').classList.add('hidden');
+    });
+
+    // Add buttons
+    document.getElementById('admin-add-work-btn').addEventListener('click', () => openWorkForm(-1));
+    document.getElementById('admin-add-contact-btn').addEventListener('click', () => openContactForm(-1));
+
+    // Icon select type change
+    document.getElementById('contact-form-icon-type').addEventListener('change', updateContactIconLabels);
+
+    // Form submit handlers
+    document.getElementById('work-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const index = parseInt(document.getElementById('work-form-index').value);
+      const works = JSON.parse(localStorage.getItem('works') || '[]');
+
+      const newWork = {
+        title: document.getElementById('work-form-title-input').value,
+        image: document.getElementById('work-form-image-input').value,
+        link: document.getElementById('work-form-link-input').value,
+        tags: document.getElementById('work-form-tags-input').value,
+        detail: document.getElementById('work-form-detail-input').value,
+      };
+
+      if (index === -1) {
+        works.push(newWork);
+      } else {
+        works[index] = newWork;
+      }
+
+      localStorage.setItem('works', JSON.stringify(works));
+      document.getElementById('work-form-modal').classList.add('hidden');
+      renderWorks();
+      renderAdminDashboard();
+    });
+
+    document.getElementById('contact-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const index = parseInt(document.getElementById('contact-form-index').value);
+      const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+
+      const newContact = {
+        name: document.getElementById('contact-form-name-input').value,
+        link: document.getElementById('contact-form-link-input').value,
+        iconType: document.getElementById('contact-form-icon-type').value,
+        iconVal: document.getElementById('contact-form-icon-val').value,
+      };
+
+      if (index === -1) {
+        contacts.push(newContact);
+      } else {
+        contacts[index] = newContact;
+      }
+
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+      document.getElementById('contact-form-modal').classList.add('hidden');
+      renderContacts();
+      renderAdminDashboard();
+    });
+  }
+
   function init() {
+    initLocalStorage();
     initBackground();
     startGitHubSync();
     initRevealAndTheme();
     initNavbarScroll();
     initSmoothScroll();
+    renderWorks();
+    renderContacts();
+    checkHashRoute();
+    initAdminHooks();
+    
+    // Listen to hash change for admin panel route
+    window.addEventListener('hashchange', checkHashRoute);
   }
 
   if (document.readyState === 'loading') {
