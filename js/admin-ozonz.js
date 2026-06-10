@@ -138,6 +138,7 @@ async function loadWorks(){
     renderAdminList();
     updateStats();
   } catch(e){
+    alert("loadWorks Error: " + e.message);
     window.ghConnected = false;
     document.getElementById('ghStatusBox').style.background = '#fadbd8';
     document.getElementById('ghStatus').className='gh-status err';

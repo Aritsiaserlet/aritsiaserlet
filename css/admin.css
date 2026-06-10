@@ -23,11 +23,11 @@ body.theme-ozonz {
   --gold: #eaddb5;
   --gold-d: #d0c095;
   --gold-l: #fdf5d3;
-  --dark: #f0f0f0;
+  --dark: #ffffff;
   --mid: #a0aab5;
   --white: #161a20;
   --glass: rgba(255,255,255,0.05);
-  --glass2: rgba(255,255,255,0.1);
+  --glass2: rgba(255,255,255,0.2);
   --danger: #ff5555;
   --success: #55ff55;
   --pixel-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -38,31 +38,38 @@ body.theme-ozonz * {
   font-family: 'Space Grotesk', 'Mitr', sans-serif !important;
 }
 
+body.theme-ozonz div,
+body.theme-ozonz button, 
+body.theme-ozonz input, 
+body.theme-ozonz select, 
+body.theme-ozonz textarea,
+body.theme-ozonz img,
+body.theme-ozonz .witem,
+body.theme-ozonz .panel-card,
+body.theme-ozonz .anav {
+  border-width: 1px !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  box-shadow: none !important;
+}
+
 body.theme-ozonz button, 
 body.theme-ozonz input, 
 body.theme-ozonz select, 
 body.theme-ozonz textarea {
   border-radius: 6px;
-  box-shadow: none !important;
-  border-color: var(--glass2) !important;
 }
 
 body.theme-ozonz .submit-btn {
   background: var(--gold) !important;
   color: #161a20 !important;
   border-radius: 8px !important;
-  box-shadow: none !important;
+  border: 1px solid var(--gold) !important;
   font-weight: 600 !important;
   letter-spacing: 1px;
 }
 
 body.theme-ozonz .panel-card {
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-body.theme-ozonz .anav {
-  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 body{
   font-family:'VT323', monospace;
