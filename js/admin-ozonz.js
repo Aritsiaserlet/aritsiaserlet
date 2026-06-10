@@ -1134,6 +1134,56 @@ function renderAdminList(){
   });
 }
 
+function onDragStart(e) {
+  dragSrcIndex = this.dataset.realIdx;
+  e.dataTransfer.effectAllowed = 'move';
+  this.classList.add('dragging');
+}
+
+function onDragOver(e) {
+  if (e.preventDefault) e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  this.classList.add('over');
+  return false;
+}
+
+function onDragLeave(e) {
+  this.classList.remove('over');
+}
+
+async function onDrop(e) {
+  if (e.stopPropagation) e.stopPropagation();
+  if (dragSrcIndex !== null && dragSrcIndex !== this.dataset.realIdx) {
+    if(isSavingOrder) return false;
+    isSavingOrder = true;
+    const list = document.getElementById('worksList');
+    list.style.opacity = '0.5';
+    
+    const srcIdx = parseInt(dragSrcIndex);
+    const dstIdx = parseInt(this.dataset.realIdx);
+    
+    const temp = works[srcIdx];
+    works[srcIdx] = works[dstIdx];
+    works[dstIdx] = temp;
+    
+    try {
+      await saveWorks();
+      renderAdminList();
+    } catch(err) {
+      alert("Error saving new order: " + err.message);
+    }
+    
+    list.style.opacity = '1';
+    isSavingOrder = false;
+  }
+  return false;
+}
+
+function onDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.witem').forEach(item => item.classList.remove('over'));
+}
+
 let currentWorkLinks = [];
 
 function renderWorkLinks() {
