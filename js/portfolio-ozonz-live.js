@@ -481,6 +481,10 @@
     if (!localStorage.getItem('contacts')) {
       localStorage.setItem('contacts', JSON.stringify(defaultContacts));
     }
+    const defaultApiKey = (typeof CONFIG !== 'undefined' && CONFIG.GEMINI_API_KEY) ? CONFIG.GEMINI_API_KEY : '';
+    if (!localStorage.getItem('gemini_api_key') && defaultApiKey) {
+      localStorage.setItem('gemini_api_key', defaultApiKey);
+    }
   }
 
   function renderWorks() {

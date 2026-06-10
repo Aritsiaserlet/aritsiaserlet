@@ -32,7 +32,8 @@ yarn.lock
 .env.*.local
 
 # ── Sensitive / Secrets ───────────────────────────────────────────────────────
-# Never commit GitHub tokens or Firebase service account keys
+# Never commit GitHub tokens, Firebase keys, or local config API keys
+js/config.js
 *.pem
 *.key
 serviceAccountKey.json
