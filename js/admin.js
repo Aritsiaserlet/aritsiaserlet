@@ -19,12 +19,14 @@ window.switchAdminMode = async function(mode) {
   adminMode = mode;
   
   document.getElementById('btnModeAritsia').style.background = (mode === 'aritsia') ? 'var(--gold)' : 'var(--white)';
-  document.getElementById('btnModeOzonz').style.background = (mode === 'ozonz') ? 'var(--sky2)' : 'var(--white)';
+  document.getElementById('btnModeOzonz').style.background = (mode === 'ozonz') ? 'var(--gold)' : 'var(--white)';
   
   if (mode === 'aritsia') {
+    document.body.classList.remove('theme-ozonz');
     WORKS_PATH = 'works.json';
     SETTINGS_PATH = 'settings.json';
   } else {
+    document.body.classList.add('theme-ozonz');
     WORKS_PATH = 'ozonz_works.json';
     SETTINGS_PATH = 'ozonz_settings.json';
   }
@@ -73,6 +75,8 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     GH_TOKEN = savedToken;
     document.getElementById('adminPanel').style.display = 'block';
+    const modeSel = document.getElementById('adminModeSelector');
+    if (modeSel) modeSel.style.display = 'flex';
     loadWorks();
     loadSettings();
   }
@@ -158,7 +162,7 @@ async function loadWorks(){
     window.ghConnected = false;
     document.getElementById('ghStatusBox').style.background = '#fadbd8';
     document.getElementById('ghStatus').className='gh-status err';
-    document.getElementById('ghStatus').textContent='✗ GitHub connection failed';
+    document.getElementById('ghStatus').textContent='✗ GitHub connection failed: ' + (e.message || e);
     works=[];renderAdminList();
   }
 }
