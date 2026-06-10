@@ -577,6 +577,97 @@
     });
   }
 
+  function openProjectDetailModal(index) {
+    const works = JSON.parse(localStorage.getItem('works') || '[]');
+    const w = works[index];
+    if (!w) return;
+
+    const modal = document.getElementById('project-detail-modal');
+    const titleEl = document.getElementById('project-detail-title');
+    const descEl = document.getElementById('project-detail-description');
+    const imgContainer = document.getElementById('project-detail-image-container');
+    const tagsContainer = document.getElementById('project-detail-tags');
+    const linkEl = document.getElementById('project-detail-link');
+    const contribSection = document.getElementById('project-detail-contributors-section');
+    const contribList = document.getElementById('project-detail-contributors-list');
+
+    titleEl.textContent = w.title;
+    descEl.textContent = w.detail;
+    linkEl.href = w.link;
+
+    // Set image or icon
+    imgContainer.innerHTML = '';
+    const isImg = w.image.startsWith('http') || w.image.includes('/') || w.image.includes('.');
+    if (isImg) {
+      imgContainer.innerHTML = `<img src="${w.image}" class="w-full h-full object-cover" />`;
+    } else {
+      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-8xl">${w.image || 'brush'}</span></div>`;
+    }
+
+    // Set tags
+    tagsContainer.innerHTML = '';
+    if (w.tags) {
+      w.tags.split(',').forEach(tag => {
+        const badge = document.createElement('span');
+        badge.className = 'px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-bold uppercase tracking-wider';
+        badge.textContent = tag.trim();
+        tagsContainer.appendChild(badge);
+      });
+    }
+
+    // Set contributors
+    contribList.innerHTML = '';
+    const contributors = w.contributors || [];
+    if (contributors.length > 0) {
+      contribSection.classList.remove('hidden');
+      contributors.forEach(c => {
+        const item = document.createElement('a');
+        item.className = 'flex items-center gap-2 bg-surface-variant/40 p-2 rounded-xl border border-outline/10 hover:border-primary/30 transition-all';
+        if (c.url) {
+          item.href = c.url;
+          item.target = '_blank';
+        } else {
+          item.href = 'javascript:void(0)';
+        }
+
+        const avatar = c.avatar 
+          ? `<img src="${c.avatar}" class="w-6 h-6 rounded-full object-cover border border-outline/20" />`
+          : `<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center"><span class="material-symbols-outlined text-sm text-primary">person</span></div>`;
+        
+        item.innerHTML = `
+          ${avatar}
+          <span class="text-xs font-bold text-on-surface">${c.name}</span>
+        `;
+        contribList.appendChild(item);
+      });
+    } else {
+      contribSection.classList.add('hidden');
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Bind close buttons for Detail Modal
+  document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.getElementById('project-detail-close-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        document.getElementById('project-detail-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    }
+    const modal = document.getElementById('project-detail-modal');
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+
   function checkHashRoute() {
     if (window.location.hash === '#admin') {
       document.getElementById('admin-auth-modal').classList.remove('hidden');
