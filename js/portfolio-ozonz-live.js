@@ -177,11 +177,20 @@
       uniform vec2 u_resolution;
       uniform vec2 u_mouse;
       uniform float u_spot;
+      uniform float u_isDark;
       varying vec2 v_texCoord;
 
       void main() {
         vec2 px = v_texCoord * u_resolution;
-        vec3 bg = vec3(0.063, 0.078, 0.102);
+        
+        // Background colors
+        vec3 bgDark = vec3(0.063, 0.078, 0.102);
+        
+        // Subtle yellowish-green gradient for light mode
+        float grad = clamp(v_texCoord.x * 0.5 + v_texCoord.y * 0.5, 0.0, 1.0);
+        vec3 bgLight = mix(vec3(0.902, 0.941, 0.847), vec3(0.961, 0.973, 0.941), grad);
+        
+        vec3 bg = mix(bgLight, bgDark, u_isDark);
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
@@ -191,10 +200,24 @@
         float spotDist = length(px - mousePx);
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
 
-        float dim = 0.14;
-        float lit = 0.14 + spotlight * 0.42;
+        // Dot Colors for dark/light modes
+        vec3 dotColorDimDark = vec3(0.22, 0.24, 0.28);
+        vec3 dotColorLitDark = vec3(0.82, 0.84, 0.88);
+        
+        vec3 dotColorDimLight = vec3(0.765, 0.82, 0.702);
+        vec3 dotColorLitLight = vec3(1.0, 1.0, 1.0);
+        
+        vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
+        vec3 dotColorLit = mix(dotColorLitLight, dotColorLitDark, u_isDark);
+        
+        vec3 dotColor = mix(dotColorDim, dotColorLit, spotlight);
+
+        // Brightness and mixing
+        float dim = mix(0.18, 0.14, u_isDark);
+        float lit = dim + spotlight * 0.42;
         float brightness = mix(dim, lit, dotShape);
-        vec3 dotColor = mix(vec3(0.22, 0.24, 0.28), vec3(0.82, 0.84, 0.88), spotlight);
+        
+        // Final color mix
         vec3 color = bg + dotColor * brightness * dotShape;
 
         gl_FragColor = vec4(color, 1.0);
@@ -231,12 +254,19 @@
     const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
     const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
     const spotLocation = gl.getUniformLocation(program, 'u_spot');
+    const isDarkLocation = gl.getUniformLocation(program, 'u_isDark');
 
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
     let spot = 0;
     let targetSpot = 0;
     let pointerInside = false;
+
+    // Theme transition state
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialIsDark = savedTheme === 'dark' || (savedTheme === null && systemPrefersDark);
+    let darkTransition = initialIsDark ? 1.0 : 0.0;
 
     function onMove(e) {
       target.x = e.clientX / window.innerWidth;
@@ -274,6 +304,11 @@
       mouse.y += (target.y - mouse.y) * lerp;
       spot += (targetSpot - spot) * 0.12;
 
+      // Animate transition between dark and light modes
+      const currentIsDark = document.documentElement.classList.contains('dark');
+      const targetDark = currentIsDark ? 1.0 : 0.0;
+      darkTransition += (targetDark - darkTransition) * 0.1;
+
       gl.useProgram(program);
       gl.enableVertexAttribArray(positionLocation);
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -282,6 +317,7 @@
       gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
       gl.uniform2f(mouseLocation, mouse.x, mouse.y);
       gl.uniform1f(spotLocation, spot);
+      gl.uniform1f(isDarkLocation, darkTransition);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(render);
@@ -302,11 +338,19 @@
     document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => observer.observe(el));
 
     const themeToggle = document.getElementById('theme-toggle');
+    const icon = document.getElementById('theme-icon');
+
+    // Initialize toggle state correctly based on current classes
+    const isDarkInitial = document.documentElement.classList.contains('dark');
+    if (icon) {
+      icon.textContent = isDarkInitial ? 'light_mode' : 'dark_mode';
+    }
+
     if (themeToggle) {
       themeToggle.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
         const isDark = document.documentElement.classList.contains('dark');
-        const icon = document.getElementById('theme-icon');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
         if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
       });
     }
