@@ -546,6 +546,19 @@
     // Bind click listeners to work-card-trigger
     grid.querySelectorAll('.work-card-trigger').forEach(card => {
       card.addEventListener('click', (e) => {
+        const linkBtn = e.target.closest('a');
+        if (linkBtn) {
+          const href = linkBtn.getAttribute('href');
+          if (href === '#' || !href || href.trim() === '') {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('เกมนี้ยังไม่มี link ตอนนี้');
+          } else {
+            // Stop propagation so it doesn't open the modal, but let the default link target="_blank" behavior run
+            e.stopPropagation();
+          }
+          return;
+        }
         e.preventDefault();
         const index = parseInt(card.getAttribute('data-index'));
         openProjectDetailModal(index);
@@ -691,6 +704,16 @@
         if (e.target === modal) {
           modal.classList.add('hidden');
           document.body.style.overflow = '';
+        }
+      });
+    }
+    const linkEl = document.getElementById('project-detail-link');
+    if (linkEl) {
+      linkEl.addEventListener('click', (e) => {
+        const href = linkEl.getAttribute('href');
+        if (href === '#' || !href || href.trim() === '') {
+          e.preventDefault();
+          alert('เกมนี้ยังไม่มี link ตอนนี้');
         }
       });
     }
