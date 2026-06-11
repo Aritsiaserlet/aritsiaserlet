@@ -561,6 +561,16 @@
     let contacts = [];
     if (globalSettings && globalSettings.socials) {
       contacts = globalSettings.socials.map(s => {
+        // Support new format (iconType, iconVal, url) with fallback to iconId
+        if (s.iconType) {
+          return {
+            name: s.name,
+            link: s.url || '#',
+            iconType: s.iconType,
+            iconVal: s.iconVal || 'link'
+          };
+        }
+        
         let iconUrl = '';
         if (s.iconId && globalSettings.icons) {
           const ic = globalSettings.icons.find(x => x.id === s.iconId);
@@ -568,7 +578,7 @@
         }
         return {
           name: s.name,
-          link: s.url,
+          link: s.url || '#',
           iconType: iconUrl ? 'image' : 'material',
           iconVal: iconUrl ? iconUrl : 'link'
         };
