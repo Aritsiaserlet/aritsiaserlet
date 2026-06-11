@@ -154,6 +154,54 @@
         /* link rows */
         .link-row { display:flex; gap:.5rem; align-items:center; margin-bottom:.5rem; }
         .link-row .admin-input { flex:1; }
+
+        /* image upload zone */
+        .img-drop-zone {
+            border: 2px dashed rgba(var(--outline-rgb),.5);
+            border-radius: 1rem;
+            background: rgba(var(--surface-rgb),.3);
+            transition: all .2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+        }
+        .img-drop-zone.drag-over {
+            border-color: rgba(var(--primary-rgb),.8);
+            background: rgba(var(--primary-rgb),.08);
+        }
+        .img-drop-zone.has-image {
+            border-style: solid;
+            border-color: rgba(var(--primary-rgb),.35);
+            padding: 0;
+        }
+        .img-drop-zone img.preview {
+            width: 100%; height: 140px;
+            object-fit: cover;
+            border-radius: calc(1rem - 2px);
+            display: block;
+        }
+        .img-drop-zone .remove-img {
+            position: absolute; top: .5rem; right: .5rem;
+            background: rgba(0,0,0,.6); color: white;
+            border-radius: .5rem; padding: 2px 6px;
+            font-size: .7rem; cursor: pointer;
+            display: none;
+        }
+        .img-drop-zone.has-image .remove-img { display: block; }
+        .img-upload-progress {
+            display: none; align-items: center; gap: .5rem;
+            font-size: .75rem; color: rgb(var(--on-surface-variant-rgb));
+            margin-top: .5rem;
+        }
+        .img-upload-progress.visible { display: flex; }
+        .progress-bar-wrap { flex: 1; height: 4px; border-radius: 2px; background: rgba(var(--outline-rgb),.3); overflow: hidden; }
+        .progress-bar { height: 100%; background: rgb(var(--primary-rgb)); border-radius: 2px; transition: width .2s; }
     </style>
 </head>
 
@@ -369,9 +417,28 @@
                 <label class="admin-label">Work Name</label>
                 <input type="text" id="work-name" required class="admin-input" />
             </div>
+            <!-- Image upload -->
             <div>
-                <label class="admin-label">Image URL or Material Icon (e.g. brush)</label>
-                <input type="text" id="work-image" required class="admin-input" />
+                <label class="admin-label">Cover Image</label>
+                <!-- Drop / click zone -->
+                <div class="img-drop-zone" id="img-drop-zone" title="Click or drag image here">
+                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
+                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Click or drag image</span>
+                    <span class="text-[10px] text-on-surface-variant">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+                    <button type="button" class="remove-img" id="img-remove-btn">✕ Remove</button>
+                </div>
+                <input type="file" id="img-file-input" accept="image/*" class="hidden" />
+                <!-- Upload progress -->
+                <div class="img-upload-progress" id="img-upload-progress">
+                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
+                    <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
+                    <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
+                </div>
+                <!-- URL / icon fallback -->
+                <div class="mt-2">
+                    <label class="admin-label">Or enter URL / Material Icon name</label>
+                    <input type="text" id="work-image" class="admin-input text-xs" placeholder="https://... or terminal" />
+                </div>
             </div>
             <div>
                 <label class="admin-label">Tags (comma-separated)</label>
@@ -510,6 +577,24 @@ async function ghGet(path) {
     const r = await fetch(`${GH_API}/${path}?t=${Date.now()}`, { headers: ghHeaders() });
     if (r.status === 404) return null;
     if (!r.ok) throw new Error(`GitHub GET ${r.status}`);
+    return r.json();
+}
+
+async function ghPutBinary(path, base64content, message) {
+    let sha;
+    try {
+        const existing = await ghGet(path);
+        if (existing?.sha) sha = existing.sha;
+    } catch (_) {}
+    const body = { message, content: base64content };
+    if (sha) body.sha = sha;
+    let r = await fetch(`${GH_API}/${path}`, {
+        method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
+    });
+    if (!r.ok) {
+        const t = await r.text();
+        throw new Error(`GitHub PUT binary ${r.status}: ${t}`);
+    }
     return r.json();
 }
 
@@ -669,10 +754,18 @@ window.openWorkModal = function(id) {
     // Reset form
     document.getElementById('work-name').value  = w?.name  || '';
     const img = w?.image;
-    document.getElementById('work-image').value = Array.isArray(img) ? img[0] : (img || '');
+    const imgVal = Array.isArray(img) ? img[0] : (img || '');
+    document.getElementById('work-image').value = imgVal;
     const tags = w?.tags;
     document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
     document.getElementById('work-desc').value  = w?.desc  || '';
+
+    // Reset image upload zone
+    resetImageZone();
+    // If editing and has a valid image URL, show preview
+    if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
+        setImagePreviewUrl(imgVal);
+    }
 
     // Links
     renderLinkRows(w?.links || []);
@@ -717,9 +810,22 @@ function collectLinks() {
 
 document.getElementById('work-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!ghToken) { showToast('Set a GitHub token first!'); return; }
+
     const editId  = document.getElementById('work-edit-id').value;
-    const imgVal  = document.getElementById('work-image').value.trim();
     const tagsVal = document.getElementById('work-tags').value.trim();
+
+    // ── Upload pending image to GitHub if any ──
+    let imgVal = document.getElementById('work-image').value.trim();
+    if (pendingImageFile) {
+        const uploaded = await uploadImageToGitHub(pendingImageFile);
+        if (uploaded) {
+            imgVal = uploaded;
+            document.getElementById('work-image').value = imgVal;
+        } else {
+            return; // upload failed, abort
+        }
+    }
 
     const entry = {
         id:    editId ? Number(editId) : Date.now(),
@@ -748,6 +854,115 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
     if (ok) {
         document.getElementById('work-modal').classList.remove('open');
         renderWorks();
+    }
+});
+
+/* ══════════════════════════════════════════════════════
+   IMAGE UPLOAD SYSTEM
+══════════════════════════════════════════════════════ */
+let pendingImageFile = null;
+
+function resetImageZone() {
+    pendingImageFile = null;
+    const zone = document.getElementById('img-drop-zone');
+    zone.classList.remove('has-image');
+    zone.innerHTML = `
+        <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
+        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Click or drag image</span>
+        <span class="text-[10px] text-on-surface-variant">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+        <button type="button" class="remove-img" id="img-remove-btn" onclick="resetImageZone()">✕ Remove</button>
+    `;
+    document.getElementById('img-file-input').value = '';
+    document.getElementById('img-upload-progress').classList.remove('visible');
+}
+
+function setImagePreviewUrl(url) {
+    const zone = document.getElementById('img-drop-zone');
+    zone.classList.add('has-image');
+    zone.innerHTML = `
+        <img class="preview" src="${url}" alt="preview" />
+        <button type="button" class="remove-img" id="img-remove-btn" onclick="resetImageZone()">✕ Remove</button>
+    `;
+}
+
+function setImagePreviewBlob(file) {
+    const url = URL.createObjectURL(file);
+    setImagePreviewUrl(url);
+}
+
+async function uploadImageToGitHub(file) {
+    const progress = document.getElementById('img-upload-progress');
+    const bar      = document.getElementById('img-progress-bar');
+    const label    = document.getElementById('img-progress-label');
+    progress.classList.add('visible');
+    bar.style.width = '0%';
+    label.textContent = 'Reading file…';
+
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+            try {
+                bar.style.width = '30%';
+                label.textContent = 'Uploading to GitHub…';
+                const base64   = ev.target.result.split(',')[1];
+                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
+                const filename = `works/${Date.now()}_ozonz.${ext}`;
+                bar.style.width = '60%';
+                await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
+                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
+                bar.style.width = '100%';
+                label.textContent = '✓ Uploaded!';
+                setTimeout(() => progress.classList.remove('visible'), 1500);
+                resolve(rawUrl);
+            } catch (err) {
+                bar.style.width = '0%';
+                label.textContent = `Error: ${err.message}`;
+                label.style.color = '#ef4444';
+                showToast('Image upload failed: ' + err.message);
+                resolve(null);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function handleImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
+    if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
+    pendingImageFile = file;
+    setImagePreviewBlob(file);
+    // clear the URL field so we know to upload
+    document.getElementById('work-image').value = '';
+}
+
+// Wiring: click to open file picker
+document.getElementById('img-drop-zone').addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) return;
+    document.getElementById('img-file-input').click();
+});
+document.getElementById('img-file-input').addEventListener('change', (e) => {
+    if (e.target.files[0]) handleImageFile(e.target.files[0]);
+});
+
+// Drag & drop
+const dropZone = document.getElementById('img-drop-zone');
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', ()   => { dropZone.classList.remove('drag-over'); });
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleImageFile(file);
+});
+
+// Paste from clipboard (Ctrl+V)
+document.getElementById('work-modal').addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+        if (item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) { handleImageFile(file); break; }
+        }
     }
 });
 
