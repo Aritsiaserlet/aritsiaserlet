@@ -1129,6 +1129,27 @@ document.getElementById('ai-write-btn').addEventListener('click', () => {
     }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
 });
 
+document.getElementById('ai-summarize-btn').addEventListener('click', () => {
+    const desc   = document.getElementById('work-desc').value.trim();
+    const summaryInput = document.getElementById('work-ai-summary');
+    const status = document.getElementById('ai-summarize-status');
+    const apiKey = localStorage.getItem('gemini_api_key') || '';
+    if (!desc)   { status.textContent = 'Enter a Description first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
+    if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
+    status.textContent = 'Summarizing…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block'; status.classList.remove('hidden');
+    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: `Summarize the following description into a very short, punchy tagline or summary (maximum 6-8 words, in English). Do not use markdown, quotes, prefix or suffix. Just output the summary text itself. Description: "${desc}"` }] }] })
+    }).then(r => r.json()).then(d => {
+        const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+            summaryInput.value = text.trim().replace(/^["']|["']$/g, '');
+            status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block';
+        }
+        else throw new Error('Invalid AI response');
+    }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
+});
+
 /* ══════════════════════════════════════════════════════
    RENDER CONTACTS (from ozonzSettings.socials)
 ══════════════════════════════════════════════════════ */

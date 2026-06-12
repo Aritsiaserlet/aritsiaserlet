@@ -873,11 +873,18 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
       aiStatus.textContent = '';
     }
 
+    const aiSummarizeStatus = document.getElementById('work-form-ai-summarize-status');
+    if (aiSummarizeStatus) {
+      aiSummarizeStatus.classList.add('hidden');
+      aiSummarizeStatus.textContent = '';
+    }
+
     idxInput.value = index;
     if (index === -1) {
       title.textContent = 'Add New Work';
       document.getElementById('work-form').reset();
       document.getElementById('work-form-contributors-input').value = '';
+      document.getElementById('work-form-ai-summary-input').value = '';
       window.tempAutofilledContributors = [];
     } else {
       title.textContent = 'Edit Work';
@@ -888,6 +895,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
       document.getElementById('work-form-link-input').value = w.link;
       document.getElementById('work-form-tags-input').value = w.tags;
       document.getElementById('work-form-detail-input').value = w.detail;
+      document.getElementById('work-form-ai-summary-input').value = w.aiSummary || '';
       
       const contributors = w.contributors || [];
       document.getElementById('work-form-contributors-input').value = contributors.map(c => c.name).join(', ');
@@ -1225,6 +1233,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
         link: document.getElementById('work-form-link-input').value,
         tags: document.getElementById('work-form-tags-input').value,
         detail: document.getElementById('work-form-detail-input').value,
+        aiSummary: document.getElementById('work-form-ai-summary-input').value,
         contributors: contributors,
       };
 
@@ -1320,6 +1329,63 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
           console.error(err);
           aiStatus.textContent = `AI Error: ${err.message}`;
           aiStatus.className = 'text-red-500 text-[10px] mt-1 block';
+        });
+      });
+    }
+
+    const aiSummarizeBtn = document.getElementById('work-form-ai-summarize-btn');
+    if (aiSummarizeBtn) {
+      aiSummarizeBtn.addEventListener('click', () => {
+        const desc = document.getElementById('work-form-detail-input').value.trim();
+        const summaryInput = document.getElementById('work-form-ai-summary-input');
+        const status = document.getElementById('work-form-ai-summarize-status');
+
+        if (!desc) {
+          status.textContent = 'Please enter a Details / Description first.';
+          status.className = 'text-red-500 text-[10px] mt-1 block';
+          status.classList.remove('hidden');
+          return;
+        }
+
+        const apiKey = localStorage.getItem('gemini_api_key') || '';
+        if (!apiKey) {
+          status.textContent = 'Please enter your Gemini API Key in settings first.';
+          status.className = 'text-red-500 text-[10px] mt-1 block';
+          status.classList.remove('hidden');
+          return;
+        }
+
+        status.textContent = 'Summarizing...';
+        status.className = 'text-on-surface-variant text-[10px] mt-1 block';
+        status.classList.remove('hidden');
+
+        const promptText = `Summarize the following description into a very short, punchy tagline or summary (maximum 6-8 words, in English). Do not use markdown, quotes, prefix or suffix. Just output the summary text itself. Description: "${desc}"`;
+
+        fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptText }] }]
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error(`API returned status ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            summaryInput.value = text.trim().replace(/^["']|["']$/g, '');
+            status.textContent = 'AI Summary generated!';
+            status.className = 'text-green-500 text-[10px] mt-1 block';
+          } else {
+            throw new Error('Invalid response structure from Gemini API');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          status.textContent = `AI Error: ${err.message}`;
+          status.className = 'text-red-500 text-[10px] mt-1 block';
         });
       });
     }
