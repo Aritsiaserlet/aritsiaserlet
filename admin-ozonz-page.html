@@ -769,6 +769,9 @@ window.openWorkModal = function(id) {
     document.getElementById('autofill-status').classList.add('hidden');
     document.getElementById('ai-status').classList.add('hidden');
 
+    // Reset image upload zone
+    resetImageZone();
+
     // Reset form
     document.getElementById('work-name').value  = w?.name  || '';
     const img = w?.image;
@@ -778,8 +781,6 @@ window.openWorkModal = function(id) {
     document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
     document.getElementById('work-desc').value  = w?.desc  || '';
 
-    // Reset image upload zone
-    resetImageZone();
     // If editing and has a valid image URL, show preview
     if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
         setImagePreviewUrl(imgVal);
