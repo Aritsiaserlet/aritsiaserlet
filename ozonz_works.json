@@ -1,5 +1,26 @@
 [
   {
+    "id": 1781259952734,
+    "name": "Discord Playtime Bot",
+    "cat": "ozonz",
+    "subcat": "",
+    "desc": "Developed a Python Discord bot that accurately tracks user playtime in voice channels, providing engaging statistics and fostering community interaction. Explore the codebase on GitHub.",
+    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1781259950466_ozonz.png",
+    "tags": [
+      "PYTHON",
+      "GITHUB"
+    ],
+    "links": [
+      {
+        "url": "https://github.com/OzonZ/Discord-Playtime-Bot",
+        "label": "GitHub Repo"
+      }
+    ],
+    "team": [],
+    "tools": [],
+    "date": "2026-06-12T10:25:52.735Z"
+  },
+  {
     "id": 1781191689373,
     "name": "I Swore Never to Love Again",
     "cat": "ozonz",
