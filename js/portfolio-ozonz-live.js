@@ -1,6 +1,3 @@
-import { db } from '../authManager.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
 (function () {
   const GITHUB_USER =
     document.body.dataset.githubUser || 'OzonZ';
@@ -10,6 +7,8 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
   let globalSettings = {};
   const GH_REPO_OWNER = 'Aritsiaserlet';
   const GH_REPO_NAME = 'aritsiaserlet';
+  const DATA_OWNER = 'OzonZ';
+  const DATA_REPO = 'Non-Four-Portfolio-Data';
 
   const els = {
     contributions: document.getElementById('ghContributions'),
@@ -1472,16 +1471,13 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
 
   async function fetchPortfolioData() {
     try {
-      const worksDocRef = doc(db, 'ozonz_data', 'works');
-      const settingsDocRef = doc(db, 'ozonz_data', 'settings');
-      
-      const [worksSnap, settingsSnap] = await Promise.all([
-          getDoc(worksDocRef),
-          getDoc(settingsDocRef)
+      const [worksRes, settingsRes] = await Promise.all([
+          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`),
+          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`)
       ]);
       
-      if (worksSnap.exists()) {
-          globalWorks = worksSnap.data().works || [];
+      if (worksRes.ok) {
+          globalWorks = await worksRes.json();
       } else {
           try {
               const r = await fetch('ozonz_works.json?t=' + Date.now());
@@ -1492,8 +1488,8 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
           }
       }
       
-      if (settingsSnap.exists()) {
-          globalSettings = settingsSnap.data().settings || { socials: [] };
+      if (settingsRes.ok) {
+          globalSettings = await settingsRes.json();
       } else {
           try {
               const r = await fetch('ozonz_settings.json?t=' + Date.now());
@@ -1514,7 +1510,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
       globalSettings.sounds = sharedSettings.sounds || [];
       
     } catch (err) {
-      console.error("Failed to fetch portfolio data from Firestore:", err);
+      console.error("Failed to fetch portfolio data from GitHub:", err);
     }
   }
 
@@ -1532,13 +1528,22 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     if (!hasCache) {
       try {
         const [rWorks, rSettings] = await Promise.all([
-          fetch('ozonz_works.json?t=' + Date.now()).then(r => r.ok ? r.json() : []),
-          fetch('ozonz_settings.json?t=' + Date.now()).then(r => r.ok ? r.json() : { socials: [] })
+          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : []),
+          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : { socials: [] })
         ]);
         globalWorks = rWorks;
         globalSettings = rSettings;
       } catch (err) {
-        console.warn("Failed to load local fallback JSONs:", err);
+        try {
+          const [lWorks, lSettings] = await Promise.all([
+            fetch('ozonz_works.json?t=' + Date.now()).then(r => r.ok ? r.json() : []),
+            fetch('ozonz_settings.json?t=' + Date.now()).then(r => r.ok ? r.json() : { socials: [] })
+          ]);
+          globalWorks = lWorks;
+          globalSettings = lSettings;
+        } catch (lErr) {
+          console.warn("Failed to load local fallback JSONs:", lErr);
+        }
       }
     }
     renderWorks();

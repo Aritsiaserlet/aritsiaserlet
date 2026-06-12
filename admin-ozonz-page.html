@@ -563,9 +563,6 @@
 
 <script src="js/config.js" onerror="console.warn('config.js not found')"></script>
 <script type="module">
-import { db, storage } from './authManager.js';
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 (function () {
 'use strict';
@@ -574,8 +571,8 @@ import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.c
    CONFIG
 ══════════════════════════════════════════════════════ */
 const PASSCODE       = '977254';
-const GH_USER        = 'Aritsiaserlet';
-const GH_REPO        = 'aritsiaserlet';
+const GH_USER        = 'OzonZ';
+const GH_REPO        = 'Non-Four-Portfolio-Data';
 const GH_API         = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
 const WORKS_FILE     = 'ozonz_works.json';
 const SETTINGS_FILE  = 'ozonz_settings.json';
@@ -660,18 +657,11 @@ function decodeGH(b64) {
    LOAD FROM DATABASE
 ══════════════════════════════════════════════════════ */
 async function loadData() {
-    showLoading('Loading from Database…');
+    showLoading('Loading from Repository…');
     try {
-        const worksDocRef = doc(db, 'ozonz_data', 'works');
-        const settingsDocRef = doc(db, 'ozonz_data', 'settings');
-        
-        const [worksSnap, settingsSnap] = await Promise.all([
-            getDoc(worksDocRef),
-            getDoc(settingsDocRef)
-        ]);
-        
-        if (worksSnap.exists()) {
-            works = worksSnap.data().works || [];
+        const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
+        if (worksRes.ok) {
+            works = await worksRes.json();
         } else {
             try {
                 const r = await fetch('ozonz_works.json?t=' + Date.now());
@@ -682,8 +672,9 @@ async function loadData() {
             }
         }
         
-        if (settingsSnap.exists()) {
-            ozonzSettings = settingsSnap.data().settings || { socials: [] };
+        const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
+        if (settingsRes.ok) {
+            ozonzSettings = await settingsRes.json();
         } else {
             try {
                 const r = await fetch('ozonz_settings.json?t=' + Date.now());
@@ -694,7 +685,7 @@ async function loadData() {
             }
         }
         
-        setBadge(true);
+        setBadge(true, 'Connected to GitHub');
     } catch (err) {
         console.error("loadData error:", err);
         setBadge(false, err.message);
@@ -707,15 +698,25 @@ async function loadData() {
 }
 
 /* ══════════════════════════════════════════════════════
-   SAVE WORKS → DATABASE
-══════════════════════════════════════════════════════ */
+   SAVE WORKS → GITHUB
+   ══════════════════════════════════════════════════════ */
 async function saveWorks(actionLabel) {
-    showLoading('Saving to Database…');
+    showLoading('Saving to GitHub…');
     try {
-        const worksDocRef = doc(db, 'ozonz_data', 'works');
-        await setDoc(worksDocRef, { works: works });
+        if (!ghToken) {
+            showToast('GitHub token is required to save changes!');
+            return false;
+        }
+        let sha = null;
+        try {
+            const fileData = await ghGet(WORKS_FILE);
+            if (fileData?.sha) sha = fileData.sha;
+        } catch (_) {}
+
+        const content = JSON.stringify(works, null, 4);
+        await ghPut(WORKS_FILE, content, actionLabel, sha);
         showToast('✓ ' + actionLabel);
-        setBadge(true);
+        setBadge(true, 'Connected to GitHub');
         return true;
     } catch (err) {
         console.error("saveWorks error:", err);
@@ -728,10 +729,20 @@ async function saveWorks(actionLabel) {
 }
 
 async function saveSettings(actionLabel) {
-    showLoading('Saving settings…');
+    showLoading('Saving settings to GitHub…');
     try {
-        const settingsDocRef = doc(db, 'ozonz_data', 'settings');
-        await setDoc(settingsDocRef, { settings: ozonzSettings });
+        if (!ghToken) {
+            showToast('GitHub token is required to save settings!');
+            return false;
+        }
+        let sha = null;
+        try {
+            const fileData = await ghGet(SETTINGS_FILE);
+            if (fileData?.sha) sha = fileData.sha;
+        } catch (_) {}
+
+        const content = JSON.stringify(ozonzSettings, null, 4);
+        await ghPut(SETTINGS_FILE, content, actionLabel, sha);
         showToast('✓ ' + actionLabel);
         return true;
     } catch (err) {
@@ -866,14 +877,15 @@ function collectLinks() {
 
 document.getElementById('work-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (pendingImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
 
     const editId  = document.getElementById('work-edit-id').value;
     const tagsVal = document.getElementById('work-tags').value.trim();
 
-    // ── Upload pending image to Firebase Storage if any ──
+    // ── Upload pending image to GitHub if any ──
     let imgVal = document.getElementById('work-image').value.trim();
     if (pendingImageFile) {
-        const uploaded = await uploadImageToFirebase(pendingImageFile);
+        const uploaded = await uploadImageToGitHub(pendingImageFile);
         if (uploaded) {
             imgVal = uploaded;
             document.getElementById('work-image').value = imgVal;
@@ -948,58 +960,40 @@ function setImagePreviewBlob(file) {
     setImagePreviewUrl(url);
 }
 
-async function uploadImageToFirebase(file) {
+async function uploadImageToGitHub(file) {
     const progress = document.getElementById('img-upload-progress');
     const bar      = document.getElementById('img-progress-bar');
     const label    = document.getElementById('img-progress-label');
     progress.classList.add('visible');
     bar.style.width = '0%';
-    label.textContent = 'Preparing upload…';
+    label.textContent = 'Reading file…';
     label.style.color = ''; // reset color to default
 
     return new Promise((resolve) => {
-        try {
-            const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-            const filename = `works/${Date.now()}_ozonz.${ext}`;
-            const storageRef = ref(storage, filename);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    bar.style.width = percent + '%';
-                    label.textContent = `Uploading to Firebase (${percent}%)…`;
-                },
-                (err) => {
-                    bar.style.width = '0%';
-                    label.textContent = `Error: ${err.message}`;
-                    label.style.color = '#ef4444';
-                    showToast('Image upload failed: ' + err.message);
-                    resolve(null);
-                },
-                async () => {
-                    try {
-                        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                        bar.style.width = '100%';
-                        label.textContent = '✓ Uploaded!';
-                        setTimeout(() => progress.classList.remove('visible'), 1500);
-                        resolve(downloadUrl);
-                    } catch (urlErr) {
-                        bar.style.width = '0%';
-                        label.textContent = `Error getting URL`;
-                        label.style.color = '#ef4444';
-                        showToast('Failed to get download URL: ' + urlErr.message);
-                        resolve(null);
-                    }
-                }
-            );
-        } catch (err) {
-            bar.style.width = '0%';
-            label.textContent = `Error: ${err.message}`;
-            label.style.color = '#ef4444';
-            showToast('Setup upload failed: ' + err.message);
-            resolve(null);
-        }
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+            try {
+                bar.style.width = '30%';
+                label.textContent = 'Uploading to GitHub…';
+                const base64   = ev.target.result.split(',')[1];
+                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
+                const filename = `works/${Date.now()}_ozonz.${ext}`;
+                bar.style.width = '60%';
+                await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
+                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
+                bar.style.width = '100%';
+                label.textContent = '✓ Uploaded!';
+                setTimeout(() => progress.classList.remove('visible'), 1500);
+                resolve(rawUrl);
+            } catch (err) {
+                bar.style.width = '0%';
+                label.textContent = `Error: ${err.message}`;
+                label.style.color = '#ef4444';
+                showToast('Image upload failed: ' + err.message);
+                resolve(null);
+            }
+        };
+        reader.readAsDataURL(file);
     });
 }
 
