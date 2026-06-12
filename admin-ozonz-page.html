@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
-
+<html class="light" lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="robots" content="noindex, nofollow" />
-    <title>OzonZ — Admin Panel</title>
+    <title>OzonZ Admin | Luminous Portfolio Intelligence</title>
     <link rel="icon" type="image/jpeg" href="favicon.jpg">
+    <!-- Theme Initialization -->
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -18,190 +18,244 @@
             }
         })();
     </script>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Mitr:wght@400;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary":              "rgb(var(--primary-rgb))",
-                        "on-primary":           "rgb(var(--on-primary-rgb))",
-                        "background":           "rgb(var(--background-rgb))",
-                        "on-background":        "rgb(var(--on-background-rgb))",
-                        "surface":              "rgb(var(--surface-rgb))",
-                        "on-surface":           "rgb(var(--on-surface-rgb))",
-                        "surface-variant":      "rgb(var(--surface-variant-rgb))",
-                        "on-surface-variant":   "rgb(var(--on-surface-variant-rgb))",
-                        "outline":              "rgb(var(--outline-rgb))",
-                        "secondary":            "rgb(var(--secondary-rgb))",
-                    },
-                    fontFamily: {
-                        "headline":  ["Mitr", "sans-serif"],
-                        "body-md":   ["Space Grotesk", "sans-serif"],
-                    },
-                    spacing: {
-                        "margin-mobile":  "16px",
-                        "margin-desktop": "64px",
-                        "max-width":      "1280px",
-                    }
-                }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "var(--on-primary-container)",
+                    "tertiary-fixed-dim": "var(--tertiary-fixed-dim)",
+                    "inverse-on-surface": "var(--inverse-on-surface)",
+                    "surface-dim": "var(--surface-dim)",
+                    "inverse-primary": "var(--inverse-primary)",
+                    "surface": "var(--surface)",
+                    "on-primary-fixed": "var(--on-primary-fixed)",
+                    "surface-container-high": "var(--surface-container-high)",
+                    "on-tertiary": "var(--on-tertiary)",
+                    "on-background": "var(--on-background)",
+                    "secondary-fixed": "var(--secondary-fixed)",
+                    "on-secondary-fixed-variant": "var(--on-secondary-fixed-variant)",
+                    "background": "var(--background)",
+                    "error-container": "var(--error-container)",
+                    "on-error": "var(--on-error)",
+                    "surface-bright": "var(--surface-bright)",
+                    "secondary": "var(--secondary)",
+                    "surface-container-low": "var(--surface-container-low)",
+                    "surface-container": "var(--surface-container)",
+                    "on-error-container": "var(--on-error-container)",
+                    "secondary-fixed-dim": "var(--secondary-fixed-dim)",
+                    "surface-variant": "var(--surface-variant)",
+                    "on-primary": "var(--on-primary)",
+                    "secondary-container": "var(--secondary-container)",
+                    "surface-tint": "var(--surface-tint)",
+                    "on-surface": "var(--on-surface)",
+                    "primary-fixed-dim": "var(--primary-fixed-dim)",
+                    "tertiary-container": "var(--tertiary-container)",
+                    "tertiary": "var(--tertiary)",
+                    "tertiary-fixed": "var(--tertiary-fixed)",
+                    "outline-variant": "var(--outline-variant)",
+                    "inverse-surface": "var(--inverse-surface)",
+                    "on-secondary": "var(--on-secondary)",
+                    "surface-container-highest": "var(--surface-container-highest)",
+                    "on-surface-variant": "var(--on-surface-variant)",
+                    "primary": "var(--primary)",
+                    "on-secondary-container": "var(--on-secondary-container)",
+                    "error": "var(--error)",
+                    "on-tertiary-container": "var(--on-tertiary-container)",
+                    "on-secondary-fixed": "var(--on-secondary-fixed)",
+                    "primary-container": "var(--primary-container)",
+                    "on-primary-fixed-variant": "var(--on-primary-fixed-variant)",
+                    "primary-fixed": "var(--primary-fixed)",
+                    "on-tertiary-fixed": "var(--on-tertiary-fixed)",
+                    "outline": "var(--outline)",
+                    "surface-container-lowest": "var(--surface-container-lowest)",
+                    "on-tertiary-fixed-variant": "var(--on-tertiary-fixed-variant)"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "stack-sm": "8px",
+                    "margin-x": "32px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Mitr"],
+                    "body-md": ["Space Grotesk"],
+                    "data-mono": ["Space Grotesk"],
+                    "label-md": ["Space Grotesk"],
+                    "headline-lg": ["Mitr"],
+                    "display-lg": ["Mitr"],
+                    "body-lg": ["Space Grotesk"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "data-mono": ["14px", {"lineHeight": "1", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
             }
-        }
+          },
+        },
+      }
     </script>
     <style>
         :root {
-            --primary-rgb: 56, 107, 64;
-            --on-primary-rgb: 255, 255, 255;
-            --background-rgb: 255, 253, 245;
-            --on-background-rgb: 0, 0, 0;
-            --surface-rgb: 247, 243, 228;
-            --on-surface-rgb: 0, 0, 0;
-            --surface-variant-rgb: 238, 232, 210;
-            --on-surface-variant-rgb: 45, 61, 41;
-            --outline-rgb: 200, 192, 170;
-            --secondary-rgb: 83, 141, 92;
-            --on-secondary-rgb: 255, 255, 255;
-            --background: rgb(var(--background-rgb));
-            --primary: rgb(var(--primary-rgb));
-            --surface: rgb(var(--surface-rgb));
-            --outline: rgb(var(--outline-rgb));
+            /* Light mode color values from the new template */
+            --on-primary-container: #b1e9b3;
+            --tertiary-fixed-dim: #c6c6c9;
+            --inverse-on-surface: #f0f1f2;
+            --surface-dim: #d9dadb;
+            --inverse-primary: #9cd4a0;
+            --surface: #f8f9fa;
+            --on-primary-fixed: #002109;
+            --surface-container-high: #e7e8e9;
+            --on-tertiary: #ffffff;
+            --on-background: #191c1d;
+            --secondary-fixed: #ffe088;
+            --on-secondary-fixed-variant: #574500;
+            --background: #f8f9fa;
+            --error-container: #ffdad6;
+            --on-error: #ffffff;
+            --surface-bright: #f8f9fa;
+            --secondary: #735c00;
+            --surface-container-low: #f3f4f5;
+            --surface-container: #edeeef;
+            --on-error-container: #93000a;
+            --secondary-fixed-dim: #e9c349;
+            --surface-variant: #e1e3e4;
+            --on-primary: #ffffff;
+            --secondary-container: #fed65b;
+            --surface-tint: #36693e;
+            --on-surface: #191c1d;
+            --primary-fixed-dim: #9cd4a0;
+            --tertiary-container: #5f6062;
+            --tertiary: #47494b;
+            --tertiary-fixed: #e2e2e5;
+            --outline-variant: #c1c9bd;
+            --inverse-surface: #2e3132;
+            --on-secondary: #ffffff;
+            --surface-container-highest: #e1e3e4;
+            --on-surface-variant: #414940;
+            --primary: #1f522a;
+            --on-secondary-container: #745c00;
+            --error: #ba1a1a;
+            --on-tertiary-container: #dbdbde;
+            --on-secondary-fixed: #241a00;
+            --primary-container: #386b40;
+            --on-primary-fixed-variant: #1d5129;
+            --primary-fixed: #b8f1ba;
+            --on-tertiary-fixed: #1a1c1e;
+            --outline: #71796f;
+            --surface-container-lowest: #ffffff;
+            --on-tertiary-fixed-variant: #454749;
         }
+
         html.dark {
-            --primary-rgb: 234, 228, 177;
-            --on-primary-rgb: 16, 20, 26;
-            --background-rgb: 16, 20, 26;
-            --on-background-rgb: 223, 226, 235;
-            --surface-rgb: 28, 32, 38;
-            --on-surface-rgb: 223, 226, 235;
-            --surface-variant-rgb: 49, 53, 60;
-            --on-surface-variant-rgb: 202, 195, 216;
-            --outline-rgb: 73, 68, 85;
-            --secondary-rgb: 234, 228, 177;
-            --on-secondary-rgb: 16, 20, 26;
+            /* Dark mode color values from portfolio-ozonz.html */
+            --on-primary-container: #eae4b1;
+            --tertiary-fixed-dim: #a18321;
+            --inverse-on-surface: #10141a;
+            --surface-dim: #10141a;
+            --inverse-primary: #1f522a;
+            --surface: #1c2026;
+            --on-primary-fixed: #10141a;
+            --surface-container-high: #232830;
+            --on-tertiary: #10141a;
+            --on-background: #dfe2eb;
+            --secondary-fixed: #eae4b1;
+            --on-secondary-fixed-variant: #31353c;
+            --background: #10141a;
+            --error-container: #93000a;
+            --on-error: #690005;
+            --surface-bright: #1c2026;
+            --secondary: #eae4b1;
+            --surface-container-low: #14181f;
+            --surface-container: #1c2026;
+            --on-error-container: #ffdad6;
+            --secondary-fixed-dim: #eae4b1;
+            --surface-variant: #31353c;
+            --on-primary: #10141a;
+            --secondary-container: #3a3512;
+            --surface-tint: #eae4b1;
+            --on-surface: #dfe2eb;
+            --primary-fixed-dim: #eae4b1;
+            --tertiary-container: #4a2c00;
+            --tertiary: #ffd700;
+            --tertiary-fixed: #ffdcc0;
+            --outline-variant: #2b2735;
+            --inverse-surface: #dfe2eb;
+            --on-secondary: #10141a;
+            --surface-container-highest: #2f3540;
+            --on-surface-variant: #cac3d8;
+            --primary: #eae4b1;
+            --on-secondary-container: #eae4b1;
+            --error: #ffb4ab;
+            --on-tertiary-container: #ffb77c;
+            --on-secondary-fixed: #10141a;
+            --primary-container: #2c2810;
+            --on-primary-fixed-variant: #31353c;
+            --primary-fixed: #eae4b1;
+            --on-tertiary-fixed: #301400;
+            --outline: #494455;
+            --surface-container-lowest: #0b0e12;
+            --on-tertiary-fixed-variant: #4f2500;
         }
-        html { font-size: 90%; }
-        body { font-family: 'Space Grotesk', sans-serif; overflow-x: hidden; background-color: var(--background); transition: background-color .5s, color .5s; }
-        h1,h2,h3 { font-family: 'Mitr', sans-serif; }
 
-        #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
-
-        .pixel-card {
-            background: rgba(var(--surface-rgb),.85);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(var(--outline-rgb),.5);
-            transition: background .5s, border-color .5s;
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; display:inline-block; vertical-align:middle; }
-        .theme-toggle {
-            position:fixed; bottom:2rem; right:2rem;
-            width:56px; height:56px; border-radius:50%;
-            display:flex; align-items:center; justify-content:center;
-            box-shadow:0 4px 20px rgba(0,0,0,.3); z-index:100;
-            transition:all .3s cubic-bezier(.4,0,.2,1);
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-
-        /* login */
-        #login-screen { position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; padding:1rem; }
-
-        /* section */
-        .admin-section { background:rgba(var(--surface-rgb),.5); backdrop-filter:blur(16px); border:1px solid rgba(var(--outline-rgb),.3); border-radius:1.25rem; overflow:hidden; }
-        .admin-section-header { display:flex; justify-content:space-between; align-items:center; padding:1.1rem 1.4rem; border-bottom:1px solid rgba(var(--outline-rgb),.15); }
-        .admin-section-body { padding:1.4rem; }
-
-        .admin-input {
-            width:100%; padding:.6rem 1rem; border-radius:.75rem;
-            border:1px solid rgba(var(--outline-rgb),.6);
-            background:rgba(var(--background-rgb),.5);
-            color:rgb(var(--on-background-rgb));
-            font-size:.875rem; outline:none; transition:border-color .2s;
-            font-family:'Space Grotesk',sans-serif;
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
-        .admin-input:focus { border-color:rgba(var(--primary-rgb),.7); }
-        .admin-label { display:block; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:rgb(var(--on-surface-variant-rgb)); margin-bottom:.35rem; }
-
-        .work-item { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1rem; border-radius:.85rem; border:1px solid rgba(var(--outline-rgb),.2); background:rgba(var(--surface-rgb),.4); transition:all .2s; }
-        .work-item:hover { border-color:rgba(var(--primary-rgb),.3); background:rgba(var(--surface-rgb),.65); }
-
-        #toast {
-            position:fixed; bottom:6rem; left:50%; transform:translateX(-50%) translateY(20px);
-            background:rgba(var(--surface-rgb),.96); border:1px solid rgba(var(--primary-rgb),.35);
-            color:rgb(var(--on-surface-rgb)); padding:.7rem 1.5rem; border-radius:2rem;
-            font-size:.8rem; font-weight:600; z-index:9999; opacity:0;
-            transition:all .35s cubic-bezier(.22,1,.36,1); backdrop-filter:blur(16px);
-            pointer-events:none; white-space:nowrap;
+        .dark .glass {
+            background: rgba(28, 32, 38, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-        .modal-backdrop { position:fixed; inset:0; z-index:800; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); padding:1rem; }
-        .modal-backdrop.open { display:flex; }
-
-        @keyframes card-glow-ambient { 0%,100%{box-shadow:0 0 15px rgba(var(--primary-rgb),.05)} 50%{box-shadow:0 0 40px rgba(var(--primary-rgb),.18)} }
-        @keyframes borderGlow { 0%,100%{border-color:rgba(var(--primary-rgb),.2);box-shadow:0 0 5px rgba(var(--primary-rgb),.1)} 50%{border-color:rgba(var(--primary-rgb),.6);box-shadow:0 0 20px rgba(var(--primary-rgb),.3)} }
-        .animate-card-ambient { animation:card-glow-ambient 6s ease-in-out infinite; }
-        .animate-border-glow  { animation:borderGlow 4s infinite; }
-
-        /* loading overlay */
-        #loading-overlay { position:fixed; inset:0; z-index:400; display:flex; align-items:center; justify-content:center; background:rgba(var(--background-rgb),.85); backdrop-filter:blur(8px); transition:opacity .4s; }
-        #loading-overlay.hidden { opacity:0; pointer-events:none; }
-        .spinner { width:40px; height:40px; border:3px solid rgba(var(--primary-rgb),.2); border-top-color:rgb(var(--primary-rgb)); border-radius:50%; animation:spin .8s linear infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-
-        /* link rows */
-        .link-row { display:flex; gap:.5rem; align-items:center; margin-bottom:.5rem; }
-        .link-row .admin-input { flex:1; }
-
-        /* image upload zone */
-        .img-drop-zone {
-            border: 2px dashed rgba(var(--outline-rgb),.5);
-            border-radius: 1rem;
-            background: rgba(var(--surface-rgb),.3);
-            transition: all .2s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
         }
-        .img-drop-zone.drag-over {
-            border-color: rgba(var(--primary-rgb),.8);
-            background: rgba(var(--primary-rgb),.08);
-        }
-        .img-drop-zone.has-image {
-            border-style: solid;
-            border-color: rgba(var(--primary-rgb),.35);
-            padding: 0;
-        }
-        .img-drop-zone img.preview {
-            width: 100%; height: 140px;
-            object-fit: cover;
-            border-radius: calc(1rem - 2px);
-            display: block;
-        }
-        .img-drop-zone .remove-img {
-            position: absolute; top: .5rem; right: .5rem;
-            background: rgba(0,0,0,.6); color: white;
-            border-radius: .5rem; padding: 2px 6px;
-            font-size: .7rem; cursor: pointer;
+        .scroll-hide::-webkit-scrollbar {
             display: none;
         }
-        .img-drop-zone.has-image .remove-img { display: block; }
-        .img-upload-progress {
-            display: none; align-items: center; gap: .5rem;
-            font-size: .75rem; color: rgb(var(--on-surface-variant-rgb));
-            margin-top: .5rem;
+        .scroll-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        .img-upload-progress.visible { display: flex; }
-        .progress-bar-wrap { flex: 1; height: 4px; border-radius: 2px; background: rgba(var(--outline-rgb),.3); overflow: hidden; }
-        .progress-bar { height: 100%; background: rgb(var(--primary-rgb)); border-radius: 2px; transition: width .2s; }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
 
         /* Force input text color to be black and background to be white in dark mode for admin inputs */
         html.dark .admin-input {
@@ -211,16 +265,158 @@
         html.dark .admin-input::placeholder {
             color: #6b7280 !important;
         }
+
+        /* Modals and toast style */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 1.5rem;
+        }
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--surface);
+            border: 1px solid var(--primary);
+            color: var(--on-surface);
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            backdrop-filter: blur(16px);
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* loading overlay */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--background);
+            backdrop-filter: blur(8px);
+            transition: opacity 0.4s;
+        }
+        #loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(var(--primary-rgb), 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .link-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* image upload zone */
+        .img-drop-zone {
+            border: 2px dashed var(--outline);
+            border-radius: 1rem;
+            background: var(--surface-container-low);
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .img-drop-zone.drag-over {
+            border-color: var(--primary);
+            background: var(--primary-container);
+        }
+        .img-drop-zone.has-image {
+            border-style: solid;
+            border-color: var(--outline);
+            padding: 0;
+        }
+        .img-drop-zone img.preview {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: calc(1rem - 2px);
+            display: block;
+        }
+        .img-drop-zone .remove-img {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+        .img-drop-zone.has-image .remove-img {
+            display: block;
+        }
+        .img-upload-progress {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--on-surface-variant);
+            margin-top: 0.5rem;
+        }
+        .img-upload-progress.visible {
+            display: flex;
+        }
+        .progress-bar-wrap {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--surface-container-highest);
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.2s;
+        }
     </style>
 </head>
-
-<body class="bg-background text-on-background font-body-md">
+<body class="bg-background text-on-background selection:bg-primary-container selection:text-on-primary-container">
 <canvas id="bg-canvas"></canvas>
-
-<!-- Theme Toggle -->
-<button class="theme-toggle bg-primary text-on-primary" id="theme-toggle" title="Toggle Theme">
-    <span class="material-symbols-outlined" id="theme-icon">light_mode</span>
-</button>
 
 <!-- Loading overlay -->
 <div id="loading-overlay" class="hidden">
@@ -230,273 +426,284 @@
     </div>
 </div>
 
-<!-- ═══════════════ LOGIN ═══════════════ -->
-<div id="login-screen">
-    <div class="w-full max-w-sm">
-        <div class="relative group p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl animate-card-ambient text-center">
-            <a href="portfolio-ozonz.html"
-               class="absolute top-4 left-4 text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-xs font-bold">
-                <span class="material-symbols-outlined text-base">arrow_back</span> Portfolio
-            </a>
-            <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-primary text-3xl">admin_panel_settings</span>
+<!-- Login Screen -->
+<div class="min-h-screen flex items-center justify-center p-gutter" id="login-screen">
+    <div class="relative glass max-w-md w-full rounded-xl p-stack-lg shadow-2xl transition-all duration-500 scale-100 opacity-100">
+        <a href="portfolio-ozonz.html" class="absolute top-4 left-4 text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-xs font-bold">
+            <span class="material-symbols-outlined text-base">arrow_back</span> Portfolio
+        </a>
+        <div class="flex flex-col items-center mb-stack-lg mt-4">
+            <div class="w-16 h-16 bg-primary flex items-center justify-center rounded-full mb-4">
+                <span class="material-symbols-outlined text-on-primary text-3xl">lock</span>
             </div>
-            <h1 class="text-2xl font-bold text-on-background mb-1 font-headline">OzonZ Admin</h1>
-            <p class="text-on-surface-variant text-sm mb-6">Enter passcode to access panel</p>
-
-            <div class="flex flex-col gap-3 mb-5">
-                <input type="password" id="login-input" class="admin-input text-center tracking-[.4em] text-lg" placeholder="••••••" maxlength="10" autocomplete="off" />
-                <p id="login-error" class="text-red-500 text-xs hidden">Incorrect passcode.</p>
-                <button id="login-btn" class="w-full bg-primary text-on-primary py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:scale-[1.02] transition-all">
-                    Enter Panel
-                </button>
-            </div>
-
-            <div class="border-t border-outline/20 pt-5">
-                <p class="admin-label mb-2 text-center">GitHub Token (required for saving)</p>
-                <input type="password" id="login-gh-token" class="admin-input text-xs" placeholder="ghp_..." autocomplete="off" />
-                <p class="text-[10px] text-on-surface-variant mt-1.5">Stored in sessionStorage only — cleared when tab closes.</p>
-            </div>
+            <h1 class="font-headline-lg text-headline-lg text-primary">OzonZ Admin</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">Luminous Portfolio Intelligence</p>
         </div>
+        <div class="space-y-stack-md">
+            <div class="group">
+                <label class="font-label-md text-label-md text-primary mb-2 block">ADMIN PASSCODE</label>
+                <input class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="login-input" placeholder="••••••" type="password" maxlength="10" autocomplete="off"/>
+                <p id="login-error" class="text-red-500 text-xs mt-2 hidden text-center">Incorrect passcode.</p>
+            </div>
+            <div class="group">
+                <label class="font-label-md text-label-md text-primary mb-2 block">GITHUB TOKEN</label>
+                <input class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="login-gh-token" placeholder="ghp_xxxxxxxxxxxx" type="password" autocomplete="off"/>
+            </div>
+            <button class="w-full bg-primary text-on-primary font-label-md py-4 rounded-lg hover:opacity-90 active:scale-95 transition-all shadow-lg mt-stack-md" id="login-btn">
+                ACCESS PANEL
+            </button>
+        </div>
+        <p class="mt-8 text-center font-body-md text-on-surface-variant text-sm">
+            Secure authentication required for GitHub synchronization.
+        </p>
     </div>
 </div>
 
-<!-- ═══════════════ ADMIN MAIN ═══════════════ -->
-<div id="admin-main" class="hidden">
-
-    <!-- Nav -->
-    <nav class="sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-outline/20 px-4 md:px-8 py-3">
-        <div class="flex justify-between items-center max-w-6xl mx-auto">
-            <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary text-xl">admin_panel_settings</span>
-                <span class="font-headline font-bold text-lg text-on-background">OzonZ Admin</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="portfolio-ozonz.html"
-                   class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-bold">
-                    <span class="material-symbols-outlined text-base">open_in_new</span>
-                    <span class="hidden md:inline">View Portfolio</span>
-                </a>
-                <button id="logout-btn"
-                    class="flex items-center gap-1.5 bg-surface-variant/60 hover:bg-red-600/20 text-on-surface-variant hover:text-red-500 px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
-                    <span class="material-symbols-outlined text-sm">logout</span> Logout
-                </button>
+<!-- Admin Main Dashboard (Hidden by default) -->
+<div class="hidden flex min-h-screen" id="admin-main">
+    <!-- Sidebar Navigation -->
+    <aside class="fixed left-0 top-0 h-full w-[280px] glass border-r border-on-surface/10 flex flex-col p-stack-md z-50">
+        <div class="mb-stack-lg px-2">
+            <h2 class="font-headline-md text-headline-md font-bold text-primary">OzonZ Admin</h2>
+            <p class="font-label-md text-label-md text-on-surface-variant opacity-70">Portfolio Management</p>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary/10 transition-all" href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-label-md">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 transition-all" href="portfolio-ozonz.html">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span class="font-label-md">View Portfolio</span>
+            </a>
+            <button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-all text-left" id="logout-btn">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="font-label-md">Logout</span>
+            </button>
+        </nav>
+        <div class="mt-auto space-y-2">
+            <div class="p-4 bg-surface-container rounded-xl mt-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-sm">face</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="font-label-md text-on-surface truncate">Admin User</p>
+                        <p class="text-[10px] text-on-surface-variant">Luminous Protocol</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </aside>
 
-    <div class="max-w-6xl mx-auto px-4 md:px-8 py-10 space-y-8">
-
-        <!-- Header + status -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <!-- Main Content Area -->
+    <main class="flex-1 ml-[280px] p-stack-lg max-w-[1440px] mx-auto w-full">
+        <!-- Top App Bar -->
+        <header class="flex items-center justify-between mb-stack-lg glass p-6 rounded-2xl shadow-sm">
             <div>
-                <h2 class="text-4xl md:text-5xl font-bold font-headline uppercase">Dashboard</h2>
-                <p class="text-on-surface-variant mt-1">Changes are saved directly to GitHub</p>
-            </div>
-            <div id="gh-status-badge"
-                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-outline/20 bg-surface/40 backdrop-blur text-sm text-on-surface-variant">
-                <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
-                Connecting…
-            </div>
-        </div>
-
-        <!-- GitHub Token row (inside panel, quick edit) -->
-        <div class="admin-section animate-border-glow">
-            <div class="admin-section-header">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary">key</span>
-                    <div>
-                        <h3 class="font-bold text-sm uppercase tracking-wider">GitHub Token</h3>
-                        <p class="text-xs text-on-surface-variant">Required to push changes. Saved in sessionStorage.</p>
-                    </div>
+                <h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="flex items-center gap-1.5 text-label-md text-on-surface-variant bg-surface-variant px-3 py-1 rounded-full text-xs font-bold" id="gh-status-badge">
+                        <span class="w-2 h-2 rounded-full bg-outline animate-pulse"></span>
+                        Connecting…
+                    </span>
                 </div>
-                <div id="token-status" class="text-xs text-on-surface-variant"></div>
             </div>
-            <div class="admin-section-body flex gap-2">
-                <input type="password" id="gh-token-input" class="admin-input flex-1" placeholder="ghp_..." />
-                <button id="gh-token-save"
-                    class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
-                    Update Token
+            <div class="flex items-center gap-4">
+                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md" id="save-all-btn" onclick="location.reload()">
+                    <span class="material-symbols-outlined text-sm">sync</span>
+                    Sync Status
                 </button>
             </div>
-        </div>
+        </header>
 
-        <!-- Gemini AI Settings -->
-        <div class="admin-section">
-            <div class="admin-section-header cursor-pointer" onclick="toggleSection(this)">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary">auto_awesome</span>
+        <!-- Dashboard Grid -->
+        <div class="bento-grid">
+            <!-- GitHub Sync Settings Card -->
+            <div class="col-span-4 glass rounded-2xl p-stack-md flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-label-md text-primary">SECURITY STATUS</h3>
+                        <span class="material-symbols-outlined text-primary">key</span>
+                    </div>
+                    <p class="font-headline-md text-headline-md text-on-surface mb-2">GitHub Token</p>
+                    <p class="font-body-md text-on-surface-variant text-sm mb-6">Required to push changes to your repository. Saved in session storage only.</p>
+                </div>
+                <div class="space-y-3">
+                    <input type="password" id="gh-token-input" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-sm" placeholder="ghp_..." />
+                    <div class="flex items-center justify-between bg-surface-container-highest/50 p-3 rounded-xl">
+                        <span id="token-status" class="text-xs text-on-surface-variant">No token</span>
+                        <button id="gh-token-save" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Settings Card -->
+            <div class="col-span-8 glass rounded-2xl p-stack-md">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-on-secondary-container">auto_awesome</span>
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Gemini AI Engine</h3>
+                    </div>
+                    <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant" onclick="toggleSection(this)">
+                        <span class="material-symbols-outlined toggle-icon">expand_more</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="font-label-md text-xs text-on-surface-variant">GEMINI API KEY</label>
+                        <div class="flex gap-2">
+                            <input class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-data-mono text-sm" id="gemini-key-input" placeholder="AIzaSy..." type="password"/>
+                            <button id="gemini-save-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">Save Key</button>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
+                        <select class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none" disabled>
+                            <option>Professional & Technical (Default)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Archives (Works List) -->
+            <div class="col-span-8 glass rounded-2xl p-stack-lg flex flex-col">
+                <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h3 class="font-bold text-sm uppercase tracking-wider">AI Settings — Gemini API Key</h3>
-                        <p class="text-xs text-on-surface-variant">Enables ✨ Write with AI in the work form</p>
+                        <h2 class="font-headline-md text-headline-md text-on-surface">Selected Archives</h2>
+                        <p id="works-count" class="font-body-md text-on-surface-variant text-sm">— works</p>
                     </div>
-                </div>
-                <span class="material-symbols-outlined text-on-surface-variant toggle-icon">expand_more</span>
-            </div>
-            <div class="admin-section-body hidden">
-                <div class="flex gap-2">
-                    <input type="password" id="gemini-key-input" class="admin-input flex-1" placeholder="AIzaSy..." />
-                    <button id="gemini-save-btn"
-                        class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
-                        Save Key
+                    <button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md transition-all hover:scale-105 active:scale-95" id="add-work-btn">
+                        <span class="material-symbols-outlined text-sm">add</span>
+                        New Archive
                     </button>
+                </div>
+                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="works-list">
+                    <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
+                </div>
+            </div>
+
+            <!-- Contact Channels -->
+            <div class="col-span-4 glass rounded-2xl p-stack-lg flex flex-col">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="font-headline-md text-headline-md text-on-surface">Channels</h2>
+                        <p id="contacts-count" class="font-body-md text-on-surface-variant text-sm">— contacts</p>
+                    </div>
+                    <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" id="add-contact-btn">
+                        <span class="material-symbols-outlined">add</span>
+                    </button>
+                </div>
+                <div class="space-y-3 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="contacts-list">
+                    <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
                 </div>
             </div>
         </div>
-
-        <!-- Two column -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <!-- WORKS -->
-            <div class="admin-section flex flex-col">
-                <div class="admin-section-header" style="cursor:default">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary">folder_open</span>
-                        <div>
-                            <h3 class="font-bold text-sm uppercase tracking-wider">Selected Archives</h3>
-                            <p id="works-count" class="text-xs text-on-surface-variant">— works</p>
-                        </div>
-                    </div>
-                    <button id="add-work-btn"
-                        class="flex items-center gap-1.5 bg-primary text-on-primary px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                        <span class="material-symbols-outlined text-sm">add</span> Add Work
-                    </button>
-                </div>
-                <div class="admin-section-body flex-1">
-                    <div id="works-list" class="flex flex-col gap-3 max-h-[520px] overflow-y-auto pr-1">
-                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CONTACTS -->
-            <div class="admin-section flex flex-col">
-                <div class="admin-section-header" style="cursor:default">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary">contacts</span>
-                        <div>
-                            <h3 class="font-bold text-sm uppercase tracking-wider">Contact Channels</h3>
-                            <p id="contacts-count" class="text-xs text-on-surface-variant">— contacts</p>
-                        </div>
-                    </div>
-                    <button id="add-contact-btn"
-                        class="flex items-center gap-1.5 bg-primary text-on-primary px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                        <span class="material-symbols-outlined text-sm">add</span> Add Contact
-                    </button>
-                </div>
-                <div class="admin-section-body flex-1">
-                    <div id="contacts-list" class="flex flex-col gap-3 max-h-[520px] overflow-y-auto pr-1">
-                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div><!-- /content -->
-    <footer class="text-center py-8 border-t border-outline/10 text-on-surface-variant text-xs mt-4">
-        OzonZ Admin — data synced to GitHub · ozonz_works.json & ozonz_settings.json
-    </footer>
+    </main>
 </div>
+
+<!-- Theme Toggle -->
+<button class="fixed bottom-gutter right-gutter w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:rotate-12 transition-all active:scale-90 z-[100]" id="theme-toggle" title="Toggle Theme">
+    <span class="material-symbols-outlined text-3xl" id="theme-icon">dark_mode</span>
+</button>
 
 <!-- Toast -->
 <div id="toast"></div>
 
 <!-- ═══════════════ WORK MODAL ═══════════════ -->
 <div id="work-modal" class="modal-backdrop">
-    <div class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-lg w-full max-h-[92vh] overflow-y-auto">
-        <h3 id="work-modal-title" class="text-2xl font-bold mb-6 uppercase tracking-wider font-headline">Add New Work</h3>
-        <form id="work-form" class="flex flex-col gap-4">
+    <div class="glass max-w-2xl w-full rounded-2xl shadow-2xl p-stack-lg max-h-[92vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
+        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="work-modal-title">Add New Work</h2>
+        <form id="work-form" class="space-y-4">
             <input type="hidden" id="work-edit-id" />
 
             <!-- Autofill -->
-            <div class="border border-outline/25 rounded-xl p-4 bg-surface/20">
-                <label class="admin-label">Autofill from URL (Itch.io or GitHub)</label>
+            <div class="border border-outline/20 rounded-xl p-4 bg-surface-container/30">
+                <label class="font-label-md text-xs text-primary mb-1 block">Autofill from URL (Itch.io or GitHub)</label>
                 <div class="flex gap-2">
-                    <input type="url" id="autofill-url" class="admin-input flex-1 text-xs" placeholder="https://username.itch.io/game  or  https://github.com/user/repo" />
-                    <button type="button" id="autofill-btn"
-                        class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
+                    <input type="url" id="autofill-url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://username.itch.io/game  or  https://github.com/user/repo" />
+                    <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
                         Autofill
                     </button>
                 </div>
-                <p id="autofill-status" class="text-xs mt-2 hidden"></p>
+                <p id="autofill-status" class="text-[10px] mt-1.5 hidden"></p>
             </div>
 
             <div>
-                <label class="admin-label">Work Name</label>
-                <input type="text" id="work-name" required class="admin-input" />
+                <label class="font-label-md text-xs text-primary mb-1 block">Work Name</label>
+                <input type="text" id="work-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
             </div>
+
             <!-- Image upload -->
             <div>
-                <label class="admin-label">Cover Image</label>
-                <!-- Drop / click zone -->
-                <div class="img-drop-zone" id="img-drop-zone" title="Click or drag image here">
+                <label class="font-label-md text-xs text-primary mb-1 block">Cover Image</label>
+                <div class="img-drop-zone p-4 mb-2" id="img-drop-zone" title="Click or drag image here">
                     <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Click or drag image</span>
-                    <span class="text-[10px] text-on-surface-variant">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
+                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
                     <button type="button" class="remove-img" id="img-remove-btn">✕ Remove</button>
                 </div>
                 <input type="file" id="img-file-input" accept="image/*" class="hidden" />
-                <!-- Upload progress -->
-                <div class="img-upload-progress" id="img-upload-progress">
+
+                <div class="img-upload-progress mb-2" id="img-upload-progress">
                     <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
                     <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
                     <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
                 </div>
-                <!-- URL / icon fallback -->
-                <div class="mt-2">
-                    <label class="admin-label">Or enter URL / Material Icon name</label>
-                    <input type="text" id="work-image" class="admin-input text-xs" placeholder="https://... or terminal" />
+
+                <div>
+                    <label class="font-label-md text-[10px] text-on-surface-variant mb-1 block">Or enter URL / Material Icon name</label>
+                    <input type="text" id="work-image" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://... or terminal" />
                 </div>
             </div>
+
             <div>
-                <label class="admin-label">Tags (comma-separated)</label>
-                <input type="text" id="work-tags" required class="admin-input" placeholder="e.g. PIXEL ART, C#, UNITY" />
+                <label class="font-label-md text-xs text-primary mb-1 block">Tags (comma-separated)</label>
+                <input type="text" id="work-tags" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. PIXEL ART, C#, UNITY" />
             </div>
+
             <div>
-                <label class="admin-label">Year of Creation</label>
-                <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="admin-input" />
+                <label class="font-label-md text-xs text-primary mb-1 block">Year of Creation</label>
+                <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
             </div>
+
             <div>
-                <label class="admin-label">Links (optional)</label>
+                <label class="font-label-md text-xs text-primary mb-1 block">Links (optional)</label>
                 <div id="work-links-wrap" class="flex flex-col gap-2 mb-2"></div>
-                <button type="button" id="add-link-btn"
-                    class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
+                <button type="button" id="add-link-btn" class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
                     <span class="material-symbols-outlined text-sm">add</span> Add Link
                 </button>
             </div>
+
             <div>
                 <div class="flex justify-between items-center mb-1">
-                    <label class="admin-label" style="margin-bottom:0">Description</label>
-                    <button type="button" id="ai-write-btn"
-                        class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
+                    <label class="font-label-md text-xs text-primary block">Description</label>
+                    <button type="button" id="ai-write-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
                         <span class="material-symbols-outlined text-xs">auto_awesome</span> Write with AI
                     </button>
                 </div>
-                <textarea id="work-desc" rows="3" required class="admin-input resize-none"></textarea>
-                <p id="ai-status" class="text-[10px] mt-1 hidden"></p>
+                <textarea id="work-desc" rows="3" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md resize-none"></textarea>
+                <p id="ai-status" class="text-[10px] mt-1.5 hidden"></p>
             </div>
+
             <div>
                 <div class="flex justify-between items-center mb-1">
-                    <label class="admin-label" style="margin-bottom:0">AI Summary (Tagline)</label>
-                    <button type="button" id="ai-summarize-btn"
-                        class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
+                    <label class="font-label-md text-xs text-primary block">AI Summary (Tagline)</label>
+                    <button type="button" id="ai-summarize-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
                         <span class="material-symbols-outlined text-xs">auto_awesome</span> Summarize with AI
                     </button>
                 </div>
-                <input type="text" id="work-ai-summary" class="admin-input" placeholder="e.g. A Python-based bot that tracks user playtime." />
-                <p id="ai-summarize-status" class="text-[10px] mt-1 hidden"></p>
+                <input type="text" id="work-ai-summary" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. A Python-based bot that tracks user playtime." />
+                <p id="ai-summarize-status" class="text-[10px] mt-1.5 hidden"></p>
             </div>
 
-            <div class="flex gap-3 mt-2">
-                <button type="submit"
-                    class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" id="work-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
+                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm" id="work-submit-icon">save</span>
-                    <span id="work-submit-label">Save Work</span>
-                </button>
-                <button type="button" id="work-cancel"
-                    class="flex-1 bg-surface-variant text-on-surface-variant py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                    Cancel
+                    <span id="work-submit-label">Save Changes</span>
                 </button>
             </div>
         </form>
@@ -505,38 +712,34 @@
 
 <!-- ═══════════════ CONTACT MODAL ═══════════════ -->
 <div id="contact-modal" class="modal-backdrop">
-    <div class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-sm w-full max-h-[90vh] overflow-y-auto">
-        <h3 id="contact-modal-title" class="text-2xl font-bold mb-6 uppercase tracking-wider font-headline">Add Contact</h3>
-        <form id="contact-form" class="flex flex-col gap-4">
+    <div class="glass max-w-md w-full rounded-2xl shadow-2xl p-stack-lg max-h-[90vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
+        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="contact-modal-title">Add Contact</h2>
+        <form id="contact-form" class="space-y-4">
             <input type="hidden" id="contact-edit-id" />
             <div>
-                <label class="admin-label">Channel Name</label>
-                <input type="text" id="contact-name" required class="admin-input" placeholder="e.g. GitHub" />
+                <label class="font-label-md text-xs text-primary mb-1 block">Channel Name</label>
+                <input type="text" id="contact-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. GitHub" />
             </div>
             <div>
-                <label class="admin-label">Link URL</label>
-                <input type="url" id="contact-link" required class="admin-input" />
+                <label class="font-label-md text-xs text-primary mb-1 block">Link URL</label>
+                <input type="url" id="contact-link" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
             </div>
             <div>
-                <label class="admin-label">Icon Type</label>
-                <select id="contact-icon-type" class="admin-input">
+                <label class="font-label-md text-xs text-primary mb-1 block">Icon Type</label>
+                <select id="contact-icon-type" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-on-surface border-none">
                     <option value="material">Google Material Symbol</option>
                     <option value="svg">SVG Path Data</option>
                     <option value="image">Image URL</option>
                 </select>
             </div>
             <div>
-                <label id="contact-icon-label" class="admin-label">Material Symbol Name (e.g. terminal)</label>
-                <input type="text" id="contact-icon-val" required class="admin-input" />
+                <label id="contact-icon-label" class="font-label-md text-xs text-primary mb-1 block">Material Symbol Name (e.g. terminal)</label>
+                <input type="text" id="contact-icon-val" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
             </div>
-            <div class="flex gap-3 mt-2">
-                <button type="submit"
-                    class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" id="contact-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
+                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
                     Save
-                </button>
-                <button type="button" id="contact-cancel"
-                    class="flex-1 bg-surface-variant text-on-surface-variant py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                    Cancel
                 </button>
             </div>
         </form>
@@ -545,18 +748,13 @@
 
 <!-- Confirm modal -->
 <div id="confirm-modal" class="modal-backdrop">
-    <div class="pixel-card p-8 rounded-2xl border border-red-500/30 max-w-sm w-full text-center">
-        <span class="material-symbols-outlined text-red-500 text-4xl mb-4 block">warning</span>
-        <h3 id="confirm-msg" class="text-xl font-bold mb-6 font-headline">Are you sure?</h3>
-        <div class="flex gap-4">
-            <button id="confirm-yes"
-                class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                Delete
-            </button>
-            <button id="confirm-no"
-                class="flex-1 bg-surface-variant text-on-surface-variant py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                Cancel
-            </button>
+    <div class="glass max-w-sm w-full rounded-2xl shadow-2xl p-stack-lg text-center animate-in fade-in zoom-in duration-300">
+        <span class="material-symbols-outlined text-error text-5xl mb-4 block">warning</span>
+        <h3 id="confirm-msg" class="font-headline-md text-headline-md mb-2 text-on-surface">Are you sure?</h3>
+        <p class="font-body-md text-on-surface-variant text-sm mb-6">This action is permanent and will synchronize with GitHub immediately.</p>
+        <div class="flex gap-3">
+            <button id="confirm-no" class="flex-1 px-4 py-2.5 bg-surface-container rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Abort</button>
+            <button id="confirm-yes" class="flex-1 px-4 py-2.5 bg-error text-on-error rounded-lg font-label-md shadow-lg active:scale-95 transition-all">Confirm</button>
         </div>
     </div>
 </div>
@@ -768,35 +966,30 @@ function renderWorks() {
         const img = Array.isArray(w.image) ? w.image[0] : w.image;
         const isUrl = img && (img.startsWith('http') || img.includes('/') || img.includes('.'));
         const thumb = isUrl
-            ? `<img src="${img}" class="w-10 h-10 rounded-xl object-cover border border-outline/20 flex-shrink-0" onerror="this.style.display='none'" />`
-            : `<span class="material-symbols-outlined text-primary text-2xl flex-shrink-0">${img || 'brush'}</span>`;
+            ? `<img src="${img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'" />`
+            : `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary"><span class="material-symbols-outlined text-2xl">${img || 'brush'}</span></div>`;
         const tagStr = Array.isArray(w.tags) ? w.tags.join(', ') : (w.tags || '');
         return `
-        <div class="work-item">
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-                <!-- Reorder Buttons -->
-                <div class="flex flex-col gap-0.5 mr-1 flex-shrink-0">
-                    <button onclick="moveWorkItem(${i}, -1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
-                        <span class="material-symbols-outlined text-sm font-bold">arrow_upward</span>
-                    </button>
-                    <button onclick="moveWorkItem(${i}, 1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === works.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
-                        <span class="material-symbols-outlined text-sm font-bold">arrow_downward</span>
-                    </button>
-                </div>
+        <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
+            <div class="w-20 h-16 bg-surface-container rounded-lg overflow-hidden shrink-0">
                 ${thumb}
-                <div class="min-w-0">
-                    <h4 class="font-bold text-sm text-on-background truncate">${w.name || '(Untitled)'}</h4>
-                    <p class="text-xs text-on-surface-variant truncate max-w-[200px]">${tagStr}</p>
-                </div>
             </div>
-            <div class="flex gap-2 flex-shrink-0">
-                <button onclick="openWorkModal('${w.id}')"
-                    class="bg-surface-variant hover:bg-outline/20 text-on-surface text-xs py-1.5 px-3 rounded-xl font-bold transition-all">
-                    Edit
+            <div class="flex-1 min-w-0">
+                <h4 class="font-headline-md text-base text-on-surface truncate">${w.name || '(Untitled)'}</h4>
+                <p class="font-body-md text-xs text-on-surface-variant line-clamp-1">${tagStr || w.aiSummary || w.desc || ''}</p>
+            </div>
+            <div class="flex items-center gap-1">
+                <button onclick="moveWorkItem(${i}, -1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
+                    <span class="material-symbols-outlined text-sm">arrow_upward</span>
                 </button>
-                <button onclick="deleteWork('${w.id}')"
-                    class="bg-red-600/10 hover:bg-red-600/25 text-red-500 text-xs py-1.5 px-3 rounded-xl font-bold transition-all">
-                    Delete
+                <button onclick="moveWorkItem(${i}, 1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === works.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
+                    <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                </button>
+                <button onclick="openWorkModal('${w.id}')" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" title="Edit">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                </button>
+                <button onclick="deleteWork('${w.id}')" class="w-8 h-8 rounded-full hover:bg-error-container/20 flex items-center justify-center text-error" title="Delete">
+                    <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
             </div>
         </div>`;
@@ -851,8 +1044,8 @@ function renderLinkRows(links) {
 function makeLinkRow(i, url = '', label = '') {
     return `
     <div class="link-row" data-link-idx="${i}">
-        <input type="url" class="admin-input link-url" placeholder="https://..." value="${url}" />
-        <input type="text" class="admin-input link-label" placeholder="Label" style="max-width:130px" value="${label}" />
+        <input type="url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://..." value="${url}" />
+        <input type="text" class="admin-input bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="Label" style="max-width:130px" value="${label}" />
         <button type="button" onclick="removeLinkRow(this)" class="text-red-500 hover:text-red-400 transition-colors flex-shrink-0">
             <span class="material-symbols-outlined text-lg">close</span>
         </button>
@@ -869,8 +1062,8 @@ document.getElementById('add-link-btn').addEventListener('click', () => {
 function collectLinks() {
     return Array.from(document.querySelectorAll('#work-links-wrap .link-row'))
         .map(row => ({
-            url:   row.querySelector('.link-url').value.trim(),
-            label: row.querySelector('.link-label').value.trim(),
+            url:   row.querySelector('input[type="url"]').value.trim(),
+            label: row.querySelector('input[type="text"]').value.trim(),
         }))
         .filter(l => l.url);
 }
@@ -937,8 +1130,8 @@ window.resetImageZone = function resetImageZone() {
     zone.classList.remove('has-image');
     zone.innerHTML = `
         <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Click or drag image</span>
-        <span class="text-[10px] text-on-surface-variant">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
+        <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
         <span class="remove-img">✕ Remove</span>
     `;
     document.getElementById('img-file-input').value = '';
@@ -1232,36 +1425,33 @@ function renderContacts() {
     list.innerHTML = socials.map((c, i) => {
         let iconEl = '';
         if (c.iconType === 'svg')
-            iconEl = `<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
+            iconEl = `<svg class="w-5 h-5 fill-current text-primary" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
         else if (c.iconType === 'image')
             iconEl = `<img src="${c.iconVal}" class="w-5 h-5 rounded-full object-cover" />`;
         else
-            iconEl = `<span class="material-symbols-outlined text-base">${c.iconVal || 'link'}</span>`;
+            iconEl = `<span class="material-symbols-outlined text-base text-primary">${c.iconVal || 'link'}</span>`;
         return `
-        <div class="work-item">
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-                <!-- Reorder Buttons -->
-                <div class="flex flex-col gap-0.5 mr-1 flex-shrink-0">
-                    <button onclick="moveContactItem(${i}, -1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
-                        <span class="material-symbols-outlined text-sm font-bold">arrow_upward</span>
-                    </button>
-                    <button onclick="moveContactItem(${i}, 1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === socials.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
-                        <span class="material-symbols-outlined text-sm font-bold">arrow_downward</span>
-                    </button>
-                </div>
-                <div class="w-9 h-9 rounded-xl bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
-                    ${iconEl}
-                </div>
-                <div class="min-w-0">
-                    <h4 class="font-bold text-sm text-on-background truncate">${c.name}</h4>
-                    <p class="text-xs text-on-surface-variant truncate max-w-[200px]">${c.link || c.url || ''}</p>
-                </div>
+        <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
+            <div class="w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
+                ${iconEl}
             </div>
-            <div class="flex gap-2 flex-shrink-0">
-                <button onclick="openContactModal(${i})"
-                    class="bg-surface-variant hover:bg-outline/20 text-on-surface text-xs py-1.5 px-3 rounded-xl font-bold transition-all">Edit</button>
-                <button onclick="deleteContact(${i})"
-                    class="bg-red-600/10 hover:bg-red-600/25 text-red-500 text-xs py-1.5 px-3 rounded-xl font-bold transition-all">Delete</button>
+            <div class="flex-1 min-w-0">
+                <h4 class="font-headline-md text-base text-on-surface truncate">${c.name}</h4>
+                <p class="font-body-md text-xs text-on-surface-variant truncate">${c.link || c.url || ''}</p>
+            </div>
+            <div class="flex items-center gap-1">
+                <button onclick="moveContactItem(${i}, -1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
+                    <span class="material-symbols-outlined text-sm">arrow_upward</span>
+                </button>
+                <button onclick="moveContactItem(${i}, 1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === socials.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
+                    <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                </button>
+                <button onclick="openContactModal(${i})" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" title="Edit">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                </button>
+                <button onclick="deleteContact(${i})" class="w-8 h-8 rounded-full hover:bg-error-container/20 flex items-center justify-center text-error" title="Delete">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
             </div>
         </div>`;
     }).join('');
@@ -1422,10 +1612,10 @@ function setBadge(ok, msg) {
     const b = document.getElementById('gh-status-badge');
     if (ok) {
         b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Database Connected`;
-        b.className  = 'inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-surface/40 backdrop-blur text-sm text-green-500';
+        b.className  = 'inline-flex items-center gap-1.5 text-label-md text-green-500 bg-green-500/10 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30';
     } else {
         b.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> ${msg || 'Disconnected'}`;
-        b.className  = 'inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/30 bg-surface/40 backdrop-blur text-sm text-red-500';
+        b.className  = 'inline-flex items-center gap-1.5 text-label-md text-red-500 bg-red-500/10 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30';
     }
 }
 
@@ -1461,8 +1651,9 @@ document.getElementById('confirm-no').addEventListener('click', () => {
 });
 
 window.toggleSection = function(header) {
-    const body = header.nextElementSibling;
+    const body = header.closest('.glass').querySelector('.grid, .collapsible-body');
     const icon = header.querySelector('.toggle-icon');
+    if (!body) return;
     body.classList.toggle('hidden');
     if (icon) icon.textContent = body.classList.contains('hidden') ? 'expand_more' : 'expand_less';
 };
