@@ -1,5 +1,26 @@
 [
   {
+    "id": 1781259225571,
+    "name": "Aritsiaserlet",
+    "cat": "ozonz",
+    "subcat": "",
+    "desc": "Discover Aritsiaserlet, an engaging JavaScript project designed to deliver intuitive interactive experiences. Hosted on GitHub, it showcases robust front-end development and clean, maintainable code practices.",
+    "image": "terminal",
+    "tags": [
+      "JAVASCRIPT",
+      "GITHUB"
+    ],
+    "links": [
+      {
+        "url": "https://github.com/Aritsiaserlet/aritsiaserlet",
+        "label": "GitHub Repo"
+      }
+    ],
+    "team": [],
+    "tools": [],
+    "date": "2026-06-12T10:13:45.572Z"
+  },
+  {
     "id": 1781191689373,
     "name": "I Swore Never to Love Again",
     "cat": "ozonz",
