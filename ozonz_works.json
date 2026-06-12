@@ -21,14 +21,14 @@
     "cat": "ozonz",
     "subcat": "",
     "desc": "Developed a Python Discord bot that accurately tracks user playtime in voice channels, providing engaging statistics and fostering community interaction. Explore the codebase on GitHub.",
-    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1781259950466_ozonz.png",
+    "image": "",
     "tags": [
       "PYTHON",
       "GITHUB"
     ],
     "links": [
       {
-        "url": "https://github.com/OzonZ/Discord-Playtime-Bot",
+        "url": "https://discord.com/oauth2/authorize?client_id=1462349177144217620",
         "label": "GitHub Repo"
       }
     ],
