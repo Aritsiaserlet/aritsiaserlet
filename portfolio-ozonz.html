@@ -417,11 +417,19 @@
         html.dark #admin-auth-modal input::placeholder {
             color: #6b7280 !important;
         }
+        .wind-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.4;
+        }
     </style>
 </head>
 
 <body class="bg-background text-on-background selection:bg-primary/30 font-body-md" data-github-user="OzonZ">
     <canvas id="bg-canvas"></canvas>
+    <canvas id="windCanvas" class="wind-canvas"></canvas>
 
     <!-- Theme Toggle -->
     <button class="theme-toggle bg-primary text-on-primary" id="theme-toggle" title="Toggle Theme">
@@ -923,6 +931,32 @@
                 }
             }
             window.addEventListener('scroll', onScroll, { passive: true });
+        })();
+
+        // Wind Particle Effect
+        (function() {
+            const canvas = document.getElementById('windCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let W, H, particles = [];
+            function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+            resize();window.addEventListener('resize',resize);
+            function rb(a,b){return a+Math.random()*(b-a)}
+            function createParticle(yStart){
+                const size = Math.floor(rb(2, 6)) * 2;
+                return {x:Math.random()*W,y:yStart??H+size,size:size,speedY:rb(0.5,2.5),speedX:rb(-0.5,0.5),opacity:rb(0.1,0.6)};
+            }
+            for(let i=0;i<40;i++) particles.push(createParticle(Math.random()*H));
+            function animateParticles(){
+                ctx.clearRect(0,0,W,H);
+                particles.forEach((p,i)=>{
+                    p.y-=p.speedY; p.x+=p.speedX;
+                    ctx.fillStyle=`rgba(255,255,255,${p.opacity})`;
+                    ctx.fillRect(Math.floor(p.x),Math.floor(p.y),p.size,p.size);
+                    if(p.y+p.size<0) particles[i]=createParticle();
+                }); requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
         })();
     </script>
 </body>
