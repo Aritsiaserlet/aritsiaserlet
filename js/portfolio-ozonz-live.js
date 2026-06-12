@@ -1506,6 +1506,39 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     }
   }
 
+  async function loadInitialData() {
+    const cachedWorks = localStorage.getItem('cached_works');
+    const cachedSettings = localStorage.getItem('cached_settings');
+    let hasCache = false;
+    if (cachedWorks && cachedSettings) {
+      try {
+        globalWorks = JSON.parse(cachedWorks);
+        globalSettings = JSON.parse(cachedSettings);
+        hasCache = true;
+      } catch (_) {}
+    }
+    if (!hasCache) {
+      try {
+        const [rWorks, rSettings] = await Promise.all([
+          fetch('ozonz_works.json?t=' + Date.now()).then(r => r.ok ? r.json() : []),
+          fetch('ozonz_settings.json?t=' + Date.now()).then(r => r.ok ? r.json() : { socials: [] })
+        ]);
+        globalWorks = rWorks;
+        globalSettings = rSettings;
+      } catch (err) {
+        console.warn("Failed to load local fallback JSONs:", err);
+      }
+    }
+    renderWorks();
+    renderContacts();
+    fetchPortfolioData().then(() => {
+      localStorage.setItem('cached_works', JSON.stringify(globalWorks));
+      localStorage.setItem('cached_settings', JSON.stringify(globalSettings));
+      renderWorks();
+      renderContacts();
+    });
+  }
+
   async function init() {
     initLocalStorage();
     initBackground();
@@ -1514,15 +1547,12 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     initNavbarScroll();
     initSmoothScroll();
     
-    await fetchPortfolioData();
-    renderWorks();
-    renderContacts();
+    await loadInitialData();
     
     checkHashRoute();
     initAdminHooks();
     initProjectDetailModal();
     
-    // Listen to hash change for admin panel route
     window.addEventListener('hashchange', checkHashRoute);
   }
 
