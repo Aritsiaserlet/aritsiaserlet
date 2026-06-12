@@ -18,6 +18,11 @@ function getHeaders(){
   };
 }
 
+function sanitizeFilename(name) {
+  if (!name) return 'file';
+  return name.replace(/[^a-z0-9]/gi, '_').toLowerCase().replace(/_+/g, '_').replace(/^_|_$/g, '') || 'file';
+}
+
 // ── Pixel particles ──
 const canvas = document.getElementById('windCanvas');
 const ctx = canvas.getContext('2d');
@@ -302,8 +307,9 @@ async function addIconToLibrary() {
   reader.onload = async e => {
     try {
       const base64 = e.target.result.split(',')[1];
+      const safeName = sanitizeFilename(nameInput.value);
       const id = 'icon_' + Date.now();
-      const fname = `works/${id}.${ext}`;
+      const fname = `works/icon_${safeName}_${Date.now()}.${ext}`;
       
       const btn = fileInput.nextElementSibling;
       const oldBtnText = btn.innerText;
@@ -437,8 +443,9 @@ async function addSoundToLibrary() {
   reader.onload = async e => {
     try {
       const base64 = e.target.result.split(',')[1];
+      const safeName = sanitizeFilename(nameInput.value);
       const id = 'snd_' + Date.now();
-      const fname = `works/${id}.${ext}`;
+      const fname = `works/snd_${safeName}_${Date.now()}.${ext}`;
       const btn = document.querySelector('#soundLibraryPanel .anav-btn');
       btn.textContent = 'UPLOADING...'; btn.disabled = true;
       await ghPutBinary(fname, base64, `Upload sound ${nameInput.value}`);
@@ -1004,7 +1011,8 @@ async function addWork(){
         if (img.type === 'url') {
            newImagePathArray.push(img.url);
         } else {
-           const fname=`works/${Date.now()}_${i}.${img.ext}`;
+           const safeName = sanitizeFilename(name);
+           const fname=`works/${safeName}_${Date.now()}_${i}.${img.ext}`;
            await ghPutBinary(fname, img.base64, `Add image ${i+1} for ${name}`);
            newImagePathArray.push(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`);
            filesUploaded++;
@@ -1020,7 +1028,8 @@ async function addWork(){
     if(currentModelBase64 && cat==='3d'){
       showMsg('Uploading 3D model...','ok');
       fill.style.width='65%';
-      const mfname=`works/${Date.now()}_model.glb`;
+      const safeName = sanitizeFilename(name);
+      const mfname=`works/${safeName}_${Date.now()}_model.glb`;
       await ghPutBinary(mfname, currentModelBase64, `Add 3D model for ${name}`);
       modelPath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${mfname}`;
       fill.style.width='75%';
