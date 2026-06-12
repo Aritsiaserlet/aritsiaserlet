@@ -657,13 +657,25 @@ async function loadData() {
         if (worksSnap.exists()) {
             works = worksSnap.data().works || [];
         } else {
-            works = [];
+            try {
+                const r = await fetch('ozonz_works.json?t=' + Date.now());
+                if (r.ok) works = await r.json();
+                else works = [];
+            } catch (_) {
+                works = [];
+            }
         }
         
         if (settingsSnap.exists()) {
             ozonzSettings = settingsSnap.data().settings || { socials: [] };
         } else {
-            ozonzSettings = { socials: [] };
+            try {
+                const r = await fetch('ozonz_settings.json?t=' + Date.now());
+                if (r.ok) ozonzSettings = await r.json();
+                else ozonzSettings = { socials: [] };
+            } catch (_) {
+                ozonzSettings = { socials: [] };
+            }
         }
         
         setBadge(true);
