@@ -363,15 +363,18 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
   }
 
   function initRevealAndTheme() {
-    const observer = new IntersectionObserver(
+    revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('active');
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            revealObserver.unobserve(entry.target);
+          }
         });
       },
       { threshold: 0.1 }
     );
-    document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => observer.observe(el));
+    document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => revealObserver.observe(el));
 
     const themeToggle = document.getElementById('theme-toggle');
     const icon = document.getElementById('theme-icon');
