@@ -809,6 +809,8 @@ window.openWorkModal = function(id) {
     const tags = w?.tags;
     document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
     document.getElementById('work-desc').value  = w?.desc  || '';
+    document.getElementById('work-ai-summary').value = w?.aiSummary || '';
+    document.getElementById('ai-summarize-status').classList.add('hidden');
 
     // If editing and has a valid image URL, show preview
     if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
