@@ -22,6 +22,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
   };
 
   let statsTimer = null;
+  let revealObserver = null;
   let lastContributions = null;
   let lastRepos = null;
 
