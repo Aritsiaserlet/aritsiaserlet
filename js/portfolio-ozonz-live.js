@@ -940,6 +940,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
       document.getElementById('work-form').reset();
       document.getElementById('work-form-contributors-input').value = '';
       document.getElementById('work-form-ai-summary-input').value = '';
+      document.getElementById('work-form-year-input').value = '';
       window.tempAutofilledContributors = [];
     } else {
       title.textContent = 'Edit Work';
@@ -951,6 +952,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
       document.getElementById('work-form-tags-input').value = w.tags;
       document.getElementById('work-form-detail-input').value = w.detail;
       document.getElementById('work-form-ai-summary-input').value = w.aiSummary || '';
+      document.getElementById('work-form-year-input').value = w.year || '';
       
       const contributors = w.contributors || [];
       document.getElementById('work-form-contributors-input').value = contributors.map(c => c.name).join(', ');

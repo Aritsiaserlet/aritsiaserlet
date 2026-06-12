@@ -888,6 +888,7 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
         cat:   'ozonz',
         subcat: '',
         desc:  document.getElementById('work-desc').value.trim(),
+        year:  document.getElementById('work-year').value.trim(),
         aiSummary: document.getElementById('work-ai-summary').value.trim(),
         image: imgVal,
         tags:  tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
