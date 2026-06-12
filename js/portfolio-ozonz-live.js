@@ -538,7 +538,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
                     </div>
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-2xl font-bold uppercase text-on-background">${work.title}</h3>
-                        <span class="text-on-surface-variant font-mono text-sm">${new Date().getFullYear()}</span>
+                        <span class="text-on-surface-variant font-mono text-sm">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
                     </div>
                 </div>
                 <div>
@@ -577,7 +577,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
                     </div>
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-2xl font-bold uppercase text-on-background">${work.title}</h3>
-                        <span class="text-on-surface-variant font-mono text-sm">${new Date().getFullYear()}</span>
+                        <span class="text-on-surface-variant font-mono text-sm">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
                     </div>
                 </div>
                 <div>
