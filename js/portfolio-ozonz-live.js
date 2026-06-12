@@ -475,7 +475,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
             return t ? { name: t.name, avatar: t.image, url: t.url } : null;
           }).filter(Boolean);
         }
-        return { ...w, title: w.name, detail: w.desc || '', aiSummary: w.aiSummary || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+        return { ...w, title: w.name, detail: w.desc || '', aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
       });
       globalWorks = works;
     }
@@ -1291,6 +1291,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
         tags: document.getElementById('work-form-tags-input').value,
         detail: document.getElementById('work-form-detail-input').value,
         aiSummary: document.getElementById('work-form-ai-summary-input').value,
+        year: document.getElementById('work-form-year-input').value.trim(),
         contributors: contributors,
       };
 
