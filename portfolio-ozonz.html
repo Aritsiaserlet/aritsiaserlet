@@ -392,6 +392,22 @@
             0% { background-position: 200% center; }
             100% { background-position: -200% center; }
         }
+
+        /* Force input text color to be black and background to be white in dark mode for modals */
+        html.dark #work-form-modal input,
+        html.dark #work-form-modal textarea,
+        html.dark #contact-form-modal input,
+        html.dark #contact-form-modal select,
+        html.dark #admin-auth-modal input {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+        }
+        html.dark #work-form-modal input::placeholder,
+        html.dark #work-form-modal textarea::placeholder,
+        html.dark #contact-form-modal input::placeholder,
+        html.dark #admin-auth-modal input::placeholder {
+            color: #6b7280 !important;
+        }
     </style>
 </head>
 
