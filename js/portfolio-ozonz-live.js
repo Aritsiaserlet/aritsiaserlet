@@ -486,13 +486,13 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     const isFeaturedImg = featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.');
     const featuredHTML = `
         <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger project-glow" data-index="0">
-            <div class="absolute inset-0 bg-black/50 z-10 transition-opacity group-hover:opacity-30"></div>
+            <div class="absolute inset-0 bg-black/20 z-10 transition-all duration-500 group-hover:bg-black/10"></div>
             ${
               isFeaturedImg
                 ? `<img alt="${featured.title}" class="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105" src="${featured.image}" />`
                 : `<div class="w-full h-[600px] bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${featured.image}</span></div>`
             }
-            <div class="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-background via-background/60 to-transparent">
+            <div class="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-black/85 via-black/40 to-transparent">
                 <div class="flex flex-wrap gap-3 mb-6">
                     ${featured.tags.split(',').map(tag => `<span class="text-xs font-bold uppercase tracking-[0.2em] text-white mix-blend-difference">${tag.trim()}</span>`).join('')}
                 </div>
