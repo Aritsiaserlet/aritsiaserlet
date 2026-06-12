@@ -728,11 +728,20 @@ function renderWorks() {
         const tagStr = Array.isArray(w.tags) ? w.tags.join(', ') : (w.tags || '');
         return `
         <div class="work-item">
-            <div class="flex items-center gap-3 min-w-0">
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+                <!-- Reorder Buttons -->
+                <div class="flex flex-col gap-0.5 mr-1 flex-shrink-0">
+                    <button onclick="moveWorkItem(${i}, -1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
+                        <span class="material-symbols-outlined text-sm font-bold">arrow_upward</span>
+                    </button>
+                    <button onclick="moveWorkItem(${i}, 1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === works.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
+                        <span class="material-symbols-outlined text-sm font-bold">arrow_downward</span>
+                    </button>
+                </div>
                 ${thumb}
                 <div class="min-w-0">
                     <h4 class="font-bold text-sm text-on-background truncate">${w.name || '(Untitled)'}</h4>
-                    <p class="text-xs text-on-surface-variant truncate max-w-[220px]">${tagStr}</p>
+                    <p class="text-xs text-on-surface-variant truncate max-w-[200px]">${tagStr}</p>
                 </div>
             </div>
             <div class="flex gap-2 flex-shrink-0">
@@ -989,6 +998,20 @@ window.deleteWork = function(id) {
     });
 };
 
+window.moveWorkItem = async function(idx, direction) {
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= works.length) return;
+    
+    const temp = works[idx];
+    works[idx] = works[targetIdx];
+    works[targetIdx] = temp;
+    
+    const ok = await saveWorks(`Reorder work: ${temp.name || 'item'}`);
+    if (ok) {
+        renderWorks();
+    }
+};
+
 document.getElementById('work-cancel').addEventListener('click', () => {
     document.getElementById('work-modal').classList.remove('open');
 });
@@ -1094,7 +1117,16 @@ function renderContacts() {
             iconEl = `<span class="material-symbols-outlined text-base">${c.iconVal || 'link'}</span>`;
         return `
         <div class="work-item">
-            <div class="flex items-center gap-3 min-w-0">
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+                <!-- Reorder Buttons -->
+                <div class="flex flex-col gap-0.5 mr-1 flex-shrink-0">
+                    <button onclick="moveContactItem(${i}, -1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
+                        <span class="material-symbols-outlined text-sm font-bold">arrow_upward</span>
+                    </button>
+                    <button onclick="moveContactItem(${i}, 1)" class="text-on-surface-variant hover:text-primary transition-all p-0.5" ${i === socials.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
+                        <span class="material-symbols-outlined text-sm font-bold">arrow_downward</span>
+                    </button>
+                </div>
                 <div class="w-9 h-9 rounded-xl bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
                     ${iconEl}
                 </div>
@@ -1166,6 +1198,21 @@ window.deleteContact = function(idx) {
         const ok = await saveSettings(`Delete contact: ${c?.name}`);
         if (ok) renderContacts();
     });
+};
+
+window.moveContactItem = async function(idx, direction) {
+    const socials = ozonzSettings.socials || [];
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= socials.length) return;
+    
+    const temp = socials[idx];
+    socials[idx] = socials[targetIdx];
+    socials[targetIdx] = temp;
+    
+    const ok = await saveSettings(`Reorder contact: ${temp.name || 'item'}`);
+    if (ok) {
+        renderContacts();
+    }
 };
 
 document.getElementById('contact-cancel').addEventListener('click', () => {

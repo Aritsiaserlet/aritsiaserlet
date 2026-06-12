@@ -742,7 +742,16 @@
       const item = document.createElement('div');
       item.className = 'pixel-card p-4 rounded-xl flex justify-between items-center gap-4 bg-surface/40';
       item.innerHTML = `
-          <div class="flex items-center gap-4 min-w-0">
+          <div class="flex items-center gap-4 min-w-0 flex-1">
+              <!-- Reorder Buttons -->
+              <div class="flex flex-col gap-1 mr-1">
+                  <button class="admin-move-up-work-btn text-on-surface-variant hover:text-primary transition-all p-1" data-index="${idx}" ${idx === 0 ? 'disabled style="opacity: 0.25; cursor: not-allowed;"' : ''} title="Move Up">
+                      <span class="material-symbols-outlined text-sm font-bold">arrow_upward</span>
+                  </button>
+                  <button class="admin-move-down-work-btn text-on-surface-variant hover:text-primary transition-all p-1" data-index="${idx}" ${idx === works.length - 1 ? 'disabled style="opacity: 0.25; cursor: not-allowed;"' : ''} title="Move Down">
+                      <span class="material-symbols-outlined text-sm font-bold">arrow_downward</span>
+                  </button>
+              </div>
               ${
                 isImg
                   ? `<img src="${w.image}" class="w-12 h-12 rounded object-cover border border-outline/20 flex-shrink-0" />`
@@ -767,6 +776,16 @@
     list.querySelectorAll('.admin-delete-work-btn').forEach(btn => {
       btn.addEventListener('click', () => deleteWork(parseInt(btn.dataset.index)));
     });
+    list.querySelectorAll('.admin-move-up-work-btn').forEach(btn => {
+      if (!btn.disabled) {
+        btn.addEventListener('click', () => moveWork(parseInt(btn.dataset.index), -1));
+      }
+    });
+    list.querySelectorAll('.admin-move-down-work-btn').forEach(btn => {
+      if (!btn.disabled) {
+        btn.addEventListener('click', () => moveWork(parseInt(btn.dataset.index), 1));
+      }
+    });
   }
 
   function renderAdminContactsList() {
@@ -779,7 +798,16 @@
       const item = document.createElement('div');
       item.className = 'pixel-card p-4 rounded-xl flex justify-between items-center gap-4 bg-surface/40';
       item.innerHTML = `
-          <div class="flex items-center gap-4 min-w-0">
+          <div class="flex items-center gap-4 min-w-0 flex-1">
+              <!-- Reorder Buttons -->
+              <div class="flex flex-col gap-1 mr-1">
+                  <button class="admin-move-up-contact-btn text-on-surface-variant hover:text-primary transition-all p-1" data-index="${idx}" ${idx === 0 ? 'disabled style="opacity: 0.25; cursor: not-allowed;"' : ''} title="Move Up">
+                      <span class="material-symbols-outlined text-sm font-bold">arrow_upward</span>
+                  </button>
+                  <button class="admin-move-down-contact-btn text-on-surface-variant hover:text-primary transition-all p-1" data-index="${idx}" ${idx === contacts.length - 1 ? 'disabled style="opacity: 0.25; cursor: not-allowed;"' : ''} title="Move Down">
+                      <span class="material-symbols-outlined text-sm font-bold">arrow_downward</span>
+                  </button>
+              </div>
               <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
                   ${
                     c.iconType === 'svg'
@@ -807,6 +835,16 @@
     });
     list.querySelectorAll('.admin-delete-contact-btn').forEach(btn => {
       btn.addEventListener('click', () => deleteContact(parseInt(btn.dataset.index)));
+    });
+    list.querySelectorAll('.admin-move-up-contact-btn').forEach(btn => {
+      if (!btn.disabled) {
+        btn.addEventListener('click', () => moveContact(parseInt(btn.dataset.index), -1));
+      }
+    });
+    list.querySelectorAll('.admin-move-down-contact-btn').forEach(btn => {
+      if (!btn.disabled) {
+        btn.addEventListener('click', () => moveContact(parseInt(btn.dataset.index), 1));
+      }
     });
   }
 
@@ -868,6 +906,39 @@
     }
   }
 
+  function moveWork(index, direction) {
+    const works = JSON.parse(localStorage.getItem('works') || '[]');
+    const targetIdx = index + direction;
+    if (targetIdx < 0 || targetIdx >= works.length) return;
+
+    const temp = works[index];
+    works[index] = works[targetIdx];
+    works[targetIdx] = temp;
+
+    localStorage.setItem('works', JSON.stringify(works));
+    // Update globalWorks if it exists
+    if (typeof globalWorks !== 'undefined') {
+      globalWorks = works.map(w => {
+        let image = w.image;
+        if (Array.isArray(w.image)) image = w.image[0];
+        if (!image && w.model) image = 'view_in_ar';
+        let link = w.link;
+        if (!link && w.links && w.links.length > 0) link = w.links[0].url;
+        let tags = w.tags && w.tags.length > 0 ? w.tags.join(', ') : `${w.cat}, ${w.subcat}`;
+        let contributors = [];
+        if (w.team && globalSettings.teams) {
+          contributors = w.team.map(tid => {
+            const t = globalSettings.teams.find(x => x.id === tid);
+            return t ? { name: t.name, avatar: t.image, url: t.url } : null;
+          }).filter(Boolean);
+        }
+        return { ...w, title: w.name, detail: w.desc || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+      });
+    }
+    renderWorks();
+    renderAdminDashboard();
+  }
+
   function openContactForm(index = -1) {
     const modal = document.getElementById('contact-form-modal');
     const title = document.getElementById('contact-form-title');
@@ -916,6 +987,20 @@
       renderContacts();
       renderAdminDashboard();
     }
+  }
+
+  function moveContact(index, direction) {
+    const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    const targetIdx = index + direction;
+    if (targetIdx < 0 || targetIdx >= contacts.length) return;
+
+    const temp = contacts[index];
+    contacts[index] = contacts[targetIdx];
+    contacts[targetIdx] = temp;
+
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    renderContacts();
+    renderAdminDashboard();
   }
 
   function handleWorkAutofill() {
