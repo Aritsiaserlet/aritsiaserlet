@@ -1059,9 +1059,29 @@ document.getElementById('work-modal').addEventListener('click', e => {
         document.getElementById('work-modal').classList.remove('open');
 });
 
-/* ══════════════════════════════════════════════════════
-   AUTOFILL
-══════════════════════════════════════════════════════ */
+async function callGeminiSummary(apiKey, rawDesc) {
+    const promptText = `You are an assistant that summarizes project/game descriptions for a developer portfolio. Summarize the following raw description into two parts: 1. A clean, professional description (1-2 sentences, in English). 2. A very short, punchy tagline or summary (maximum 6-8 words, in English). Return the result as a raw JSON object with keys "description" and "tagline". Do not include markdown formatting or backticks. Description: "${rawDesc}"`;
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+    });
+    if (!res.ok) throw new Error(`Gemini status ${res.status}`);
+    const data = await res.json();
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        const descMatch = text.match(/"description"\s*:\s*"([^"]+)"/);
+        const taglineMatch = text.match(/"tagline"\s*:\s*"([^"]+)"/);
+        return {
+            description: descMatch ? descMatch[1] : null,
+            tagline: taglineMatch ? taglineMatch[1] : null
+        };
+    }
+}
+
 document.getElementById('autofill-btn').addEventListener('click', () => {
     const url    = document.getElementById('autofill-url').value.trim();
     const status = document.getElementById('autofill-status');
@@ -1076,23 +1096,38 @@ document.getElementById('autofill-btn').addEventListener('click', () => {
         Promise.all([
             fetch(`https://api.github.com/repos/${owner}/${repo}`).then(r => r.json()),
             fetch(`https://api.github.com/repos/${owner}/${repo}/contributors`).then(r => r.ok ? r.json() : []).catch(() => []),
-        ]).then(([rd, cd]) => {
+        ]).then(async ([rd, cd]) => {
             const title = rd.name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
             document.getElementById('work-name').value  = title;
-            document.getElementById('work-desc').value  = rd.description || '';
+            const rawDesc = rd.description || '';
+            document.getElementById('work-desc').value  = rawDesc;
+            document.getElementById('work-ai-summary').value = '';
             document.getElementById('work-image').value = 'terminal';
             const tags = [];
             if (rd.language) tags.push(rd.language.toUpperCase());
             tags.push('GITHUB');
             document.getElementById('work-tags').value  = tags.join(', ');
             renderLinkRows([{ url: rd.html_url, label: 'GitHub Repo' }]);
+
+            const apiKey = localStorage.getItem('gemini_api_key') || '';
+            if (rawDesc && apiKey) {
+                status.textContent = 'AI Summarizing description…';
+                try {
+                    const aiRes = await callGeminiSummary(apiKey, rawDesc);
+                    if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
+                    if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
+                } catch (e) {
+                    console.warn("Gemini Autofill summary failed:", e);
+                }
+            }
+
             status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
         }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-xs mt-2 block'; });
         return;
     }
 
     if (/itch\.io/i.test(url)) {
-        const parseHtml = html => {
+        const parseHtml = async html => {
             const doc   = new DOMParser().parseFromString(html, 'text/html');
             let title   = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
             title       = title.replace(/\s*by\s+itch\.io$/i, '').trim();
@@ -1101,8 +1136,22 @@ document.getElementById('autofill-btn').addEventListener('click', () => {
             document.getElementById('work-name').value  = title;
             document.getElementById('work-image').value = image;
             document.getElementById('work-desc').value  = desc;
+            document.getElementById('work-ai-summary').value = '';
             document.getElementById('work-tags').value  = 'ITCH.IO';
             renderLinkRows([{ url, label: 'Play on Itch.io' }]);
+
+            const apiKey = localStorage.getItem('gemini_api_key') || '';
+            if (desc && apiKey) {
+                status.textContent = 'AI Summarizing description…';
+                try {
+                    const aiRes = await callGeminiSummary(apiKey, desc);
+                    if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
+                    if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
+                } catch (e) {
+                    console.warn("Gemini Autofill summary failed:", e);
+                }
+            }
+
             status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
         };
         fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r => r.text()).then(parseHtml)
