@@ -54,7 +54,7 @@ export async function loadSoundAssignments() {
       const GH_USER = 'OzonZ';
       const GH_REPO = 'Non-Four-Portfolio-Data';
       const DATA_PATH = 'All File Aritsia';
-      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/settings.json?t=${Date.now()}`);
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/settings.json?t=${Date.now()}`);
       if (r.ok) settings = await r.json();
     }
     if (!settings) return;

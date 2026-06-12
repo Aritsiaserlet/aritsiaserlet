@@ -108,8 +108,8 @@ let currentSort = 'featured'; // Default sort
 const GH_USER = 'OzonZ';
 const GH_REPO = 'Non-Four-Portfolio-Data';
 const DATA_PATH = 'All File Aritsia';
-const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/works.json`;
-const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/settings.json`;
+const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/works.json`;
+const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/settings.json`;
 // ── Skeleton Loading ──
 function showSkeletons(count = 6) {
   const gallery = document.getElementById('gallery');

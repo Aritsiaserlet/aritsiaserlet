@@ -256,16 +256,16 @@
 
     try {
       setLoadingProgress(40, 'Loading works data...');
-      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/works.json${bust}`);
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/works.json${bust}`);
       if (r.ok) worksData = await r.json();
     } catch(e) {
       console.warn('Failed to load works:', e);
     }
 
     try {
-      setLoadingProgress(70, 'Loading settings...');
-      const sr = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/settings.json${bust}`);
-      if (sr.ok) settingsData = await sr.json();
+      setLoadingProgress(60, 'Loading settings data...');
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/settings.json${bust}`);
+      if (r.ok) settingsData = await r.json();
     } catch(e) {
       console.warn('Failed to load settings:', e);
     }

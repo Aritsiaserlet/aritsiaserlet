@@ -1,0 +1,54 @@
+﻿
+
+game                    : @{playerSpriteFrames=1; playerSpriteFps=12; playerSpriteLoop=True; playerAttackFrames=1; 
+                          playerAttackFps=15; playerAttackLoop=False; fwDropChance=30; pointsPerHit=15; missPenalty=5; 
+                          fwIconId=icon_1781288146434}
+categories              : @{game=; mod=; 3d=}
+socials                 : {@{name=Itch.io; url=https://aritsiaserlet.itch.io/; iconId=icon_1781287940640; icon=}, 
+                          @{name=Modrinth; url=https://modrinth.com/user/Aritsiaserlet; iconId=icon_1781288096980; 
+                          icon=}, @{name=Curseforge; url=https://www.curseforge.com/members/aritsiaserlet/projects; 
+                          iconId=icon_1781288108431; icon=}, @{name=Github; url=https://github.com/Aritsiaserlet; 
+                          iconId=icon_1781288120167; icon=}...}
+soundAssignments        : @{game_hit=System.Object[]; game_score=System.Object[]; game_combo=System.Object[]; 
+                          game_dive=System.Object[]; game_boost=System.Object[]; game_miss=System.Object[]; 
+                          game_gameover=System.Object[]; game_bgm=System.Object[]; lobby_bgm=System.Object[]; 
+                          portfolio_like=System.Object[]; portfolio_login=System.Object[]; 
+                          portfolio_btn=System.Object[]; portfolio_bgm=System.Object[]}
+profileImage            : https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/wor
+                          ks/profile_1781288361812.mp4
+backgroundImage         : https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/wor
+                          ks/bg_1781288377361.png
+profileFit              : cover
+profilePos              : center
+bgSize                  : cover
+bgPos                   : center
+icons                   : {@{id=icon_1781287940640; name=Itch.io; url=https://raw.githubusercontent.com/OzonZ/Non-Four-
+                          Portfolio-Data/main/All%20File%20Aritsia/works/icon_itch_io_1781287940640.png}, 
+                          @{id=icon_1781288077897; name=Discord; url=https://raw.githubusercontent.com/OzonZ/Non-Four-P
+                          ortfolio-Data/main/All%20File%20Aritsia/works/icon_discord_1781288077897.png}, 
+                          @{id=icon_1781288096980; name=Modrinth; url=https://raw.githubusercontent.com/OzonZ/Non-Four-
+                          Portfolio-Data/main/All%20File%20Aritsia/works/icon_modrinth_1781288096980.png}, 
+                          @{id=icon_1781288108431; name=Curseforge; url=https://raw.githubusercontent.com/OzonZ/Non-Fou
+                          r-Portfolio-Data/main/All%20File%20Aritsia/works/icon_curseforge_1781288108431.png}...}
+teams                   : {@{id=team_1781288473204; name=Non; link=https://discord.com/users/1018888909419204658; 
+                          iconId=icon_1781288077897}, @{id=team_1781288484094; name=Khawhom; 
+                          link=https://discord.com/users/873223520178540594; iconId=icon_1781288077897}, 
+                          @{id=team_1781288494670; name=Petch; link=https://discord.com/users/726290821250416651; 
+                          iconId=icon_1781288077897}, @{id=team_1781288501879; name=Mew; 
+                          link=https://discord.com/users/777801927810482176; iconId=icon_1781288077897}...}
+teamBtnIconId           : icon_1781288154150
+sounds                  : {@{id=snd_1781288685261; name=Mace Smash Air; url=https://raw.githubusercontent.com/OzonZ/Non
+                          -Four-Portfolio-Data/main/All%20File%20Aritsia/works/snd_mace_smash_air_1781288685261.ogg; 
+                          volume=60}, @{id=snd_1781288701961; name=Mace Smash Ground; url=https://raw.githubusercontent
+                          .com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/works/snd_mace_smash_ground_1781
+                          288701961.ogg; volume=60}, @{id=snd_1781288760164; name=Wind Burst; url=https://raw.githubuse
+                          rcontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/works/snd_wind_burst_178
+                          1288760164.mp3; volume=52}, @{id=snd_1781288831801; name=Miss; url=https://raw.githubusercont
+                          ent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/works/snd_miss_1781288831801.
+                          mp3; volume=63}...}
+soundBtnIconId          : icon_1781288164484
+gameCategoryIconId      : icon_1781288179202
+portfolioCategoryIconId : icon_1781288190669
+
+
+
