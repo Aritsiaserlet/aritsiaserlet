@@ -454,6 +454,10 @@
                 <input type="text" id="work-tags" required class="admin-input" placeholder="e.g. PIXEL ART, C#, UNITY" />
             </div>
             <div>
+                <label class="admin-label">Year of Creation</label>
+                <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="admin-input" />
+            </div>
+            <div>
                 <label class="admin-label">Links (optional)</label>
                 <div id="work-links-wrap" class="flex flex-col gap-2 mb-2"></div>
                 <button type="button" id="add-link-btn"
@@ -809,6 +813,7 @@ window.openWorkModal = function(id) {
     const tags = w?.tags;
     document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
     document.getElementById('work-desc').value  = w?.desc  || '';
+    document.getElementById('work-year').value  = w?.year  || '';
     document.getElementById('work-ai-summary').value = w?.aiSummary || '';
     document.getElementById('ai-summarize-status').classList.add('hidden');
 
