@@ -563,8 +563,6 @@
 
 <script src="js/config.js" onerror="console.warn('config.js not found')"></script>
 <script type="module">
-import { db } from './authManager.js';
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 (function () {
 'use strict';
@@ -659,18 +657,11 @@ function decodeGH(b64) {
    LOAD FROM DATABASE
 ══════════════════════════════════════════════════════ */
 async function loadData() {
-    showLoading('Loading from Database…');
+    showLoading('Loading from Repository…');
     try {
-        const worksDocRef = doc(db, 'ozonz_data', 'works');
-        const settingsDocRef = doc(db, 'ozonz_data', 'settings');
-        
-        const [worksSnap, settingsSnap] = await Promise.all([
-            getDoc(worksDocRef),
-            getDoc(settingsDocRef)
-        ]);
-        
-        if (worksSnap.exists()) {
-            works = worksSnap.data().works || [];
+        const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
+        if (worksRes.ok) {
+            works = await worksRes.json();
         } else {
             try {
                 const r = await fetch('ozonz_works.json?t=' + Date.now());
@@ -681,8 +672,9 @@ async function loadData() {
             }
         }
         
-        if (settingsSnap.exists()) {
-            ozonzSettings = settingsSnap.data().settings || { socials: [] };
+        const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
+        if (settingsRes.ok) {
+            ozonzSettings = await settingsRes.json();
         } else {
             try {
                 const r = await fetch('ozonz_settings.json?t=' + Date.now());
@@ -693,7 +685,7 @@ async function loadData() {
             }
         }
         
-        setBadge(true, 'Connected to Database');
+        setBadge(true, 'Connected to GitHub');
     } catch (err) {
         console.error("loadData error:", err);
         setBadge(false, err.message);
@@ -706,21 +698,15 @@ async function loadData() {
 }
 
 /* ══════════════════════════════════════════════════════
-   SAVE WORKS → DATABASE & GITHUB
+   SAVE WORKS → GITHUB
    ══════════════════════════════════════════════════════ */
 async function saveWorks(actionLabel) {
-    showLoading('Saving to Database and GitHub…');
+    showLoading('Saving to GitHub…');
     try {
         if (!ghToken) {
             showToast('GitHub token is required to save changes!');
             return false;
         }
-
-        // 1. Save to Firebase
-        const worksDocRef = doc(db, 'ozonz_data', 'works');
-        await setDoc(worksDocRef, { works: works });
-
-        // 2. Save to GitHub
         let sha = null;
         try {
             const fileData = await ghGet(WORKS_FILE);
@@ -729,9 +715,8 @@ async function saveWorks(actionLabel) {
 
         const content = JSON.stringify(works, null, 4);
         await ghPut(WORKS_FILE, content, actionLabel, sha);
-
         showToast('✓ ' + actionLabel);
-        setBadge(true, 'Connected to Database and GitHub');
+        setBadge(true, 'Connected to GitHub');
         return true;
     } catch (err) {
         console.error("saveWorks error:", err);
@@ -744,18 +729,12 @@ async function saveWorks(actionLabel) {
 }
 
 async function saveSettings(actionLabel) {
-    showLoading('Saving settings to Database and GitHub…');
+    showLoading('Saving settings to GitHub…');
     try {
         if (!ghToken) {
             showToast('GitHub token is required to save settings!');
             return false;
         }
-
-        // 1. Save to Firebase
-        const settingsDocRef = doc(db, 'ozonz_data', 'settings');
-        await setDoc(settingsDocRef, { settings: ozonzSettings });
-
-        // 2. Save to GitHub
         let sha = null;
         try {
             const fileData = await ghGet(SETTINGS_FILE);
@@ -764,7 +743,6 @@ async function saveSettings(actionLabel) {
 
         const content = JSON.stringify(ozonzSettings, null, 4);
         await ghPut(SETTINGS_FILE, content, actionLabel, sha);
-
         showToast('✓ ' + actionLabel);
         return true;
     } catch (err) {
