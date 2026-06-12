@@ -8,6 +8,11 @@ service cloud.firestore {
       allow write: if false; 
     }
 
+    // Ozonz Portfolio Data
+    match /ozonz_data/{documentId} {
+      allow read, write: if true;
+    }
+
     // 2. Users Collection
     match /users/{userId} {
       allow read: if true;

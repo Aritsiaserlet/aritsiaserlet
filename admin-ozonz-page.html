@@ -547,7 +547,10 @@
 </div>
 
 <script src="js/config.js" onerror="console.warn('config.js not found')"></script>
-<script>
+<script type="module">
+import { db } from './authManager.js';
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 (function () {
 'use strict';
 
@@ -638,29 +641,31 @@ function decodeGH(b64) {
 }
 
 /* ══════════════════════════════════════════════════════
-   LOAD FROM GITHUB
+   LOAD FROM DATABASE
 ══════════════════════════════════════════════════════ */
 async function loadData() {
-    showLoading('Loading from GitHub…');
+    showLoading('Loading from Database…');
     try {
-        const [wd, sd] = await Promise.all([
-            ghGet(WORKS_FILE),
-            ghGet(SETTINGS_FILE),
+        const worksDocRef = doc(db, 'ozonz_data', 'works');
+        const settingsDocRef = doc(db, 'ozonz_data', 'settings');
+        
+        const [worksSnap, settingsSnap] = await Promise.all([
+            getDoc(worksDocRef),
+            getDoc(settingsDocRef)
         ]);
-        if (wd) {
-            worksSha = wd.sha;
-            works    = decodeGH(wd.content);
+        
+        if (worksSnap.exists()) {
+            works = worksSnap.data().works || [];
         } else {
-            worksSha = null;
-            works    = [];
+            works = [];
         }
-        if (sd) {
-            settingsSha   = sd.sha;
-            ozonzSettings = decodeGH(sd.content);
+        
+        if (settingsSnap.exists()) {
+            ozonzSettings = settingsSnap.data().settings || { socials: [] };
         } else {
-            settingsSha   = null;
             ozonzSettings = { socials: [] };
         }
+        
         setBadge(true);
     } catch (err) {
         setBadge(false, err.message);
@@ -673,14 +678,13 @@ async function loadData() {
 }
 
 /* ══════════════════════════════════════════════════════
-   SAVE WORKS → GITHUB
+   SAVE WORKS → DATABASE
 ══════════════════════════════════════════════════════ */
 async function saveWorks(actionLabel) {
-    if (!ghToken) { showToast('Set a GitHub token first!'); return false; }
-    showLoading('Saving to GitHub…');
+    showLoading('Saving to Database…');
     try {
-        const result = await ghPut(WORKS_FILE, JSON.stringify(works, null, 2), actionLabel, worksSha);
-        worksSha = result.content.sha;
+        const worksDocRef = doc(db, 'ozonz_data', 'works');
+        await setDoc(worksDocRef, { works: works });
         showToast('✓ ' + actionLabel);
         setBadge(true);
         return true;
@@ -694,11 +698,10 @@ async function saveWorks(actionLabel) {
 }
 
 async function saveSettings(actionLabel) {
-    if (!ghToken) { showToast('Set a GitHub token first!'); return false; }
     showLoading('Saving settings…');
     try {
-        const result = await ghPut(SETTINGS_FILE, JSON.stringify(ozonzSettings, null, 2), actionLabel, settingsSha);
-        settingsSha = result.content.sha;
+        const settingsDocRef = doc(db, 'ozonz_data', 'settings');
+        await setDoc(settingsDocRef, { settings: ozonzSettings });
         showToast('✓ ' + actionLabel);
         return true;
     } catch (err) {
@@ -829,7 +832,7 @@ function collectLinks() {
 
 document.getElementById('work-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!ghToken) { showToast('Set a GitHub token first!'); return; }
+    if (pendingImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
 
     const editId  = document.getElementById('work-edit-id').value;
     const tagsVal = document.getElementById('work-tags').value.trim();
