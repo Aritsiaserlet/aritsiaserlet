@@ -384,8 +384,8 @@
             animation: scroll-bounce 1.8s ease-in-out infinite;
         }
         @keyframes scroll-bounce {
-            0%, 100% { transform: translateY(0); opacity: 0.4; }
-            50% { transform: translateY(8px); opacity: 1; }
+            0%, 100% { transform: translateY(0); opacity: 0.4; filter: drop-shadow(0 0 2px rgba(var(--primary-rgb), 0.15)); }
+            50% { transform: translateY(8px); opacity: 1; filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.65)); }
         }
         /* GitHub Skeleton loading */
         .gh-skeleton {
