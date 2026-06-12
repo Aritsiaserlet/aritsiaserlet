@@ -472,6 +472,17 @@
                 <textarea id="work-desc" rows="3" required class="admin-input resize-none"></textarea>
                 <p id="ai-status" class="text-[10px] mt-1 hidden"></p>
             </div>
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="admin-label" style="margin-bottom:0">AI Summary (Tagline)</label>
+                    <button type="button" id="ai-summarize-btn"
+                        class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs">auto_awesome</span> Summarize with AI
+                    </button>
+                </div>
+                <input type="text" id="work-ai-summary" class="admin-input" placeholder="e.g. A Python-based bot that tracks user playtime." />
+                <p id="ai-summarize-status" class="text-[10px] mt-1 hidden"></p>
+            </div>
 
             <div class="flex gap-3 mt-2">
                 <button type="submit"
