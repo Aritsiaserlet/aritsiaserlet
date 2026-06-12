@@ -563,8 +563,9 @@
 
 <script src="js/config.js" onerror="console.warn('config.js not found')"></script>
 <script type="module">
-import { db } from './authManager.js';
+import { db, storage } from './authManager.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 (function () {
 'use strict';
@@ -865,15 +866,14 @@ function collectLinks() {
 
 document.getElementById('work-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (pendingImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
 
     const editId  = document.getElementById('work-edit-id').value;
     const tagsVal = document.getElementById('work-tags').value.trim();
 
-    // ── Upload pending image to GitHub if any ──
+    // ── Upload pending image to Firebase Storage if any ──
     let imgVal = document.getElementById('work-image').value.trim();
     if (pendingImageFile) {
-        const uploaded = await uploadImageToGitHub(pendingImageFile);
+        const uploaded = await uploadImageToFirebase(pendingImageFile);
         if (uploaded) {
             imgVal = uploaded;
             document.getElementById('work-image').value = imgVal;
@@ -948,39 +948,58 @@ function setImagePreviewBlob(file) {
     setImagePreviewUrl(url);
 }
 
-async function uploadImageToGitHub(file) {
+async function uploadImageToFirebase(file) {
     const progress = document.getElementById('img-upload-progress');
     const bar      = document.getElementById('img-progress-bar');
     const label    = document.getElementById('img-progress-label');
     progress.classList.add('visible');
     bar.style.width = '0%';
-    label.textContent = 'Reading file…';
+    label.textContent = 'Preparing upload…';
+    label.style.color = ''; // reset color to default
 
     return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            try {
-                bar.style.width = '30%';
-                label.textContent = 'Uploading to GitHub…';
-                const base64   = ev.target.result.split(',')[1];
-                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-                const filename = `works/${Date.now()}_ozonz.${ext}`;
-                bar.style.width = '60%';
-                await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
-                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
-                bar.style.width = '100%';
-                label.textContent = '✓ Uploaded!';
-                setTimeout(() => progress.classList.remove('visible'), 1500);
-                resolve(rawUrl);
-            } catch (err) {
-                bar.style.width = '0%';
-                label.textContent = `Error: ${err.message}`;
-                label.style.color = '#ef4444';
-                showToast('Image upload failed: ' + err.message);
-                resolve(null);
-            }
-        };
-        reader.readAsDataURL(file);
+        try {
+            const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
+            const filename = `works/${Date.now()}_ozonz.${ext}`;
+            const storageRef = ref(storage, filename);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    bar.style.width = percent + '%';
+                    label.textContent = `Uploading to Firebase (${percent}%)…`;
+                },
+                (err) => {
+                    bar.style.width = '0%';
+                    label.textContent = `Error: ${err.message}`;
+                    label.style.color = '#ef4444';
+                    showToast('Image upload failed: ' + err.message);
+                    resolve(null);
+                },
+                async () => {
+                    try {
+                        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                        bar.style.width = '100%';
+                        label.textContent = '✓ Uploaded!';
+                        setTimeout(() => progress.classList.remove('visible'), 1500);
+                        resolve(downloadUrl);
+                    } catch (urlErr) {
+                        bar.style.width = '0%';
+                        label.textContent = `Error getting URL`;
+                        label.style.color = '#ef4444';
+                        showToast('Failed to get download URL: ' + urlErr.message);
+                        resolve(null);
+                    }
+                }
+            );
+        } catch (err) {
+            bar.style.width = '0%';
+            label.textContent = `Error: ${err.message}`;
+            label.style.color = '#ef4444';
+            showToast('Setup upload failed: ' + err.message);
+            resolve(null);
+        }
     });
 }
 

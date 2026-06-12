@@ -18,6 +18,7 @@
 // =============================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import { 
   getAuth, 
   signInWithPopup, 
@@ -54,6 +55,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 let currentUser = null;
 const stateChangeCallbacks = [];
