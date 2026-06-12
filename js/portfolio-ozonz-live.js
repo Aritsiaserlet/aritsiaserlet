@@ -489,7 +489,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     const featured = works[0];
     const isFeaturedImg = featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.');
     const featuredHTML = `
-        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger project-glow" data-index="0">
+        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger project-glow reveal" data-index="0">
             <div class="absolute inset-0 bg-black/20 z-10 transition-all duration-500 group-hover:bg-black/10"></div>
             ${
               isFeaturedImg
@@ -527,7 +527,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
         const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
 
         const cardHTML = `
-            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger" data-index="${i}">
+            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger reveal" data-index="${i}">
                 <div>
                     <div class="w-full h-48 rounded-xl overflow-hidden mb-6 border border-outline/20 bg-surface/20 flex items-center justify-center">
                         ${
@@ -566,7 +566,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
         const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
 
         const cardHTML = `
-            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger" data-index="${i}">
+            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger reveal" data-index="${i}">
                 <div>
                     <div class="w-full h-48 rounded-xl overflow-hidden mb-6 border border-outline/20 bg-surface/20 flex items-center justify-center">
                         ${
@@ -614,6 +614,11 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
         openProjectDetailModal(index);
       });
     });
+
+    // Observe newly rendered cards for reveal scroll animations
+    if (revealObserver) {
+      grid.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+    }
   }
 
   function renderContacts() {
