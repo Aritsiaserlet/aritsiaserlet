@@ -865,7 +865,7 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
         const idx = works.findIndex(w => String(w.id) === editId);
         if (idx >= 0) works[idx] = entry;
     } else {
-        works.unshift(entry);  // newest first
+        works.push(entry);  // oldest first / add to bottom
     }
 
     const ok = await saveWorks(editId ? `Update work: ${entry.name}` : `Add work: ${entry.name}`);
