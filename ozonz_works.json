@@ -35,5 +35,26 @@
     "team": [],
     "tools": [],
     "date": "2026-06-12T10:25:52.735Z"
+  },
+  {
+    "id": 1781260817752,
+    "name": "Camp System",
+    "cat": "ozonz",
+    "subcat": "",
+    "desc": "This dynamic Camp System streamlines registration, scheduling, and participant management for efficient camp operations. Built with JavaScript, it offers a robust and intuitive platform for administrators.",
+    "image": "https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/works/1781260814820_ozonz.png",
+    "tags": [
+      "JAVASCRIPT",
+      "GITHUB"
+    ],
+    "links": [
+      {
+        "url": "https://ozonz.github.io/camp-system/login.html",
+        "label": "GitHub Repo"
+      }
+    ],
+    "team": [],
+    "tools": [],
+    "date": "2026-06-12T10:40:17.752Z"
   }
 ]
