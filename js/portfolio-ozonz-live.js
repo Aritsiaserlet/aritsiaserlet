@@ -1,6 +1,6 @@
-/**
- * OzonZ portfolio — live GitHub stats + cursor-reactive background
- */
+import { db } from '../authManager.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 (function () {
   const GITHUB_USER =
     document.body.dataset.githubUser || 'OzonZ';
@@ -1348,13 +1348,27 @@
 
   async function fetchPortfolioData() {
     try {
-      const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/ozonz_works.json?t=${Date.now()}`);
-      const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/ozonz_settings.json?t=${Date.now()}`);
+      const worksDocRef = doc(db, 'ozonz_data', 'works');
+      const settingsDocRef = doc(db, 'ozonz_data', 'settings');
+      
+      const [worksSnap, settingsSnap] = await Promise.all([
+          getDoc(worksDocRef),
+          getDoc(settingsDocRef)
+      ]);
+      
+      if (worksSnap.exists()) {
+          globalWorks = worksSnap.data().works || [];
+      } else {
+          globalWorks = [];
+      }
+      
+      if (settingsSnap.exists()) {
+          globalSettings = settingsSnap.data().settings || { socials: [] };
+      } else {
+          globalSettings = { socials: [] };
+      }
+      
       const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/settings.json?t=${Date.now()}`);
-      
-      if (worksRes.ok) globalWorks = await worksRes.json();
-      if (settingsRes.ok) globalSettings = await settingsRes.json();
-      
       let sharedSettings = {};
       if (sharedSettingsRes.ok) sharedSettings = await sharedSettingsRes.json();
       
@@ -1364,7 +1378,7 @@
       globalSettings.sounds = sharedSettings.sounds || [];
       
     } catch (err) {
-      console.error("Failed to fetch portfolio data from GitHub:", err);
+      console.error("Failed to fetch portfolio data from Firestore:", err);
     }
   }
 
