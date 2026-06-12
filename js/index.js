@@ -105,10 +105,11 @@ let currentMainCat = 'all';
 let currentSubCat = 'all';
 let currentSort = 'featured'; // Default sort
 
-const GH_USER = 'Aritsiaserlet';
-const GH_REPO = 'aritsiaserlet';
-const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/works.json`;
-const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json`;
+const GH_USER = 'OzonZ';
+const GH_REPO = 'Non-Four-Portfolio-Data';
+const DATA_PATH = 'All File Aritsia';
+const WORKS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/works.json`;
+const SETTINGS_URL = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/settings.json`;
 // ── Skeleton Loading ──
 function showSkeletons(count = 6) {
   const gallery = document.getElementById('gallery');
@@ -134,7 +135,7 @@ async function loadData() {
   try {
     let r;
     if (t) {
-      r = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/works.json?ref=main&t=`+Date.now(), { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' } });
+      r = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${DATA_PATH}/works.json?ref=main&t=`+Date.now(), { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' } });
       if (!r.ok) r = await fetch(WORKS_URL + '?t=' + Date.now());
     } else {
       r = await fetch(WORKS_URL + '?t=' + Date.now());
@@ -147,7 +148,7 @@ async function loadData() {
   try {
     let sr;
     if (t) {
-      sr = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/settings.json?ref=main&t=`+Date.now(), { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' } });
+      sr = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${DATA_PATH}/settings.json?ref=main&t=`+Date.now(), { headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' } });
       if (!sr.ok) sr = await fetch(SETTINGS_URL + '?t=' + Date.now());
     } else {
       sr = await fetch(SETTINGS_URL + '?t=' + Date.now());

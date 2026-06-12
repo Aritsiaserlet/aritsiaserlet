@@ -4,10 +4,10 @@
 // =============================================================================
 
 // ── Config ──
-const GH_USER = 'Aritsiaserlet';
-const GH_REPO = 'aritsiaserlet';
-
-const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
+const GH_USER = 'OzonZ';
+const GH_REPO = 'Non-Four-Portfolio-Data';
+const DATA_PATH = 'All File Aritsia';
+const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${encodeURIComponent(DATA_PATH)}`;
 const JSON_PATH = 'settings.json';
 let GH_TOKEN  = '';
 function getHeaders(){
@@ -311,7 +311,7 @@ async function addIconToLibrary() {
       btn.disabled = true;
       
       await ghPutBinary(fname, base64, `Upload icon ${nameInput.value}`);
-      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
       
       if(!settings.icons) settings.icons = [];
 
@@ -442,7 +442,7 @@ async function addSoundToLibrary() {
       const btn = document.querySelector('#soundLibraryPanel .anav-btn');
       btn.textContent = 'UPLOADING...'; btn.disabled = true;
       await ghPutBinary(fname, base64, `Upload sound ${nameInput.value}`);
-      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
       if(!settings.sounds) settings.sounds = [];
       settings.sounds.push({ id, name: nameInput.value.trim(), url });
       const json = JSON.stringify(settings, null, 2);
@@ -841,7 +841,7 @@ async function saveSettings(){
       const fname=`works/profile_${Date.now()}.${profileExt}`;
       await ghPutBinary(fname, profileBase64, 'Update profile image');
       if (settings.profileImage) await deleteOldFile(settings.profileImage, 'Remove old profile image');
-      settings.profileImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      settings.profileImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
       fill.style.width='40%';
     }
     
@@ -850,7 +850,7 @@ async function saveSettings(){
       const fname=`works/bg_${Date.now()}.${bgExt}`;
       await ghPutBinary(fname, bgBase64, 'Update background image');
       if (settings.backgroundImage) await deleteOldFile(settings.backgroundImage, 'Remove old background image');
-      settings.backgroundImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      settings.backgroundImage=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
       fill.style.width='50%';
     }
     
@@ -864,13 +864,13 @@ async function saveSettings(){
       msg.textContent='Uploading Player Sprite...';
       const fname=`works/sprite_${Date.now()}.${gSpriteExt}`;
       await ghPutBinary(fname, gSpriteBase64, 'Upload Player Sprite');
-      settings.game.playerSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      settings.game.playerSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
     }
     if(gAttackBase64){
       msg.textContent='Uploading Attack Sprite...';
       const fname=`works/attack_${Date.now()}.${gAttackExt}`;
       await ghPutBinary(fname, gAttackBase64, 'Upload Attack Sprite');
-      settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
     }
     
     settings.game.playerSpriteFrames = parseInt(document.getElementById('gsetSpriteFrames').value) || 1;
@@ -916,12 +916,12 @@ async function saveGameAnimations() {
     if(gSpriteBase64){
       const fname=`works/sprite_${Date.now()}.${gSpriteExt}`;
       await ghPutBinary(fname, gSpriteBase64, 'Upload Player Sprite');
-      settings.game.playerSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      settings.game.playerSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
     }
     if(gAttackBase64){
       const fname=`works/attack_${Date.now()}.${gAttackExt}`;
       await ghPutBinary(fname, gAttackBase64, 'Upload Attack Sprite');
-      settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`;
+      settings.game.playerAttackSprite=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
     }
     settings.game.playerSpriteFrames = parseInt(document.getElementById('gsetSpriteFrames').value) || 1;
     settings.game.playerSpriteFps = parseInt(document.getElementById('gsetSpriteFps').value) || 12;
@@ -1006,7 +1006,7 @@ async function addWork(){
         } else {
            const fname=`works/${Date.now()}_${i}.${img.ext}`;
            await ghPutBinary(fname, img.base64, `Add image ${i+1} for ${name}`);
-           newImagePathArray.push(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${fname}`);
+           newImagePathArray.push(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`);
            filesUploaded++;
            fill.style.width = (30 + (filesUploaded/Math.max(1,fileImagesCount))*25) + '%';
         }
@@ -1022,7 +1022,7 @@ async function addWork(){
       fill.style.width='65%';
       const mfname=`works/${Date.now()}_model.glb`;
       await ghPutBinary(mfname, currentModelBase64, `Add 3D model for ${name}`);
-      modelPath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${mfname}`;
+      modelPath=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${mfname}`;
       fill.style.width='75%';
     }
 

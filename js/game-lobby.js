@@ -249,13 +249,14 @@
     let worksData = [];
     let settingsData = {};
 
-    const GH_USER = 'Aritsiaserlet';
-    const GH_REPO = 'aritsiaserlet';
+    const GH_USER = 'OzonZ';
+    const GH_REPO = 'Non-Four-Portfolio-Data';
+    const DATA_PATH = 'All File Aritsia';
     const bust = '?t=' + Date.now();
 
     try {
       setLoadingProgress(40, 'Loading works data...');
-      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/works.json${bust}`);
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/works.json${bust}`);
       if (r.ok) worksData = await r.json();
     } catch(e) {
       console.warn('Failed to load works:', e);
@@ -263,7 +264,7 @@
 
     try {
       setLoadingProgress(70, 'Loading settings...');
-      const sr = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json${bust}`);
+      const sr = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/settings.json${bust}`);
       if (sr.ok) settingsData = await sr.json();
     } catch(e) {
       console.warn('Failed to load settings:', e);

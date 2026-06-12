@@ -51,9 +51,10 @@ export async function loadSoundAssignments() {
     }
     
     if (!settings || Object.keys(settings).length === 0) {
-      const GH_USER = 'Aritsiaserlet';
-      const GH_REPO = 'aritsiaserlet';
-      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/settings.json?t=${Date.now()}`);
+      const GH_USER = 'OzonZ';
+      const GH_REPO = 'Non-Four-Portfolio-Data';
+      const DATA_PATH = 'All File Aritsia';
+      const r = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${DATA_PATH}/settings.json?t=${Date.now()}`);
       if (r.ok) settings = await r.json();
     }
     if (!settings) return;
