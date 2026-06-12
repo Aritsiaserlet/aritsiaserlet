@@ -952,7 +952,9 @@
                 particles.forEach((p,i)=>{
                     p.y-=p.speedY; p.x+=p.speedX;
                     ctx.fillStyle=`rgba(255,255,255,${p.opacity})`;
-                    ctx.fillRect(Math.floor(p.x),Math.floor(p.y),p.size,p.size);
+                    ctx.beginPath();
+                    ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
                     if(p.y+p.size<0) particles[i]=createParticle();
                 }); requestAnimationFrame(animateParticles);
             }
