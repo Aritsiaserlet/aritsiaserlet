@@ -680,6 +680,7 @@ async function loadData() {
         
         setBadge(true);
     } catch (err) {
+        console.error("loadData error:", err);
         setBadge(false, err.message);
         showToast('Load error: ' + err.message);
     } finally {
@@ -701,6 +702,7 @@ async function saveWorks(actionLabel) {
         setBadge(true);
         return true;
     } catch (err) {
+        console.error("saveWorks error:", err);
         showToast('Error: ' + err.message);
         setBadge(false, err.message);
         return false;
@@ -717,6 +719,7 @@ async function saveSettings(actionLabel) {
         showToast('✓ ' + actionLabel);
         return true;
     } catch (err) {
+        console.error("saveSettings error:", err);
         showToast('Error: ' + err.message);
         return false;
     } finally {
