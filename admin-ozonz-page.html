@@ -1303,7 +1303,7 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 function setBadge(ok, msg) {
     const b = document.getElementById('gh-status-badge');
     if (ok) {
-        b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> GitHub Connected`;
+        b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Database Connected`;
         b.className  = 'inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-surface/40 backdrop-blur text-sm text-green-500';
     } else {
         b.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> ${msg || 'Disconnected'}`;
