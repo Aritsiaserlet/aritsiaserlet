@@ -1359,13 +1359,25 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
       if (worksSnap.exists()) {
           globalWorks = worksSnap.data().works || [];
       } else {
-          globalWorks = [];
+          try {
+              const r = await fetch('ozonz_works.json?t=' + Date.now());
+              if (r.ok) globalWorks = await r.json();
+              else globalWorks = [];
+          } catch (_) {
+              globalWorks = [];
+          }
       }
       
       if (settingsSnap.exists()) {
           globalSettings = settingsSnap.data().settings || { socials: [] };
       } else {
-          globalSettings = { socials: [] };
+          try {
+              const r = await fetch('ozonz_settings.json?t=' + Date.now());
+              if (r.ok) globalSettings = await r.json();
+              else globalSettings = { socials: [] };
+          } catch (_) {
+              globalSettings = { socials: [] };
+          }
       }
       
       const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/settings.json?t=${Date.now()}`);
