@@ -3,8 +3,8 @@
 // portfolio.js
 // =============================================================================
 
-import { getCurrentUser, onUserChange } from '../authManager.js';
-import { initSettings, getSettings, updateSettings } from '../settingsManager.js';
+import { getCurrentUser, onUserChange } from './authManager.js';
+import { initSettings, getSettings, updateSettings } from './settingsManager.js';
 import { initSkillTree, renderSkillTree } from './portfolio-skills.js';
 import { initTimeline, renderTimeline } from './portfolio-timeline.js';
 

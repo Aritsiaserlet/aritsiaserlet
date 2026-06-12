@@ -131,6 +131,12 @@
     document.getElementById('lobbyScreen').style.display = 'none';
     document.getElementById('gameTopNav').style.display = 'none'; // hide top nav during game
     document.getElementById('gameContainer').style.display = 'block';
+    if (window.gameAudio) {
+      window.gameAudio.stopBGM();
+      setTimeout(() => {
+        if (window.gameAudio.startBGM) window.gameAudio.startBGM();
+      }, 50);
+    }
     if (window._worksData !== undefined && window.initGame) {
       window.initGame(window._worksData, window._settingsData);
     }

@@ -1,6 +1,6 @@
-import { initSettings, getSettings, updateSettings } from '../settingsManager.js';
-  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from '../authManager.js';
-  import { sfxLike, sfxLogin, sfxBtn, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments, toggleMute, startPortfolioBGM } from '../audioManager.js';
+import { initSettings, getSettings, updateSettings } from './settingsManager.js';
+  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from './authManager.js';
+  import { sfxLike, sfxLogin, sfxBtn, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments, toggleMute, startPortfolioBGM } from './audioManager.js';
   
   window.portfolioSettingsManager = { getSettings, updateSettings };
   window.portfolioAudioManager = { startBGM, stopBGM, toggleBGM, setVolumes, togglePortfolioBGM: _togglePortfolioBGM, toggleMute, sfxBtn };

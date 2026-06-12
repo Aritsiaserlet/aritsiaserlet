@@ -1,4 +1,4 @@
-import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from '../authManager.js';
+import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from './authManager.js';
   import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
   
   window.gameAuthManager = { login: loginWithGoogle, logout: logout, getCurrentUser: getCurrentUser };
@@ -81,7 +81,7 @@ import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from '../au
     }
   };
 
-  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute, updateGameSoundBtn, startLobbyBGM } from '../audioManager.js';
+  import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute, updateGameSoundBtn, startLobbyBGM } from './audioManager.js';
   
   // Read volume settings from localStorage on load
   function loadAudioSettings() {
