@@ -471,7 +471,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
             return t ? { name: t.name, avatar: t.image, url: t.url } : null;
           }).filter(Boolean);
         }
-        return { ...w, title: w.name, detail: w.desc || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+        return { ...w, title: w.name, detail: w.desc || '', aiSummary: w.aiSummary || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
       });
       globalWorks = works;
     }
@@ -485,7 +485,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     const featured = works[0];
     const isFeaturedImg = featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.');
     const featuredHTML = `
-        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger" data-index="0">
+        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger project-glow" data-index="0">
             <div class="absolute inset-0 bg-black/50 z-10 transition-opacity group-hover:opacity-30"></div>
             ${
               isFeaturedImg
@@ -497,7 +497,12 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
                     ${featured.tags.split(',').map(tag => `<span class="text-xs font-bold uppercase tracking-[0.2em] text-white mix-blend-difference">${tag.trim()}</span>`).join('')}
                 </div>
                 <h3 class="text-4xl md:text-5xl font-bold mb-4 uppercase mix-blend-difference text-white">${featured.title}</h3>
-                <p class="text-white text-lg max-w-2xl mb-8 mix-blend-difference">${featured.detail}</p>
+                <p class="text-white text-lg max-w-2xl mb-4 mix-blend-difference">${featured.detail}</p>
+                ${
+                  featured.aiSummary
+                    ? `<p class="text-primary font-bold text-sm tracking-wider uppercase mb-8 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
+                    : ''
+                }
                 <a href="${featured.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="group/btn inline-flex items-center justify-center relative bg-primary text-on-primary px-8 py-4 font-headline font-bold text-sm transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-105 border-4 border-primary hover:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-y-0 overflow-hidden">
                     <span class="relative z-10 uppercase tracking-widest">Go Itch.io</span>
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] pointer-events-none"></div>
@@ -507,28 +512,30 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
     `;
     grid.innerHTML += featuredHTML;
 
-    // Bento Cards (Index 1 and later)
-    if (works.length > 1) {
+    // Bento Cards (Index 1 and 2, next to Featured Project)
+    const sideWorks = works.slice(1, 3);
+    if (sideWorks.length > 0) {
       const bentoContainer = document.createElement('div');
       bentoContainer.className = 'lg:col-span-4 flex flex-col gap-10';
 
-      for (let i = 1; i < works.length; i++) {
-        const work = works[i];
+      sideWorks.forEach((work, index) => {
+        const i = index + 1;
         const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
 
         const cardHTML = `
-            <div class="pixel-card p-10 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger" data-index="${i}">
+            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger" data-index="${i}">
                 <div>
-                    <div class="flex justify-between items-start mb-6">
+                    <div class="w-full h-48 rounded-xl overflow-hidden mb-6 border border-outline/20 bg-surface/20 flex items-center justify-center">
                         ${
                           isImg
-                            ? `<img src="${work.image}" class="w-16 h-16 rounded-xl object-cover border border-outline/30" />`
-                            : `<span class="material-symbols-outlined text-primary text-4xl">${work.image}</span>`
+                            ? `<img src="${work.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />`
+                            : `<span class="material-symbols-outlined text-primary text-5xl transition-transform duration-500 group-hover:scale-105">${work.image}</span>`
                         }
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold uppercase text-on-background">${work.title}</h3>
                         <span class="text-on-surface-variant font-mono text-sm">${new Date().getFullYear()}</span>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3 uppercase text-on-background">${work.title}</h3>
-                    <p class="text-on-surface-variant text-base mb-6">${work.detail}</p>
                 </div>
                 <div>
                     <div class="flex flex-wrap gap-2 mb-4">
@@ -539,8 +546,47 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
             </div>
         `;
         bentoContainer.innerHTML += cardHTML;
-      }
+      });
       grid.appendChild(bentoContainer);
+    }
+
+    // Grid Cards (Index 3 and later, rendered below the featured section)
+    const extraWorks = works.slice(3);
+    if (extraWorks.length > 0) {
+      // Create a full-width grid container for the remaining cards
+      const extraGridContainer = document.createElement('div');
+      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10';
+
+      extraWorks.forEach((work, index) => {
+        const i = index + 3;
+        const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
+
+        const cardHTML = `
+            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger" data-index="${i}">
+                <div>
+                    <div class="w-full h-48 rounded-xl overflow-hidden mb-6 border border-outline/20 bg-surface/20 flex items-center justify-center">
+                        ${
+                          isImg
+                            ? `<img src="${work.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />`
+                            : `<span class="material-symbols-outlined text-primary text-5xl transition-transform duration-500 group-hover:scale-105">${work.image}</span>`
+                        }
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold uppercase text-on-background">${work.title}</h3>
+                        <span class="text-on-surface-variant font-mono text-sm">${new Date().getFullYear()}</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${work.tags.split(',').map(tag => `<span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">${tag.trim()}</span>`).join('')}
+                    </div>
+                    <a href="${work.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="text-sm font-bold text-primary hover:underline uppercase tracking-wider flex items-center gap-2">View Work <span class="material-symbols-outlined text-xs">open_in_new</span></a>
+                </div>
+            </div>
+        `;
+        extraGridContainer.innerHTML += cardHTML;
+      });
+      grid.appendChild(extraGridContainer);
     }
 
     // Bind click listeners to work-card-trigger
