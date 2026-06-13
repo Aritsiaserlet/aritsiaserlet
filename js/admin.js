@@ -379,6 +379,9 @@ function renderIconLibrary() {
   if(delIcon) delIcon.innerHTML = generateIconOptions(settings.manageWorkDeleteIconId || '', '-- None --');
   const phIcon = document.getElementById('addWorkPlaceholderIcon');
   if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- None --');
+  
+  const newTeamIcon = document.getElementById('newTeamIcon');
+  if(newTeamIcon) newTeamIcon.innerHTML = generateIconOptions('', '-- No Icon --');
 }
 
 async function deleteIcon(idx) {
@@ -1310,21 +1313,36 @@ function resetForm(){
   renderWorkLinks();
   document.getElementById('subcatWrap').classList.remove('visible');
   document.getElementById('modelWrap').style.display='none';
+  
+  // Clear arrays & state before rendering UI updates
+  currentImagesArray = [];
+  selectedTeams = [];
+  selectedTools = [];
+  editingId=null;
+  currentImgFocal=50;
+
   if (window.updateAddWorkPlaceholderIcon) {
     window.updateAddWorkPlaceholderIcon();
   } else {
     document.getElementById('imgPreview').innerHTML=`<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
   }
+  
+  const extraWrap = document.getElementById('extraImgWrap');
+  if(extraWrap) {
+    extraWrap.innerHTML = '';
+    extraWrap.style.display = 'none';
+  }
+
+  renderTeamCheckboxList();
+  renderToolsCheckboxList();
+  
   document.getElementById('imgFileInput').value='';
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
-  renderToolsCheckboxList();
-  currentImagesArray = [];
 
   currentModelBase64=null;
   currentModelName=null;
-  currentImgFocal=50;
-  editingId=null;
+  
   document.getElementById('editBanner').classList.remove('visible');
   document.getElementById('focalHint').style.display='none';
   const sl=document.getElementById('focalSlider'); if(sl) sl.value=50;
