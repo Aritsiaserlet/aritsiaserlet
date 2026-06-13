@@ -12,29 +12,29 @@ const WIND_CONFIG = {
   streaks: {
     count: 20,
     colors: ['#FFFFFF', '#B8D9F0', '#EAF3FA'],
-    speedRange: [0.5, 2.0],
-    opacityRange: [0.08, 0.25],
-    widthRange: [1, 3],
-    curveAmount: 35,       // max horizontal bezier curve deviation (px)
+    speedRange: [3.0, 8.0],
+    opacityRange: [0.2, 0.5],
+    widthRange: [4, 8],
+    curveAmount: 30,       // max horizontal sine curve deviation (px)
     lengthRange: [60, 160] // streak length in px
   },
   particles: {
     count: 40,
     colors: ['#FFFFFF', '#C4B5E8', '#B8D9F0', '#F0EDE8'],
-    speedRange: [0.3, 1.5],
-    sizeRange: [2, 6],
-    glowCount: 12,         // how many particles have soft glow
-    sineAmplitude: 22,     // px lateral drift
-    sineFrequency: 0.018,
-    opacityRange: [0.15, 0.5]
+    speedRange: [2.0, 5.0],
+    sizeRange: [4, 12],
+    glowCount: 0,          // no soft glow for pixel style
+    sineAmplitude: 15,     // px lateral drift
+    sineFrequency: 0.02,
+    opacityRange: [0.3, 0.8]
   },
   wisps: {
-    count: 7,
+    count: 10,
     colors: ['#FFFFFF', '#EAF3FA', '#D0E8F8'],
-    speedRange: [0.08, 0.35],
-    opacityRange: [0.03, 0.1],
-    blurRange: [25, 55],
-    sizeRange: [80, 220]   // ellipse width in px
+    speedRange: [0.5, 2.0],
+    opacityRange: [0.05, 0.15],
+    blurRange: [0, 0],
+    sizeRange: [40, 100]   // block width in px
   },
   performance: {
     targetFPS: 60,
@@ -74,7 +74,8 @@ function hexToRgb(hex) {
     'width:100%',
     'height:100%',
     'pointer-events:none',
-    'z-index:999'
+    'z-index:0',
+    'image-rendering:pixelated'
   ].join(';');
   document.body.appendChild(canvas);
 
@@ -116,21 +117,19 @@ function hexToRgb(hex) {
     }
     draw() {
       const rgb = hexToRgb(this.color);
-      ctx.save();
-      ctx.globalAlpha = this.opacity;
-      ctx.strokeStyle = `rgba(${rgb},1)`;
-      ctx.lineWidth = this.width;
-      ctx.lineCap = 'round';
-      ctx.shadowBlur = 0;
-
-      ctx.beginPath();
-      // Quadratic bezier — base at bottom, tip at top
-      const cpX = this.x + this.curve;
-      const cpY = this.y + this.length * 0.5;
-      ctx.moveTo(this.x, this.y + this.length);
-      ctx.quadraticCurveTo(cpX, cpY, this.x + this.curve * 0.4, this.y);
-      ctx.stroke();
-      ctx.restore();
+      ctx.fillStyle = `rgba(${rgb},${this.opacity})`;
+      
+      let currentY = this.y;
+      let segSize = this.width;
+      let segCount = Math.floor(this.length / (segSize * 1.5));
+      
+      for (let j = 0; j < segCount; j++) {
+        let alpha = this.opacity * (1 - j / segCount);
+        ctx.fillStyle = `rgba(${rgb},${alpha})`;
+        let waveX = Math.sin(currentY * 0.012 + this.sineOffset) * this.curve;
+        ctx.fillRect(Math.floor(this.x + waveX), Math.floor(currentY), Math.floor(segSize), Math.floor(segSize));
+        currentY += segSize * 1.5;
+      }
     }
   }
 
@@ -166,17 +165,9 @@ function hexToRgb(hex) {
     }
     draw() {
       const rgb = hexToRgb(this.color);
-      ctx.save();
-      ctx.globalAlpha = this.opacity;
-      if (this.isGlow) {
-        ctx.shadowColor = `rgba(${rgb},0.8)`;
-        ctx.shadowBlur  = this.size * 3.5;
-      }
-      ctx.fillStyle = `rgba(${rgb},1)`;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+      ctx.fillStyle = `rgba(${rgb},${this.opacity})`;
+      let s = Math.floor(this.size);
+      ctx.fillRect(Math.floor(this.x), Math.floor(this.y), s, s);
     }
   }
 
@@ -200,14 +191,18 @@ function hexToRgb(hex) {
     }
     draw() {
       const rgb = hexToRgb(this.color);
-      ctx.save();
-      ctx.globalAlpha = this.opacity;
-      ctx.filter = `blur(${this.blur}px)`;
-      ctx.fillStyle = `rgba(${rgb},1)`;
-      ctx.beginPath();
-      ctx.ellipse(this.x, this.y, this.w * 0.5, this.h * 0.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+      ctx.fillStyle = `rgba(${rgb},${this.opacity})`;
+      // Draw a cluster of large pixel blocks for the wisp
+      let bw = Math.floor(this.w / 4);
+      let bh = Math.floor(this.h / 4);
+      let px = Math.floor(this.x);
+      let py = Math.floor(this.y);
+      
+      ctx.fillRect(px, py, bw*2, bh*2);
+      ctx.fillRect(px - bw, py + bh/2, bw, bh);
+      ctx.fillRect(px + bw*2, py + bh/2, bw, bh);
+      ctx.fillRect(px + bw/2, py - bh, bw, bh);
+      ctx.fillRect(px + bw/2, py + bh*2, bw, bh);
     }
   }
 
