@@ -97,33 +97,77 @@
   }
 
   async function fetchGitHubData() {
+    const t = sessionStorage.getItem('ghToken');
+    const headers = { Accept: 'application/vnd.github+json' };
+    if (t) {
+      headers['Authorization'] = `token ${t}`;
+    }
+
     // 1. Fetch profile info
     const res = await fetch(
       `https://api.github.com/users/${GITHUB_USER}`,
-      { headers: { Accept: 'application/vnd.github+json' } }
+      { headers }
     );
     if (!res.ok) throw new Error('REST HTTP ' + res.status);
     const u = await res.json();
 
     // 2. Fetch contributions
     let contributions = null;
-    
-    // Try jogruber API first (highly reliable)
-    try {
-      const cr = await fetch(
-        `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}`
-      );
-      if (cr.ok) {
-        const cal = await cr.json();
-        if (cal.total) {
-          contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+
+    // Try GraphQL contributions API if token is available (100% real-time directly from GitHub)
+    if (t) {
+      try {
+        const query = `
+          query($username: String!) {
+            user(login: $username) {
+              contributionsCollection {
+                contributionCalendar {
+                  totalContributions
+                }
+              }
+            }
+          }
+        `;
+        const gqlRes = await fetch('https://api.github.com/graphql', {
+          method: 'POST',
+          headers: {
+            'Authorization': `bearer ${t}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query,
+            variables: { username: GITHUB_USER }
+          })
+        });
+        if (gqlRes.ok) {
+          const gqlData = await gqlRes.json();
+          if (gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions !== undefined) {
+            contributions = gqlData.data.user.contributionsCollection.contributionCalendar.totalContributions;
+          }
         }
+      } catch (err) {
+        console.warn('[GitHub sync] GraphQL contributions fetch failed:', err.message);
       }
-    } catch (err) {
-      console.warn('[GitHub sync] jogruber API failed, trying deno.dev:', err.message);
+    }
+    
+    // Try jogruber API next (highly reliable)
+    if (contributions === null) {
+      try {
+        const cr = await fetch(
+          `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}`
+        );
+        if (cr.ok) {
+          const cal = await cr.json();
+          if (cal.total) {
+            contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+          }
+        }
+      } catch (err) {
+        console.warn('[GitHub sync] jogruber API failed, trying deno.dev:', err.message);
+      }
     }
 
-    // Fallback to deno.dev API if jogruber failed or returned null
+    // Fallback to Deno.dev API
     if (contributions === null) {
       try {
         const cr = await fetch(
