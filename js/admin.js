@@ -845,7 +845,6 @@ async function deleteOldFile(url, msg) {
       } catch (e) { console.warn('Failed to delete old file:', e); }
     }
   }
-  }
 }
 
 window.updateAddWorkPlaceholderIcon = function() {
