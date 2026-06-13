@@ -425,7 +425,7 @@
         float chargeGlow = 0.0;
         if (fusionProgress > 0.0) {
             float chargeRadius = 95.0 + fusionProgress * 150.0;
-            float pulse = 1.0 + 0.5 * sin(u_time * 50.0) * fusionProgress; // intense jitter
+            float pulse = 1.0 + 0.1 * sin(u_time * 15.0) * fusionProgress; // soft pulse
             chargeGlow = fusionProgress * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius)) * pulse;
         }
 
@@ -466,8 +466,7 @@
                 // Suppress center brightness on standard clicks
                 if (w.w > 0.4 && w.w <= 1.5) {
                     float suppressDist = exp(-clickDist * clickDist / (2.0 * 100.0 * 100.0));
-                    float dampedSine = cos(w.z * 12.0) * exp(-w.z * 4.5);
-                    float suppressFade = w.z < 1.2 ? dampedSine : 0.0;
+                    float suppressFade = max(0.0, 1.0 - w.z / 0.8); // Smooth linear fade
                     darkSuppress += suppressDist * suppressFade * 2.0;
                 }
             }
@@ -620,6 +619,7 @@
 
     document.addEventListener('mousedown', (e) => {
       isMouseDown = true;
+      addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 0.5); // Little wave at first
     });
     document.addEventListener('mouseup', (e) => {
       if (isMouseDown) {
@@ -635,6 +635,7 @@
       const t = e.touches[0];
       if (t) {
         isMouseDown = true;
+        addWave(t.clientX / window.innerWidth, t.clientY / window.innerHeight, 0.5); // Little wave at first
       }
     }, { passive: true });
     document.addEventListener('touchend', (e) => {
