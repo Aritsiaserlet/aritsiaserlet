@@ -957,16 +957,15 @@
             for(let i=0;i<40;i++) particles.push(createParticle(Math.random()*H));
             function animateParticles(){
                 ctx.clearRect(0,0,W,H);
-                const isDark = document.documentElement.classList.contains('dark');
-                const colorPrefix = isDark ? '234,228,177' : '56,107,64';
+                const colorPrefix = '255,255,255';
                 particles.forEach((p,i)=>{
                     p.y-=p.speedY; p.x+=p.speedX;
                     ctx.beginPath();
                     if (p.glowing) {
                         ctx.save();
-                        ctx.shadowBlur = p.size * 2.5;
-                        ctx.shadowColor = `rgba(${colorPrefix},${p.opacity * 1.5})`;
-                        ctx.fillStyle = `rgba(${colorPrefix},${p.opacity * 1.2})`;
+                        ctx.shadowBlur = p.size * 4;
+                        ctx.shadowColor = `rgba(255,255,255,${p.opacity * 2.0})`;
+                        ctx.fillStyle = `rgba(255,255,255,${p.opacity * 1.5})`;
                         ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
                         ctx.fill();
                         ctx.restore();
