@@ -831,6 +831,32 @@ async function deleteOldFile(url, msg) {
       } catch (e) { console.warn('Failed to delete old file:', e); }
     }
   }
+
+  const teamBtn = document.getElementById('teamBtnIcon');
+  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '');
+  const soundBtn = document.getElementById('soundBtnIcon');
+  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '');
+  const gameCat = document.getElementById('gameCategoryIcon');
+  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '');
+  const portCat = document.getElementById('portfolioCategoryIcon');
+  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '');
+  const editIcon = document.getElementById('manageWorkEditIcon');
+  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '');
+  const phIcon = document.getElementById('addWorkPlaceholderIcon');
+  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '');
+}
+
+window.updateAddWorkPlaceholderIcon = function() {
+  const preview = document.getElementById('imgPreview');
+  if (!preview) return;
+  if (currentImagesArray.length === 0 && !editingId) {
+    let iconHtml = '<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>';
+    if(settings.addWorkImageIconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === settings.addWorkImageIconId);
+      if(ic) iconHtml = `<img id="addWorkPlaceholderImage" src="${ic.url}" style="width:48px;height:48px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">`;
+    }
+    preview.innerHTML = `${iconHtml}<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+  }
 }
 
 async function saveSettings(){
@@ -1125,12 +1151,12 @@ function renderAdminList(){
   if(!isFiltered) {
     const hint = document.createElement('div');
     hint.className = 'reorder-hint';
-    hint.innerHTML = `<span>☰</span> ลาก ≡ เพื่อเรียงลำดับ — ลำดับจากบนลงล่าง = แสดงบนสุดในพอร์ตฟอลิโอ`;
+    hint.innerHTML = `<span>☰</span> Drag ≡ to reorder — top to bottom = top in portfolio`;
     list.appendChild(hint);
   } else {
     const hint = document.createElement('div');
     hint.className = 'reorder-hint reorder-hint--warn';
-    hint.innerHTML = `⚠ เรียงลำดับได้เฉพาะตอน Filter = All`;
+    hint.innerHTML = `⚠ Reordering only available when Filter = All`;
     list.appendChild(hint);
   }
 
@@ -1167,14 +1193,20 @@ function renderAdminList(){
       el.addEventListener('dragend',   onDragEnd);
     }
 
+    let manageWorkEditIconHtml = '✏️';
+    if(settings.manageWorkEditIconId && settings.icons) {
+      const eIc = settings.icons.find(x => x.id === settings.manageWorkEditIconId);
+      if(eIc) manageWorkEditIconHtml = `<img src="${eIc.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
+    }
+
     el.innerHTML=`
-      ${!isFiltered ? `<div class="witem-drag" title="ลากเพื่อเรียงลำดับ">≡</div>` : ''}
+      ${!isFiltered ? `<div class="witem-drag" title="Drag to reorder">≡</div>` : ''}
       <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${Array.isArray(w.image)?w.image[0]:w.image}">`:`${catIcon}`}</div>
-      <div class="witem-info">
-        <div class="witem-name">${w.name}</div>
+      <div class="witem-info" style="min-width:0;">
+        <div class="witem-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;" title="${w.name}">${w.name}</div>
         <div class="witem-cat" style="display:flex;align-items:center;gap:6px;">${catIcon} ${label}${sub}</div>
       </div>
-      <button class="witem-edit" onclick="editWork(${w.id})" title="Edit">✏️</button>
+      <button class="witem-edit" onclick="editWork(${w.id})" title="Edit">${manageWorkEditIconHtml}</button>
       <button class="witem-del" onclick="deleteWork(${w.id})" title="Delete">✕</button>`;
     list.appendChild(el);
   });
@@ -1269,7 +1301,11 @@ function resetForm(){
   renderWorkLinks();
   document.getElementById('subcatWrap').classList.remove('visible');
   document.getElementById('modelWrap').style.display='none';
-  document.getElementById('imgPreview').innerHTML=`<span style="font-size:32px">🖼️</span><span style="font-size:11px;color:rgba(44,74,106,0.5)">Click to upload image</span>`;
+  if (window.updateAddWorkPlaceholderIcon) {
+    window.updateAddWorkPlaceholderIcon();
+  } else {
+    document.getElementById('imgPreview').innerHTML=`<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span><span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+  }
   document.getElementById('imgFileInput').value='';
   document.getElementById('modelFileInput').value='';
   document.getElementById('modelName').textContent='';
@@ -1451,26 +1487,7 @@ function confirmPublish() {
 
 // ── Team Library ──────────────────────────────────────
 function renderTeamLibrary() {
-  const select = document.getElementById('newTeamIcon');
-  if(select) {
-    select.innerHTML = generateIconOptions('');
-  }
-  const btnSelect = document.getElementById('teamBtnIcon');
-  if (btnSelect) {
-    btnSelect.innerHTML = generateIconOptions(settings.teamBtnIconId || '');
-  }
-  const sBtnSelect = document.getElementById('soundBtnIcon');
-  if (sBtnSelect) {
-    sBtnSelect.innerHTML = generateIconOptions(settings.soundBtnIconId || '');
-  }
-  const gcSelect = document.getElementById('gameCategoryIcon');
-  if (gcSelect) {
-    gcSelect.innerHTML = generateIconOptions(settings.gameCategoryIconId || '');
-  }
-  const pcSelect = document.getElementById('portfolioCategoryIcon');
-  if (pcSelect) {
-    pcSelect.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '');
-  }
+
   
   const box = document.getElementById('teamLibraryList');
   if(!box) return;

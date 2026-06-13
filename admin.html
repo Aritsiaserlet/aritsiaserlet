@@ -50,6 +50,36 @@
           <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
           <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
         </div>
+        
+        <div style="margin-top:32px;">
+          <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">ICON ASSIGNMENTS</h3>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-family:'VT323';font-size:20px;width:300px;">Global TEAM Button Icon:</label>
+              <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default --</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-family:'VT323';font-size:20px;width:300px;">Global SOUND Button Icon:</label>
+              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default --</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-family:'VT323';font-size:20px;width:300px;">Game Category Icon:</label>
+              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-family:'VT323';font-size:20px;width:300px;">Portfolio Category Icon:</label>
+              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-family:'VT323';font-size:20px;width:300px;">Manage Work Edit Icon:</label>
+              <select id="manageWorkEditIcon" onchange="settings.manageWorkEditIconId=this.value; if(window.renderWorks)renderWorks();" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default (✏️) --</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <label style="font-family:'VT323';font-size:20px;width:300px;">Add Work Placeholder Icon:</label>
+              <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; updateAddWorkPlaceholderIcon();" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default (🖼️) --</option></select>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -109,29 +139,7 @@
         <button class="submit-btn" onclick="saveSoundAssignments()" style="margin-top:20px;">SAVE SOUND ASSIGNMENTS</button>
         <p class="form-msg" id="soundMsg"></p>
         
-        <div style="margin-top:32px;">
-          <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">CATEGORY & BUTTON ICONS</h3>
-          <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:250px;">Global SOUND Button Icon:</label>
-              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-                <option value="">-- Default --</option>
-              </select>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:250px;">Game Category Icon:</label>
-              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value; renderSoundPicker();" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-                <option value="">-- None --</option>
-              </select>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:250px;">Portfolio Category Icon:</label>
-              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value; renderSoundPicker();" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-                <option value="">-- None --</option>
-              </select>
-            </div>
-          </div>
-        </div>
+
 
       </div>
     </div>
@@ -217,13 +225,6 @@
         </div>
         <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
 
-        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">TEAM BUTTON ICON</h3>
-        <div style="margin-bottom:24px;display:flex;align-items:center;gap:12px;">
-          <label style="font-family:'VT323';font-size:20px;">Global TEAM Button Icon:</label>
-          <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="width:200px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-            <option value="">-- Default --</option>
-          </select>
-        </div>
 
         <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
         <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
@@ -333,7 +334,7 @@
           <label>Image/Thumbnail</label>
           <div class="img-preview-wrap">
             <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
-              <span style="font-size:32px">🖼️</span>
+              <span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>
               <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
             </div>
             <div id="extraImgWrap" style="display:none; gap:8px; margin-top:12px; overflow-x:auto; padding-bottom:4px; display:flex;"></div>
@@ -343,10 +344,10 @@
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewImage(this, false)" style="display:none">
-              <button class="nav-btn" onclick="document.getElementById('imgFileInput').click()">REPLACE ALL</button>
+              <button class="submit-btn" onclick="document.getElementById('imgFileInput').click()" style="padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--white);color:var(--dark);">REPLACE ALL</button>
               
               <input type="file" id="imgFileAppend" accept="image/*" multiple onchange="previewImage(this, true)" style="display:none">
-              <button class="nav-btn" onclick="document.getElementById('imgFileAppend').click()" style="background:var(--gold);color:var(--dark);">➕ ADD MORE</button>
+              <button class="submit-btn" onclick="document.getElementById('imgFileAppend').click()" style="padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--gold);color:var(--dark);">➕ ADD MORE</button>
             </div>
           </div>
         </div>
