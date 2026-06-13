@@ -113,7 +113,30 @@
 
         html {
             font-size: 90%;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(var(--primary-rgb), 0.3) rgba(var(--background-rgb), 1);
         }
+
+        /* Custom Scrollbar styling for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(var(--background-rgb), 1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(var(--primary-rgb), 0.3);
+            border-radius: 9999px;
+            border: 2.5px solid rgba(var(--background-rgb), 1);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(var(--primary-rgb), 0.6);
+        }
+
 
         body {
             font-family: 'Space Grotesk', sans-serif;
