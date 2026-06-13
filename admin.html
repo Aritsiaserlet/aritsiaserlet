@@ -56,27 +56,31 @@
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:start;">
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Global TEAM Button Icon:</label>
-              <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+              <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Global SOUND Button Icon:</label>
-              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Game Category Icon:</label>
-              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Portfolio Category Icon:</label>
-              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Manage Work Edit Icon:</label>
-              <select id="manageWorkEditIcon" onchange="settings.manageWorkEditIconId=this.value; if(window.renderWorks)renderWorks();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+              <select id="manageWorkEditIcon" onchange="settings.manageWorkEditIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Manage Work Delete Icon:</label>
+              <select id="manageWorkDeleteIcon" onchange="settings.manageWorkDeleteIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Add Work Placeholder Icon:</label>
-              <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; updateAddWorkPlaceholderIcon();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+              <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; saveSettings(); updateAddWorkPlaceholderIcon();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
           </div>
         </div>
@@ -344,10 +348,10 @@
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewImage(this, false)" style="display:none">
-              <button class="submit-btn" onclick="document.getElementById('imgFileInput').click()" style="padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--white);color:var(--dark);">REPLACE ALL</button>
+              <button class="submit-btn" onclick="document.getElementById('imgFileInput').click()" style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--white);color:var(--dark);">REPLACE ALL</button>
               
               <input type="file" id="imgFileAppend" accept="image/*" multiple onchange="previewImage(this, true)" style="display:none">
-              <button class="submit-btn" onclick="document.getElementById('imgFileAppend').click()" style="padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--gold);color:var(--dark);">➕ ADD MORE</button>
+              <button class="submit-btn" onclick="document.getElementById('imgFileAppend').click()" style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--gold);color:var(--dark);">➕ ADD MORE</button>
             </div>
           </div>
         </div>

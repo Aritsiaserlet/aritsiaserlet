@@ -195,7 +195,7 @@ function renderImagePreview() {
   extraWrap.style.display = 'none';
 
   if (currentImagesArray.length === 0) {
-    prev.innerHTML = `<span style="font-size:32px">🖼️</span><span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+    prev.innerHTML = `<div style="width:48px;height:48px;border:2px dashed var(--dark);margin-bottom:8px;"></div><span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
     return;
   }
 
@@ -375,6 +375,8 @@ function renderIconLibrary() {
   if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --');
   const editIcon = document.getElementById('manageWorkEditIcon');
   if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- None --');
+  const delIcon = document.getElementById('manageWorkDeleteIcon');
+  if(delIcon) delIcon.innerHTML = generateIconOptions(settings.manageWorkDeleteIconId || '', '-- None --');
   const phIcon = document.getElementById('addWorkPlaceholderIcon');
   if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- None --');
 }
@@ -851,7 +853,7 @@ window.updateAddWorkPlaceholderIcon = function() {
   const preview = document.getElementById('imgPreview');
   if (!preview) return;
   if (currentImagesArray.length === 0 && !editingId) {
-    let iconHtml = '<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>';
+    let iconHtml = '';
     if(settings.addWorkImageIconId && settings.icons) {
       const ic = settings.icons.find(x => x.id === settings.addWorkImageIconId);
       if(ic) iconHtml = `<img id="addWorkPlaceholderImage" src="${ic.url}" style="width:48px;height:48px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">`;
@@ -1194,10 +1196,16 @@ function renderAdminList(){
       el.addEventListener('dragend',   onDragEnd);
     }
 
-    let manageWorkEditIconHtml = '✏️';
+    let manageWorkEditIconHtml = 'Edit';
     if(settings.manageWorkEditIconId && settings.icons) {
       const eIc = settings.icons.find(x => x.id === settings.manageWorkEditIconId);
       if(eIc) manageWorkEditIconHtml = `<img src="${eIc.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
+    }
+
+    let manageWorkDeleteIconHtml = 'Del';
+    if(settings.manageWorkDeleteIconId && settings.icons) {
+      const dIc = settings.icons.find(x => x.id === settings.manageWorkDeleteIconId);
+      if(dIc) manageWorkDeleteIconHtml = `<img src="${dIc.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
     }
 
     el.innerHTML=`
@@ -1208,7 +1216,7 @@ function renderAdminList(){
         <div class="witem-cat" style="display:flex;align-items:center;gap:6px;">${catIcon} ${label}${sub}</div>
       </div>
       <button class="witem-edit" onclick="editWork(${w.id})" title="Edit">${manageWorkEditIconHtml}</button>
-      <button class="witem-del" onclick="deleteWork(${w.id})" title="Delete">✕</button>`;
+      <button class="witem-del" onclick="deleteWork(${w.id})" title="Delete">${manageWorkDeleteIconHtml}</button>`;
     list.appendChild(el);
   });
 }
@@ -1305,7 +1313,7 @@ function resetForm(){
   if (window.updateAddWorkPlaceholderIcon) {
     window.updateAddWorkPlaceholderIcon();
   } else {
-    document.getElementById('imgPreview').innerHTML=`<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span><span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+    document.getElementById('imgPreview').innerHTML=`<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
   }
   document.getElementById('imgFileInput').value='';
   document.getElementById('modelFileInput').value='';
