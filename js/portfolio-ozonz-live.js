@@ -125,18 +125,39 @@
       headers['Authorization'] = `token ${t}`;
     }
 
-    // 1. Fetch profile info
-    const res = await fetch(
-      `https://api.github.com/users/${GITHUB_USER}`,
-      { headers }
-    );
-    if (!res.ok) throw new Error('REST HTTP ' + res.status);
-    const u = await res.json();
+    let u = {};
+    let profileFetched = false;
+    try {
+      const res = await fetch(
+        `https://api.github.com/users/${GITHUB_USER}`,
+        { headers }
+      );
+      if (res.ok) {
+        u = await res.json();
+        profileFetched = true;
+      } else {
+        console.warn('[GitHub sync] REST API returned status:', res.status);
+      }
+    } catch (err) {
+      console.warn('[GitHub sync] Profile fetch failed:', err.message);
+    }
+
+    if (!profileFetched) {
+      // Load fallback profile properties (from database settings if available)
+      const p = (globalSettings && globalSettings.githubProfile) ? globalSettings.githubProfile : {};
+      u = {
+        name: p.name || 'Chanon Thongduang',
+        login: p.login || GITHUB_USER,
+        avatar_url: p.avatarUrl || `https://github.com/${GITHUB_USER}.png`,
+        bio: p.bio || 'I create cohesive game experiences where programming, visual design, and game architecture intersect.',
+        public_repos: p.publicRepos || 50
+      };
+    }
 
     // 2. Fetch contributions
     let contributions = null;
 
-    // Try GraphQL contributions API if token is available (100% real-time directly from GitHub)
+    // Try GraphQL contributions API if token is available
     if (t) {
       try {
         const query = `
@@ -172,7 +193,7 @@
       }
     }
     
-    // Try jogruber API next (highly reliable)
+    // Try jogruber API next (highly reliable and rate-limit-free for visitors)
     if (contributions === null) {
       try {
         const cr = await fetch(
@@ -185,7 +206,7 @@
           }
         }
       } catch (err) {
-        console.warn('[GitHub sync] jogruber API failed, trying deno.dev:', err.message);
+        console.warn('[GitHub sync] jogruber API failed:', err.message);
       }
     }
 
@@ -214,18 +235,35 @@
       }
     }
 
+    // Fallback to database cached contributions if still null
+    if (contributions === null && globalSettings && globalSettings.githubProfile) {
+      contributions = globalSettings.githubProfile.contributions;
+    }
+
     return {
-      contributions: contributions ?? lastContributions ?? 0,
+      contributions: contributions ?? lastContributions ?? '—',
       repositories: u.public_repos ?? 0,
       name: u.name ?? u.login,
       login: u.login,
       avatarUrl: u.avatar_url,
       bio: u.bio ?? '',
-      profileUrl: u.html_url ?? `https://github.com/${u.login}`,
+      profileUrl: `https://github.com/${u.login}`,
     };
   }
 
   async function fetchFallbackProfile() {
+    if (globalSettings && globalSettings.githubProfile) {
+      const p = globalSettings.githubProfile;
+      return {
+        contributions: p.contributions ?? '—',
+        repositories: p.publicRepos ?? 0,
+        name: p.name || 'Chanon Thongduang',
+        login: p.login || GITHUB_USER,
+        avatarUrl: p.avatarUrl || `https://github.com/${GITHUB_USER}.png`,
+        bio: p.bio || '',
+        profileUrl: `https://github.com/${p.login || GITHUB_USER}`
+      };
+    }
     try {
       const r = await fetch('data/ozonz-profile.json?t=' + Date.now());
       if (r.ok) {

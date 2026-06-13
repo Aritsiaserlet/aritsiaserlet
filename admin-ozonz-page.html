@@ -917,6 +917,76 @@ function decodeGH(b64) {
     return JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
 }
 
+async function syncGitHubProfileToSettings() {
+    if (!ghToken) return;
+    try {
+        const headers = { 
+            Authorization: `token ${ghToken}`,
+            Accept: 'application/vnd.github+json'
+        };
+        const uRes = await fetch(`https://api.github.com/users/${GH_USER}`, { headers });
+        if (!uRes.ok) return;
+        const u = await uRes.json();
+        
+        let contributions = null;
+        try {
+            const query = `
+              query($username: String!) {
+                user(login: $username) {
+                  contributionsCollection {
+                    contributionCalendar {
+                      totalContributions
+                    }
+                  }
+                }
+              }
+            `;
+            const gqlRes = await fetch('https://api.github.com/graphql', {
+              method: 'POST',
+              headers: {
+                'Authorization': `bearer ${ghToken}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                query,
+                variables: { username: GH_USER }
+              })
+            });
+            if (gqlRes.ok) {
+              const gqlData = await gqlRes.json();
+              if (gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions !== undefined) {
+                contributions = gqlData.data.user.contributionsCollection.contributionCalendar.totalContributions;
+              }
+            }
+        } catch (_) {}
+        
+        if (contributions === null) {
+            try {
+                const cr = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}`);
+                if (cr.ok) {
+                    const cal = await cr.json();
+                    if (cal.total) contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+                }
+            } catch (_) {}
+        }
+
+        ozonzSettings.githubProfile = {
+            name: u.name || u.login,
+            login: u.login,
+            avatarUrl: u.avatar_url,
+            bio: u.bio || '',
+            publicRepos: u.public_repos || 0,
+            contributions: contributions || 0,
+            updatedAt: new Date().toISOString()
+        };
+
+        // Automatically save settings silently in the background
+        await saveSettings(`Sync GitHub profile info: @${GH_USER}`, true);
+    } catch (err) {
+        console.error("Failed to sync GitHub profile to settings:", err);
+    }
+}
+
 /* ══════════════════════════════════════════════════════
    LOAD FROM DATABASE
 ══════════════════════════════════════════════════════ */
@@ -989,6 +1059,10 @@ async function loadData() {
         ozonzSettings = loadedSettings;
         
         setBadge(true, 'Connected to GitHub');
+
+        if (ghToken) {
+            syncGitHubProfileToSettings();
+        }
     } catch (err) {
         console.error("loadData error:", err);
         setBadge(false, err.message);
@@ -1031,11 +1105,11 @@ async function saveWorks(actionLabel) {
     }
 }
 
-async function saveSettings(actionLabel) {
-    showLoading('Saving settings to GitHub…');
+async function saveSettings(actionLabel, silent = false) {
+    if (!silent) showLoading('Saving settings to GitHub…');
     try {
         if (!ghToken) {
-            showToast('GitHub token is required to save settings!');
+            if (!silent) showToast('GitHub token is required to save settings!');
             return false;
         }
         let sha = null;
@@ -1046,14 +1120,14 @@ async function saveSettings(actionLabel) {
 
         const content = JSON.stringify(ozonzSettings, null, 4);
         await ghPut(SETTINGS_FILE, content, actionLabel, sha);
-        showToast('✓ ' + actionLabel);
+        if (!silent) showToast('✓ ' + actionLabel);
         return true;
     } catch (err) {
         console.error("saveSettings error:", err);
-        showToast('Error: ' + err.message);
+        if (!silent) showToast('Error: ' + err.message);
         return false;
     } finally {
-        hideLoading();
+        if (!silent) hideLoading();
     }
 }
 
