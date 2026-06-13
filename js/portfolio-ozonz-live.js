@@ -415,32 +415,50 @@
         
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
-        float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
-        
-        // Dim spotlight smoothly when holding mouse down
-        spotlight *= mix(1.0, 0.1, u_holdDown);
+
+        // Charging power effect
+        float chargeGlow = 0.0;
+        if (u_holdDown > 0.0) {
+            float chargeRadius = 95.0 + u_holdDown * 250.0;
+            float pulse = 1.0 + 0.3 * sin(u_time * 40.0) * u_holdDown; // jitter
+            chargeGlow = u_holdDown * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius)) * pulse;
+        }
+
+        float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0)) + chargeGlow * u_spot;
 
         // Accumulate waves (both clicks and trails)
         float waveIntensity = 0.0;
         float darkSuppress = 0.0;
+        vec2 quakeDisplacement = vec2(0.0);
+
         for (int i = 0; i < 30; i++) {
             vec4 w = u_waves[i];
             if (w.z > 0.0) { // time since wave created
                 float clickDist = length(px - w.xy * u_resolution);
-                float waveFront = w.z * 1000.0; // faster speed
+                // Faster if intensity is high
+                float waveSpeed = 1000.0 + max(0.0, (w.w - 1.0) * 800.0);
+                float waveFront = w.z * waveSpeed;
                 float distFromFront = abs(clickDist - waveFront);
-                // Gaussian bell curve
-                float wave = exp(-distFromFront * distFromFront / 800.0);
+                // Thicker if intensity is high
+                float thickness = 800.0 + max(0.0, (w.w - 1.0) * 1500.0);
+                float wave = exp(-distFromFront * distFromFront / thickness);
                 
-                // Fade out based on distance and time
-                float maxDist = 1200.0;
+                // Fade out based on distance and time, max distance scales with w
+                float maxDist = 1200.0 + max(0.0, (w.w - 1.0) * 1200.0);
                 float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
-                float fadeTime = max(0.0, 1.0 - w.z / 1.2); // lives for 1.2 seconds
+                float maxLife = 1.2 + max(0.0, (w.w - 1.0) * 0.8);
+                float fadeTime = max(0.0, 1.0 - w.z / maxLife);
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
+
+                // Quake displacement directed away from the wave center
+                if (w.w > 0.8) {
+                    vec2 dir = clickDist > 0.1 ? (px - w.xy * u_resolution) / clickDist : vec2(0.0);
+                    quakeDisplacement += dir * wave * fadeDist * fadeTime * (w.w * 8.0);
+                }
                 
-                // Suppress center brightness on click (damped sine wave for spring effect)
-                if (w.w > 0.4) {
+                // Suppress center brightness on standard clicks
+                if (w.w > 0.4 && w.w <= 1.5) {
                     float suppressDist = exp(-clickDist * clickDist / (2.0 * 100.0 * 100.0));
                     float dampedSine = cos(w.z * 12.0) * exp(-w.z * 4.5);
                     float suppressFade = w.z < 1.2 ? dampedSine : 0.0;
@@ -453,7 +471,8 @@
         float effectIntensity = max(0.0, spotlight - darkSuppress) + waveIntensity;
 
         float spacing = 26.0;
-        vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
+        vec2 displacedPx = px + quakeDisplacement;
+        vec2 cell = mod(displacedPx + spacing * 0.5, spacing) - spacing * 0.5;
         
         // Size boost (scale down)
         float baseSize = 1.6;
@@ -586,18 +605,21 @@
       targetSpot = 0;
       if (isMouseDown) {
           isMouseDown = false;
-          addWave(target.x, target.y, 0.5); // Add small wave on leave if held
+          let power = 0.5 + holdDownAmt * 4.0;
+          addWave(target.x, target.y, power);
+          holdDownAmt = 0.0;
       }
     });
 
     document.addEventListener('mousedown', (e) => {
       isMouseDown = true;
-      addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 1.0); // full intensity wave
     });
     document.addEventListener('mouseup', (e) => {
       if (isMouseDown) {
           isMouseDown = false;
-          addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 0.5); // smaller wave on release
+          let power = 0.5 + holdDownAmt * 4.0;
+          addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, power);
+          holdDownAmt = 0.0;
       }
     });
 
@@ -605,14 +627,14 @@
       const t = e.touches[0];
       if (t) {
         isMouseDown = true;
-        addWave(t.clientX / window.innerWidth, t.clientY / window.innerHeight, 1.0);
       }
     }, { passive: true });
     document.addEventListener('touchend', (e) => {
       if (isMouseDown) {
           isMouseDown = false;
-          // Use target instead since touchend has no clientX
-          addWave(target.x, target.y, 0.5);
+          let power = 0.5 + holdDownAmt * 4.0;
+          addWave(target.x, target.y, power);
+          holdDownAmt = 0.0;
       }
     }, { passive: true });
 
@@ -622,16 +644,20 @@
       lastTime = now;
       totalTime += dt;
 
-      // Animate hold down suppression
-      const targetHold = isMouseDown ? 1.0 : 0.0;
-      holdDownAmt += (targetHold - holdDownAmt) * 15.0 * dt;
+      // Animate hold down charging
+      if (isMouseDown) {
+          holdDownAmt = Math.min(2.0, holdDownAmt + dt * 1.5);
+      } else {
+          holdDownAmt = Math.max(0.0, holdDownAmt - dt * 10.0);
+      }
 
       // Update waves
       let wavesData = new Float32Array(MAX_WAVES * 4);
       for (let i = 0; i < MAX_WAVES; i++) {
           if (waves[i].time > 0.0) {
               waves[i].time += dt;
-              if (waves[i].time > 1.2) { // Max lifetime
+              let maxLife = 1.2 + Math.max(0.0, (waves[i].intensity - 1.0) * 0.8);
+              if (waves[i].time > maxLife) { // Max lifetime
                   waves[i].time = 0;
               }
           }
