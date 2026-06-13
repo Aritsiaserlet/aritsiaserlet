@@ -400,6 +400,8 @@
       uniform vec2 u_mouse;
       uniform float u_spot;
       uniform float u_isDark;
+      uniform vec2 u_clickPos;
+      uniform float u_clickTime;
       varying vec2 v_texCoord;
 
       void main() {
@@ -412,13 +414,28 @@
         float grad = clamp(v_texCoord.x * 0.5 + v_texCoord.y * 0.5, 0.0, 1.0);
         vec3 bgLight = mix(vec3(0.98, 0.965, 0.922), vec3(1.0, 0.992, 0.969), grad);
         
-        float spacing = 26.0;
-        vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
-        float dotShape = 1.0 - smoothstep(0.0, 1.6, length(cell));
-
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
+
+        // Wave logic
+        float waveIntensity = 0.0;
+        if (u_clickTime > 0.0 && u_clickTime < 2.0) {
+            float clickDist = length(px - u_clickPos * u_resolution);
+            float waveFront = u_clickTime * 800.0;
+            float distFromFront = abs(clickDist - waveFront);
+            float wave = exp(-distFromFront * distFromFront / 1200.0);
+            float fade = max(0.0, 1.0 - u_clickTime / 2.0);
+            waveIntensity = wave * fade;
+        }
+
+        // Apply wave to spotlight effects
+        float effectIntensity = spotlight + waveIntensity * 0.8;
+
+        float spacing = 26.0;
+        vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
+        float baseSize = 1.6;
+        float dotShape = 1.0 - smoothstep(0.0, baseSize + effectIntensity * 1.5 + waveIntensity * 1.5, length(cell));
 
         // Dot Colors for dark/light modes
         vec3 dotColorDimDark = vec3(0.35, 0.38, 0.45);
@@ -433,10 +450,10 @@
         float dimDark = 0.25;
         float dimLight = 0.35;
         float dim = mix(dimLight, dimDark, u_isDark);
-        float lit = dim + spotlight * mix(1.2, 2.0, u_isDark);
+        float lit = dim + effectIntensity * mix(1.2, 2.0, u_isDark);
         
-        float brightness = mix(dim, lit, spotlight);
-        vec3 dotColor = mix(dotColorDim, dotColorLit, spotlight);
+        float brightness = mix(dim, lit, clamp(effectIntensity, 0.0, 1.0));
+        vec3 dotColor = mix(dotColorDim, dotColorLit, clamp(effectIntensity, 0.0, 1.0));
 
         // Final color mix
         vec3 colorDark = bgDark + dotColor * brightness * dotShape;
@@ -479,12 +496,18 @@
     const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
     const spotLocation = gl.getUniformLocation(program, 'u_spot');
     const isDarkLocation = gl.getUniformLocation(program, 'u_isDark');
+    const clickPosLocation = gl.getUniformLocation(program, 'u_clickPos');
+    const clickTimeLocation = gl.getUniformLocation(program, 'u_clickTime');
 
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
     let spot = 0;
     let targetSpot = 0;
     let pointerInside = false;
+
+    let clickPos = { x: 0.5, y: 0.5 };
+    let clickTime = 0.0;
+    let lastTime = performance.now();
 
     // Theme transition state
     const savedTheme = localStorage.getItem('theme');
@@ -517,8 +540,30 @@
       pointerInside = false;
       targetSpot = 0;
     });
+    document.addEventListener('mousedown', (e) => {
+      clickPos.x = e.clientX / window.innerWidth;
+      clickPos.y = e.clientY / window.innerHeight;
+      clickTime = 0.001; // trigger wave
+    });
+    document.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      if (t) {
+        clickPos.x = t.clientX / window.innerWidth;
+        clickPos.y = t.clientY / window.innerHeight;
+        clickTime = 0.001;
+      }
+    }, { passive: true });
 
     function render() {
+      const now = performance.now();
+      const dt = (now - lastTime) / 1000.0;
+      lastTime = now;
+
+      if (clickTime > 0.0) {
+        clickTime += dt;
+        if (clickTime > 2.0) clickTime = 0.0; // Reset after 2 seconds
+      }
+
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -542,6 +587,8 @@
       gl.uniform2f(mouseLocation, mouse.x, mouse.y);
       gl.uniform1f(spotLocation, spot);
       gl.uniform1f(isDarkLocation, darkTransition);
+      gl.uniform2f(clickPosLocation, clickPos.x, clickPos.y);
+      gl.uniform1f(clickTimeLocation, clickTime);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(render);
