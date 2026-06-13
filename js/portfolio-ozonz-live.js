@@ -241,7 +241,7 @@
 
         // Brightness and mixing
         float dim = mix(0.18, 0.14, u_isDark);
-        float lit = dim + spotlight * 0.42;
+        float lit = dim + spotlight * 1.5;
         float brightness = mix(dim, lit, dotShape);
         
         // Spotlight cursor glow color
