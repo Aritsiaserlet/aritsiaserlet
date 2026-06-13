@@ -422,20 +422,23 @@
         float waveIntensity = 0.0;
         if (u_clickTime > 0.0 && u_clickTime < 2.0) {
             float clickDist = length(px - u_clickPos * u_resolution);
-            float waveFront = u_clickTime * 800.0;
+            float waveFront = u_clickTime * 1200.0; // faster wave
             float distFromFront = abs(clickDist - waveFront);
-            float wave = exp(-distFromFront * distFromFront / 1200.0);
+            float wave = exp(-distFromFront * distFromFront / 2000.0);
             float fade = max(0.0, 1.0 - u_clickTime / 2.0);
             waveIntensity = wave * fade;
         }
 
         // Apply wave to spotlight effects
-        float effectIntensity = spotlight + waveIntensity * 0.8;
+        float effectIntensity = spotlight + waveIntensity * 1.5;
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
+        
+        // dramatically increase size when affected
         float baseSize = 1.6;
-        float dotShape = 1.0 - smoothstep(0.0, baseSize + effectIntensity * 1.5 + waveIntensity * 1.5, length(cell));
+        float sizeBoost = 1.0 + (effectIntensity * 3.5);
+        float dotShape = 1.0 - smoothstep(0.0, baseSize * sizeBoost, length(cell));
 
         // Dot Colors for dark/light modes
         vec3 dotColorDimDark = vec3(0.35, 0.38, 0.45);
