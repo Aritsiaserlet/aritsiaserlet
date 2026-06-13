@@ -617,11 +617,11 @@
     let contacts = [];
     if (globalSettings && globalSettings.socials) {
       contacts = globalSettings.socials.map(s => {
-        // Support new format (iconType, iconVal, url) with fallback to iconId
+        // Support new format (iconType, iconVal, link/url) with fallback to iconId
         if (s.iconType) {
           return {
             name: s.name,
-            link: s.url || '#',
+            link: s.link || s.url || '#',
             iconType: s.iconType,
             iconVal: s.iconVal || 'link'
           };
@@ -634,7 +634,7 @@
         }
         return {
           name: s.name,
-          link: s.url || '#',
+          link: s.link || s.url || '#',
           iconType: iconUrl ? 'image' : 'material',
           iconVal: iconUrl ? iconUrl : 'link'
         };
@@ -815,43 +815,40 @@
   }
 
   async function loadInitialData() {
+    // Show cached data immediately for fast first paint
     const cachedWorks = localStorage.getItem('cached_works');
     const cachedSettings = localStorage.getItem('cached_settings');
-    let hasCache = false;
     if (cachedWorks && cachedSettings) {
       try {
         globalWorks = JSON.parse(cachedWorks);
         globalSettings = JSON.parse(cachedSettings);
-        hasCache = true;
+        renderWorks();
+        renderContacts();
       } catch (_) {}
     }
-    if (!hasCache) {
-      try {
-        const [rWorks, rSettings] = await Promise.all([
-          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : []),
-          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : { socials: [] })
-        ]);
-        globalWorks = rWorks;
-        globalSettings = rSettings;
-      } catch (err) {
-        try {
-          const [lWorks, lSettings] = await Promise.all([
-            fetch('ozonz_works.json?t=' + Date.now()).then(r => r.ok ? r.json() : []),
-            fetch('ozonz_settings.json?t=' + Date.now()).then(r => r.ok ? r.json() : { socials: [] })
-          ]);
-          globalWorks = lWorks;
-          globalSettings = lSettings;
-        } catch (lErr) {
-          console.warn("Failed to load local fallback JSONs:", lErr);
-        }
-      }
+
+    // Always fetch fresh data from GitHub
+    try {
+      const [rWorks, rSettings] = await Promise.all([
+        fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null),
+        fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null)
+      ]);
+      if (rWorks !== null) globalWorks = rWorks;
+      if (rSettings !== null) globalSettings = rSettings;
+    } catch (err) {
+      console.warn('[Portfolio] GitHub fetch failed:', err.message);
     }
-    renderWorks();
-    renderContacts();
-    fetchPortfolioData().then(() => {
+
+    // Update cache and render with fresh data
+    try {
       localStorage.setItem('cached_works', JSON.stringify(globalWorks));
       localStorage.setItem('cached_settings', JSON.stringify(globalSettings));
-      renderWorks();
+    } catch (_) {}
+    renderWorks();
+    renderContacts();
+
+    // Background refresh for shared icons/teams (non-blocking)
+    fetchPortfolioData().then(() => {
       renderContacts();
     });
   }
