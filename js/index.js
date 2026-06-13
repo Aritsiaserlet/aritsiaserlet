@@ -30,71 +30,23 @@ function escapeHTML(str) {
     .replace(/'/g, '&#039;');
 }
 
-// ── Wind / Pixel Particles Animation ──
-const canvas = document.getElementById('windCanvas');
-const ctx = canvas.getContext('2d');
-let W, H, particles = [];
-
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-function randBetween(a, b) { return a + Math.random() * (b - a); }
-
-function createParticle(yStart) {
-  return {
-    x: Math.floor(Math.random() * W),
-    y: yStart ?? Math.floor(H + 100),
-    length: Math.floor(randBetween(20, 50)) * 6,
-    speedY: randBetween(3.0, 8.0),
-    phase: Math.random() * Math.PI * 2,
-    opacity: randBetween(0.4, 0.9)
-  };
-}
-
-for (let i = 0; i < 25; i++) {
-  particles.push(createParticle(Math.random() * H));
-}
-
-let windAnimId;
-function animateParticles() {
-  if (document.hidden) {
-    // Check again later, don't update canvas
-    setTimeout(() => {
-      windAnimId = requestAnimationFrame(animateParticles);
-    }, 500);
-    return;
-  }
-  ctx.clearRect(0, 0, W, H);
-  particles.forEach((p, i) => {
-    p.y -= p.speedY;
-    
-    let currentY = p.y;
-    let segCount = Math.floor(p.length / 6);
-    for (let j=0; j<segCount; j++) {
-      let alpha = p.opacity * (1 - j/segCount); // fade out tail
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      let waveX = Math.floor(Math.sin(currentY * 0.015 + p.phase) * 12);
-      ctx.fillRect(Math.floor(p.x + waveX), Math.floor(currentY), 6, 6);
-      currentY += 8;
-    }
-    
-    if (p.y + p.length < 0) {
-      particles[i] = createParticle();
-    }
-  });
-  windAnimId = requestAnimationFrame(animateParticles);
-}
-animateParticles();
+// ── Wind VFX — Anti-Gravity dreamy particle system ──
+// Loads wind-vfx.js which draws 3 layers:
+//   1. Wind Streaks  2. Float Particles  3. Cloud Wisps
+(function loadWindVFX() {
+  const s = document.createElement('script');
+  s.src = 'wind-vfx.js';
+  // Remove the pre-existing canvas so wind-vfx.js can create its own
+  // (or keep it — wind-vfx creates a NEW canvas element)
+  document.head.appendChild(s);
+})();
 
 // Restart immediately if user comes back
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && windAnimId) {
-    cancelAnimationFrame(windAnimId);
-    animateParticles();
+  if (!document.hidden && window.windVFX) {
+    window.windVFX.resume();
+  } else if (document.hidden && window.windVFX) {
+    window.windVFX.pause();
   }
 });
 
@@ -199,7 +151,8 @@ function applySettings() {
       bg.style.backgroundPosition = bPos;
       bg.style.opacity = '1';
     }
-    canvas.style.opacity = '0.4'; // Dim particles slightly when bg is loaded
+    const windCanvas = document.getElementById('wind-vfx');
+    if (windCanvas) windCanvas.style.opacity = '0.5'; // Dim particles slightly when bg is loaded
   }
 
   // Render Social Links

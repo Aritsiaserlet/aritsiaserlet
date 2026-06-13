@@ -8,7 +8,7 @@
     <link rel="icon" type="image/jpeg" href="favicon.jpg">
     <!-- FOUC Prevention Script -->
     <script>
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (savedTheme === 'dark' || (savedTheme === null && systemPrefersDark)) {
@@ -73,18 +73,28 @@
     <style>
         :root {
             /* Light mode RGB values (yellowish-white base) */
-            --primary-rgb: 56, 107, 64; /* #386B40 */
+            --primary-rgb: 56, 107, 64;
+            /* #386B40 */
             --on-primary-rgb: 255, 255, 255;
-            --background-rgb: 255, 253, 245; /* #FFFDF5 - Yellowish White */
-            --on-background-rgb: 0, 0, 0; /* #000000 - Black text */
-            --surface-rgb: 247, 243, 228; /* #F7F3E4 - Soft warm cream */
-            --on-surface-rgb: 0, 0, 0; /* #000000 - Black text */
-            --surface-variant-rgb: 238, 232, 210; /* #EEE8D2 */
-            --on-surface-variant-rgb: 45, 61, 41; /* #2D3D29 */
-            --outline-rgb: 200, 192, 170; /* #C8C0AA */
-            --secondary-rgb: 83, 141, 92; /* #538D5C */
+            --background-rgb: 255, 253, 245;
+            /* #FFFDF5 - Yellowish White */
+            --on-background-rgb: 0, 0, 0;
+            /* #000000 - Black text */
+            --surface-rgb: 247, 243, 228;
+            /* #F7F3E4 - Soft warm cream */
+            --on-surface-rgb: 0, 0, 0;
+            /* #000000 - Black text */
+            --surface-variant-rgb: 238, 232, 210;
+            /* #EEE8D2 */
+            --on-surface-variant-rgb: 45, 61, 41;
+            /* #2D3D29 */
+            --outline-rgb: 200, 192, 170;
+            /* #C8C0AA */
+            --secondary-rgb: 83, 141, 92;
+            /* #538D5C */
             --on-secondary-rgb: 255, 255, 255;
-            --tertiary-rgb: 161, 131, 33; /* #A18321 */
+            --tertiary-rgb: 161, 131, 33;
+            /* #A18321 */
 
             --background: rgb(var(--background-rgb));
             --on-background: rgb(var(--on-background-rgb));
@@ -97,7 +107,8 @@
 
         html.dark {
             /* Dark mode RGB values */
-            --primary-rgb: 234, 228, 177; /* #eae4b1 */
+            --primary-rgb: 234, 228, 177;
+            /* #eae4b1 */
             --on-primary-rgb: 16, 20, 26;
             --background-rgb: 16, 20, 26;
             --on-background-rgb: 223, 226, 235;
@@ -211,10 +222,12 @@
             z-index: 100;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .project-glow {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.05);
         }
+
         .project-glow:hover {
             box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.3);
             border-color: rgba(var(--primary-rgb), 0.65);
@@ -393,36 +406,58 @@
             opacity: 0.05;
             pointer-events: none;
         }
+
         /* Scroll Down Indicator */
         #scroll-indicator {
             color: rgb(var(--on-background-rgb));
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
+
         #scroll-indicator.hidden-indicator {
             opacity: 0;
             transform: translateY(12px);
             pointer-events: none;
         }
+
         .scroll-arrow {
             animation: scroll-bounce 1.8s ease-in-out infinite;
         }
+
         @keyframes scroll-bounce {
-            0%, 100% { transform: translateY(0); opacity: 0.4; filter: drop-shadow(0 0 2px rgba(var(--primary-rgb), 0.15)); }
-            50% { transform: translateY(8px); opacity: 1; filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.65)); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+                filter: drop-shadow(0 0 2px rgba(var(--primary-rgb), 0.15));
+            }
+
+            50% {
+                transform: translateY(8px);
+                opacity: 1;
+                filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.65));
+            }
         }
+
         /* GitHub Skeleton loading */
         .gh-skeleton {
             background: linear-gradient(90deg,
-                rgba(var(--surface-variant-rgb), 0.6) 25%,
-                rgba(var(--surface-variant-rgb), 0.9) 50%,
-                rgba(var(--surface-variant-rgb), 0.6) 75%);
+                    rgba(var(--surface-variant-rgb), 0.6) 25%,
+                    rgba(var(--surface-variant-rgb), 0.9) 50%,
+                    rgba(var(--surface-variant-rgb), 0.6) 75%);
             background-size: 200% 100%;
             animation: gh-shimmer 1.5s infinite;
             display: inline-block;
         }
+
         @keyframes gh-shimmer {
-            0% { background-position: 200% center; }
-            100% { background-position: -200% center; }
+            0% {
+                background-position: 200% center;
+            }
+
+            100% {
+                background-position: -200% center;
+            }
         }
 
         /* Force input text color to be black and background to be white in dark mode for modals */
@@ -434,12 +469,14 @@
             color: #000000 !important;
             background-color: #ffffff !important;
         }
+
         html.dark #work-form-modal input::placeholder,
         html.dark #work-form-modal textarea::placeholder,
         html.dark #contact-form-modal input::placeholder,
         html.dark #admin-auth-modal input::placeholder {
             color: #6b7280 !important;
         }
+
         .wind-canvas {
             position: fixed;
             inset: 0;
@@ -520,10 +557,12 @@
                             <div class="text-center">
                                 <h3 id="ghDisplayName"
                                     class="text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em]">
-                                    <span class="gh-skeleton inline-block w-48 h-10 rounded-lg"></span></h3>
+                                    <span class="gh-skeleton inline-block w-48 h-10 rounded-lg"></span>
+                                </h3>
                                 <p id="ghHandle"
                                     class="text-primary/70 font-body-md text-xl md:text-2xl tracking-wide mt-2">
-                                    <span class="gh-skeleton inline-block w-24 h-6 rounded-md"></span></p>
+                                    <span class="gh-skeleton inline-block w-24 h-6 rounded-md"></span>
+                                </p>
                             </div>
                         </div>
 
@@ -531,8 +570,7 @@
                         <div class="grid grid-cols-2 gap-6 mb-12">
                             <div
                                 class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center">
-                                <div
-                                    class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
+                                <div class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
                                     <span class="material-symbols-outlined text-lg">show_chart</span>
                                     <span
                                         class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Contributions</span>
@@ -542,8 +580,7 @@
                             </div>
                             <div
                                 class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center">
-                                <div
-                                    class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
+                                <div class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
                                     <span class="material-symbols-outlined text-lg">folder</span>
                                     <span
                                         class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Repositories</span>
@@ -555,7 +592,7 @@
 
                         <!-- Action Button -->
                         <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-5 md:py-6 rounded-xl font-bold text-sm md:text-base tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
-                             href="https://github.com/OzonZ" target="_blank">
+                            href="https://github.com/OzonZ" target="_blank">
                             <span class="relative z-10 flex items-center gap-2">
                                 FOLLOW ON GITHUB
                                 <span class="material-symbols-outlined text-lg">open_in_new</span>
@@ -584,10 +621,16 @@
         </section>
 
         <!-- Scroll Down Indicator -->
-        <div id="scroll-indicator" class="flex flex-col items-center gap-2 pb-8 -mt-8 pointer-events-none select-none text-primary" aria-hidden="true">
-            <span class="text-sm font-bold tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll down for more</span>
-            <svg class="scroll-arrow" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(var(--primary-rgb),0.3));">
-                <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <div id="scroll-indicator"
+            class="flex flex-col items-center gap-2 pb-8 -mt-8 pointer-events-none select-none text-primary"
+            aria-hidden="true">
+            <span
+                class="text-sm font-bold tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
+                down for more</span>
+            <svg class="scroll-arrow" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(var(--primary-rgb),0.3));">
+                <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
             </svg>
         </div>
 
@@ -608,7 +651,8 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-10" id="archives-grid">
                     <!-- Featured Card Skeleton -->
-                    <div class="lg:col-span-8 h-[600px] rounded-2xl border border-outline/20 bg-surface/30 p-10 flex flex-col justify-end gap-4 relative overflow-hidden animate-pulse">
+                    <div
+                        class="lg:col-span-8 h-[600px] rounded-2xl border border-outline/20 bg-surface/30 p-10 flex flex-col justify-end gap-4 relative overflow-hidden animate-pulse">
                         <div class="absolute inset-0 gh-skeleton opacity-20"></div>
                         <div class="relative z-10 flex flex-col gap-4">
                             <div class="gh-skeleton w-24 h-5 rounded-md"></div>
@@ -617,17 +661,19 @@
                             <div class="gh-skeleton w-32 h-12 rounded-xl mt-4"></div>
                         </div>
                     </div>
-                    
+
                     <!-- Side Cards Skeleton -->
                     <div class="lg:col-span-4 flex flex-col gap-10">
-                        <div class="pixel-card p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[280px] animate-pulse">
+                        <div
+                            class="pixel-card p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[280px] animate-pulse">
                             <div>
                                 <div class="gh-skeleton w-full h-32 rounded-xl mb-4"></div>
                                 <div class="gh-skeleton w-1/2 h-6 rounded-md mb-2"></div>
                             </div>
                             <div class="gh-skeleton w-24 h-5 rounded-md"></div>
                         </div>
-                        <div class="pixel-card p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[280px] animate-pulse">
+                        <div
+                            class="pixel-card p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[280px] animate-pulse">
                             <div>
                                 <div class="gh-skeleton w-full h-32 rounded-xl mb-4"></div>
                                 <div class="gh-skeleton w-1/2 h-6 rounded-md mb-2"></div>
@@ -716,15 +762,19 @@
     </footer>
 
     <!-- Project Detail Modal -->
-    <div id="project-detail-modal" class="fixed inset-0 z-[800] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative bg-background/95">
+    <div id="project-detail-modal"
+        class="fixed inset-0 z-[800] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div
+            class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative bg-background/95">
             <!-- Close Button -->
-            <button id="project-detail-close-btn" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-all">
+            <button id="project-detail-close-btn"
+                class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-all">
                 <span class="material-symbols-outlined text-2xl">close</span>
             </button>
 
             <!-- Project Image/Icon Container -->
-            <div id="project-detail-image-container" class="w-full h-64 md:h-80 rounded-xl overflow-hidden mb-6 border border-outline/20 flex items-center justify-center bg-surface/20">
+            <div id="project-detail-image-container"
+                class="w-full h-64 md:h-80 rounded-xl overflow-hidden mb-6 border border-outline/20 flex items-center justify-center bg-surface/20">
                 <!-- Dynamically filled -->
             </div>
 
@@ -752,7 +802,8 @@
 
             <!-- Action Link -->
             <div class="flex">
-                <a id="project-detail-link" href="#" target="_blank" class="flex-1 bg-primary text-on-primary py-4 rounded-xl font-bold uppercase tracking-wider text-center hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+                <a id="project-detail-link" href="#" target="_blank"
+                    class="flex-1 bg-primary text-on-primary py-4 rounded-xl font-bold uppercase tracking-wider text-center hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
                     <span>Visit Project / View Work</span>
                     <span class="material-symbols-outlined text-sm">open_in_new</span>
                 </a>
@@ -762,54 +813,55 @@
 
 
 
-    <script src="js/config.js" onerror="console.warn('Local config.js not found. Fallback to browser storage for API keys.')"></script>
+    <script src="js/config.js"
+        onerror="console.warn('Local config.js not found. Fallback to browser storage for API keys.')"></script>
     <script type="module" src="js/portfolio-ozonz-live.js?v=14" defer></script>
     <script>
-        // Hide scroll indicator once user scrolls down
-        (function() {
-            const indicator = document.getElementById('scroll-indicator');
-            if (!indicator) return;
-            let hidden = false;
-            function onScroll() {
-                if (!hidden && window.scrollY > 60) {
-                    hidden = true;
-                    indicator.classList.add('hidden-indicator');
-                } else if (hidden && window.scrollY <= 10) {
-                    hidden = false;
-                    indicator.classList.remove('hidden-indicator');
+            // Hide scroll indicator once user scrolls down
+            (function () {
+                const indicator = document.getElementById('scroll-indicator');
+                if (!indicator) return;
+                let hidden = false;
+                function onScroll() {
+                    if (!hidden && window.scrollY > 60) {
+                        hidden = true;
+                        indicator.classList.add('hidden-indicator');
+                    } else if (hidden && window.scrollY <= 10) {
+                        hidden = false;
+                        indicator.classList.remove('hidden-indicator');
+                    }
                 }
-            }
-            window.addEventListener('scroll', onScroll, { passive: true });
-        })();
+                window.addEventListener('scroll', onScroll, { passive: true });
+            })();
 
         // Wind Particle Effect
-        (function() {
+        (function () {
             const canvas = document.getElementById('windCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             let W, H, particles = [];
-            function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-            resize();window.addEventListener('resize',resize);
-            function rb(a,b){return a+Math.random()*(b-a)}
-            function createParticle(yStart){
+            function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight }
+            resize(); window.addEventListener('resize', resize);
+            function rb(a, b) { return a + Math.random() * (b - a) }
+            function createParticle(yStart) {
                 const size = Math.floor(rb(2, 6)) * 2;
                 return {
-                    x: Math.random()*W,
-                    y: yStart??H+size,
+                    x: Math.random() * W,
+                    y: yStart ?? H + size,
                     size: size,
-                    speedY: rb(0.5,2.5),
-                    speedX: rb(-0.5,0.5),
+                    speedY: rb(0.5, 2.5),
+                    speedX: rb(-0.5, 0.5),
                     opacity: rb(0.1, 0.95),
                     glowing: Math.random() < 0.25
                 };
             }
-            for(let i=0;i<40;i++) particles.push(createParticle(Math.random()*H));
-            function animateParticles(){
-                ctx.clearRect(0,0,W,H);
+            for (let i = 0; i < 40; i++) particles.push(createParticle(Math.random() * H));
+            function animateParticles() {
+                ctx.clearRect(0, 0, W, H);
                 const isDark = document.documentElement.classList.contains('dark');
                 const colorPrefix = isDark ? '255,255,255' : '56,107,64';
-                particles.forEach((p,i)=>{
-                    p.y-=p.speedY; p.x+=p.speedX;
+                particles.forEach((p, i) => {
+                    p.y -= p.speedY; p.x += p.speedX;
                     ctx.beginPath();
                     if (p.glowing) {
                         ctx.save();
@@ -824,7 +876,7 @@
                         ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
                         ctx.fill();
                     }
-                    if(p.y+p.size<0) particles[i]=createParticle();
+                    if (p.y + p.size < 0) particles[i] = createParticle();
                 }); requestAnimationFrame(animateParticles);
             }
             animateParticles();

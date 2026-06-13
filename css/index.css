@@ -28,7 +28,7 @@ body{
 }
 
 /* ── Wind lines ── */
-.wind-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.8}
+.wind-canvas,#wind-vfx{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.8}
 
 /* ── Custom Background ── */
 .custom-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;opacity:0;transition:opacity 0.5s;pointer-events:none}
