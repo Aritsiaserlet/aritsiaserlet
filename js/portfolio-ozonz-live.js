@@ -307,28 +307,52 @@
     }
   }
 
+  let profileApplied = false;
+
   function applyStats(data) {
+    // Remove all skeleton elements on first data application
+    if (!profileApplied) {
+      document.querySelectorAll('#ghDisplayName .gh-skeleton, #ghHandle .gh-skeleton, #ghBio .gh-skeleton').forEach(el => el.remove());
+      profileApplied = true;
+    }
+
     setStat(els.contributions, data.contributions, 'c');
     setStat(els.repositories, data.repositories, 'r');
     if (data.avatarUrl && els.avatar) els.avatar.src = data.avatarUrl;
 
-    // Display name — clear skeleton, apply real data
+    // Display name — replace content cleanly
     if (data.name && els.displayName) {
-      els.displayName.innerHTML = data.profileUrl
-        ? `<a href="${data.profileUrl}" target="_blank" rel="noopener"
-              class="hover:text-primary transition-colors">${data.name}</a>`
-        : data.name;
+      els.displayName.textContent = '';
+      if (data.profileUrl) {
+        const a = document.createElement('a');
+        a.href = data.profileUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'hover:text-primary transition-colors';
+        a.textContent = data.name;
+        els.displayName.appendChild(a);
+      } else {
+        els.displayName.textContent = data.name;
+      }
     }
 
-    // Handle @login — clear skeleton
+    // Handle @login — replace content cleanly
     if (data.login && els.handle) {
-      els.handle.innerHTML = data.profileUrl
-        ? `<a href="${data.profileUrl}" target="_blank" rel="noopener"
-              class="hover:text-primary transition-colors">@${data.login}</a>`
-        : `@${data.login}`;
+      els.handle.textContent = '';
+      if (data.profileUrl) {
+        const a = document.createElement('a');
+        a.href = data.profileUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'hover:text-primary transition-colors';
+        a.textContent = `@${data.login}`;
+        els.handle.appendChild(a);
+      } else {
+        els.handle.textContent = `@${data.login}`;
+      }
     }
 
-    // Bio — clear skeleton
+    // Bio — replace content cleanly
     if (els.bio) {
       els.bio.textContent = data.bio || '';
       els.bio.style.display = data.bio ? '' : 'none';
@@ -1066,12 +1090,15 @@
   async function init() {
     initLocalStorage();
     initBackground();
-    startGitHubSync();
     initRevealAndTheme();
     initNavbarScroll();
     initSmoothScroll();
     
+    // Load database settings FIRST so GitHub sync has fallback data ready
     await loadInitialData();
+    
+    // Start GitHub sync AFTER settings are loaded to prevent race condition
+    startGitHubSync();
     
     checkHashRoute();
     initProjectDetailModal();
