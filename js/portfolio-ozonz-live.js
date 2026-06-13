@@ -588,7 +588,7 @@
         if (!image && w.model) image = 'view_in_ar';
         let link = w.link;
         if (!link && w.links && w.links.length > 0) link = w.links[0].url;
-        let tags = w.tags && w.tags.length > 0 ? w.tags.join(', ') : `${w.cat}, ${w.subcat}`;
+        let tags = Array.isArray(w.tags) ? w.tags.join(', ') : (typeof w.tags === 'string' ? w.tags : `${w.cat || ''}, ${w.subcat || ''}`);
         let contributors = [];
         if (w.team && globalSettings.teams) {
           contributors = w.team.map(tid => {
