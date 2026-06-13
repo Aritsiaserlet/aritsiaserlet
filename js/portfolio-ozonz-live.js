@@ -221,7 +221,7 @@
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
-        float dotShape = 1.0 - smoothstep(1.6, 0.0, length(cell));
+        float dotShape = 1.0 - smoothstep(0.0, 1.6, length(cell));
 
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
