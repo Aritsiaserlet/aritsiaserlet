@@ -449,6 +449,11 @@
                     href="#about">About</a>
                 <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium"
                     href="#contact">Contact</a>
+                <a class="text-xs font-bold uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1"
+                    href="admin-ozonz-page.html">
+                    <span class="material-symbols-outlined text-sm">settings</span>
+                    Admin
+                </a>
             </div>
             <button class="md:hidden text-primary" id="menu-toggle">
                 <span class="material-symbols-outlined">menu</span>
@@ -739,179 +744,7 @@
         </div>
     </div>
 
-    <!-- Admin Passcode Modal -->
-    <div id="admin-auth-modal" class="fixed inset-0 z-[1000] hidden flex items-center justify-center bg-black/80 backdrop-blur-md">
-        <div class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-sm w-full text-center">
-            <h3 class="text-2xl font-bold mb-4 text-on-surface uppercase tracking-wider">ADMIN PASSWORD</h3>
-            <p class="text-sm text-on-surface-variant mb-6">Please enter the passcode to access administration settings.</p>
-            <input type="password" id="admin-passcode-input" class="w-full text-center py-3 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary mb-4" placeholder="••••••">
-            <div class="flex gap-4">
-                <button id="admin-auth-submit" class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">Submit</button>
-                <button id="admin-auth-cancel" class="flex-1 bg-surface-variant text-on-surface-variant py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">Cancel</button>
-            </div>
-            <p id="admin-auth-error" class="text-red-500 text-xs mt-3 hidden">Incorrect passcode. Please try again.</p>
-        </div>
-    </div>
 
-    <!-- Admin Panel Overlay -->
-    <div id="admin-panel" class="fixed inset-0 z-[900] hidden bg-background/95 backdrop-blur-xl overflow-y-auto p-6 md:p-12">
-        <div class="max-w-6xl mx-auto">
-            <!-- Header -->
-            <div class="flex justify-between items-center border-b border-outline/20 pb-6 mb-8">
-                <div>
-                    <h2 class="text-3xl font-bold uppercase text-primary leading-none mb-2">OzonZ Admin Panel</h2>
-                    <p class="text-sm text-on-surface-variant">Customize your works and contact channels in real time.</p>
-                </div>
-                <button id="admin-close-btn" class="bg-surface-variant hover:bg-outline/20 text-on-surface py-2 px-6 rounded-xl font-bold uppercase tracking-widest text-xs transition-all">
-                    Exit Admin
-                </button>
-            </div>
-
-            <!-- Admin Settings / API Key -->
-            <div class="pixel-card p-4 rounded-xl mb-8 border border-primary/20 bg-surface/30 flex flex-wrap justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary">key</span>
-                    <div>
-                        <h4 class="font-bold text-xs uppercase text-on-background">Gemini AI Settings</h4>
-                        <p class="text-[10px] text-on-surface-variant">Enter Gemini API Key to enable ✨ AI Writing</p>
-                    </div>
-                </div>
-                <div class="flex gap-2 flex-1 md:max-w-md">
-                    <input type="password" id="admin-gemini-key" placeholder="AI Studio Key (AIzaSy...)" class="flex-1 py-1.5 px-3 rounded-lg border border-outline bg-background/50 text-on-background text-xs focus:outline-none focus:border-primary">
-                    <button id="admin-save-settings-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Save Key</button>
-                </div>
-            </div>
-
-            <!-- Two Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <!-- Column 1: Selected Archives (Works) -->
-                <div class="flex flex-col gap-6">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold uppercase text-on-background">Selected Archives</h3>
-                        <button id="admin-add-work-btn" class="bg-primary text-on-primary py-2 px-4 rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                            + Add Work
-                        </button>
-                    </div>
-                    <div id="admin-works-list" class="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-2">
-                        <!-- Filled by JS -->
-                    </div>
-                </div>
-
-                <!-- Column 2: Contact Me Links -->
-                <div class="flex flex-col gap-6">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold uppercase text-on-background">Contact Channels</h3>
-                        <button id="admin-add-contact-btn" class="bg-primary text-on-primary py-2 px-4 rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">
-                            + Add Contact
-                        </button>
-                    </div>
-                    <div id="admin-contacts-list" class="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-2">
-                        <!-- Filled by JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Form for Adding/Editing Work -->
-    <div id="work-form-modal" class="fixed inset-0 z-[1100] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <h3 id="work-form-title" class="text-2xl font-bold mb-6 text-on-surface uppercase tracking-wider">Add New Work</h3>
-            <form id="work-form" class="flex flex-col gap-4">
-                <input type="hidden" id="work-form-index">
-                <div class="border-b border-outline/20 pb-4 mb-2">
-                    <label class="block text-xs font-bold uppercase text-primary mb-2">Autofill from URL (Itch.io or GitHub)</label>
-                    <div class="flex gap-2">
-                        <input type="url" id="work-autofill-url" placeholder="https://username.itch.io/game OR https://github.com/user/repo" class="flex-1 py-2 px-3 rounded-xl border border-outline bg-background/50 text-on-background text-xs focus:outline-none focus:border-primary">
-                        <button type="button" id="work-autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all">Autofill</button>
-                    </div>
-                    <p id="work-autofill-status" class="text-xs mt-2 hidden"></p>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Project Name</label>
-                    <input type="text" id="work-form-title-input" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Image URL or Material Icon Name (e.g. brush)</label>
-                    <input type="text" id="work-form-image-input" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Itch.io / Web URL</label>
-                    <input type="url" id="work-form-link-input" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Tags (Comma-separated)</label>
-                    <input type="text" id="work-form-tags-input" placeholder="e.g. PIXEL ART, C++" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Year of Creation</label>
-                    <input type="number" id="work-form-year-input" placeholder="e.g. 2026" min="2000" max="2100" class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Contributors / Collaborators (Comma-separated)</label>
-                    <input type="text" id="work-form-contributors-input" placeholder="e.g. OzonZ, Friend1" class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-bold uppercase text-on-surface-variant">Details / Description</label>
-                        <button type="button" id="work-ai-write-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">auto_awesome</span> Write with AI
-                        </button>
-                    </div>
-                    <textarea id="work-form-detail-input" rows="3" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary"></textarea>
-                    <p id="work-ai-status" class="text-[10px] mt-1 hidden"></p>
-                </div>
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-bold uppercase text-on-surface-variant">AI Summary (Tagline)</label>
-                        <button type="button" id="work-form-ai-summarize-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">auto_awesome</span> Summarize with AI
-                        </button>
-                    </div>
-                    <input type="text" id="work-form-ai-summary-input" class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary" placeholder="e.g. A Python-based bot that tracks user playtime.">
-                    <p id="work-form-ai-summarize-status" class="text-[10px] mt-1 hidden"></p>
-                </div>
-                <div class="flex gap-4 mt-2">
-                    <button type="submit" class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">Save Work</button>
-                    <button type="button" id="work-form-cancel" class="flex-1 bg-surface-variant text-on-surface-variant py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Form for Adding/Editing Contact -->
-    <div id="contact-form-modal" class="fixed inset-0 z-[1100] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-sm w-full max-h-[90vh] overflow-y-auto">
-            <h3 id="contact-form-title" class="text-2xl font-bold mb-6 text-on-surface uppercase tracking-wider">Add Contact Channel</h3>
-            <form id="contact-form" class="flex flex-col gap-4">
-                <input type="hidden" id="contact-form-index">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Channel Name</label>
-                    <input type="text" id="contact-form-name-input" placeholder="e.g. GitHub" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Link URL</label>
-                    <input type="url" id="contact-form-link-input" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Icon Type</label>
-                    <select id="contact-form-icon-type" class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                        <option value="material">Google Material Symbol Icon</option>
-                        <option value="svg">SVG Path Data (Advanced)</option>
-                        <option value="image">Image URL</option>
-                    </select>
-                </div>
-                <div>
-                    <label id="contact-icon-label" class="block text-xs font-bold uppercase text-on-surface-variant mb-2">Material Symbol Name (e.g. terminal)</label>
-                    <input type="text" id="contact-form-icon-val" required class="w-full py-2.5 px-4 rounded-xl border border-outline bg-background/50 text-on-background focus:outline-none focus:border-primary">
-                </div>
-                <div class="flex gap-4 mt-2">
-                    <button type="submit" class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">Save Channel</button>
-                    <button type="button" id="contact-form-cancel" class="flex-1 bg-surface-variant text-on-surface-variant py-3 rounded-xl font-bold uppercase tracking-wider hover:scale-[1.02] transition-all">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script src="js/config.js" onerror="console.warn('Local config.js not found. Fallback to browser storage for API keys.')"></script>
     <script type="module" src="js/portfolio-ozonz-live.js" defer></script>
