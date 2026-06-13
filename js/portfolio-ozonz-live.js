@@ -554,6 +554,7 @@
     let spot = 0;
     let targetSpot = 0;
     let pointerInside = false;
+    let lastMoveTime = performance.now();
 
     // Multiple waves tracking
     const MAX_WAVES = 50;
@@ -586,9 +587,9 @@
     let darkTransition = initialIsDark ? 1.0 : 0.0;
 
     function onMove(e) {
+      lastMoveTime = performance.now();
       target.x = e.clientX / window.innerWidth;
       target.y = e.clientY / window.innerHeight;
-      targetSpot = 1;
       pointerInside = true;
 
       // Add trail waves based on movement distance
@@ -611,29 +612,20 @@
       },
       { passive: true }
     );
-    document.addEventListener('touchstart', (e) => {
-      const t = e.touches[0];
-      if (t) onMove({ clientX: t.clientX, clientY: t.clientY });
-    }, { passive: true });
     document.addEventListener('mouseleave', () => {
       pointerInside = false;
       targetSpot = 0;
-      if (isMouseDown) {
-          isMouseDown = false;
-          let extra = Math.max(0.0, holdDownAmt - 2.0);
-          let power = 1.0 + extra * 2.0;
-          addWave(target.x, target.y, power);
-          holdDownAmt = 0.0;
-      }
     });
 
     document.addEventListener('mousedown', (e) => {
       isMouseDown = true;
+      lastMoveTime = performance.now();
       addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 0.5); // Little wave at first
     });
     document.addEventListener('mouseup', (e) => {
       if (isMouseDown) {
           isMouseDown = false;
+          lastMoveTime = performance.now();
           let extra = Math.max(0.0, holdDownAmt - 2.0);
           let power = 1.0 + extra * 2.0;
           addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, power);
@@ -645,12 +637,14 @@
       const t = e.touches[0];
       if (t) {
         isMouseDown = true;
+        lastMoveTime = performance.now();
         addWave(t.clientX / window.innerWidth, t.clientY / window.innerHeight, 0.5); // Little wave at first
       }
     }, { passive: true });
     document.addEventListener('touchend', (e) => {
       if (isMouseDown) {
           isMouseDown = false;
+          lastMoveTime = performance.now();
           let extra = Math.max(0.0, holdDownAmt - 2.0);
           let power = 1.0 + extra * 2.0;
           addWave(target.x, target.y, power);
@@ -703,6 +697,18 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       gl.viewport(0, 0, canvas.width, canvas.height);
+
+      if (pointerInside) {
+          const idleTime = (now - lastMoveTime) / 1000.0;
+          if (idleTime > 4.0) {
+              // Gradually dim targetSpot to 0 over 1.5 seconds (from 4.0s to 5.5s)
+              targetSpot = Math.max(0.0, 1.0 - (idleTime - 4.0) / 1.5);
+          } else {
+              targetSpot = 1.0;
+          }
+      } else {
+          targetSpot = 0.0;
+      }
 
       const lerp = pointerInside ? 0.14 : 0.06;
       mouse.x += (target.x - mouse.x) * lerp;
