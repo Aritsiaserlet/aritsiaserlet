@@ -1681,11 +1681,14 @@ document.getElementById('add-contact-btn').addEventListener('click', () => openC
             vec3 bgL=mix(vec3(.98,.965,.922),vec3(1.,.992,.969),g),bgD=vec3(.063,.078,.102);
             vec3 bg=mix(bgL,bgD,u_d);
             float sp=26.;vec2 cell=mod(px+sp*.5,sp)-sp*.5;
-            float dot=1.-smoothstep(1.35,0.,length(cell));
+            float core=1.-smoothstep(1.5,0.,length(cell));
+            float glow=exp(-length(cell)/3.0);
             float sd=length(px-u_m*u_r);float spot=u_s*exp(-sd*sd/(2.*95.*95.));
-            vec3 dL=mix(vec3(.878,.855,.784),vec3(.22,.24,.28),u_d),dH=vec3(3.0, 3.0, 3.0);
-            float dim=mix(.18,.14,u_d),lit=dim+spot*1.5,br=mix(dim,lit,dot);
-            vec3 c=bg+mix(dL,dH,spot)*br*dot;
+            vec3 dL=mix(vec3(.878,.855,.784),vec3(.22,.24,.28),u_d),dH=vec3(1.8, 1.8, 1.8);
+            float dim=mix(.18,.14,u_d);
+            vec3 dimContrib=dL*dim*core*(1.0-spot);
+            vec3 litContrib=dH*(core*2.5+glow*1.2)*spot;
+            vec3 c=bg+dimContrib+litContrib;
             gl_FragColor=vec4(c,1.);
         }`;
     function mkShader(type, src) {
