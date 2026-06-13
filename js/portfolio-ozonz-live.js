@@ -249,11 +249,8 @@
         vec3 glowColorLight = vec3(0.702, 0.859, 0.502); // #b3db80 (vibrant lime green)
         vec3 glowColor = mix(glowColorLight, glowColorDark, u_isDark);
         
-        // Add ambient glow to the background around the cursor
-        float ambientGlow = spotlight * spotlight * 0.08;
-        
         // Final color mix
-        vec3 color = bg + glowColor * ambientGlow + dotColor * brightness * dotShape;
+        vec3 color = bg + dotColor * brightness * dotShape;
 
         gl_FragColor = vec4(color, 1.0);
       }

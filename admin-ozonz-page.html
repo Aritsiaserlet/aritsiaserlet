@@ -1685,8 +1685,7 @@ document.getElementById('add-contact-btn').addEventListener('click', () => openC
             float sd=length(px-u_m*u_r);float spot=u_s*exp(-sd*sd/(2.*95.*95.));
             vec3 dL=mix(vec3(.878,.855,.784),vec3(.22,.24,.28),u_d),dH=mix(vec3(.22,.42,.25),vec3(.82,.84,.88),u_d);
             float dim=mix(.18,.14,u_d),lit=dim+spot*.42,br=mix(dim,lit,dot);
-            vec3 glow=mix(vec3(.702,.859,.502),vec3(.918,.894,.694),u_d);
-            vec3 c=bg+glow*spot*spot*.08+mix(dL,dH,spot)*br*dot;
+            vec3 c=bg+mix(dL,dH,spot)*br*dot;
             gl_FragColor=vec4(c,1.);
         }`;
     function mkShader(type, src) {

@@ -944,7 +944,15 @@
             function rb(a,b){return a+Math.random()*(b-a)}
             function createParticle(yStart){
                 const size = Math.floor(rb(2, 6)) * 2;
-                return {x:Math.random()*W,y:yStart??H+size,size:size,speedY:rb(0.5,2.5),speedX:rb(-0.5,0.5),opacity:rb(0.1,0.6)};
+                return {
+                    x: Math.random()*W,
+                    y: yStart??H+size,
+                    size: size,
+                    speedY: rb(0.5,2.5),
+                    speedX: rb(-0.5,0.5),
+                    opacity: rb(0.1,0.6),
+                    glowing: Math.random() < 0.25
+                };
             }
             for(let i=0;i<40;i++) particles.push(createParticle(Math.random()*H));
             function animateParticles(){
@@ -953,10 +961,20 @@
                 const colorPrefix = isDark ? '234,228,177' : '56,107,64';
                 particles.forEach((p,i)=>{
                     p.y-=p.speedY; p.x+=p.speedX;
-                    ctx.fillStyle=`rgba(${colorPrefix},${p.opacity})`;
                     ctx.beginPath();
-                    ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
-                    ctx.fill();
+                    if (p.glowing) {
+                        ctx.save();
+                        ctx.shadowBlur = p.size * 2.5;
+                        ctx.shadowColor = `rgba(${colorPrefix},${p.opacity * 1.5})`;
+                        ctx.fillStyle = `rgba(${colorPrefix},${p.opacity * 1.2})`;
+                        ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = `rgba(${colorPrefix},${p.opacity})`;
+                        ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                     if(p.y+p.size<0) particles[i]=createParticle();
                 }); requestAnimationFrame(animateParticles);
             }
