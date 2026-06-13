@@ -402,7 +402,7 @@
       uniform float u_isDark;
       uniform float u_time;
       // x,y = pos, z = time, w = intensity
-      uniform vec4 u_waves[10];
+      uniform vec4 u_waves[30];
       varying vec2 v_texCoord;
 
       void main() {
@@ -416,21 +416,13 @@
         float spotDist = length(px - mousePx);
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
 
-        // Trail ripples ("walk on water" wake)
-        float trailWave = 0.0;
-        if (u_spot > 0.01) {
-            float ripple = sin(spotDist / 12.0 - u_time * 8.0);
-            float rippleFade = exp(-spotDist * spotDist / (2.0 * 150.0 * 150.0));
-            trailWave = ripple * rippleFade * u_spot * 0.25;
-        }
-
-        // Accumulate waves
+        // Accumulate waves (both clicks and trails)
         float waveIntensity = 0.0;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             vec4 w = u_waves[i];
             if (w.z > 0.0) { // time since wave created
                 float clickDist = length(px - w.xy * u_resolution);
-                float waveFront = w.z * 600.0; // speed
+                float waveFront = w.z * 1000.0; // faster speed
                 float distFromFront = abs(clickDist - waveFront);
                 // Gaussian bell curve
                 float wave = exp(-distFromFront * distFromFront / 800.0);
@@ -438,14 +430,14 @@
                 // Fade out based on distance and time
                 float maxDist = 1200.0;
                 float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
-                float fadeTime = max(0.0, 1.0 - w.z / 2.5); // lives for 2.5 seconds
+                float fadeTime = max(0.0, 1.0 - w.z / 1.2); // lives for 1.2 seconds
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
             }
         }
 
         // Apply wave to spotlight effects
-        float effectIntensity = spotlight + max(0.0, trailWave) + waveIntensity;
+        float effectIntensity = spotlight + waveIntensity;
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
@@ -525,16 +517,18 @@
     let pointerInside = false;
 
     // Multiple waves tracking
-    let waves = Array(10).fill(null).map(() => ({ x: 0, y: 0, time: 0, intensity: 0 }));
+    const MAX_WAVES = 30;
+    let waves = Array(MAX_WAVES).fill(null).map(() => ({ x: 0, y: 0, time: 0, intensity: 0 }));
     let waveIndex = 0;
     function addWave(x, y, intensity) {
         waves[waveIndex] = { x, y, time: 0.001, intensity };
-        waveIndex = (waveIndex + 1) % 10;
+        waveIndex = (waveIndex + 1) % MAX_WAVES;
     }
 
     let isMouseDown = false;
     let lastTime = performance.now();
     let totalTime = 0.0;
+    let lastTrailPos = { x: -1000, y: -1000 };
 
     // Theme transition state
     const savedTheme = localStorage.getItem('theme');
@@ -547,6 +541,15 @@
       target.y = e.clientY / window.innerHeight;
       targetSpot = 1;
       pointerInside = true;
+
+      // Add trail waves based on movement distance
+      let dx = e.clientX - lastTrailPos.x;
+      let dy = e.clientY - lastTrailPos.y;
+      if (Math.sqrt(dx*dx + dy*dy) > 30) {
+          addWave(target.x, target.y, 0.25); // small trail wave
+          lastTrailPos.x = e.clientX;
+          lastTrailPos.y = e.clientY;
+      }
     }
 
     document.addEventListener('mousemove', onMove, { passive: true });
@@ -605,11 +608,11 @@
       totalTime += dt;
 
       // Update waves
-      let wavesData = new Float32Array(40);
-      for (let i = 0; i < 10; i++) {
+      let wavesData = new Float32Array(MAX_WAVES * 4);
+      for (let i = 0; i < MAX_WAVES; i++) {
           if (waves[i].time > 0.0) {
               waves[i].time += dt;
-              if (waves[i].time > 2.5) { // Max lifetime
+              if (waves[i].time > 1.2) { // Max lifetime
                   waves[i].time = 0;
               }
           }
