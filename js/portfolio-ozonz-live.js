@@ -451,8 +451,8 @@
                 
                 float maxDist = 1200.0 + extraPower * 1500.0;
                 float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
-                float maxLife = maxDist / waveSpeed;
-                float fadeTime = smoothstep(maxLife, maxLife * 0.5, w.z);
+                float ringLife = maxDist / waveSpeed;
+                float fadeTime = smoothstep(ringLife, ringLife * 0.5, w.z);
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
 
@@ -466,8 +466,8 @@
                 if (w.w > 0.4) {
                     float sDistScale = 100.0 + extraPower * 30.0;
                     float suppressDist = exp(-clickDist * clickDist / (2.0 * sDistScale * sDistScale));
-                    float suppressDuration = 0.8 + extraPower * 1.2;
-                    float suppressFade = smoothstep(suppressDuration, suppressDuration * 0.2, w.z);
+                    float suppressDuration = 2.0 + extraPower * 1.5;
+                    float suppressFade = smoothstep(suppressDuration, 0.0, w.z);
                     darkSuppress += suppressDist * suppressFade * 2.0;
                 }
             }
@@ -686,7 +686,9 @@
               let extraPower = Math.max(0.0, waves[i].intensity - 1.5);
               let waveSpeed = Math.max(300.0, 1000.0 - extraPower * 150.0);
               let maxDist = 1200.0 + extraPower * 1500.0;
-              let maxLife = maxDist / waveSpeed;
+              let ringLife = maxDist / waveSpeed;
+              let suppressDuration = 2.0 + extraPower * 1.5;
+              let maxLife = Math.max(ringLife, suppressDuration);
               
               if (waves[i].time > maxLife) { // Max lifetime
                   waves[i].time = 0;
