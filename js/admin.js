@@ -348,21 +348,35 @@ async function addIconToLibrary() {
 
 function renderIconLibrary() {
   const box = document.getElementById('iconLibraryList');
-  if(!box) return;
-  box.innerHTML = '';
-  if(!settings.icons || settings.icons.length === 0) {
-    box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No icons uploaded yet.</div>';
-    return;
+  if(box) {
+    box.innerHTML = '';
+    if(!settings.icons || settings.icons.length === 0) {
+      box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No icons uploaded yet.</div>';
+    } else {
+      settings.icons.forEach((ic, i) => {
+        box.innerHTML += `
+          <div style="border:3px solid var(--dark);background:var(--white);padding:8px;display:flex;flex-direction:column;align-items:center;width:100px;text-align:center;position:relative;">
+            <button onclick="deleteIcon(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
+            <img src="${ic.url}" style="width:32px;height:32px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">
+            <span style="font-family:'VT323';font-size:16px;word-break:break-all;line-height:1;">${ic.name}</span>
+          </div>
+        `;
+      });
+    }
   }
-  settings.icons.forEach((ic, i) => {
-    box.innerHTML += `
-      <div style="border:3px solid var(--dark);background:var(--white);padding:8px;display:flex;flex-direction:column;align-items:center;width:100px;text-align:center;position:relative;">
-        <button onclick="deleteIcon(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
-        <img src="${ic.url}" style="width:32px;height:32px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">
-        <span style="font-family:'VT323';font-size:16px;word-break:break-all;line-height:1;">${ic.name}</span>
-      </div>
-    `;
-  });
+
+  const teamBtn = document.getElementById('teamBtnIcon');
+  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- Default --');
+  const soundBtn = document.getElementById('soundBtnIcon');
+  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- Default --');
+  const gameCat = document.getElementById('gameCategoryIcon');
+  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --');
+  const portCat = document.getElementById('portfolioCategoryIcon');
+  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --');
+  const editIcon = document.getElementById('manageWorkEditIcon');
+  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- Default (✏️) --');
+  const phIcon = document.getElementById('addWorkPlaceholderIcon');
+  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- Default (🖼️) --');
 }
 
 async function deleteIcon(idx) {
@@ -381,8 +395,8 @@ async function deleteIcon(idx) {
   });
 }
 
-function generateIconOptions(selectedId) {
-  let html = `<option value="">-- No Icon --</option>`;
+function generateIconOptions(selectedId, defaultLabel = "-- No Icon --") {
+  let html = `<option value="">${defaultLabel}</option>`;
   if(settings.icons) {
     settings.icons.forEach(ic => {
       const sel = (ic.id === selectedId) ? 'selected' : '';
@@ -831,19 +845,7 @@ async function deleteOldFile(url, msg) {
       } catch (e) { console.warn('Failed to delete old file:', e); }
     }
   }
-
-  const teamBtn = document.getElementById('teamBtnIcon');
-  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '');
-  const soundBtn = document.getElementById('soundBtnIcon');
-  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '');
-  const gameCat = document.getElementById('gameCategoryIcon');
-  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '');
-  const portCat = document.getElementById('portfolioCategoryIcon');
-  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '');
-  const editIcon = document.getElementById('manageWorkEditIcon');
-  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '');
-  const phIcon = document.getElementById('addWorkPlaceholderIcon');
-  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '');
+  }
 }
 
 window.updateAddWorkPlaceholderIcon = function() {
