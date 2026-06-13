@@ -416,15 +416,20 @@
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
 
-        // Charging power effect
+        // 1. Initial dark suppression
+        float dimFactor = smoothstep(0.0, 0.2, u_holdDown);
+        float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0)) * (1.0 - dimFactor * 0.9);
+
+        // 2. Fusion buildup from 2s to 5s
+        float fusionProgress = clamp((u_holdDown - 2.0) / 3.0, 0.0, 1.0);
         float chargeGlow = 0.0;
-        if (u_holdDown > 0.0) {
-            float chargeRadius = 95.0 + u_holdDown * 250.0;
-            float pulse = 1.0 + 0.3 * sin(u_time * 40.0) * u_holdDown; // jitter
-            chargeGlow = u_holdDown * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius)) * pulse;
+        if (fusionProgress > 0.0) {
+            float chargeRadius = 95.0 + fusionProgress * 150.0;
+            float pulse = 1.0 + 0.5 * sin(u_time * 50.0) * fusionProgress; // intense jitter
+            chargeGlow = fusionProgress * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius)) * pulse;
         }
 
-        float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0)) + chargeGlow * u_spot;
+        spotlight += chargeGlow * u_spot;
 
         // Accumulate waves (both clicks and trails)
         float waveIntensity = 0.0;
@@ -435,26 +440,27 @@
             vec4 w = u_waves[i];
             if (w.z > 0.0) { // time since wave created
                 float clickDist = length(px - w.xy * u_resolution);
-                // Faster if intensity is high
-                float waveSpeed = 1000.0 + max(0.0, (w.w - 1.0) * 800.0);
+                
+                // Super wave logic: slower, thicker, further, longer
+                float extraPower = max(0.0, w.w - 1.5);
+                float waveSpeed = max(300.0, 1000.0 - extraPower * 150.0);
                 float waveFront = w.z * waveSpeed;
                 float distFromFront = abs(clickDist - waveFront);
-                // Thicker if intensity is high
-                float thickness = 800.0 + max(0.0, (w.w - 1.0) * 1500.0);
+                
+                float thickness = 800.0 + extraPower * 2000.0;
                 float wave = exp(-distFromFront * distFromFront / thickness);
                 
-                // Fade out based on distance and time, max distance scales with w
-                float maxDist = 1200.0 + max(0.0, (w.w - 1.0) * 1200.0);
+                float maxDist = 1200.0 + extraPower * 1500.0;
                 float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
-                float maxLife = 1.2 + max(0.0, (w.w - 1.0) * 0.8);
+                float maxLife = maxDist / waveSpeed;
                 float fadeTime = max(0.0, 1.0 - w.z / maxLife);
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
 
-                // Quake displacement directed away from the wave center
-                if (w.w > 0.8) {
+                // Quake displacement directed away from the wave center (smoothed)
+                if (extraPower > 0.0) {
                     vec2 dir = clickDist > 0.1 ? (px - w.xy * u_resolution) / clickDist : vec2(0.0);
-                    quakeDisplacement += dir * wave * fadeDist * fadeTime * (w.w * 8.0);
+                    quakeDisplacement += dir * wave * fadeDist * fadeTime * (extraPower * 4.0);
                 }
                 
                 // Suppress center brightness on standard clicks
@@ -605,7 +611,8 @@
       targetSpot = 0;
       if (isMouseDown) {
           isMouseDown = false;
-          let power = 0.5 + holdDownAmt * 4.0;
+          let extra = Math.max(0.0, holdDownAmt - 2.0);
+          let power = 1.0 + extra * 2.0;
           addWave(target.x, target.y, power);
           holdDownAmt = 0.0;
       }
@@ -617,7 +624,8 @@
     document.addEventListener('mouseup', (e) => {
       if (isMouseDown) {
           isMouseDown = false;
-          let power = 0.5 + holdDownAmt * 4.0;
+          let extra = Math.max(0.0, holdDownAmt - 2.0);
+          let power = 1.0 + extra * 2.0;
           addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, power);
           holdDownAmt = 0.0;
       }
@@ -632,7 +640,8 @@
     document.addEventListener('touchend', (e) => {
       if (isMouseDown) {
           isMouseDown = false;
-          let power = 0.5 + holdDownAmt * 4.0;
+          let extra = Math.max(0.0, holdDownAmt - 2.0);
+          let power = 1.0 + extra * 2.0;
           addWave(target.x, target.y, power);
           holdDownAmt = 0.0;
       }
@@ -644,11 +653,11 @@
       lastTime = now;
       totalTime += dt;
 
-      // Animate hold down charging
+      // Animate hold down charging (up to 5 seconds)
       if (isMouseDown) {
-          holdDownAmt = Math.min(2.0, holdDownAmt + dt * 1.5);
+          holdDownAmt = Math.min(5.0, holdDownAmt + dt);
       } else {
-          holdDownAmt = Math.max(0.0, holdDownAmt - dt * 10.0);
+          holdDownAmt = 0.0;
       }
 
       // Update waves
@@ -656,7 +665,12 @@
       for (let i = 0; i < MAX_WAVES; i++) {
           if (waves[i].time > 0.0) {
               waves[i].time += dt;
-              let maxLife = 1.2 + Math.max(0.0, (waves[i].intensity - 1.0) * 0.8);
+              
+              let extraPower = Math.max(0.0, waves[i].intensity - 1.5);
+              let waveSpeed = Math.max(300.0, 1000.0 - extraPower * 150.0);
+              let maxDist = 1200.0 + extraPower * 1500.0;
+              let maxLife = maxDist / waveSpeed;
+              
               if (waves[i].time > maxLife) { // Max lifetime
                   waves[i].time = 0;
               }
