@@ -221,7 +221,8 @@
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
-        float dotShape = 1.0 - smoothstep(1.35, 0.0, length(cell));
+        float coreShape = 1.0 - smoothstep(1.5, 0.0, length(cell));
+        float glowShape = exp(-length(cell) / 3.0);
 
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
@@ -229,28 +230,22 @@
 
         // Dot Colors for dark/light modes
         vec3 dotColorDimDark = vec3(0.22, 0.24, 0.28);
-        vec3 dotColorLitDark = vec3(3.0, 3.0, 3.0);
-        
         vec3 dotColorDimLight = vec3(0.878, 0.855, 0.784); // Soft warm gray/beige dots
-        vec3 dotColorLitLight = vec3(3.0, 3.0, 3.0); // Super bright white neon
         
         vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
-        vec3 dotColorLit = mix(dotColorLitLight, dotColorLitDark, u_isDark);
-        
-        vec3 dotColor = mix(dotColorDim, dotColorLit, spotlight);
+        vec3 dotColorLit = vec3(1.8, 1.8, 1.8); // Super bright white neon
 
         // Brightness and mixing
         float dim = mix(0.18, 0.14, u_isDark);
-        float lit = dim + spotlight * 1.5;
-        float brightness = mix(dim, lit, dotShape);
-        
-        // Spotlight cursor glow color
-        vec3 glowColorDark = vec3(0.918, 0.894, 0.694); // #eae4b1 (warm cream)
-        vec3 glowColorLight = vec3(0.702, 0.859, 0.502); // #b3db80 (vibrant lime green)
-        vec3 glowColor = mix(glowColorLight, glowColorDark, u_isDark);
-        
+
+        // Dim dot color contribution
+        vec3 dimColorContrib = dotColorDim * dim * coreShape * (1.0 - spotlight);
+
+        // Lit dot color contribution (neon glow)
+        vec3 litColorContrib = dotColorLit * (coreShape * 2.5 + glowShape * 1.2) * spotlight;
+
         // Final color mix
-        vec3 color = bg + dotColor * brightness * dotShape;
+        vec3 color = bg + dimColorContrib + litColorContrib;
 
         gl_FragColor = vec4(color, 1.0);
       }
