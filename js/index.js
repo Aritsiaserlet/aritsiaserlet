@@ -846,14 +846,19 @@ window.updateSoundBtn = function(btn, isMuted) {
 };
 
 window.initSoundBtns = function() {
-  const btns = ['masterMuteBtn', 'musicMuteBtn', 'sfxMuteBtn', 'bgmTogglePortfolio'];
-  btns.forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) {
-      const isMuted = btn.textContent.includes('🔇') || btn.innerHTML.includes('opacity: 0.5') || btn.innerHTML.includes('opacity:0.5');
-      window.updateSoundBtn(btn, isMuted);
-    }
-  });
+  const set = window.portfolioSettingsManager ? window.portfolioSettingsManager.getSettings() : {};
+  
+  const masterBtn = document.getElementById('masterMuteBtn');
+  if (masterBtn) window.updateSoundBtn(masterBtn, !!set.masterMute);
+  
+  const musicBtn = document.getElementById('musicMuteBtn');
+  if (musicBtn) window.updateSoundBtn(musicBtn, !!set.musicMute);
+  
+  const sfxBtn = document.getElementById('sfxMuteBtn');
+  if (sfxBtn) window.updateSoundBtn(sfxBtn, !!set.sfxMute);
+
+  const bgmBtn = document.getElementById('bgmTogglePortfolio');
+  if (bgmBtn) window.updateSoundBtn(bgmBtn, !window._bgmOn);
 };
 
 function openSettingsModal() {

@@ -122,17 +122,29 @@ function applyVolumes() {
   const musicMute = volumes.musicMute ? 0 : 1;
   const sfxMute = volumes.sfxMute ? 0 : 1;
 
+  const masterVol = Math.pow(volumes.master, 2) * masterMute;
+  const musicVol = Math.pow(volumes.music, 2) * musicMute;
+  const sfxVol = Math.pow(volumes.sfx, 2) * sfxMute;
+
   bgmAudios.forEach(audio => {
     if (audio) {
       const baseVol = audio.baseVolume !== undefined ? audio.baseVolume : 1.0;
-      audio.volume = Math.min(1, volumes.master * masterMute * volumes.music * musicMute * baseVol);
+      audio.volume = Math.min(1, masterVol * musicVol * baseVol);
     }
   });
   
   if (!masterGain) return;
-  masterGain.gain.setTargetAtTime(volumes.master * masterMute, audioCtx.currentTime, 0.05);
-  if (musicGain) musicGain.gain.setTargetAtTime(volumes.music * musicMute, audioCtx.currentTime, 0.05);
-  if (sfxGain) sfxGain.gain.setTargetAtTime(volumes.sfx * sfxMute, audioCtx.currentTime, 0.05);
+  masterGain.gain.setTargetAtTime(masterVol, audioCtx.currentTime, 0.05);
+  if (masterVol === 0) masterGain.gain.setValueAtTime(0, audioCtx.currentTime + 0.2);
+
+  if (musicGain) {
+    musicGain.gain.setTargetAtTime(musicVol, audioCtx.currentTime, 0.05);
+    if (musicVol === 0) musicGain.gain.setValueAtTime(0, audioCtx.currentTime + 0.2);
+  }
+  if (sfxGain) {
+    sfxGain.gain.setTargetAtTime(sfxVol, audioCtx.currentTime, 0.05);
+    if (sfxVol === 0) sfxGain.gain.setValueAtTime(0, audioCtx.currentTime + 0.2);
+  }
 }
 
 export function setVolumes({ master, music, sfx, masterMute, musicMute, sfxMute } = {}) {
@@ -164,8 +176,10 @@ function playSound(key) {
         if (!urls || urls.length === 0) return;
         const url = urls[Math.floor(Math.random() * urls.length)];
         const sndVol = soundVolumes[url] !== undefined ? soundVolumes[url] : 1.0;
+        const masterVol = Math.pow(volumes.master, 2);
+        const sfxVol = Math.pow(volumes.sfx, 2);
         const audio = new Audio(url);
-        audio.volume = Math.min(1, volumes.master * volumes.sfx * sndVol);
+        audio.volume = Math.min(1, masterVol * sfxVol * sndVol);
         audio.play().catch(e => console.warn('SFX play error:', e));
         audios.push(audio);
       });
