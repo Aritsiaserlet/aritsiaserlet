@@ -403,7 +403,7 @@
       uniform float u_time;
       uniform float u_holdDown;
       // x,y = pos, z = time, w = intensity
-      uniform vec4 u_waves[30];
+      uniform vec4 u_waves[50];
       varying vec2 v_texCoord;
 
       void main() {
@@ -436,7 +436,7 @@
         float darkSuppress = 0.0;
         vec2 quakeDisplacement = vec2(0.0);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 50; i++) {
             vec4 w = u_waves[i];
             if (w.z > 0.0) { // time since wave created
                 float clickDist = length(px - w.xy * u_resolution);
@@ -453,7 +453,7 @@
                 float maxDist = 1200.0 + extraPower * 1500.0;
                 float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
                 float maxLife = maxDist / waveSpeed;
-                float fadeTime = max(0.0, 1.0 - w.z / maxLife);
+                float fadeTime = smoothstep(maxLife, maxLife * 0.5, w.z);
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
 
@@ -555,10 +555,18 @@
     let pointerInside = false;
 
     // Multiple waves tracking
-    const MAX_WAVES = 30;
+    const MAX_WAVES = 50;
     let waves = Array(MAX_WAVES).fill(null).map(() => ({ x: 0, y: 0, time: 0, intensity: 0 }));
     let waveIndex = 0;
     function addWave(x, y, intensity) {
+        // Find a safe slot to overwrite (avoid killing active super waves)
+        for (let i = 0; i < MAX_WAVES; i++) {
+            let idx = (waveIndex + i) % MAX_WAVES;
+            if (waves[idx].time === 0 || waves[idx].intensity <= 1.5 || intensity > 1.5) {
+                waveIndex = idx;
+                break;
+            }
+        }
         waves[waveIndex] = { x, y, time: 0.001, intensity };
         waveIndex = (waveIndex + 1) % MAX_WAVES;
     }
