@@ -5,14 +5,14 @@
 
 window.goToAdmin = function() {
   const token = document.getElementById('adminTokenInput').value.trim();
-  if(token && token.startsWith('ghp_')) {
+  if(token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
     sessionStorage.setItem('ghToken', token);
     document.querySelector('.page').classList.add('fade-out');
     setTimeout(() => {
       window.location.href = 'admin.html';
     }, 500);
   } else {
-    document.getElementById('adminErrorMsg').innerText = 'Please enter a valid GitHub token.';
+    document.getElementById('adminErrorMsg').innerText = 'Please enter a valid GitHub token (ghp_ or github_pat_).';
     setTimeout(() => {
       document.getElementById('adminErrorMsg').innerText = '';
     }, 2000);

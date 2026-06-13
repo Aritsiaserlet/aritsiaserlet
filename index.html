@@ -150,7 +150,7 @@
     <!-- Admin Access Row -->
     <div class="set-row" style="margin-top: 20px; border-top: 3px dashed var(--dark); padding-top: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
       <div style="font-size:16px; color:var(--dark);">Admin Access</div>
-      <input type="password" id="adminTokenInput" placeholder="GitHub Token (ghp_...)" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.goToAdmin()">
+      <input type="password" id="adminTokenInput" placeholder="GitHub Token (ghp_... or github_pat_...)" style="width:100%; padding:10px; font-size:16px; border:3px solid var(--dark); font-family:'VT323',monospace;" onkeydown="if(event.key==='Enter') window.goToAdmin()">
       <button class="nav-btn" onclick="window.goToAdmin()" style="width:100%; padding:10px; font-size:20px; justify-content:center; background:var(--gold);">ENTER ADMIN PANEL</button>
       <p id="adminErrorMsg" style="color:var(--danger);font-family:'VT323',monospace;font-size:16px;margin:0;"></p>
     </div>
