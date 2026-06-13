@@ -53,30 +53,30 @@
         
         <div style="margin-top:32px;">
           <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">ICON ASSIGNMENTS</h3>
-          <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:300px;">Global TEAM Button Icon:</label>
-              <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default --</option></select>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:start;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Global TEAM Button Icon:</label>
+              <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:300px;">Global SOUND Button Icon:</label>
-              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default --</option></select>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Global SOUND Button Icon:</label>
+              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:300px;">Game Category Icon:</label>
-              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Game Category Icon:</label>
+              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:300px;">Portfolio Category Icon:</label>
-              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value;" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Portfolio Category Icon:</label>
+              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value;" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:300px;">Manage Work Edit Icon:</label>
-              <select id="manageWorkEditIcon" onchange="settings.manageWorkEditIconId=this.value; if(window.renderWorks)renderWorks();" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default (✏️) --</option></select>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Manage Work Edit Icon:</label>
+              <select id="manageWorkEditIcon" onchange="settings.manageWorkEditIconId=this.value; if(window.renderWorks)renderWorks();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <label style="font-family:'VT323';font-size:20px;width:300px;">Add Work Placeholder Icon:</label>
-              <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; updateAddWorkPlaceholderIcon();" style="flex:1;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- Default (🖼️) --</option></select>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Add Work Placeholder Icon:</label>
+              <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; updateAddWorkPlaceholderIcon();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
           </div>
         </div>

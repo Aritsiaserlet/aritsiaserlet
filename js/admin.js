@@ -366,17 +366,17 @@ function renderIconLibrary() {
   }
 
   const teamBtn = document.getElementById('teamBtnIcon');
-  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- Default --');
+  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- None --');
   const soundBtn = document.getElementById('soundBtnIcon');
-  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- Default --');
+  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- None --');
   const gameCat = document.getElementById('gameCategoryIcon');
   if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --');
   const portCat = document.getElementById('portfolioCategoryIcon');
   if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --');
   const editIcon = document.getElementById('manageWorkEditIcon');
-  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- Default (✏️) --');
+  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- None --');
   const phIcon = document.getElementById('addWorkPlaceholderIcon');
-  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- Default (🖼️) --');
+  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- None --');
 }
 
 async function deleteIcon(idx) {
