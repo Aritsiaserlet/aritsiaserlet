@@ -400,17 +400,15 @@
       uniform vec2 u_mouse;
       uniform float u_spot;
       uniform float u_isDark;
-      uniform vec2 u_clickPos;
-      uniform float u_clickTime;
+      uniform float u_time;
+      // x,y = pos, z = time, w = intensity
+      uniform vec4 u_waves[10];
       varying vec2 v_texCoord;
 
       void main() {
         vec2 px = v_texCoord * u_resolution;
         
-        // Background colors
         vec3 bgDark = vec3(0.063, 0.078, 0.102);
-        
-        // Yellowish-white gradient for light mode
         float grad = clamp(v_texCoord.x * 0.5 + v_texCoord.y * 0.5, 0.0, 1.0);
         vec3 bgLight = mix(vec3(0.98, 0.965, 0.922), vec3(1.0, 0.992, 0.969), grad);
         
@@ -418,26 +416,43 @@
         float spotDist = length(px - mousePx);
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
 
-        // Wave logic
+        // Trail ripples ("walk on water" wake)
+        float trailWave = 0.0;
+        if (u_spot > 0.01) {
+            float ripple = sin(spotDist / 12.0 - u_time * 8.0);
+            float rippleFade = exp(-spotDist * spotDist / (2.0 * 150.0 * 150.0));
+            trailWave = ripple * rippleFade * u_spot * 0.25;
+        }
+
+        // Accumulate waves
         float waveIntensity = 0.0;
-        if (u_clickTime > 0.0 && u_clickTime < 2.0) {
-            float clickDist = length(px - u_clickPos * u_resolution);
-            float waveFront = u_clickTime * 1200.0; // faster wave
-            float distFromFront = abs(clickDist - waveFront);
-            float wave = exp(-distFromFront * distFromFront / 2000.0);
-            float fade = max(0.0, 1.0 - u_clickTime / 2.0);
-            waveIntensity = wave * fade;
+        for (int i = 0; i < 10; i++) {
+            vec4 w = u_waves[i];
+            if (w.z > 0.0) { // time since wave created
+                float clickDist = length(px - w.xy * u_resolution);
+                float waveFront = w.z * 600.0; // speed
+                float distFromFront = abs(clickDist - waveFront);
+                // Gaussian bell curve
+                float wave = exp(-distFromFront * distFromFront / 800.0);
+                
+                // Fade out based on distance and time
+                float maxDist = 1200.0;
+                float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
+                float fadeTime = max(0.0, 1.0 - w.z / 2.5); // lives for 2.5 seconds
+                
+                waveIntensity += wave * fadeDist * fadeTime * w.w;
+            }
         }
 
         // Apply wave to spotlight effects
-        float effectIntensity = spotlight + waveIntensity * 1.5;
+        float effectIntensity = spotlight + max(0.0, trailWave) + waveIntensity;
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
         
-        // dramatically increase size when affected
+        // Size boost (scale down)
         float baseSize = 1.6;
-        float sizeBoost = 1.0 + (effectIntensity * 3.5);
+        float sizeBoost = 1.0 + min(1.5, effectIntensity * 1.2);
         float dotShape = 1.0 - smoothstep(0.0, baseSize * sizeBoost, length(cell));
 
         // Dot Colors for dark/light modes
@@ -455,8 +470,9 @@
         float dim = mix(dimLight, dimDark, u_isDark);
         float lit = dim + effectIntensity * mix(1.2, 2.0, u_isDark);
         
-        float brightness = mix(dim, lit, clamp(effectIntensity, 0.0, 1.0));
-        vec3 dotColor = mix(dotColorDim, dotColorLit, clamp(effectIntensity, 0.0, 1.0));
+        float clampedEffect = clamp(effectIntensity, 0.0, 1.0);
+        float brightness = mix(dim, lit, clampedEffect);
+        vec3 dotColor = mix(dotColorDim, dotColorLit, clampedEffect);
 
         // Final color mix
         vec3 colorDark = bgDark + dotColor * brightness * dotShape;
@@ -499,8 +515,8 @@
     const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
     const spotLocation = gl.getUniformLocation(program, 'u_spot');
     const isDarkLocation = gl.getUniformLocation(program, 'u_isDark');
-    const clickPosLocation = gl.getUniformLocation(program, 'u_clickPos');
-    const clickTimeLocation = gl.getUniformLocation(program, 'u_clickTime');
+    const timeLocation = gl.getUniformLocation(program, 'u_time');
+    const wavesLocation = gl.getUniformLocation(program, 'u_waves');
 
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
@@ -508,9 +524,17 @@
     let targetSpot = 0;
     let pointerInside = false;
 
-    let clickPos = { x: 0.5, y: 0.5 };
-    let clickTime = 0.0;
+    // Multiple waves tracking
+    let waves = Array(10).fill(null).map(() => ({ x: 0, y: 0, time: 0, intensity: 0 }));
+    let waveIndex = 0;
+    function addWave(x, y, intensity) {
+        waves[waveIndex] = { x, y, time: 0.001, intensity };
+        waveIndex = (waveIndex + 1) % 10;
+    }
+
+    let isMouseDown = false;
     let lastTime = performance.now();
+    let totalTime = 0.0;
 
     // Theme transition state
     const savedTheme = localStorage.getItem('theme');
@@ -542,18 +566,35 @@
     document.addEventListener('mouseleave', () => {
       pointerInside = false;
       targetSpot = 0;
+      if (isMouseDown) {
+          isMouseDown = false;
+          addWave(target.x, target.y, 0.5); // Add small wave on leave if held
+      }
     });
+
     document.addEventListener('mousedown', (e) => {
-      clickPos.x = e.clientX / window.innerWidth;
-      clickPos.y = e.clientY / window.innerHeight;
-      clickTime = 0.001; // trigger wave
+      isMouseDown = true;
+      addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 1.0); // full intensity wave
     });
+    document.addEventListener('mouseup', (e) => {
+      if (isMouseDown) {
+          isMouseDown = false;
+          addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 0.5); // smaller wave on release
+      }
+    });
+
     document.addEventListener('touchstart', (e) => {
       const t = e.touches[0];
       if (t) {
-        clickPos.x = t.clientX / window.innerWidth;
-        clickPos.y = t.clientY / window.innerHeight;
-        clickTime = 0.001;
+        isMouseDown = true;
+        addWave(t.clientX / window.innerWidth, t.clientY / window.innerHeight, 1.0);
+      }
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      if (isMouseDown) {
+          isMouseDown = false;
+          // Use target instead since touchend has no clientX
+          addWave(target.x, target.y, 0.5);
       }
     }, { passive: true });
 
@@ -561,10 +602,21 @@
       const now = performance.now();
       const dt = (now - lastTime) / 1000.0;
       lastTime = now;
+      totalTime += dt;
 
-      if (clickTime > 0.0) {
-        clickTime += dt;
-        if (clickTime > 2.0) clickTime = 0.0; // Reset after 2 seconds
+      // Update waves
+      let wavesData = new Float32Array(40);
+      for (let i = 0; i < 10; i++) {
+          if (waves[i].time > 0.0) {
+              waves[i].time += dt;
+              if (waves[i].time > 2.5) { // Max lifetime
+                  waves[i].time = 0;
+              }
+          }
+          wavesData[i*4 + 0] = waves[i].x;
+          wavesData[i*4 + 1] = waves[i].y;
+          wavesData[i*4 + 2] = waves[i].time;
+          wavesData[i*4 + 3] = waves[i].intensity;
       }
 
       canvas.width = window.innerWidth;
@@ -590,8 +642,10 @@
       gl.uniform2f(mouseLocation, mouse.x, mouse.y);
       gl.uniform1f(spotLocation, spot);
       gl.uniform1f(isDarkLocation, darkTransition);
-      gl.uniform2f(clickPosLocation, clickPos.x, clickPos.y);
-      gl.uniform1f(clickTimeLocation, clickTime);
+      gl.uniform1f(timeLocation, totalTime);
+      if (wavesLocation) {
+          gl.uniform4fv(wavesLocation, wavesData);
+      }
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(render);
