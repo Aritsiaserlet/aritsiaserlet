@@ -412,8 +412,6 @@
         float grad = clamp(v_texCoord.x * 0.5 + v_texCoord.y * 0.5, 0.0, 1.0);
         vec3 bgLight = mix(vec3(0.98, 0.965, 0.922), vec3(1.0, 0.992, 0.969), grad);
         
-        vec3 bg = mix(bgLight, bgDark, u_isDark);
-
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
         float dotShape = 1.0 - smoothstep(0.0, 1.6, length(cell));
@@ -423,21 +421,28 @@
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
 
         // Dot Colors for dark/light modes
-        vec3 dotColorDimDark = vec3(0.35, 0.38, 0.45); // Clearly visible gray
-        vec3 dotColorDimLight = vec3(0.75, 0.72, 0.65);
-        
+        vec3 dotColorDimDark = vec3(0.35, 0.38, 0.45);
+        vec3 dotColorDimLight = vec3(0.65, 0.62, 0.55);
         vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
-        vec3 dotColorLit = vec3(3.0, 3.0, 3.0); // Super bright white neon
+        
+        vec3 dotColorLitDark = vec3(3.0, 3.0, 3.0);
+        vec3 dotColorLitLight = vec3(0.15, 0.35, 0.2); // Dark green for spotlight
+        vec3 dotColorLit = mix(dotColorLitLight, dotColorLitDark, u_isDark);
 
         // Brightness and mixing
-        float dim = mix(0.35, 0.25, u_isDark);
-        float lit = dim + spotlight * 2.0;
+        float dimDark = 0.25;
+        float dimLight = 0.35;
+        float dim = mix(dimLight, dimDark, u_isDark);
+        float lit = dim + spotlight * mix(1.2, 2.0, u_isDark);
         
         float brightness = mix(dim, lit, spotlight);
         vec3 dotColor = mix(dotColorDim, dotColorLit, spotlight);
 
-        // Final color mix - strictly masked by dotShape
-        vec3 color = bg + dotColor * brightness * dotShape;
+        // Final color mix
+        vec3 colorDark = bgDark + dotColor * brightness * dotShape;
+        vec3 colorLight = mix(bgLight, dotColor, brightness * dotShape);
+        
+        vec3 color = mix(colorLight, colorDark, u_isDark);
 
         gl_FragColor = vec4(color, 1.0);
       }
