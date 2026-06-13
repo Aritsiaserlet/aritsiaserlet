@@ -75,11 +75,15 @@
   }
 
   function setStat(el, value, cacheKey) {
-    if (!el || value == null) return;
+    if (!el) return;
+    if (typeof value === 'string' || value == null || Number.isNaN(Number(value))) {
+      el.textContent = value ?? '—';
+      return;
+    }
     const prev = cacheKey === 'c' ? lastContributions : lastRepos;
-    animateValue(el, prev ?? 0, value);
-    if (cacheKey === 'c') lastContributions = value;
-    else lastRepos = value;
+    animateValue(el, prev ?? 0, Number(value));
+    if (cacheKey === 'c') lastContributions = Number(value);
+    else lastRepos = Number(value);
   }
 
   function pulseLive() {
@@ -155,17 +159,47 @@
     };
   }
 
+  async function fetchFallbackProfile() {
+    try {
+      const r = await fetch('data/ozonz-profile.json?t=' + Date.now());
+      if (r.ok) {
+        const d = await r.json();
+        if (d && d.profile) {
+          let avatar = d.profile.profileImage || 'https://avatars.githubusercontent.com/u/101888890?v=4';
+          if (avatar.startsWith('/images/')) {
+            avatar = 'https://avatars.githubusercontent.com/u/101888890?v=4';
+          }
+          return {
+            contributions: '—',
+            repositories: d.profile.stats?.projects || 0,
+            name: d.profile.name || 'Chanon Thongduang',
+            login: d.profile.handle || 'OzonZ',
+            avatarUrl: avatar,
+            bio: d.profile.bio || '',
+            profileUrl: `https://github.com/${d.profile.handle || 'OzonZ'}`
+          };
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
   async function syncGitHub() {
     try {
       const data = await fetchGitHubData();
       applyStats(data);
       pulseLive();
     } catch (err) {
-      console.warn('[GitHub sync] sync failed:', err.message);
-      if (els.contributions?.textContent === '…')
-        els.contributions.textContent = '—';
-      if (els.repositories?.textContent === '…')
-        els.repositories.textContent = '—';
+      console.warn('[GitHub sync] sync failed, loading fallback profile:', err.message);
+      const fallback = await fetchFallbackProfile();
+      if (fallback) {
+        applyStats(fallback);
+      } else {
+        if (els.contributions?.textContent === '…')
+          els.contributions.textContent = '—';
+        if (els.repositories?.textContent === '…')
+          els.repositories.textContent = '—';
+      }
     }
   }
 
@@ -200,7 +234,13 @@
   function startGitHubSync() {
     if (els.contributions) els.contributions.textContent = '…';
     if (els.repositories) els.repositories.textContent = '…';
-    syncGitHub();
+    
+    // Load fallback profile immediately so the page doesn't show blank skeletons
+    fetchFallbackProfile().then(fallback => {
+      if (fallback) applyStats(fallback);
+      syncGitHub();
+    });
+    
     statsTimer = setInterval(syncGitHub, POLL_MS);
     window.addEventListener('focus', syncGitHub);
     document.addEventListener('visibilitychange', () => {
