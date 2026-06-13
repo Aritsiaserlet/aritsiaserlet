@@ -771,16 +771,31 @@
 
   async function fetchPortfolioData() {
     try {
-      const [worksRes, settingsRes] = await Promise.all([
-          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`),
-          fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`)
-      ]);
+      const t = sessionStorage.getItem('ghToken');
+      let worksRes, settingsRes;
+
+      if (t) {
+        // Authenticated request to bypass cache
+        worksRes = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_works.json?ref=main&t=${Date.now()}`, {
+          headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' }
+        });
+        settingsRes = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_settings.json?ref=main&t=${Date.now()}`, {
+          headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' }
+        });
+      }
+
+      if (!worksRes || !worksRes.ok) {
+        worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`);
+      }
+      if (!settingsRes || !settingsRes.ok) {
+        settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`);
+      }
       
       if (worksRes.ok) {
           globalWorks = await worksRes.json();
       } else {
           try {
-              const r = await fetch('ozonz_works.json?t=' + Date.now());
+              const r = await fetch('data/ozonz-works.json?t=' + Date.now());
               if (r.ok) globalWorks = await r.json();
               else globalWorks = [];
           } catch (_) {
@@ -792,8 +807,23 @@
           globalSettings = await settingsRes.json();
       } else {
           try {
-              const r = await fetch('ozonz_settings.json?t=' + Date.now());
-              if (r.ok) globalSettings = await r.json();
+              const r = await fetch('data/ozonz-profile.json?t=' + Date.now());
+              if (r.ok) {
+                  const pData = await r.json();
+                  if (pData && pData.profile && pData.profile.links) {
+                      const links = pData.profile.links;
+                      globalSettings = {
+                          socials: Object.keys(links).map(k => ({
+                              name: k.charAt(0).toUpperCase() + k.slice(1),
+                              link: links[k],
+                              iconType: 'material',
+                              iconVal: 'link'
+                          }))
+                      };
+                  } else {
+                      globalSettings = { socials: [] };
+                  }
+              }
               else globalSettings = { socials: [] };
           } catch (_) {
               globalSettings = { socials: [] };
@@ -829,10 +859,27 @@
 
     // Always fetch fresh data from GitHub
     try {
-      const [rWorks, rSettings] = await Promise.all([
-        fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null),
-        fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null)
-      ]);
+      const t = sessionStorage.getItem('ghToken');
+      let rWorks = null;
+      let rSettings = null;
+
+      if (t) {
+        rWorks = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_works.json?ref=main&t=${Date.now()}`, {
+          headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' }
+        }).then(r => r.ok ? r.json() : null).catch(() => null);
+
+        rSettings = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_settings.json?ref=main&t=${Date.now()}`, {
+          headers: { 'Authorization': `token ${t}`, 'Accept': 'application/vnd.github.v3.raw' }
+        }).then(r => r.ok ? r.json() : null).catch(() => null);
+      }
+
+      if (rWorks === null) {
+        rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+      }
+      if (rSettings === null) {
+        rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+      }
+
       if (rWorks !== null) globalWorks = rWorks;
       if (rSettings !== null) globalSettings = rSettings;
     } catch (err) {

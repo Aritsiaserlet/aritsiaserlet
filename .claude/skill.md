@@ -224,3 +224,124 @@
 8. **Performance-optimized frontend** with vanilla JavaScript
 
 **Ready to deliver:** A separate Portfolio Page built on Admin Panel architecture, showcasing UI/UX design skills with Impeccable design principles, excluding all game mechanics.
+
+---
+
+## 🗄️ OzonZ Portfolio — Database System Architecture
+
+> ระบบนี้ออกแบบมาให้ OzonZ (เจ้าของ content) อัปเดตข้อมูลได้ **โดยไม่ต้อง pull/push repo หลัก** และ Aritsiaserlet (developer) ไม่ต้อง redeploy ทุกครั้งที่ content เปลี่ยน
+
+### สถาปัตยกรรมสองชั้น
+
+```
+Repo 1: aritsiaserlet/aritsiaserlet  (GitHub Pages — code)
+├── portfolio-ozonz.html        → หน้า portfolio สาธารณะ
+├── admin-ozonz-page.html       → หน้า admin สำหรับ OzonZ
+├── js/portfolio-ozonz-live.js  → Logic ดึง + render data
+└── settings.json               → Shared data (icons, teams)
+
+Repo 2: OzonZ/Non-Four-Portfolio-Data  (GitHub — data/CMS)
+├── ozonz_works.json            → รายการผลงานทั้งหมด
+└── ozonz_settings.json         → Social links / contacts
+```
+
+### Data Flow (ทิศทางข้อมูล)
+
+```
+OzonZ เปิด admin-ozonz-page.html
+    │
+    ├─ [READ] GitHub contents API (ใช้ token ถ้ามีเพื่อดึงค่าล่าสุดแบบ Real-time ข้าม CDN cache)
+    │         → โหลดผลงานล่าสุดมาแสดงใน admin
+    │
+    └─ [WRITE] GitHub REST API → PUT /repos/OzonZ/Non-Four-Portfolio-Data/contents/ozonz_works.json
+              → บันทึกผลงานใหม่ลง repo โดยตรง (ต้องใช้ GitHub PAT ของ OzonZ)
+              → ไม่ต้อง pull/push repo หลัก
+
+
+ผู้เยี่ยมชมเปิด portfolio-ozonz.html
+    │
+    ├─ [STEP 1] แสดง localStorage cache ทันที (fast first paint)
+    │
+    ├─ [STEP 2] fetch จาก GitHub contents API (ถ้าผู้ใช้เป็น admin/มี token ใน session) 
+    │           หรือ raw.githubusercontent.com (สำหรับบุคคลทั่วไป)
+    │           → ได้ data ล่าสุดจาก repo ของ OzonZ โดยตรงแบบไม่มี cache delay
+    │
+    ├─ [STEP 3] fetch raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json
+    │           → shared icons, teams
+    │
+    └─ [STEP 4] อัปเดต cache + render
+```
+
+### Data Format
+
+**`ozonz_works.json`** — array ของ work objects:
+```json
+[
+  {
+    "id": 1718000000000,
+    "name": "ชื่อผลงาน",
+    "cat": "ozonz",
+    "desc": "คำอธิบาย",
+    "year": "2026",
+    "aiSummary": "tagline สั้นๆ",
+    "image": "https://... หรือ material-icon-name",
+    "tags": ["PIXEL ART", "C++"],
+    "links": [{ "url": "https://...", "label": "Itch.io" }],
+    "team": ["member-id"],
+    "tools": [],
+    "date": "2026-06-13T..."
+  }
+]
+```
+
+**`ozonz_settings.json`** — settings ของ OzonZ:
+```json
+{
+  "socials": [
+    {
+      "name": "GitHub",
+      "link": "https://github.com/OzonZ",
+      "iconType": "svg",
+      "iconVal": "M12 0c-6..."
+    }
+  ]
+}
+```
+
+### Authentication
+
+| หน้า | Auth ที่ใช้ |
+|------|-----------|
+| `portfolio-ozonz.html` | ไม่ต้อง auth (public) — อ่าน GitHub Raw URL ตรงๆ |
+| `admin-ozonz-page.html` | Static passcode + **GitHub PAT** ของ OzonZ (ต้องมี `repo` scope) |
+
+- GitHub PAT เก็บใน `sessionStorage` (หายเมื่อปิด tab)
+- Passcode เก็บใน JS (ฝัง hardcode ใน `admin-ozonz-page.html`)
+
+### กฎสำคัญ
+
+| สถานการณ์ | ต้อง push/deploy ไหม? |
+|-----------|----------------------|
+| OzonZ เพิ่ม/แก้ผลงานผ่าน admin | ❌ ไม่ต้อง — เขียนตรงไป `Non-Four-Portfolio-Data` |
+| OzonZ เพิ่ม/แก้ contact links | ❌ ไม่ต้อง — เขียนตรงไป `Non-Four-Portfolio-Data` |
+| Aritsiaserlet แก้ UI/Logic ของ portfolio | ✅ ต้อง `git push` ไป `aritsiaserlet/aritsiaserlet` |
+| Aritsiaserlet แก้ shared icons/teams | ✅ ต้อง `git push` ไป `aritsiaserlet/aritsiaserlet` (settings.json) |
+
+### Conflict Prevention (SHA Check)
+
+Admin page ใช้ GitHub API `GET` file SHA ก่อนทุกครั้งที่ `PUT` เพื่อป้องกัน 409 conflict:
+```
+GET  /repos/OzonZ/Non-Four-Portfolio-Data/contents/ozonz_works.json  → { sha }
+PUT  /repos/.../ozonz_works.json  { content: base64(newData), sha: sha }
+```
+
+### Caching Strategy (Portfolio Page)
+
+```
+Page Load
+   ↓
+มี localStorage cache?
+   ├─ YES → render cache ทันที → fetch GitHub (background) → update cache + re-render
+   └─ NO  → fetch GitHub → render → save cache
+```
+Cache key: `cached_works`, `cached_settings`

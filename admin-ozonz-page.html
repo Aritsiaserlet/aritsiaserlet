@@ -857,31 +857,84 @@ function decodeGH(b64) {
 async function loadData() {
     showLoading('Loading from Repository…');
     try {
-        const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
-        if (worksRes.ok) {
-            works = await worksRes.json();
-        } else {
+        let loadedWorks = null;
+        let loadedSettings = null;
+
+        // Try using GitHub API first if token is available (always gets the latest, non-cached content)
+        if (ghToken) {
             try {
-                const r = await fetch('ozonz_works.json?t=' + Date.now());
-                if (r.ok) works = await r.json();
-                else works = [];
-            } catch (_) {
-                works = [];
+                const worksData = await ghGet(WORKS_FILE);
+                if (worksData) {
+                    worksSha = worksData.sha;
+                    if (worksData.content) {
+                        loadedWorks = decodeGH(worksData.content);
+                    }
+                }
+            } catch (err) {
+                console.warn("Failed to fetch works via GitHub API:", err);
+            }
+
+            try {
+                const settingsData = await ghGet(SETTINGS_FILE);
+                if (settingsData) {
+                    settingsSha = settingsData.sha;
+                    if (settingsData.content) {
+                        loadedSettings = decodeGH(settingsData.content);
+                    }
+                }
+            } catch (err) {
+                console.warn("Failed to fetch settings via GitHub API:", err);
             }
         }
-        
-        const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
-        if (settingsRes.ok) {
-            ozonzSettings = await settingsRes.json();
-        } else {
-            try {
-                const r = await fetch('ozonz_settings.json?t=' + Date.now());
-                if (r.ok) ozonzSettings = await r.json();
-                else ozonzSettings = { socials: [] };
-            } catch (_) {
-                ozonzSettings = { socials: [] };
+
+        // Fallback to raw github fetch if API fetch failed or wasn't run
+        if (!loadedWorks) {
+            const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
+            if (worksRes.ok) {
+                loadedWorks = await worksRes.json();
+            } else {
+                try {
+                    const r = await fetch('data/ozonz-works.json?t=' + Date.now());
+                    if (r.ok) loadedWorks = await r.json();
+                    else loadedWorks = [];
+                } catch (_) {
+                    loadedWorks = [];
+                }
             }
         }
+        works = loadedWorks || [];
+
+        if (!loadedSettings) {
+            const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
+            if (settingsRes.ok) {
+                loadedSettings = await settingsRes.json();
+            } else {
+                try {
+                    const r = await fetch('data/ozonz-profile.json?t=' + Date.now());
+                    if (r.ok) {
+                        const profileData = await r.json();
+                        if (profileData && profileData.profile && profileData.profile.links) {
+                            const links = profileData.profile.links;
+                            loadedSettings = {
+                                socials: Object.keys(links).map(k => ({
+                                    name: k.charAt(0).toUpperCase() + k.slice(1),
+                                    link: links[k],
+                                    iconType: 'material',
+                                    iconVal: 'link'
+                                }))
+                            };
+                        } else {
+                            loadedSettings = { socials: [] };
+                        }
+                    } else {
+                        loadedSettings = { socials: [] };
+                    }
+                } catch (_) {
+                    loadedSettings = { socials: [] };
+                }
+            }
+        }
+        ozonzSettings = loadedSettings || { socials: [] };
         
         setBadge(true, 'Connected to GitHub');
     } catch (err) {
@@ -1551,6 +1604,7 @@ function applyToken(token) {
 document.getElementById('gh-token-save').addEventListener('click', () => {
     applyToken(document.getElementById('gh-token-input').value);
     showToast('Token updated');
+    loadData();
 });
 
 /* ══════════════════════════════════════════════════════
