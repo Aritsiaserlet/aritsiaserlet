@@ -404,6 +404,7 @@
       uniform float u_holdDown;
       // x,y = pos, z = time, w = intensity
       uniform vec4 u_waves[50];
+      uniform vec4 u_textRects[35];
       varying vec2 v_texCoord;
 
       void main() {
@@ -476,6 +477,19 @@
         // Apply wave to spotlight effects
         float effectIntensity = max(0.0, spotlight - darkSuppress) + waveIntensity;
 
+        // Text glow accumulation
+        float textGlow = 0.0;
+        for (int i = 0; i < 35; i++) {
+            vec4 r = u_textRects[i];
+            if (r.z > 0.0) {
+                vec2 d = abs(px - r.xy) - r.zw;
+                float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+                float glowRadius = 45.0;
+                float intensity = smoothstep(glowRadius, 0.0, dist);
+                textGlow = max(textGlow, intensity);
+            }
+        }
+
         float spacing = 26.0;
         vec2 displacedPx = px + quakeDisplacement;
         vec2 cell = mod(displacedPx + spacing * 0.5, spacing) - spacing * 0.5;
@@ -503,6 +517,13 @@
         float clampedEffect = clamp(effectIntensity, 0.0, 1.0);
         float brightness = mix(dim, lit, clampedEffect);
         vec3 dotColor = mix(dotColorDim, dotColorLit, clampedEffect);
+
+        // Subtly brighten dots near text without making them too bright
+        float textGlowBoost = textGlow * mix(0.12, 0.18, u_isDark);
+        brightness += textGlowBoost;
+
+        vec3 textGlowColor = mix(vec3(0.75, 0.72, 0.65), vec3(0.6, 0.63, 0.7), u_isDark);
+        dotColor = mix(dotColor, textGlowColor, textGlow * 0.5);
 
         // Final color mix
         vec3 colorDark = bgDark + dotColor * brightness * dotShape;
@@ -548,6 +569,7 @@
     const timeLocation = gl.getUniformLocation(program, 'u_time');
     const wavesLocation = gl.getUniformLocation(program, 'u_waves');
     const holdDownLocation = gl.getUniformLocation(program, 'u_holdDown');
+    const textRectsLocation = gl.getUniformLocation(program, 'u_textRects');
 
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
@@ -555,6 +577,25 @@
     let targetSpot = 0;
     let pointerInside = false;
     let lastMoveTime = performance.now();
+
+    const textRectsData = new Float32Array(35 * 4);
+    let textElements = [];
+    function findTextElements() {
+      textElements = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .roles-tag'))
+        .filter(el => {
+          if (el.closest('.pixel-card') || 
+              el.closest('#project-detail-modal') || 
+              el.closest('#main-nav') || 
+              el.closest('#theme-toggle') || 
+              el.closest('#contact-links-container') ||
+              el.closest('.modal-backdrop') ||
+              el.closest('#confirm-modal')) {
+            return false;
+          }
+          return true;
+        });
+    }
+    let frameCount = 0;
 
     // Multiple waves tracking
     const MAX_WAVES = 50;
@@ -698,11 +739,30 @@
       canvas.height = window.innerHeight;
       gl.viewport(0, 0, canvas.width, canvas.height);
 
+      // Query DOM for text elements every 30 frames
+      frameCount++;
+      if (frameCount % 30 === 1) {
+          findTextElements();
+      }
+
+      // Update bounding boxes in textRectsData
+      textRectsData.fill(0);
+      const limit = Math.min(textElements.length, 35);
+      for (let i = 0; i < limit; i++) {
+          const el = textElements[i];
+          if (el.offsetWidth === 0 && el.offsetHeight === 0) continue;
+          const r = el.getBoundingClientRect();
+          textRectsData[i * 4 + 0] = r.left + r.width / 2;
+          textRectsData[i * 4 + 1] = r.top + r.height / 2;
+          textRectsData[i * 4 + 2] = r.width / 2;
+          textRectsData[i * 4 + 3] = r.height / 2;
+      }
+
       if (pointerInside) {
           const idleTime = (now - lastMoveTime) / 1000.0;
-          if (idleTime > 4.0) {
-              // Gradually dim targetSpot to 0 over 1.5 seconds (from 4.0s to 5.5s)
-              targetSpot = Math.max(0.0, 1.0 - (idleTime - 4.0) / 1.5);
+          if (idleTime > 3.0) {
+              // Gradually dim targetSpot to 0 over 1.5 seconds (from 3.0s to 4.5s)
+              targetSpot = Math.max(0.0, 1.0 - (idleTime - 3.0) / 1.5);
           } else {
               targetSpot = 1.0;
           }
@@ -733,6 +793,9 @@
       gl.uniform1f(holdDownLocation, holdDownAmt);
       if (wavesLocation) {
           gl.uniform4fv(wavesLocation, wavesData);
+      }
+      if (textRectsLocation) {
+          gl.uniform4fv(textRectsLocation, textRectsData);
       }
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
