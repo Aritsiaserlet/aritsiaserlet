@@ -732,6 +732,23 @@
                     <option value="image">Image URL</option>
                 </select>
             </div>
+            <!-- Contact Image upload -->
+            <div id="contact-img-upload-wrap" class="hidden">
+                <label class="font-label-md text-xs text-primary mb-1 block">Contact Image</label>
+                <div class="img-drop-zone p-4 mb-2" id="contact-img-drop-zone" title="Click or drag image here">
+                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
+                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
+                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+                    <button type="button" class="remove-img" id="contact-img-remove-btn">✕ Remove</button>
+                </div>
+                <input type="file" id="contact-img-file-input" accept="image/*" class="hidden" />
+
+                <div class="img-upload-progress mb-2" id="contact-img-upload-progress">
+                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
+                    <div class="progress-bar-wrap"><div class="progress-bar" id="contact-img-progress-bar" style="width:0%"></div></div>
+                    <span id="contact-img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
+                </div>
+            </div>
             <div>
                 <label id="contact-icon-label" class="font-label-md text-xs text-primary mb-1 block">Material Symbol Name (e.g. terminal)</label>
                 <input type="text" id="contact-icon-val" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
