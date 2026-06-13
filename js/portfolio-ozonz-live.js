@@ -418,6 +418,7 @@
 
         // Accumulate waves (both clicks and trails)
         float waveIntensity = 0.0;
+        float darkSuppress = 0.0;
         for (int i = 0; i < 30; i++) {
             vec4 w = u_waves[i];
             if (w.z > 0.0) { // time since wave created
@@ -433,11 +434,18 @@
                 float fadeTime = max(0.0, 1.0 - w.z / 1.2); // lives for 1.2 seconds
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
+                
+                // Suppress center brightness on click
+                if (w.w > 0.4) {
+                    float suppressDist = exp(-clickDist * clickDist / (2.0 * 100.0 * 100.0));
+                    float suppressFade = max(0.0, 1.0 - w.z / 1.2);
+                    darkSuppress += suppressDist * suppressFade * 2.0;
+                }
             }
         }
 
         // Apply wave to spotlight effects
-        float effectIntensity = spotlight + waveIntensity;
+        float effectIntensity = max(0.0, spotlight - darkSuppress) + waveIntensity;
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
