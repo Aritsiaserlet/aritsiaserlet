@@ -229,10 +229,10 @@
 
         // Dot Colors for dark/light modes
         vec3 dotColorDimDark = vec3(0.22, 0.24, 0.28);
-        vec3 dotColorLitDark = vec3(0.82, 0.84, 0.88);
+        vec3 dotColorLitDark = vec3(3.0, 3.0, 3.0);
         
         vec3 dotColorDimLight = vec3(0.878, 0.855, 0.784); // Soft warm gray/beige dots
-        vec3 dotColorLitLight = vec3(0.22, 0.42, 0.25); // Rich green dots under spotlight
+        vec3 dotColorLitLight = vec3(3.0, 3.0, 3.0); // Super bright white neon
         
         vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
         vec3 dotColorLit = mix(dotColorLitLight, dotColorLitDark, u_isDark);
