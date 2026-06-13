@@ -401,6 +401,7 @@
       uniform float u_spot;
       uniform float u_isDark;
       uniform float u_time;
+      uniform float u_holdDown;
       // x,y = pos, z = time, w = intensity
       uniform vec4 u_waves[30];
       varying vec2 v_texCoord;
@@ -415,6 +416,9 @@
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
+        
+        // Dim spotlight smoothly when holding mouse down
+        spotlight *= mix(1.0, 0.1, u_holdDown);
 
         // Accumulate waves (both clicks and trails)
         float waveIntensity = 0.0;
@@ -518,6 +522,7 @@
     const isDarkLocation = gl.getUniformLocation(program, 'u_isDark');
     const timeLocation = gl.getUniformLocation(program, 'u_time');
     const wavesLocation = gl.getUniformLocation(program, 'u_waves');
+    const holdDownLocation = gl.getUniformLocation(program, 'u_holdDown');
 
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
@@ -535,6 +540,7 @@
     }
 
     let isMouseDown = false;
+    let holdDownAmt = 0.0;
     let lastTime = performance.now();
     let totalTime = 0.0;
     let lastTrailPos = { x: -1000, y: -1000 };
@@ -616,6 +622,10 @@
       lastTime = now;
       totalTime += dt;
 
+      // Animate hold down suppression
+      const targetHold = isMouseDown ? 1.0 : 0.0;
+      holdDownAmt += (targetHold - holdDownAmt) * 15.0 * dt;
+
       // Update waves
       let wavesData = new Float32Array(MAX_WAVES * 4);
       for (let i = 0; i < MAX_WAVES; i++) {
@@ -655,6 +665,7 @@
       gl.uniform1f(spotLocation, spot);
       gl.uniform1f(isDarkLocation, darkTransition);
       gl.uniform1f(timeLocation, totalTime);
+      gl.uniform1f(holdDownLocation, holdDownAmt);
       if (wavesLocation) {
           gl.uniform4fv(wavesLocation, wavesData);
       }
