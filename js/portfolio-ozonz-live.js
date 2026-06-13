@@ -462,10 +462,12 @@
                     quakeDisplacement += dir * wave * fadeDist * fadeTime * (extraPower * 4.0);
                 }
                 
-                // Suppress center brightness on standard clicks
-                if (w.w > 0.4 && w.w <= 1.5) {
-                    float suppressDist = exp(-clickDist * clickDist / (2.0 * 100.0 * 100.0));
-                    float suppressFade = max(0.0, 1.0 - w.z / 0.8); // Smooth linear fade
+                // Suppress center brightness on all clicks
+                if (w.w > 0.4) {
+                    float sDistScale = 100.0 + extraPower * 30.0;
+                    float suppressDist = exp(-clickDist * clickDist / (2.0 * sDistScale * sDistScale));
+                    float suppressDuration = 0.8 + extraPower * 1.2;
+                    float suppressFade = smoothstep(suppressDuration, suppressDuration * 0.2, w.z);
                     darkSuppress += suppressDist * suppressFade * 2.0;
                 }
             }
