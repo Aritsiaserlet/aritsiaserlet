@@ -518,86 +518,92 @@
         </header>
 
         <!-- Dashboard Grid -->
-        <div class="bento-grid">
-            <!-- GitHub Sync Settings Card -->
-            <div class="col-span-4 glass rounded-2xl p-stack-md flex flex-col justify-between">
-                <div>
+        <div class="bento-grid items-start">
+            <!-- Left Column: Main Content -->
+            <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+                <!-- Selected Archives (Works List) -->
+                <div class="glass rounded-2xl p-stack-lg flex flex-col">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 class="font-headline-md text-headline-md text-on-surface">Selected Archives</h2>
+                            <p id="works-count" class="font-body-md text-on-surface-variant text-sm">— works</p>
+                        </div>
+                        <button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md transition-all hover:scale-105 active:scale-95" id="add-work-btn">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            New Archive
+                        </button>
+                    </div>
+                    <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="works-list">
+                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
+                    </div>
+                </div>
+
+                <!-- Contact Channels -->
+                <div class="glass rounded-2xl p-stack-lg flex flex-col">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 class="font-headline-md text-headline-md text-on-surface">Channels</h2>
+                            <p id="contacts-count" class="font-body-md text-on-surface-variant text-sm">— contacts</p>
+                        </div>
+                        <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" id="add-contact-btn">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                    <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 scroll-hide" id="contacts-list">
+                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Settings -->
+            <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                <!-- GitHub Sync Settings Card -->
+                <div class="glass rounded-2xl p-stack-md flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-label-md text-primary">SECURITY STATUS</h3>
+                            <span class="material-symbols-outlined text-primary">key</span>
+                        </div>
+                        <p class="font-headline-md text-headline-md text-on-surface mb-2">GitHub Token</p>
+                        <p class="font-body-md text-on-surface-variant text-sm mb-6">Required to push changes to your repository. Saved in session storage only.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <input type="password" id="gh-token-input" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-sm" placeholder="ghp_..." />
+                        <div class="flex items-center justify-between bg-surface-container-highest/50 p-3 rounded-xl">
+                            <span id="token-status" class="text-xs text-on-surface-variant">No token</span>
+                            <button id="gh-token-save" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Settings Card -->
+                <div class="glass rounded-2xl p-stack-md">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-label-md text-primary">SECURITY STATUS</h3>
-                        <span class="material-symbols-outlined text-primary">key</span>
-                    </div>
-                    <p class="font-headline-md text-headline-md text-on-surface mb-2">GitHub Token</p>
-                    <p class="font-body-md text-on-surface-variant text-sm mb-6">Required to push changes to your repository. Saved in session storage only.</p>
-                </div>
-                <div class="space-y-3">
-                    <input type="password" id="gh-token-input" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-sm" placeholder="ghp_..." />
-                    <div class="flex items-center justify-between bg-surface-container-highest/50 p-3 rounded-xl">
-                        <span id="token-status" class="text-xs text-on-surface-variant">No token</span>
-                        <button id="gh-token-save" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Settings Card -->
-            <div class="col-span-8 glass rounded-2xl p-stack-md">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
-                            <span class="material-symbols-outlined text-on-secondary-container">auto_awesome</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+                                <span class="material-symbols-outlined text-on-secondary-container">auto_awesome</span>
+                            </div>
+                            <h3 class="font-headline-md text-headline-md text-on-surface">Gemini AI Engine</h3>
                         </div>
-                        <h3 class="font-headline-md text-headline-md text-on-surface">Gemini AI Engine</h3>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant" onclick="toggleSection(this)">
+                            <span class="material-symbols-outlined toggle-icon">expand_more</span>
+                        </button>
                     </div>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant" onclick="toggleSection(this)">
-                        <span class="material-symbols-outlined toggle-icon">expand_more</span>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="font-label-md text-xs text-on-surface-variant">GEMINI API KEY</label>
-                        <div class="flex gap-2">
-                            <input class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-data-mono text-sm" id="gemini-key-input" placeholder="AIzaSy..." type="password"/>
-                            <button id="gemini-save-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">Save Key</button>
+                    <div class="flex flex-col gap-4">
+                        <div class="space-y-2">
+                            <label class="font-label-md text-xs text-on-surface-variant">GEMINI API KEY</label>
+                            <div class="flex gap-2">
+                                <input class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-data-mono text-sm" id="gemini-key-input" placeholder="AIzaSy..." type="password"/>
+                                <button id="gemini-save-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">Save Key</button>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
+                            <select class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none" disabled>
+                                <option>Professional & Technical (Default)</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
-                        <select class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none" disabled>
-                            <option>Professional & Technical (Default)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Selected Archives (Works List) -->
-            <div class="col-span-8 glass rounded-2xl p-stack-lg flex flex-col">
-                <div class="flex items-center justify-between mb-8">
-                    <div>
-                        <h2 class="font-headline-md text-headline-md text-on-surface">Selected Archives</h2>
-                        <p id="works-count" class="font-body-md text-on-surface-variant text-sm">— works</p>
-                    </div>
-                    <button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md transition-all hover:scale-105 active:scale-95" id="add-work-btn">
-                        <span class="material-symbols-outlined text-sm">add</span>
-                        New Archive
-                    </button>
-                </div>
-                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="works-list">
-                    <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                </div>
-            </div>
-
-            <!-- Contact Channels -->
-            <div class="col-span-4 glass rounded-2xl p-stack-lg flex flex-col">
-                <div class="flex items-center justify-between mb-8">
-                    <div>
-                        <h2 class="font-headline-md text-headline-md text-on-surface">Channels</h2>
-                        <p id="contacts-count" class="font-body-md text-on-surface-variant text-sm">— contacts</p>
-                    </div>
-                    <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" id="add-contact-btn">
-                        <span class="material-symbols-outlined">add</span>
-                    </button>
-                </div>
-                <div class="space-y-3 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="contacts-list">
-                    <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
                 </div>
             </div>
         </div>
