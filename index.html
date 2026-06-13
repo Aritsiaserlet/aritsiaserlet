@@ -129,21 +129,21 @@
       <span class="set-label">Master Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setMasterVol" min="0" max="100" oninput="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="masterMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('master'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;">🔊</button>
+        <button class="nav-btn" id="masterMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('master'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;"></button>
       </div>
     </div>
     <div class="set-row" style="align-items: center;">
       <span class="set-label">Music Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setMusicVol" min="0" max="100" oninput="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="musicMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('music'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;">🔊</button>
+        <button class="nav-btn" id="musicMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('music'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;"></button>
       </div>
     </div>
     <div class="set-row" style="align-items: center;">
       <span class="set-label">SFX Volume</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;width:100%;">
         <input type="range" class="set-range" id="setSfxVol" min="0" max="100" oninput="saveSettingsUI()" style="flex:1;">
-        <button class="nav-btn" id="sfxMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('sfx'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;">🔊</button>
+        <button class="nav-btn" id="sfxMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('sfx'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;"></button>
       </div>
     </div>
 

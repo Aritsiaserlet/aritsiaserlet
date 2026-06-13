@@ -347,7 +347,16 @@
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 16px; gap: 12px;
   }
+  .gset-select, .gset-range {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  border: 3px solid var(--dark);
+  background: var(--sky4);
+  padding: 4px 8px;
+  color: var(--dark);
+  outline: none;
+}
+.gset-range { flex: 1; accent-color: var(--dark); max-width: 120px; padding: 0; border: none; background: transparent; }
   .gset-label {
     font-family: 'VT323', monospace; font-size: 22px; color: var(--dark); width: 110px; flex-shrink: 0;
   }
-  .gset-range { flex: 1; accent-color: var(--dark); max-width: 120px; }
