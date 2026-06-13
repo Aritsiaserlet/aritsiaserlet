@@ -1538,13 +1538,107 @@ function renderContacts() {
 /* ══════════════════════════════════════════════════════
    CONTACT MODAL
 ══════════════════════════════════════════════════════ */
+let pendingContactImageFile = null;
+
+window.resetContactImageZone = function resetContactImageZone() {
+    pendingContactImageFile = null;
+    const zone = document.getElementById('contact-img-drop-zone');
+    if (!zone) return;
+    zone.classList.remove('has-image');
+    zone.innerHTML = `
+        <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
+        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
+        <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+        <span class="remove-img">✕ Remove</span>
+    `;
+    document.getElementById('contact-img-file-input').value = '';
+    document.getElementById('contact-img-upload-progress').classList.remove('visible');
+};
+
+function setContactImagePreviewUrl(url) {
+    const zone = document.getElementById('contact-img-drop-zone');
+    if (!zone) return;
+    zone.classList.add('has-image');
+    zone.innerHTML = `
+        <img class="preview" src="${url}" alt="preview" />
+        <span class="remove-img">✕ Remove</span>
+    `;
+}
+
+function setContactImagePreviewBlob(file) {
+    const url = URL.createObjectURL(file);
+    setContactImagePreviewUrl(url);
+}
+
+async function uploadContactImageToGitHub(file) {
+    const progress = document.getElementById('contact-img-upload-progress');
+    const bar      = document.getElementById('contact-img-progress-bar');
+    const label    = document.getElementById('contact-img-progress-label');
+    progress.classList.add('visible');
+    bar.style.width = '0%';
+    label.textContent = 'Reading file…';
+    label.style.color = '';
+
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+            try {
+                bar.style.width = '30%';
+                label.textContent = 'Uploading to GitHub…';
+                const base64   = ev.target.result.split(',')[1];
+                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
+                const filename = `works/contact_${Date.now()}_ozonz.${ext}`;
+                bar.style.width = '60%';
+                await ghPutBinary(filename, base64, `Upload contact image: ${file.name}`);
+                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
+                bar.style.width = '100%';
+                label.textContent = '✓ Uploaded!';
+                setTimeout(() => progress.classList.remove('visible'), 1500);
+                resolve(rawUrl);
+            } catch (err) {
+                bar.style.width = '0%';
+                label.textContent = `Error: ${err.message}`;
+                label.style.color = '#ef4444';
+                showToast('Image upload failed: ' + err.message);
+                resolve(null);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function handleContactImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
+    if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
+    pendingContactImageFile = file;
+    setContactImagePreviewBlob(file);
+    document.getElementById('contact-icon-val').value = '';
+}
+
 function updateContactIconLabel() {
     const type  = document.getElementById('contact-icon-type').value;
     const label = document.getElementById('contact-icon-label');
     const input = document.getElementById('contact-icon-val');
-    if (type === 'material') { label.textContent = 'Material Symbol Name (e.g. terminal)'; input.placeholder = 'terminal'; }
-    else if (type === 'svg') { label.textContent = 'SVG Path D-Attribute'; input.placeholder = 'M12 0c-6...'; }
-    else                     { label.textContent = 'Image URL'; input.placeholder = 'https://...'; }
+    const uploadWrap = document.getElementById('contact-img-upload-wrap');
+    
+    if (type === 'material') {
+        label.textContent = 'Material Symbol Name (e.g. terminal)';
+        input.placeholder = 'terminal';
+        input.required = true;
+        uploadWrap.classList.add('hidden');
+    }
+    else if (type === 'svg') {
+        label.textContent = 'SVG Path D-Attribute';
+        input.placeholder = 'M12 0c-6...';
+        input.required = true;
+        uploadWrap.classList.add('hidden');
+    }
+    else {
+        label.textContent = 'Or enter Image URL';
+        input.placeholder = 'https://...';
+        input.required = false;
+        uploadWrap.classList.remove('hidden');
+    }
 }
 document.getElementById('contact-icon-type').addEventListener('change', updateContactIconLabel);
 
@@ -1557,18 +1651,38 @@ window.openContactModal = function(idx) {
     document.getElementById('contact-icon-type').value = c?.iconType  || 'material';
     document.getElementById('contact-icon-val').value  = c?.iconVal   || '';
     updateContactIconLabel();
+    
+    resetContactImageZone();
+    if (c?.iconType === 'image' && c?.iconVal && (c.iconVal.startsWith('http') || c.iconVal.includes('/'))) {
+        setContactImagePreviewUrl(c.iconVal);
+    }
+    
     document.getElementById('contact-modal').classList.add('open');
 };
 
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (pendingContactImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
+    
     if (!ozonzSettings.socials) ozonzSettings.socials = [];
     const idx  = document.getElementById('contact-edit-id').value;
+    
+    let iconVal = document.getElementById('contact-icon-val').value.trim();
+    if (document.getElementById('contact-icon-type').value === 'image' && pendingContactImageFile) {
+        const uploaded = await uploadContactImageToGitHub(pendingContactImageFile);
+        if (uploaded) {
+            iconVal = uploaded;
+            document.getElementById('contact-icon-val').value = iconVal;
+        } else {
+            return; // upload failed, abort
+        }
+    }
+
     const entry = {
         name:     document.getElementById('contact-name').value.trim(),
         link:     document.getElementById('contact-link').value.trim(),
         iconType: document.getElementById('contact-icon-type').value,
-        iconVal:  document.getElementById('contact-icon-val').value.trim(),
+        iconVal:  iconVal,
     };
     const i = idx !== '' ? parseInt(idx) : -1;
     if (i >= 0) ozonzSettings.socials[i] = entry;
@@ -1578,6 +1692,41 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     if (ok) {
         document.getElementById('contact-modal').classList.remove('open');
         renderContacts();
+    }
+});
+
+// Contact image drop zone events wiring
+document.getElementById('contact-img-drop-zone').addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
+        e.stopPropagation();
+        window.resetContactImageZone();
+        return;
+    }
+    document.getElementById('contact-img-file-input').click();
+});
+document.getElementById('contact-img-file-input').addEventListener('change', (e) => {
+    if (e.target.files[0]) handleContactImageFile(e.target.files[0]);
+});
+
+const contactDropZone = document.getElementById('contact-img-drop-zone');
+contactDropZone.addEventListener('dragover', (e) => { e.preventDefault(); contactDropZone.classList.add('drag-over'); });
+contactDropZone.addEventListener('dragleave', ()   => { contactDropZone.classList.remove('drag-over'); });
+contactDropZone.addEventListener('drop', (e) => {
+    e.preventDefault(); contactDropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleContactImageFile(file);
+});
+
+// Paste from clipboard to contact modal (Ctrl+V)
+document.getElementById('contact-modal').addEventListener('paste', (e) => {
+    if (document.getElementById('contact-icon-type').value !== 'image') return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+        if (item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) { handleContactImageFile(file); break; }
+        }
     }
 });
 
