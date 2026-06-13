@@ -438,8 +438,8 @@
                 // Suppress center brightness on click (damped sine wave for spring effect)
                 if (w.w > 0.4) {
                     float suppressDist = exp(-clickDist * clickDist / (2.0 * 100.0 * 100.0));
-                    float dampedSine = cos(w.z * 18.0) * exp(-w.z * 7.0);
-                    float suppressFade = w.z < 1.0 ? dampedSine : 0.0;
+                    float dampedSine = cos(w.z * 12.0) * exp(-w.z * 4.5);
+                    float suppressFade = w.z < 1.2 ? dampedSine : 0.0;
                     darkSuppress += suppressDist * suppressFade * 2.0;
                 }
             }
