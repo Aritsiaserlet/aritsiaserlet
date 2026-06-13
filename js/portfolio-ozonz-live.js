@@ -149,7 +149,7 @@
         name: p.name || 'Chanon Thongduang',
         login: p.login || GITHUB_USER,
         avatar_url: p.avatarUrl || `https://github.com/${GITHUB_USER}.png`,
-        bio: p.bio || 'I create cohesive game experiences where programming, visual design, and game architecture intersect.',
+        bio: p.bio || '',
         public_repos: p.publicRepos || 50
       };
     }
@@ -425,8 +425,7 @@
         float chargeGlow = 0.0;
         if (fusionProgress > 0.0) {
             float chargeRadius = 95.0 + fusionProgress * 150.0;
-            float pulse = 1.0 + 0.1 * sin(u_time * 15.0) * fusionProgress; // soft pulse
-            chargeGlow = fusionProgress * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius)) * pulse;
+            chargeGlow = fusionProgress * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius));
         }
 
         spotlight += chargeGlow * u_spot;
@@ -573,6 +572,7 @@
 
     let isMouseDown = false;
     let holdDownAmt = 0.0;
+    let holdWaveTimer = 0.0;
     let lastTime = performance.now();
     let totalTime = 0.0;
     let lastTrailPos = { x: -1000, y: -1000 };
@@ -662,11 +662,17 @@
       lastTime = now;
       totalTime += dt;
 
-      // Animate hold down charging (up to 5 seconds)
+      // Animate hold down charging (up to 5 seconds) and emit periodic waves
       if (isMouseDown) {
           holdDownAmt = Math.min(5.0, holdDownAmt + dt);
+          holdWaveTimer += dt;
+          if (holdWaveTimer >= 0.4) {
+              addWave(target.x, target.y, 0.5);
+              holdWaveTimer = 0.0;
+          }
       } else {
           holdDownAmt = 0.0;
+          holdWaveTimer = 0.0;
       }
 
       // Update waves
