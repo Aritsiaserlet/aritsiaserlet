@@ -907,11 +907,6 @@
 
     // Background refresh for shared icons/teams (non-blocking)
     fetchPortfolioData().then(() => {
-      try {
-        localStorage.setItem('cached_works', JSON.stringify(globalWorks));
-        localStorage.setItem('cached_settings', JSON.stringify(globalSettings));
-      } catch (_) {}
-      renderWorks();
       renderContacts();
     });
   }
