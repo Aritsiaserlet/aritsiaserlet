@@ -221,31 +221,28 @@
 
         float spacing = 26.0;
         vec2 cell = mod(px + spacing * 0.5, spacing) - spacing * 0.5;
-        float coreShape = 1.0 - smoothstep(1.5, 0.0, length(cell));
-        float glowShape = exp(-length(cell) / 3.0);
+        float dotShape = 1.0 - smoothstep(1.6, 0.0, length(cell));
 
         vec2 mousePx = u_mouse * u_resolution;
         float spotDist = length(px - mousePx);
         float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0));
 
         // Dot Colors for dark/light modes
-        vec3 dotColorDimDark = vec3(0.22, 0.24, 0.28);
-        vec3 dotColorDimLight = vec3(0.878, 0.855, 0.784); // Soft warm gray/beige dots
+        vec3 dotColorDimDark = vec3(0.35, 0.38, 0.45); // Clearly visible gray
+        vec3 dotColorDimLight = vec3(0.75, 0.72, 0.65);
         
         vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
-        vec3 dotColorLit = vec3(1.8, 1.8, 1.8); // Super bright white neon
+        vec3 dotColorLit = vec3(3.0, 3.0, 3.0); // Super bright white neon
 
         // Brightness and mixing
-        float dim = mix(0.18, 0.14, u_isDark);
+        float dim = mix(0.35, 0.25, u_isDark);
+        float lit = dim + spotlight * 2.0;
+        
+        float brightness = mix(dim, lit, spotlight);
+        vec3 dotColor = mix(dotColorDim, dotColorLit, spotlight);
 
-        // Dim dot color contribution
-        vec3 dimColorContrib = dotColorDim * dim * coreShape * (1.0 - spotlight);
-
-        // Lit dot color contribution (neon glow)
-        vec3 litColorContrib = dotColorLit * (coreShape * 2.5 + glowShape * 1.2) * spotlight;
-
-        // Final color mix
-        vec3 color = bg + dimColorContrib + litColorContrib;
+        // Final color mix - strictly masked by dotShape
+        vec3 color = bg + dotColor * brightness * dotShape;
 
         gl_FragColor = vec4(color, 1.0);
       }
