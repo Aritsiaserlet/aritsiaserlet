@@ -775,7 +775,7 @@
 
   function checkHashRoute() {
     if (window.location.hash === '#admin') {
-      window.location.href = 'admin.html';
+      window.location.href = 'admin-ozonz-page.html';
     } else {
       const authModal = document.getElementById('admin-auth-modal');
       const adminPanel = document.getElementById('admin-panel');
