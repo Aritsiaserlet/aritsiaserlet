@@ -897,6 +897,22 @@
     }
   }
 
+  function getShortDescription(desc) {
+    if (!desc) return '';
+    const sentences = desc.split(/[.!?]\s+/);
+    if (sentences.length > 0 && sentences[0].length > 10) {
+      let first = sentences[0].trim();
+      if (!/[.!?]$/.test(first)) {
+        first += '.';
+      }
+      if (first.length <= 120) {
+        return first;
+      }
+    }
+    if (desc.length <= 100) return desc;
+    return desc.substring(0, 97) + '...';
+  }
+
   function renderWorks() {
     const grid = document.getElementById('archives-grid');
     if (!grid) return;
@@ -918,7 +934,7 @@
             return t ? { name: t.name, avatar: t.image, url: t.url } : null;
           }).filter(Boolean);
         }
-        return { ...w, title: w.name, detail: w.desc || '', aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+        return { ...w, title: w.name || w.title, detail: w.desc || w.description || '', aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
       });
       globalWorks = works;
     }
@@ -953,7 +969,7 @@
                     ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
                 </div>
                 <h3 class="design-featured-title">${featured.title}</h3>
-                <p class="design-featured-tagline">${featured.detail}</p>
+                <p class="design-featured-tagline">${getShortDescription(featured.detail)}</p>
                 ${
                   featured.aiSummary
                     ? `<p class="text-primary font-bold text-sm tracking-wider uppercase mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
@@ -1009,7 +1025,7 @@
                     </div>
                     
                     <h3 class="design-side-title">${work.title}</h3>
-                    <p class="design-side-tagline">${work.detail}</p>
+                    <p class="design-side-tagline">${getShortDescription(work.detail)}</p>
                     
                     <div class="design-side-footer">
                         ${
@@ -1068,7 +1084,7 @@
                     </div>
                     
                     <h3 class="design-side-title">${work.title}</h3>
-                    <p class="design-side-tagline">${work.detail}</p>
+                    <p class="design-side-tagline">${getShortDescription(work.detail)}</p>
                     
                     <div class="design-side-footer">
                         ${
