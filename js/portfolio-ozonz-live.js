@@ -1257,7 +1257,7 @@
       const tagsArray = Array.isArray(w.tags) ? w.tags : (typeof w.tags === 'string' ? w.tags.split(',') : []);
       tagsArray.forEach(tag => {
         const badge = document.createElement('span');
-        badge.className = 'px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-bold uppercase tracking-wider';
+        badge.className = 'bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-[0.18em] px-[10px] py-[3px] rounded border border-primary/20 whitespace-nowrap';
         badge.textContent = tag.trim();
         tagsContainer.appendChild(badge);
       });
@@ -1270,22 +1270,16 @@
       contribSection.classList.remove('hidden');
       contributors.forEach(c => {
         const item = document.createElement('a');
-        item.className = 'flex items-center gap-2 bg-surface-variant/40 p-2 rounded-xl border border-outline/10 hover:border-primary/30 transition-all';
+        item.className = 'bg-surface-variant text-on-background text-[12px] font-semibold py-1 px-3 rounded-full border border-outline/30 hover:border-primary/50 transition-colors inline-block';
         if (c.url) {
           item.href = c.url;
           item.target = '_blank';
         } else {
           item.href = 'javascript:void(0)';
+          item.style.cursor = 'default';
         }
 
-        const avatar = c.avatar 
-          ? `<img src="${c.avatar}" class="w-6 h-6 rounded-full object-cover border border-outline/20" />`
-          : `<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center"><span class="material-symbols-outlined text-sm text-primary">person</span></div>`;
-        
-        item.innerHTML = `
-          ${avatar}
-          <span class="text-xs font-bold text-on-surface">${c.name}</span>
-        `;
+        item.textContent = c.name || c;
         contribList.appendChild(item);
       });
     } else {
