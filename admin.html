@@ -88,30 +88,7 @@
     </div>
 
     
-    <!-- Team Library Panel -->
-    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
-      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
-        <span>TEAM LIBRARY</span>
-        <span class="toggle-icon">▼</span>
-      </h2>
-      <div class="panel-body">
-        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Manage your team members here. You can pick them when adding a Work.</p>
-        
-        <div id="teamLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-          <!-- Filled by JS -->
-        </div>
-        
-        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-          <input type="text" id="newTeamName" placeholder="Name (e.g. John)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-          <input type="url" id="newTeamLink" placeholder="Link URL" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-          <select id="newTeamIcon" style="width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
-            <option value="">-- Icon --</option>
-          </select>
-          <button class="anav-btn" onclick="addTeamLibraryMember()">ADD MEMBER</button>
 
-        </div>
-      </div>
-    </div>
 
     <!-- Sound Library Panel -->
     <div class="panel-card collapsed" style="grid-column: 1 / -1;" id="soundLibraryPanel">
@@ -317,7 +294,7 @@
     </div>
 
     <!-- Add Work Panel -->
-    <div class="panel-card">
+    <div class="panel-card collapsed" id="addWorkPanel">
       <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
         <span id="formTitle">ADD NEW WORK</span>
         <span class="toggle-icon">▲</span>
@@ -387,8 +364,9 @@
 
         <div class="field">
           <label>Team Members (Optional)</label>
-          <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select team members from your Team Library</div>
+          <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select team members from Aritsiaserlet</div>
           <div id="teamCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
+            <p style="color:var(--mid);font-size:14px;">Loading from Aritsiaserlet...</p>
             <!-- Filled by JS -->
           </div>
         </div>
@@ -428,7 +406,8 @@
       </h2>
       <div class="panel-body">
         <div style="display:flex; gap:10px; align-items:center; margin-bottom: 16px;">
-          <span style="font-size:16px; font-family:'Press Start 2P',cursive; color:var(--dark);">FILTER:</span>
+          <button class="submit-btn" style="margin:0; padding:6px 12px; font-size:16px; width:auto;" onclick="document.getElementById('addWorkPanel').classList.remove('collapsed'); document.getElementById('addWorkPanel').scrollIntoView({behavior:'smooth'}); document.getElementById('wName').focus();">+ NEW ARCHIVE</button>
+          <span style="font-size:16px; font-family:'Press Start 2P',cursive; color:var(--dark); margin-left:auto;">FILTER:</span>
           <select id="adminFilter" onchange="renderAdminList()" style="flex:1; font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); background:var(--white); padding:6px 12px; outline:none; box-shadow:inset 2px 2px 0 rgba(0,0,0,0.1);">
             <option value="all">All</option>
             <option value="game">Game</option>
