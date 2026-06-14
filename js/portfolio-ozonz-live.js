@@ -934,7 +934,8 @@
             return t ? { name: t.name, avatar: t.image, url: t.url } : null;
           }).filter(Boolean);
         }
-        return { ...w, title: w.name || w.title, detail: w.desc || w.description || '', aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+        const tagline = w.tagline || w.aiSummary || getShortDescription(w.desc || w.description || '');
+        return { ...w, title: w.name || w.title, detail: w.desc || w.description || '', tagline: tagline, aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
       });
       globalWorks = works;
     }
@@ -1197,6 +1198,7 @@
 
     const modal = document.getElementById('project-detail-modal');
     const titleEl = document.getElementById('project-detail-title');
+    const taglineEl = document.getElementById('project-detail-tagline');
     const descEl = document.getElementById('project-detail-description');
     const imgContainer = document.getElementById('project-detail-image-container');
     const tagsContainer = document.getElementById('project-detail-tags');
@@ -1205,6 +1207,9 @@
     const contribList = document.getElementById('project-detail-contributors-list');
 
     titleEl.textContent = w.title || w.name || '';
+    if (taglineEl) {
+      taglineEl.textContent = w.tagline || '';
+    }
     descEl.textContent = w.detail || w.desc || '';
     
     let link = w.link;
