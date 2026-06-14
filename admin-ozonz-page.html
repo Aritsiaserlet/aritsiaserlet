@@ -1,2073 +1,454 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="robots" content="noindex, nofollow" />
-    <title>OzonZ Admin | Luminous Portfolio Intelligence</title>
-    <link rel="icon" type="image/jpeg" href="favicon.jpg">
-    <!-- Theme Initialization -->
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedTheme === 'dark' || (savedTheme === null && systemPrefersDark)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        })();
-    </script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="css/tailwind.css">
-    <style>
-        :root {
-            /* Light mode color values from the new template */
-            --primary-rgb: 31, 82, 42;
-            --background-rgb: 248, 249, 250;
-            --on-primary-container: #b1e9b3;
-            --tertiary-fixed-dim: #c6c6c9;
-            --inverse-on-surface: #f0f1f2;
-            --surface-dim: #d9dadb;
-            --inverse-primary: #9cd4a0;
-            --surface: #f8f9fa;
-            --on-primary-fixed: #002109;
-            --surface-container-high: #e7e8e9;
-            --on-tertiary: #ffffff;
-            --on-background: #191c1d;
-            --secondary-fixed: #ffe088;
-            --on-secondary-fixed-variant: #574500;
-            --background: #f8f9fa;
-            --error-container: #ffdad6;
-            --on-error: #ffffff;
-            --surface-bright: #f8f9fa;
-            --secondary: #735c00;
-            --surface-container-low: #f3f4f5;
-            --surface-container: #edeeef;
-            --on-error-container: #93000a;
-            --secondary-fixed-dim: #e9c349;
-            --surface-variant: #e1e3e4;
-            --on-primary: #ffffff;
-            --secondary-container: #fed65b;
-            --surface-tint: #36693e;
-            --on-surface: #191c1d;
-            --primary-fixed-dim: #9cd4a0;
-            --tertiary-container: #5f6062;
-            --tertiary: #47494b;
-            --tertiary-fixed: #e2e2e5;
-            --outline-variant: #c1c9bd;
-            --inverse-surface: #2e3132;
-            --on-secondary: #ffffff;
-            --surface-container-highest: #e1e3e4;
-            --on-surface-variant: #414940;
-            --primary: #1f522a;
-            --on-secondary-container: #745c00;
-            --error: #ba1a1a;
-            --on-tertiary-container: #dbdbde;
-            --on-secondary-fixed: #241a00;
-            --primary-container: #386b40;
-            --on-primary-fixed-variant: #1d5129;
-            --primary-fixed: #b8f1ba;
-            --on-tertiary-fixed: #1a1c1e;
-            --outline: #71796f;
-            --surface-container-lowest: #ffffff;
-            --on-tertiary-fixed-variant: #454749;
-        }
-
-        html.dark {
-            /* Dark mode color values from portfolio-ozonz.html */
-            --primary-rgb: 234, 228, 177;
-            --background-rgb: 16, 20, 26;
-            --on-primary-container: #eae4b1;
-            --tertiary-fixed-dim: #a18321;
-            --inverse-on-surface: #10141a;
-            --surface-dim: #10141a;
-            --inverse-primary: #1f522a;
-            --surface: #1c2026;
-            --on-primary-fixed: #10141a;
-            --surface-container-high: #232830;
-            --on-tertiary: #10141a;
-            --on-background: #dfe2eb;
-            --secondary-fixed: #eae4b1;
-            --on-secondary-fixed-variant: #31353c;
-            --background: #10141a;
-            --error-container: #93000a;
-            --on-error: #690005;
-            --surface-bright: #1c2026;
-            --secondary: #eae4b1;
-            --surface-container-low: #14181f;
-            --surface-container: #1c2026;
-            --on-error-container: #ffdad6;
-            --secondary-fixed-dim: #eae4b1;
-            --surface-variant: #31353c;
-            --on-primary: #10141a;
-            --secondary-container: #3a3512;
-            --surface-tint: #eae4b1;
-            --on-surface: #dfe2eb;
-            --primary-fixed-dim: #eae4b1;
-            --tertiary-container: #4a2c00;
-            --tertiary: #ffd700;
-            --tertiary-fixed: #ffdcc0;
-            --outline-variant: #2b2735;
-            --inverse-surface: #dfe2eb;
-            --on-secondary: #10141a;
-            --surface-container-highest: #2f3540;
-            --on-surface-variant: #cac3d8;
-            --primary: #eae4b1;
-            --on-secondary-container: #eae4b1;
-            --error: #ffb4ab;
-            --on-tertiary-container: #ffb77c;
-            --on-secondary-fixed: #10141a;
-            --primary-container: #2c2810;
-            --on-primary-fixed-variant: #31353c;
-            --primary-fixed: #eae4b1;
-            --on-tertiary-fixed: #301400;
-            --outline: #494455;
-            --surface-container-lowest: #0b0e12;
-            --on-tertiary-fixed-variant: #4f2500;
-        }
-
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(var(--primary-rgb), 0.3) rgba(var(--background-rgb), 1);
-        }
-
-        /* Custom Scrollbar styling for Webkit browsers */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(var(--background-rgb), 1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: rgba(var(--primary-rgb), 0.3);
-            border-radius: 9999px;
-            border: 2.5px solid rgba(var(--background-rgb), 1);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(var(--primary-rgb), 0.6);
-        }
-
-        body {
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        .dark .glass {
-            background: rgba(28, 32, 38, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 24px;
-        }
-        .scroll-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scroll-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Force input text color to be black and background to be white in dark mode for admin inputs */
-        html.dark .admin-input {
-            color: #000000 !important;
-            background-color: #ffffff !important;
-        }
-        html.dark .admin-input::placeholder {
-            color: #6b7280 !important;
-        }
-
-        /* Modals and toast style */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            z-index: 800;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            padding: 1.5rem;
-        }
-        .modal-backdrop.open {
-            display: flex;
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 6rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--surface);
-            border: 1px solid var(--primary);
-            color: var(--on-surface);
-            padding: 0.7rem 1.5rem;
-            border-radius: 2rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-            backdrop-filter: blur(16px);
-            pointer-events: none;
-            white-space: nowrap;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* loading overlay */
-        #loading-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 400;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--background);
-            backdrop-filter: blur(8px);
-            transition: opacity 0.4s;
-        }
-        #loading-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(var(--primary-rgb), 0.2);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .link-row {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        /* image upload zone */
-        .img-drop-zone {
-            border: 2px dashed var(--outline);
-            border-radius: 1rem;
-            background: var(--surface-container-low);
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        .img-drop-zone.drag-over {
-            border-color: var(--primary);
-            background: var(--primary-container);
-        }
-        .img-drop-zone.has-image {
-            border-style: solid;
-            border-color: var(--outline);
-            padding: 0;
-        }
-        .img-drop-zone img.preview {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: calc(1rem - 2px);
-            display: block;
-        }
-        .img-drop-zone .remove-img {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 2px 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            display: none;
-        }
-        .img-drop-zone.has-image .remove-img {
-            display: block;
-        }
-        .img-upload-progress {
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--on-surface-variant);
-            margin-top: 0.5rem;
-        }
-        .img-upload-progress.visible {
-            display: flex;
-        }
-        .progress-bar-wrap {
-            flex: 1;
-            height: 4px;
-            border-radius: 2px;
-            background: var(--surface-container-highest);
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 2px;
-            transition: width 0.2s;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<title>Aritsiaserlet - Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/toastManager.js"></script>
 </head>
-<body class="bg-background text-on-background selection:bg-primary-container selection:text-on-primary-container">
-<canvas id="bg-canvas"></canvas>
+<body>
 
-<!-- Loading overlay -->
-<div id="loading-overlay" class="hidden">
-    <div class="flex flex-col items-center gap-4">
-        <div class="spinner"></div>
-        <p id="loading-msg" class="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Loading...</p>
+<canvas class="wind-canvas" id="windCanvas"></canvas>
+
+
+<!-- Admin -->
+<div class="admin-panel" id="adminPanel">
+  <nav class="anav">
+    <span class="anav-title">⚙ ADMIN PANEL</span>
+    <div class="anav-right">
+      <a href="index.html" class="anav-btn">← Portfolio</a>
+      <button class="anav-btn danger" onclick="logout()">Logout</button>
     </div>
-</div>
+  </nav>
 
-<!-- Login Screen -->
-<div class="min-h-screen flex items-center justify-center p-gutter" id="login-screen">
-    <div class="relative glass max-w-md w-full rounded-xl p-stack-lg shadow-2xl transition-all duration-500 scale-100 opacity-100">
-        <a href="portfolio-ozonz.html" class="absolute top-4 left-4 text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-xs font-bold">
-            <span class="material-symbols-outlined text-base">arrow_back</span> Portfolio
-        </a>
-        <div class="flex flex-col items-center mb-stack-lg mt-4">
-            <div class="w-16 h-16 bg-primary flex items-center justify-center rounded-full mb-4">
-                <span class="material-symbols-outlined text-on-primary text-3xl">lock</span>
-            </div>
-            <h1 class="font-headline-lg text-headline-lg text-primary">OzonZ Admin</h1>
-            <p class="font-body-md text-body-md text-on-surface-variant">Luminous Portfolio Intelligence</p>
-        </div>
-        <div class="space-y-stack-md">
-            <div class="group">
-                <label class="font-label-md text-label-md text-primary mb-2 block">ADMIN PASSCODE</label>
-                <input class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="login-input" placeholder="••••••" type="password" maxlength="10" autocomplete="off"/>
-                <p id="login-error" class="text-red-500 text-xs mt-2 hidden text-center">Incorrect passcode.</p>
-            </div>
-            <div class="group">
-                <label class="font-label-md text-label-md text-primary mb-2 block">GITHUB TOKEN</label>
-                <input class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="login-gh-token" placeholder="ghp_xxxxxxxxxxxx" type="password" autocomplete="off"/>
-            </div>
-            <button class="w-full bg-primary text-on-primary font-label-md py-4 rounded-lg hover:opacity-90 active:scale-95 transition-all shadow-lg mt-stack-md" id="login-btn">
-                ACCESS PANEL
-            </button>
-        </div>
-        <p class="mt-8 text-center font-body-md text-on-surface-variant text-sm">
-            Secure authentication required for GitHub synchronization.
-        </p>
+  <div class="admin-content">
+    <div id="ghStatusBox" style="grid-column: 1 / -1; display:flex; justify-content:center; align-items:center; border:4px solid var(--dark); padding:12px; background:var(--white); box-shadow:8px 8px 0 rgba(0,0,0,0.5); cursor:pointer; transition:0.2s;"
+         onclick="if(!this.classList.contains('editing')){ this.classList.add('editing'); this.innerHTML=`<input type='text' id='ghTokenInput' placeholder='Enter new Token' style='flex:1;font-family:&quot;Press Start 2P&quot;,cursive;font-size:16px;padding:16px;border:4px dashed var(--dark);background:var(--sky4);color:var(--dark);outline:none;box-shadow:inset 4px 4px 0 rgba(0,0,0,0.2);'><button onclick='event.stopPropagation(); const t=document.getElementById(&quot;ghTokenInput&quot;).value; if(t){sessionStorage.setItem(&quot;ghToken&quot;,t.trim());location.reload();}' class='submit-btn' style='width:auto;margin-left:16px;margin-top:0;padding:12px 16px;font-size:12px;font-family:&quot;Press Start 2P&quot;,cursive;box-shadow:4px 4px 0 var(--dark);'>SAVE</button><button onclick='event.stopPropagation(); location.reload();' class='submit-btn' style='width:auto;background:var(--danger);margin-left:8px;margin-top:0;padding:12px 16px;font-size:12px;font-family:&quot;Press Start 2P&quot;,cursive;box-shadow:4px 4px 0 var(--dark);'>CANCEL</button>`; document.getElementById('ghTokenInput').focus(); }"
+         onmouseover="if(!this.classList.contains('editing')){ this.style.background='var(--gold-l)'; this.querySelector('#ghStatus').textContent='✎ Click here to edit Token'; }"
+         onmouseout="if(!this.classList.contains('editing')){ this.style.background=window.ghConnected ? '#abebc6' : '#fadbd8'; this.querySelector('#ghStatus').textContent=window.ghConnected ? '✓ Connected to GitHub' : '✗ GitHub connection failed'; }">
+      <div id="ghStatus" style="margin:0; border:none; padding:0; background:transparent; font-size:28px; width:100%; text-align:center; color:var(--dark);">Checking connection...</div>
     </div>
-</div>
-
-<!-- Admin Main Dashboard (Hidden by default) -->
-<div class="hidden flex min-h-screen" id="admin-main">
-    <!-- Sidebar Navigation -->
-    <aside class="fixed left-0 top-0 h-full w-[280px] glass border-r border-on-surface/10 flex flex-col p-stack-md z-50">
-        <div class="mb-stack-lg px-2">
-            <h2 class="font-headline-md text-headline-md font-bold text-primary">OzonZ Admin</h2>
-            <p class="font-label-md text-label-md text-on-surface-variant opacity-70">Portfolio Management</p>
+    <!-- Icon Library Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>ICON LIBRARY</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload icons here first, then select them in Settings or when adding a Work.</p>
+        
+        <div id="iconLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <!-- Filled by JS -->
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary/10 transition-all" href="#">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-label-md">Dashboard</span>
-            </a>
-            <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 transition-all" href="portfolio-ozonz.html">
-                <span class="material-symbols-outlined">account_balance_wallet</span>
-                <span class="font-label-md">View Portfolio</span>
-            </a>
-            <button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-all text-left" id="logout-btn">
-                <span class="material-symbols-outlined">logout</span>
-                <span class="font-label-md">Logout</span>
-            </button>
-        </nav>
-        <div class="mt-auto space-y-2">
-            <div class="p-4 bg-surface-container rounded-xl mt-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary text-sm">face</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <p class="font-label-md text-on-surface truncate">Admin User</p>
-                        <p class="text-[10px] text-on-surface-variant">Luminous Protocol</p>
-                    </div>
-                </div>
-            </div>
+        
+        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="newIconName" placeholder="Icon Name (e.g. Unity)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
+          <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
         </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 ml-[280px] p-stack-lg max-w-[1440px] mx-auto w-full">
-        <!-- Top App Bar -->
-        <header class="flex items-center justify-between mb-stack-lg glass p-6 rounded-2xl shadow-sm">
-            <div>
-                <h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="flex items-center gap-1.5 text-label-md text-on-surface-variant bg-surface-variant px-3 py-1 rounded-full text-xs font-bold" id="gh-status-badge">
-                        <span class="w-2 h-2 rounded-full bg-outline animate-pulse"></span>
-                        Connecting…
-                    </span>
-                </div>
+        
+        <div style="margin-top:32px;">
+          <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">ICON ASSIGNMENTS</h3>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:start;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Global TEAM Button Icon:</label>
+              <select id="teamBtnIcon" onchange="settings.teamBtnIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-            <div class="flex items-center gap-4">
-                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md" id="save-all-btn" onclick="location.reload()">
-                    <span class="material-symbols-outlined text-sm">sync</span>
-                    Sync Status
-                </button>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Global SOUND Button Icon:</label>
+              <select id="soundBtnIcon" onchange="settings.soundBtnIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-        </header>
-
-        <!-- Dashboard Grid -->
-        <div class="bento-grid items-start">
-            <!-- Left Column: Main Content -->
-            <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
-                <!-- Selected Archives (Works List) -->
-                <div class="glass rounded-2xl p-stack-lg flex flex-col">
-                    <div class="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 class="font-headline-md text-headline-md text-on-surface">Selected Archives</h2>
-                            <p id="works-count" class="font-body-md text-on-surface-variant text-sm">— works</p>
-                        </div>
-                        <button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md transition-all hover:scale-105 active:scale-95" id="add-work-btn">
-                            <span class="material-symbols-outlined text-sm">add</span>
-                            New Archive
-                        </button>
-                    </div>
-                    <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="works-list">
-                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                    </div>
-                </div>
-
-                <!-- Contact Channels -->
-                <div class="glass rounded-2xl p-stack-lg flex flex-col">
-                    <div class="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 class="font-headline-md text-headline-md text-on-surface">Channels</h2>
-                            <p id="contacts-count" class="font-body-md text-on-surface-variant text-sm">— contacts</p>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" id="add-contact-btn">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                    </div>
-                    <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 scroll-hide" id="contacts-list">
-                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                    </div>
-                </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Game Category Icon:</label>
+              <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
-
-            <!-- Right Column: Settings -->
-            <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-                <!-- GitHub Sync Settings Card -->
-                <div class="glass rounded-2xl p-stack-md flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-label-md text-primary">SECURITY STATUS</h3>
-                            <span class="material-symbols-outlined text-primary">key</span>
-                        </div>
-                        <p class="font-headline-md text-headline-md text-on-surface mb-2">GitHub Token</p>
-                        <p class="font-body-md text-on-surface-variant text-sm mb-6">Required to push changes to your repository. Saved in session storage only.</p>
-                    </div>
-                    <div class="space-y-3">
-                        <input type="password" id="gh-token-input" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-sm" placeholder="ghp_..." />
-                        <div class="flex items-center justify-between bg-surface-container-highest/50 p-3 rounded-xl">
-                            <span id="token-status" class="text-xs text-on-surface-variant">No token</span>
-                            <button id="gh-token-save" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI Settings Card -->
-                <div class="glass rounded-2xl p-stack-md">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
-                                <span class="material-symbols-outlined text-on-secondary-container">auto_awesome</span>
-                            </div>
-                            <h3 class="font-headline-md text-headline-md text-on-surface">Gemini AI Engine</h3>
-                        </div>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant" onclick="toggleSection(this)">
-                            <span class="material-symbols-outlined toggle-icon">expand_more</span>
-                        </button>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <div class="space-y-2">
-                            <label class="font-label-md text-xs text-on-surface-variant">GEMINI API KEY</label>
-                            <div class="flex gap-2">
-                                <input class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-data-mono text-sm" id="gemini-key-input" placeholder="AIzaSy..." type="password"/>
-                                <button id="gemini-save-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">Save Key</button>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
-                            <select class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none" disabled>
-                        </div>
-                    </div>
-                </div>
-
-
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Portfolio Category Icon:</label>
+              <select id="portfolioCategoryIcon" onchange="settings.portfolioCategoryIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Manage Work Edit Icon:</label>
+              <select id="manageWorkEditIcon" onchange="settings.manageWorkEditIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Manage Work Delete Icon:</label>
+              <select id="manageWorkDeleteIcon" onchange="settings.manageWorkDeleteIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Add Work Placeholder Icon:</label>
+              <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; saveSettings(); updateAddWorkPlaceholderIcon();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+          </div>
         </div>
-    </main>
-</div>
-
-<!-- Theme Toggle -->
-<button class="fixed bottom-gutter right-gutter w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:rotate-12 transition-all active:scale-90 z-[100]" id="theme-toggle" title="Toggle Theme">
-    <span class="material-symbols-outlined text-3xl" id="theme-icon">dark_mode</span>
-</button>
-
-<!-- Toast -->
-<div id="toast"></div>
-
-<!-- ═══════════════ WORK MODAL ═══════════════ -->
-<div id="work-modal" class="modal-backdrop">
-    <div class="glass max-w-2xl w-full rounded-2xl shadow-2xl p-stack-lg max-h-[92vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="work-modal-title">Add New Work</h2>
-        <form id="work-form" class="space-y-4">
-            <input type="hidden" id="work-edit-id" />
-
-            <!-- Autofill -->
-            <div class="border border-outline/20 rounded-xl p-4 bg-surface-container/30">
-                <label class="font-label-md text-xs text-primary mb-1 block">Autofill from URL (Itch.io or GitHub)</label>
-                <div class="flex gap-2">
-                    <input type="url" id="autofill-url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://username.itch.io/game  or  https://github.com/user/repo" />
-                    <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
-                        Autofill
-                    </button>
-                </div>
-                <p id="autofill-status" class="text-[10px] mt-1.5 hidden"></p>
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Work Name</label>
-                <input type="text" id="work-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-
-            <!-- Image upload -->
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Cover Image</label>
-                <div class="img-drop-zone p-4 mb-2" id="img-drop-zone" title="Click or drag image here">
-                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-                    <button type="button" class="remove-img" id="img-remove-btn">✕ Remove</button>
-                </div>
-                <input type="file" id="img-file-input" accept="image/*" class="hidden" />
-
-                <div class="img-upload-progress mb-2" id="img-upload-progress">
-                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
-                    <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
-                    <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
-                </div>
-
-                <div>
-                    <label class="font-label-md text-[10px] text-on-surface-variant mb-1 block">Or enter URL / Material Icon name</label>
-                    <input type="text" id="work-image" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://... or terminal" />
-                </div>
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Tags (comma-separated)</label>
-                <input type="text" id="work-tags" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. PIXEL ART, C#, UNITY" />
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Year of Creation</label>
-                <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Links (optional)</label>
-                <div id="work-links-wrap" class="flex flex-col gap-2 mb-2"></div>
-                <button type="button" id="add-link-btn" class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">add</span> Add Link
-                </button>
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Collaborators / Team</label>
-                <div id="work-team-wrap" class="flex flex-col gap-2 mb-2 max-h-[150px] overflow-y-auto bg-surface-container/30 border border-outline/20 rounded-xl p-3">
-                    <p class="text-xs text-on-surface-variant text-center">Loading team members...</p>
-                </div>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="font-label-md text-xs text-primary block">Description</label>
-                    <button type="button" id="ai-write-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">auto_awesome</span> Write with AI
-                    </button>
-                </div>
-                <textarea id="work-desc" rows="3" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md resize-none"></textarea>
-                <p id="ai-status" class="text-[10px] mt-1.5 hidden"></p>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="font-label-md text-xs text-primary block">AI Summary (Tagline)</label>
-                    <button type="button" id="ai-summarize-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">auto_awesome</span> Summarize with AI
-                    </button>
-                </div>
-                <input type="text" id="work-ai-summary" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. A Python-based bot that tracks user playtime." />
-                <p id="ai-summarize-status" class="text-[10px] mt-1.5 hidden"></p>
-            </div>
-
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" id="work-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
-                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm" id="work-submit-icon">save</span>
-                    <span id="work-submit-label">Save Changes</span>
-                </button>
-            </div>
-        </form>
+      </div>
     </div>
-</div>
 
-<!-- ═══════════════ CONTACT MODAL ═══════════════ -->
-<div id="contact-modal" class="modal-backdrop">
-    <div class="glass max-w-md w-full rounded-2xl shadow-2xl p-stack-lg max-h-[90vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="contact-modal-title">Add Contact</h2>
-        <form id="contact-form" class="space-y-4">
-            <input type="hidden" id="contact-edit-id" />
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Channel Name</label>
-                <input type="text" id="contact-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. GitHub" />
-            </div>
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Link URL</label>
-                <input type="url" id="contact-link" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Icon Type</label>
-                <select id="contact-icon-type" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-on-surface border-none">
-                    <option value="material">Google Material Symbol</option>
-                    <option value="svg">SVG Path Data</option>
-                    <option value="image">Image URL</option>
-                </select>
-            </div>
-            <!-- Contact Image upload -->
-            <div id="contact-img-upload-wrap" class="hidden">
-                <label class="font-label-md text-xs text-primary mb-1 block">Contact Image</label>
-                <div class="img-drop-zone p-4 mb-2" id="contact-img-drop-zone" title="Click or drag image here">
-                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-                    <button type="button" class="remove-img" id="contact-img-remove-btn">✕ Remove</button>
-                </div>
-                <input type="file" id="contact-img-file-input" accept="image/*" class="hidden" />
-
-                <div class="img-upload-progress mb-2" id="contact-img-upload-progress">
-                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
-                    <div class="progress-bar-wrap"><div class="progress-bar" id="contact-img-progress-bar" style="width:0%"></div></div>
-                    <span id="contact-img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
-                </div>
-            </div>
-            <div>
-                <label id="contact-icon-label" class="font-label-md text-xs text-primary mb-1 block">Material Symbol Name (e.g. terminal)</label>
-                <input type="text" id="contact-icon-val" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" id="contact-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
-                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
-                    Save
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+    
 
 
+    <!-- Sound Library Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;" id="soundLibraryPanel">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>SOUND LIBRARY</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Upload sounds here, then assign them to game events using the Sound Picker below.</p>
 
-<!-- Confirm modal -->
-<div id="confirm-modal" class="modal-backdrop">
-    <div class="glass max-w-sm w-full rounded-2xl shadow-2xl p-stack-lg text-center animate-in fade-in zoom-in duration-300">
-        <span class="material-symbols-outlined text-error text-5xl mb-4 block">warning</span>
-        <h3 id="confirm-msg" class="font-headline-md text-headline-md mb-2 text-on-surface">Are you sure?</h3>
-        <p class="font-body-md text-on-surface-variant text-sm mb-6">This action is permanent and will synchronize with GitHub immediately.</p>
-        <div class="flex gap-3">
-            <button id="confirm-no" class="flex-1 px-4 py-2.5 bg-surface-container rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Abort</button>
-            <button id="confirm-yes" class="flex-1 px-4 py-2.5 bg-error text-on-error rounded-lg font-label-md shadow-lg active:scale-95 transition-all">Confirm</button>
+        <!-- Uploaded Sounds Grid -->
+        <div id="soundLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <!-- Filled by JS -->
         </div>
+
+        <!-- Upload Row -->
+        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:24px;">
+          <input type="text" id="newSoundName" placeholder="Sound Name (e.g. Hit SFX)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <input type="file" id="newSoundFile" accept="audio/*" style="font-size:12px;width:220px;">
+          <button class="anav-btn" onclick="addSoundToLibrary()">UPLOAD SOUND</button>
+        </div>
+
+        <!-- Sound Picker / Assignments -->
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOUND PICKER — Assign Sounds to Events</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;" id="soundPickerGrid">
+          <!-- Filled by JS -->
+        </div>
+
+        <button class="submit-btn" onclick="saveSoundAssignments()" style="margin-top:20px;">SAVE SOUND ASSIGNMENTS</button>
+        <p class="form-msg" id="soundMsg"></p>
+        
+
+
+      </div>
     </div>
+
+    <!-- Settings Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>SITE SETTINGS</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+          <div>
+            <div class="field">
+              <label>Profile Image / Video</label>
+              <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Upload a square image/gif or mp4 video (Max 10MB).</div>
+              <input type="file" id="profileFileInput" accept="image/*,video/mp4" onchange="previewProfile(this)">
+              <div style="width:100px;height:100px;border:3px solid var(--dark);background:#a8d4f0;margin-top:10px;position:relative;overflow:hidden">
+                <img id="profilePreview" style="width:100%;height:100%;object-fit:cover;display:none;image-rendering:pixelated">
+                <video id="profilePreviewVideo" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;display:none;"></video>
+              </div>
+              <div style="display:flex; gap:12px; margin-top:12px;">
+                <div style="flex:1;">
+                  <label style="font-size:14px;color:var(--dark);">Fit</label>
+                  <select id="profileFit" style="width:100%;padding:4px;font-family:'VT323';font-size:16px;border:2px solid var(--dark);background:var(--sky1);">
+                    <option value="cover">Cover (Crop)</option>
+                    <option value="contain">Contain (Fit inside)</option>
+                  </select>
+                </div>
+                <div style="flex:1;">
+                  <label style="font-size:14px;color:var(--dark);">Position</label>
+                  <select id="profilePos" style="width:100%;padding:4px;font-family:'VT323';font-size:16px;border:2px solid var(--dark);background:var(--sky1);">
+                    <option value="center">Center</option>
+                    <option value="top">Top</option>
+                    <option value="bottom">Bottom</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="field">
+              <label>Background Image / Video</label>
+              <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Recommended size: 1920x1080px (Max 15MB).</div>
+              <input type="file" id="bgFileInput" accept="image/*,video/mp4" onchange="previewBg(this)">
+              <div style="width:200px;height:112px;border:3px solid var(--dark);background:#a8d4f0;margin-top:10px;position:relative;overflow:hidden">
+                <img id="bgPreview" style="width:100%;height:100%;object-fit:cover;display:none;image-rendering:pixelated">
+                <video id="bgPreviewVideo" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;display:none;"></video>
+              </div>
+              <div style="display:flex; gap:12px; margin-top:12px;">
+                <div style="flex:1;">
+                  <label style="font-size:14px;color:var(--dark);">Size</label>
+                  <select id="bgSize" style="width:100%;padding:4px;font-family:'VT323';font-size:16px;border:2px solid var(--dark);background:var(--sky1);">
+                    <option value="cover">Cover (Fill screen)</option>
+                    <option value="contain">Contain (Fit entire image)</option>
+                    <option value="100% 100%">Stretch (100% 100%)</option>
+                    <option value="auto">Auto (Original)</option>
+                  </select>
+                </div>
+                <div style="flex:1;">
+                  <label style="font-size:14px;color:var(--dark);">Position</label>
+                  <select id="bgPos" style="width:100%;padding:4px;font-family:'VT323';font-size:16px;border:2px solid var(--dark);background:var(--sky1);">
+                    <option value="center">Center</option>
+                    <option value="top">Top</option>
+                    <option value="bottom">Bottom</option>
+                    <option value="left">Left</option>
+                    <option value="right">Right</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">CATEGORIES (GAME, MOD, 3D)</h3>
+        <div id="catsList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:24px;">
+          <!-- Filled by JS -->
+        </div>
+
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">SOCIAL LINKS</h3>
+        <div id="socialsList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
+          <!-- Filled by JS -->
+        </div>
+        <button class="anav-btn" onclick="addSocialLink()" style="margin-bottom:24px;">+ ADD LINK</button>
+
+
+        <button class="submit-btn" id="saveSettingsBtn" onclick="saveSettings()">SAVE SETTINGS</button>
+        <div class="progress-bar" id="settingsProgressBar"><div class="progress-fill" id="settingsProgressFill"></div></div>
+        <p class="form-msg" id="settingsMsg"></p>
+      </div>
+    </div>
+
+    
+    <!-- Game Settings Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>ANIMATION SETTINGS</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        
+        <h3 style="font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;border-bottom:3px solid var(--dark);padding-bottom:8px;">ANIMATIONS</h3>
+        <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
+          <p style="font-size:16px;color:var(--dark);margin-bottom:12px;">Configure custom Player Sprite and Attack Animation (upload horizontal spritesheets).</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="field" style="flex:1;min-width:200px;">
+              <label>Player Sprite (Idle/Fly)</label>
+              <input type="file" id="gsetSpriteFile" accept="image/*">
+              <img id="gsetSpritePreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" style="max-width:100%; height:auto; margin-top:8px; display:none; border:2px solid var(--dark); image-rendering:pixelated;">
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="flex:1"><label style="font-size:12px;">Frames</label><input type="number" id="gsetSpriteFrames" min="1" value="1"></div>
+                <div style="flex:1"><label style="font-size:12px;">FPS</label><input type="number" id="gsetSpriteFps" min="1" value="12"></div>
+              </div>
+              <label style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="gsetSpriteLoop" checked> Loop Animation</label>
+            </div>
+            <div class="field" style="flex:1;min-width:200px;">
+              <label>Player Attack Sprite</label>
+              <input type="file" id="gsetAttackFile" accept="image/*">
+              <img id="gsetAttackPreview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" style="max-width:100%; height:auto; margin-top:8px; display:none; border:2px solid var(--dark); image-rendering:pixelated;">
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="flex:1"><label style="font-size:12px;">Frames</label><input type="number" id="gsetAttackFrames" min="1" value="1"></div>
+                <div style="flex:1"><label style="font-size:12px;">FPS</label><input type="number" id="gsetAttackFps" min="1" value="15"></div>
+              </div>
+              <label style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="gsetAttackLoop"> Loop Animation</label>
+            </div>
+          </div>
+        </div>
+
+        
+        
+        <button class="submit-btn" id="saveAnimBtn" onclick="saveGameAnimations()">SAVE ANIMATIONS</button>
+        <div class="progress-bar" id="animProgressBar"><div class="progress-fill" id="animProgressFill"></div></div>
+        <p class="form-msg" id="animMsg"></p>
+      </div>
+    </div>
+
+    <!-- Game Balance Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>GAME BALANCE & MECHANICS</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        
+        <div style="background:var(--sky4);border:3px solid var(--dark);padding:12px;margin-bottom:24px;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+            <div class="field">
+              <label>Firework Drop Chance (%)</label>
+              <input type="number" id="gsetFwDrop" min="0" max="100" value="10">
+            </div>
+            <div class="field">
+              <label>Points Per Hit</label>
+              <input type="number" id="gsetPtsHit" min="1" value="15">
+            </div>
+            <div class="field">
+              <label>Base Miss Penalty</label>
+              <input type="number" id="gsetMissPen" min="0" value="5">
+            </div>
+            <div class="field">
+              <label>Firework Icon (In-Game)</label>
+              <select id="gsetFwIcon" style="padding:4px;font-family:'VT323';font-size:18px;border:3px solid var(--dark);width:100%;">
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <button class="submit-btn" id="saveBalBtn" onclick="saveGameBalance()">SAVE BALANCE</button>
+        <div class="progress-bar" id="balProgressBar"><div class="progress-fill" id="balProgressFill"></div></div>
+        <p class="form-msg" id="balMsg"></p>
+      </div>
+    </div>
+
+    <!-- Add Work Panel -->
+    <div class="panel-card collapsed" id="addWorkPanel">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span id="formTitle">ADD NEW WORK</span>
+        <span class="toggle-icon">▲</span>
+      </h2>
+      <div class="panel-body">
+        <input type="hidden" id="editId">
+        
+        <div class="stats">
+          <div class="stat"><div class="stat-n" id="sAll">0</div><div class="stat-l">Total</div></div>
+          <div class="stat"><div class="stat-n" id="sGame">0</div><div class="stat-l">Game</div></div>
+          <div class="stat"><div class="stat-n" id="sMod">0</div><div class="stat-l">Mod</div></div>
+          <div class="stat"><div class="stat-n" id="s3d">0</div><div class="stat-l">3D</div></div>
+        </div>
+
+        <div class="edit-banner" id="editBanner">EDIT MODE — editing existing work</div>
+        
+        <div class="field">
+          <label>Image/Thumbnail</label>
+          <div class="img-preview-wrap">
+            <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
+              <span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>
+              <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
+            </div>
+            <div id="extraImgWrap" style="display:none; gap:8px; margin-top:12px; overflow-x:auto; padding-bottom:4px; display:flex;"></div>
+            <div class="img-focal-hint" id="focalHint" style="display:none">
+              <label style="font-size:16px;color:var(--dark);display:block;margin-bottom:4px">Focal Point (up/down)</label>
+              <input type="range" id="focalSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--dark)" oninput="updateFocal(this.value)">
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewImage(this, false)" style="display:none">
+              <button class="submit-btn" onclick="document.getElementById('imgFileInput').click()" style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--white);color:var(--dark);">REPLACE ALL</button>
+              
+              <input type="file" id="imgFileAppend" accept="image/*" multiple onchange="previewImage(this, true)" style="display:none">
+              <button class="submit-btn" onclick="document.getElementById('imgFileAppend').click()" style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:6px 12px;font-size:16px;margin:0;border:3px solid var(--dark);background:var(--gold);color:var(--dark);">ADD MORE</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Work Name</label>
+          <input type="text" id="wName" placeholder="e.g. Space Shooter">
+        </div>
+        <div class="field">
+          <label>Main Category</label>
+          <select id="wCat" onchange="onCatChange()">
+            <option value="">— select —</option>
+            <option value="game">Game</option>
+            <option value="mod">Minecraft Mod</option>
+            <option value="3d">3D Model</option>
+          </select>
+        </div>
+        <div class="field subcat-wrap" id="subcatWrap">
+          <label>Sub-category</label>
+          <select id="wSubcat">
+            <option value="">— select type —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Description (optional)</label>
+          <textarea id="wDesc" placeholder="Short description..."></textarea>
+        </div>
+        <div class="field">
+          <label>Links (Optional)</label>
+          <div id="wLinksBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+          <button class="anav-btn" onclick="addWorkLink()">+ ADD LINK</button>
+        </div>
+
+        <div class="field">
+          <label>Team Members (Optional)</label>
+          <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select team members from Aritsiaserlet</div>
+          <div id="teamCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
+            <p style="color:var(--mid);font-size:14px;">Loading from Aritsiaserlet...</p>
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Software/Tools Used</label>
+          <div style="font-size:14px;color:var(--mid);margin-bottom:8px">Select icons from your Icon Library</div>
+          <div id="toolsCheckboxList" style="display:flex;flex-wrap:wrap;gap:12px;border:3px solid var(--dark);padding:12px;background:var(--sky4);max-height:150px;overflow-y:auto;">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+
+
+        <div class="field" id="modelWrap" style="display:none">
+          <label>3D Model (.glb) — สำหรับ 3D viewer</label>
+          <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Export จาก Blender: File → Export → glTF 2.0 (.glb)</div>
+          <input type="file" id="modelFileInput" accept=".glb,.gltf" onchange="onModelSelect(this)" style="width:100%;font-size:16px;padding:8px;border:3px dashed var(--dark);background:var(--white);cursor:pointer;font-family:'VT323',monospace">
+          <p id="modelName" style="font-size:16px;color:var(--success);margin-top:6px;min-height:16px"></p>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <button class="submit-btn" id="previewBtn" onclick="openPreview()" style="background:var(--white); flex:1;">👁 PREVIEW</button>
+          <button class="submit-btn" id="cancelBtn" onclick="resetForm()" style="background:var(--danger); color:var(--white); flex:1; display:none;">✕ CANCEL</button>
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="addWork()">＋ PUBLISH TO PORTFOLIO</button>
+        <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+        <p class="form-msg" id="formMsg"></p>
+      </div>
+    </div>
+
+    <!-- Manage Works Panel -->
+    <div class="panel-card">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>MANAGE WORKS</span>
+        <span class="toggle-icon">▲</span>
+      </h2>
+      <div class="panel-body">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom: 16px;">
+          <button class="submit-btn" style="margin:0; padding:6px 12px; font-size:16px; width:auto;" onclick="document.getElementById('addWorkPanel').classList.remove('collapsed'); document.getElementById('addWorkPanel').scrollIntoView({behavior:'smooth'}); document.getElementById('wName').focus();">+ NEW ARCHIVE</button>
+          <span style="font-size:16px; font-family:'Press Start 2P',cursive; color:var(--dark); margin-left:auto;">FILTER:</span>
+          <select id="adminFilter" onchange="renderAdminList()" style="flex:1; font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); background:var(--white); padding:6px 12px; outline:none; box-shadow:inset 2px 2px 0 rgba(0,0,0,0.1);">
+            <option value="all">All</option>
+            <option value="game">Game</option>
+            <option value="mod">Minecraft Mod</option>
+            <option value="3d">3D Model</option>
+          </select>
+        </div>
+        <div class="works-list" id="worksList" style="display:flex;flex-direction:column;gap:12px;overflow-y:auto;flex:1;max-height:800px;padding-right:10px;">
+          <p class="no-works">Loading from GitHub...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script src="js/config.js" onerror="console.warn('config.js not found')"></script>
-<script type="module">
+<script src="js/admin.js"></script>
+<!-- Preview Modal -->
+<div class="prev-overlay" id="prevOverlay" onclick="if(event.target===this)closePrev()">
+  <div class="prev-box">
+    <p class="prev-title">PREVIEW</p>
+    <div id="prevMedia"></div>
+    <p class="prev-name" id="prevName"></p>
+    <div class="prev-badges" id="prevBadges"></div>
+    <p class="prev-desc" id="prevDesc"></p>
+    <a class="prev-link" id="prevLink" href="#" target="_blank" rel="noopener" style="display:none"></a>
+    <div class="prev-actions">
+      <button class="prev-cancel" onclick="closePrev()">← BACK TO EDIT</button>
+      <button class="prev-confirm" id="prevConfirmBtn" onclick="confirmPublish()">✓ PUBLISH</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="customConfirmOverlay" style="position:fixed;inset:0;z-index:9999;background:rgba(20,40,65,.8);display:none;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) this.style.display='none'">
+  <div class="modal-box" style="background:var(--white);border:4px solid var(--dark);width:100%;max-width:400px;box-shadow:8px 8px 0 rgba(0,0,0,0.5);padding:24px;text-align:center;">
+    <h3 id="customConfirmMsg" style="font-family:'VT323';font-size:24px;color:var(--dark);margin-bottom:24px;line-height:1.2;"></h3>
+    <div style="display:flex;justify-content:center;gap:16px;">
+      <button class="submit-btn" id="customConfirmYes" style="width:120px;background:var(--danger);font-size:20px;margin:0;">YES</button>
+      <button class="anav-btn" onclick="document.getElementById('customConfirmOverlay').style.display='none'" style="width:120px;margin:0;">NO</button>
+    </div>
+  </div>
+</div>
 
-(function () {
-'use strict';
-
-/* ══════════════════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════════════════ */
-const PASSCODE       = '977254';
-const GH_USER        = 'OzonZ';
-const GH_REPO        = 'Non-Four-Portfolio-Data';
-const GH_API         = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
-const WORKS_FILE     = 'ozonz_works.json';
-const SETTINGS_FILE  = 'ozonz_settings.json';
-
-/* ══════════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════════ */
-let ghToken       = '';
-let works         = [];        // live array
-let worksSha      = null;      // latest SHA for works file
-let ozonzSettings = {};        // { socials: [] }
-let settingsSha   = null;
-let confirmCb     = null;
-let selectedTeams = [];
-let aritsiaTeams  = [];
-
-const itchContact = {
-    name: "ITCH.IO",
-    link: "https://ozonz.itch.io",
-    iconType: "svg",
-    iconVal: "M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"
-};
-
-const defaultContacts = [
-    {
-        name: "GITHUB",
-        link: "https://github.com/OzonZ",
-        iconType: "svg",
-        iconVal: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-    },
-    {
-        name: "FACEBOOK",
-        link: "https://www.facebook.com/chanon.thongduang?locale=th_TH",
-        iconType: "svg",
-        iconVal: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-    },
-    {
-        name: "DISCORD",
-        link: "https://discordapp.com/users/1018888909419204658",
-        iconType: "svg",
-        iconVal: "M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"
-    },
-    itchContact,
-    {
-        name: "HAMSTER HUB",
-        link: "https://hamsterhub.co/profile/eaya",
-        iconType: "image",
-        iconVal: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A"
-    }
-];
-
-function ensureItchContact(socials) {
-    if (!Array.isArray(socials)) return [itchContact];
-    const hasItch = socials.some(s => s && s.name && (s.name.toUpperCase() === 'ITCH.IO' || s.name.toUpperCase() === 'ITCHIO'));
-    if (!hasItch) {
-        const hamsterIdx = socials.findIndex(s => s && s.name && s.name.toUpperCase() === 'HAMSTER HUB');
-        if (hamsterIdx >= 0) {
-            socials.splice(hamsterIdx, 0, itchContact);
-        } else {
-            socials.push(itchContact);
-        }
-    }
-    return socials;
-}
-
-/* ══════════════════════════════════════════════════════
-   GITHUB API HELPERS
-══════════════════════════════════════════════════════ */
-function ghHeaders() {
-    return {
-        Authorization:  `token ${ghToken}`,
-        Accept:         'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-    };
-}
-
-async function ghGet(path) {
-    const r = await fetch(`${GH_API}/${path}?t=${Date.now()}`, { headers: ghHeaders() });
-    if (r.status === 404) return null;
-    if (!r.ok) throw new Error(`GitHub GET ${r.status}`);
-    return r.json();
-}
-
-async function ghPutBinary(path, base64content, message) {
-    let sha;
-    try {
-        const existing = await ghGet(path);
-        if (existing?.sha) sha = existing.sha;
-    } catch (_) {}
-    const body = { message, content: base64content };
-    if (sha) body.sha = sha;
-    let r = await fetch(`${GH_API}/${path}`, {
-        method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-    });
-    if (!r.ok) {
-        const t = await r.text();
-        throw new Error(`GitHub PUT binary ${r.status}: ${t}`);
-    }
-    return r.json();
-}
-
-async function ghPut(path, content, message, sha) {
-    const body = {
-        message,
-        content: btoa(unescape(encodeURIComponent(content))),
-    };
-    if (sha) body.sha = sha;
-
-    let r = await fetch(`${GH_API}/${path}`, {
-        method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-    });
-
-    // 409 Conflict → fetch latest SHA and retry once
-    if (r.status === 409) {
-        const latest = await ghGet(path);
-        if (latest?.sha) { body.sha = latest.sha; }
-        r = await fetch(`${GH_API}/${path}`, {
-            method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-        });
-    }
-    if (!r.ok) {
-        const t = await r.text();
-        throw new Error(`GitHub PUT ${r.status}: ${t}`);
-    }
-    return r.json();
-}
-
-function decodeGH(b64) {
-    return JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
-}
-
-async function syncGitHubProfileToSettings() {
-    if (!ghToken) return;
-    try {
-        const headers = { 
-            Authorization: `token ${ghToken}`,
-            Accept: 'application/vnd.github+json'
-        };
-        const uRes = await fetch(`https://api.github.com/users/${GH_USER}`, { headers });
-        if (!uRes.ok) return;
-        const u = await uRes.json();
-        
-        let contributions = null;
-        try {
-            const query = `
-              query($username: String!) {
-                user(login: $username) {
-                  contributionsCollection {
-                    contributionCalendar {
-                      totalContributions
-                    }
-                  }
-                }
-              }
-            `;
-            const gqlRes = await fetch('https://api.github.com/graphql', {
-              method: 'POST',
-              headers: {
-                'Authorization': `bearer ${ghToken}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                query,
-                variables: { username: GH_USER }
-              })
-            });
-            if (gqlRes.ok) {
-              const gqlData = await gqlRes.json();
-              if (gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions !== undefined) {
-                contributions = gqlData.data.user.contributionsCollection.contributionCalendar.totalContributions;
-              }
-            }
-        } catch (_) {}
-        
-        if (contributions === null) {
-            try {
-                const cr = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}`);
-                if (cr.ok) {
-                    const cal = await cr.json();
-                    if (cal.total) contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
-                }
-            } catch (_) {}
-        }
-
-        ozonzSettings.githubProfile = {
-            name: u.name || u.login,
-            login: u.login,
-            avatarUrl: u.avatar_url,
-            bio: u.bio || '',
-            publicRepos: u.public_repos || 0,
-            contributions: contributions || 0,
-            updatedAt: new Date().toISOString()
-        };
-
-        // Automatically save settings silently in the background
-        await saveSettings(`Sync GitHub profile info: @${GH_USER}`, true);
-    } catch (err) {
-        console.error("Failed to sync GitHub profile to settings:", err);
-    }
-}
-
-/* ══════════════════════════════════════════════════════
-   LOAD FROM DATABASE
-══════════════════════════════════════════════════════ */
-async function loadData() {
-    showLoading('Loading from Repository…');
-    try {
-        let loadedWorks = null;
-        let loadedSettings = null;
-
-        // Try using GitHub API first if token is available (always gets the latest, non-cached content)
-        if (ghToken) {
-            try {
-                const worksData = await ghGet(WORKS_FILE);
-                if (worksData) {
-                    worksSha = worksData.sha;
-                    if (worksData.content) {
-                        loadedWorks = decodeGH(worksData.content);
-                    }
-                }
-            } catch (err) {
-                console.warn("Failed to fetch works via GitHub API:", err);
-            }
-
-            try {
-                const settingsData = await ghGet(SETTINGS_FILE);
-                if (settingsData) {
-                    settingsSha = settingsData.sha;
-                    if (settingsData.content) {
-                        loadedSettings = decodeGH(settingsData.content);
-                    }
-                }
-            } catch (err) {
-                console.warn("Failed to fetch settings via GitHub API:", err);
-            }
-        }
-
-        // Fallback to raw github fetch if API fetch failed or wasn't run
-        if (!loadedWorks) {
-            const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
-            if (worksRes.ok) {
-                loadedWorks = await worksRes.json();
-            } else {
-                try {
-                    const r = await fetch('data/ozonz-works.json?t=' + Date.now());
-                    if (r.ok) loadedWorks = await r.json();
-                    else loadedWorks = [];
-                } catch (_) {
-                    loadedWorks = [];
-                }
-            }
-        }
-        works = loadedWorks || [];
-
-        if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
-            if (!loadedSettings) {
-                const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
-                if (settingsRes.ok) {
-                    loadedSettings = await settingsRes.json();
-                }
-            }
-            if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
-                loadedSettings = { socials: defaultContacts };
-            }
-        }
-        
-        if (loadedSettings) {
-            loadedSettings.socials = ensureItchContact(loadedSettings.socials);
-        }
-        
-        ozonzSettings = loadedSettings;
-        
-        try {
-            const aritsiaRes = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
-            if (aritsiaRes.ok) {
-                const aritsiaData = await aritsiaRes.json();
-                if (aritsiaData.teams) aritsiaTeams = aritsiaData.teams;
-            }
-        } catch (e) { console.warn("Failed to fetch Aritsia teams", e); }
-        
-        setBadge(true, 'Connected to GitHub');
-
-        if (ghToken) {
-            syncGitHubProfileToSettings();
-        }
-    } catch (err) {
-        console.error("loadData error:", err);
-        setBadge(false, err.message);
-        showToast('Load error: ' + err.message);
-    } finally {
-        hideLoading();
-    }
-    renderWorks();
-    renderContacts();
-}
-
-/* ══════════════════════════════════════════════════════
-   SAVE WORKS → GITHUB
-   ══════════════════════════════════════════════════════ */
-async function saveWorks(actionLabel) {
-    showLoading('Saving to GitHub…');
-    try {
-        if (!ghToken) {
-            showToast('GitHub token is required to save changes!');
-            return false;
-        }
-        let sha = null;
-        try {
-            const fileData = await ghGet(WORKS_FILE);
-            if (fileData?.sha) sha = fileData.sha;
-        } catch (_) {}
-
-        const content = JSON.stringify(works, null, 4);
-        await ghPut(WORKS_FILE, content, actionLabel, sha);
-        showToast('✓ ' + actionLabel);
-        setBadge(true, 'Connected to GitHub');
-        return true;
-    } catch (err) {
-        console.error("saveWorks error:", err);
-        showToast('Error: ' + err.message);
-        setBadge(false, err.message);
-        return false;
-    } finally {
-        hideLoading();
-    }
-}
-
-async function saveSettings(actionLabel, silent = false) {
-    if (!silent) showLoading('Saving settings to GitHub…');
-    try {
-        if (!ghToken) {
-            if (!silent) showToast('GitHub token is required to save settings!');
-            return false;
-        }
-        let sha = null;
-        try {
-            const fileData = await ghGet(SETTINGS_FILE);
-            if (fileData?.sha) sha = fileData.sha;
-        } catch (_) {}
-
-        const content = JSON.stringify(ozonzSettings, null, 4);
-        await ghPut(SETTINGS_FILE, content, actionLabel, sha);
-        if (!silent) showToast('✓ ' + actionLabel);
-        return true;
-    } catch (err) {
-        console.error("saveSettings error:", err);
-        if (!silent) showToast('Error: ' + err.message);
-        return false;
-    } finally {
-        if (!silent) hideLoading();
-    }
-}
-
-/* ══════════════════════════════════════════════════════
-   RENDER WORKS
-══════════════════════════════════════════════════════ */
-function renderWorks() {
-    const list = document.getElementById('works-list');
-    document.getElementById('works-count').textContent = works.length + ' work' + (works.length !== 1 ? 's' : '');
-    if (!works.length) {
-        list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-8">No works yet. Add the first one!</p>';
-        return;
-    }
-    list.innerHTML = works.map((w, i) => {
-        const img = Array.isArray(w.image) ? w.image[0] : w.image;
-        const isUrl = img && (img.startsWith('http') || img.includes('/') || img.includes('.'));
-        const thumb = isUrl
-            ? `<img src="${img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'" />`
-            : `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary"><span class="material-symbols-outlined text-2xl">${img || 'brush'}</span></div>`;
-        const tagStr = Array.isArray(w.tags) ? w.tags.join(', ') : (w.tags || '');
-        return `
-        <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
-            <div class="w-20 h-16 bg-surface-container rounded-lg overflow-hidden shrink-0">
-                ${thumb}
-            </div>
-            <div class="flex-1 min-w-0">
-                <h4 class="font-headline-md text-base text-on-surface truncate">${w.name || '(Untitled)'}</h4>
-                <p class="font-body-md text-xs text-on-surface-variant line-clamp-1">${tagStr || w.aiSummary || w.desc || ''}</p>
-            </div>
-            <div class="flex items-center gap-1">
-                <button onclick="moveWorkItem(${i}, -1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
-                    <span class="material-symbols-outlined text-sm">arrow_upward</span>
-                </button>
-                <button onclick="moveWorkItem(${i}, 1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === works.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
-                    <span class="material-symbols-outlined text-sm">arrow_downward</span>
-                </button>
-                <button onclick="openWorkModal('${w.id}')" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" title="Edit">
-                    <span class="material-symbols-outlined text-sm">edit</span>
-                </button>
-                <button onclick="deleteWork('${w.id}')" class="w-8 h-8 rounded-full hover:bg-error-container/20 flex items-center justify-center text-error" title="Delete">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                </button>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-/* ══════════════════════════════════════════════════════
-   WORK MODAL
-══════════════════════════════════════════════════════ */
-window.openWorkModal = function(id) {
-    const w = id ? works.find(x => String(x.id) === String(id)) : null;
-    document.getElementById('work-modal-title').textContent = w ? 'Edit Work' : 'Add New Work';
-    document.getElementById('work-edit-id').value           = w ? w.id : '';
-    document.getElementById('autofill-url').value           = '';
-    document.getElementById('autofill-status').classList.add('hidden');
-    document.getElementById('ai-status').classList.add('hidden');
-
-    // Reset image upload zone
-    resetImageZone();
-
-    // Reset form
-    document.getElementById('work-name').value  = w?.name  || '';
-    const img = w?.image;
-    const imgVal = Array.isArray(img) ? img[0] : (img || '');
-    document.getElementById('work-image').value = imgVal;
-    const tags = w?.tags;
-    document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
-    document.getElementById('work-desc').value  = w?.desc  || '';
-    document.getElementById('work-year').value  = w?.year  || '';
-    document.getElementById('work-ai-summary').value = w?.aiSummary || '';
-    document.getElementById('ai-summarize-status').classList.add('hidden');
-
-    // Init Team
-    if (w && w.team) {
-        selectedTeams = [...w.team];
-    } else {
-        selectedTeams = [];
-    }
-    if (typeof renderTeamCheckboxList === 'function') renderTeamCheckboxList();
-
-    // If editing and has a valid image URL, show preview
-    if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
-        setImagePreviewUrl(imgVal);
-    }
-
-    // Links
-    renderLinkRows(w?.links || []);
-
-    document.getElementById('work-modal').classList.add('open');
-};
-
-function renderLinkRows(links) {
-    const wrap = document.getElementById('work-links-wrap');
-    wrap.innerHTML = '';
-    links.forEach((l, i) => {
-        wrap.insertAdjacentHTML('beforeend', makeLinkRow(i, l.url || '', l.label || ''));
-    });
-}
-
-function makeLinkRow(i, url = '', label = '') {
-    return `
-    <div class="link-row" data-link-idx="${i}">
-        <input type="url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://..." value="${url}" />
-        <input type="text" class="admin-input bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="Label" style="max-width:130px" value="${label}" />
-        <button type="button" onclick="removeLinkRow(this)" class="text-red-500 hover:text-red-400 transition-colors flex-shrink-0">
-            <span class="material-symbols-outlined text-lg">close</span>
-        </button>
-    </div>`;
-}
-
-window.removeLinkRow = function(btn) { btn.closest('.link-row').remove(); };
-document.getElementById('add-link-btn').addEventListener('click', () => {
-    const wrap = document.getElementById('work-links-wrap');
-    const idx  = wrap.querySelectorAll('.link-row').length;
-    wrap.insertAdjacentHTML('beforeend', makeLinkRow(idx));
-});
-
-function collectLinks() {
-    return Array.from(document.querySelectorAll('#work-links-wrap .link-row'))
-        .map(row => ({
-            url:   row.querySelector('input[type="url"]').value.trim(),
-            label: row.querySelector('input[type="text"]').value.trim(),
-        }))
-        .filter(l => l.url);
-}
-
-document.getElementById('work-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (pendingImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
-
-    const editId  = document.getElementById('work-edit-id').value;
-    const tagsVal = document.getElementById('work-tags').value.trim();
-
-    // ── Upload pending image to GitHub if any ──
-    let imgVal = document.getElementById('work-image').value.trim();
-    if (pendingImageFile) {
-        const uploaded = await uploadImageToGitHub(pendingImageFile);
-        if (uploaded) {
-            imgVal = uploaded;
-            document.getElementById('work-image').value = imgVal;
-        } else {
-            return; // upload failed, abort
-        }
-    }
-
-    const entry = {
-        id:    editId ? Number(editId) : Date.now(),
-        name:  document.getElementById('work-name').value.trim(),
-        cat:   'ozonz',
-        subcat: '',
-        desc:  document.getElementById('work-desc').value.trim(),
-        year:  document.getElementById('work-year').value.trim(),
-        aiSummary: document.getElementById('work-ai-summary').value.trim(),
-        image: imgVal,
-        tags:  tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
-        links: collectLinks(),
-        team:  [...selectedTeams],
-        tools: [],
-        date:  editId
-               ? (works.find(w => String(w.id) === editId)?.date || new Date().toISOString())
-               : new Date().toISOString(),
-    };
-
-    if (editId) {
-        const idx = works.findIndex(w => String(w.id) === editId);
-        if (idx >= 0) works[idx] = entry;
-    } else {
-        works.push(entry);  // oldest first / add to bottom
-    }
-
-    const ok = await saveWorks(editId ? `Update work: ${entry.name}` : `Add work: ${entry.name}`);
-    if (ok) {
-        document.getElementById('work-modal').classList.remove('open');
-        renderWorks();
-    }
-});
-
-/* ══════════════════════════════════════════════════════
-   IMAGE UPLOAD SYSTEM
-══════════════════════════════════════════════════════ */
-let pendingImageFile = null;
-
-window.resetImageZone = function resetImageZone() {
-    pendingImageFile = null;
-    const zone = document.getElementById('img-drop-zone');
-    zone.classList.remove('has-image');
-    zone.innerHTML = `
-        <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-        <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-        <span class="remove-img">✕ Remove</span>
-    `;
-    document.getElementById('img-file-input').value = '';
-    document.getElementById('img-upload-progress').classList.remove('visible');
-    document.getElementById('work-image').value = '';
-};
-
-function setImagePreviewUrl(url) {
-    const zone = document.getElementById('img-drop-zone');
-    zone.classList.add('has-image');
-    zone.innerHTML = `
-        <img class="preview" src="${url}" alt="preview" />
-        <span class="remove-img">✕ Remove</span>
-    `;
-}
-
-function setImagePreviewBlob(file) {
-    const url = URL.createObjectURL(file);
-    setImagePreviewUrl(url);
-}
-
-async function uploadImageToGitHub(file) {
-    const progress = document.getElementById('img-upload-progress');
-    const bar      = document.getElementById('img-progress-bar');
-    const label    = document.getElementById('img-progress-label');
-    progress.classList.add('visible');
-    bar.style.width = '0%';
-    label.textContent = 'Reading file…';
-    label.style.color = ''; // reset color to default
-
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            try {
-                bar.style.width = '30%';
-                label.textContent = 'Uploading to GitHub…';
-                const base64   = ev.target.result.split(',')[1];
-                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-                const filename = `works/${Date.now()}_ozonz.${ext}`;
-                bar.style.width = '60%';
-                await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
-                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
-                bar.style.width = '100%';
-                label.textContent = '✓ Uploaded!';
-                setTimeout(() => progress.classList.remove('visible'), 1500);
-                resolve(rawUrl);
-            } catch (err) {
-                bar.style.width = '0%';
-                label.textContent = `Error: ${err.message}`;
-                label.style.color = '#ef4444';
-                showToast('Image upload failed: ' + err.message);
-                resolve(null);
-            }
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-function handleImageFile(file) {
-    if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
-    if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
-    pendingImageFile = file;
-    setImagePreviewBlob(file);
-    // clear the URL field so we know to upload
-    document.getElementById('work-image').value = '';
-}
-
-// Zone: event delegation — remove OR open file picker
-document.getElementById('img-drop-zone').addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
-        e.stopPropagation();
-        window.resetImageZone();
-        return;
-    }
-    document.getElementById('img-file-input').click();
-});
-document.getElementById('img-file-input').addEventListener('change', (e) => {
-    if (e.target.files[0]) handleImageFile(e.target.files[0]);
-});
-
-// Drag & drop
-const dropZone = document.getElementById('img-drop-zone');
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', ()   => { dropZone.classList.remove('drag-over'); });
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault(); dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) handleImageFile(file);
-});
-
-// Paste from clipboard (Ctrl+V)
-document.getElementById('work-modal').addEventListener('paste', (e) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-        if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) { handleImageFile(file); break; }
-        }
-    }
-});
-
-window.deleteWork = function(id) {
-    const w = works.find(x => String(x.id) === String(id));
-    confirmDialog(`Delete "${w?.name || 'this work'}"? This cannot be undone.`, async () => {
-        works = works.filter(x => String(x.id) !== String(id));
-        const ok = await saveWorks(`Delete work: ${w?.name}`);
-        if (ok) renderWorks();
-    });
-};
-
-window.moveWorkItem = async function(idx, direction) {
-    const targetIdx = idx + direction;
-    if (targetIdx < 0 || targetIdx >= works.length) return;
-    
-    const temp = works[idx];
-    works[idx] = works[targetIdx];
-    works[targetIdx] = temp;
-    
-    const ok = await saveWorks(`Reorder work: ${temp.name || 'item'}`);
-    if (ok) {
-        renderWorks();
-    }
-};
-
-document.getElementById('work-cancel').addEventListener('click', () => {
-    document.getElementById('work-modal').classList.remove('open');
-});
-document.getElementById('work-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('work-modal'))
-        document.getElementById('work-modal').classList.remove('open');
-});
-
-async function callGeminiSummary(apiKey, rawDesc) {
-    const promptText = `You are an assistant that summarizes project/game descriptions for a developer portfolio. Summarize the following raw description into two parts: 1. A clean, professional description (1-2 sentences, in English). 2. A very short, punchy tagline or summary (maximum 6-8 words, in English). Return the result as a raw JSON object with keys "description" and "tagline". Do not include markdown formatting or backticks. Description: "${rawDesc}"`;
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
-    });
-    if (!res.ok) throw new Error(`Gemini status ${res.status}`);
-    const data = await res.json();
-    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-    try {
-        return JSON.parse(text);
-    } catch (e) {
-        const descMatch = text.match(/"description"\s*:\s*"([^"]+)"/);
-        const taglineMatch = text.match(/"tagline"\s*:\s*"([^"]+)"/);
-        return {
-            description: descMatch ? descMatch[1] : null,
-            tagline: taglineMatch ? taglineMatch[1] : null
-        };
-    }
-}
-
-document.getElementById('autofill-btn').addEventListener('click', () => {
-    const url    = document.getElementById('autofill-url').value.trim();
-    const status = document.getElementById('autofill-status');
-    if (!url) { status.textContent = 'Enter a URL first.'; status.className = 'text-red-500 text-xs mt-2 block'; return; }
-
-    status.textContent = 'Fetching…'; status.className = 'text-on-surface-variant text-xs mt-2 block';
-
-    const ghMatch = url.match(/github\.com\/([^/]+)\/([^/]+)/i);
-    if (ghMatch) {
-        const owner = ghMatch[1];
-        let   repo  = ghMatch[2].split(/[#?]/)[0].replace(/\.git$/, '');
-        Promise.all([
-            fetch(`https://api.github.com/repos/${owner}/${repo}`).then(r => r.json()),
-            fetch(`https://api.github.com/repos/${owner}/${repo}/contributors`).then(r => r.ok ? r.json() : []).catch(() => []),
-        ]).then(async ([rd, cd]) => {
-            const title = rd.name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            document.getElementById('work-name').value  = title;
-            const rawDesc = rd.description || '';
-            document.getElementById('work-desc').value  = rawDesc;
-            document.getElementById('work-ai-summary').value = '';
-            document.getElementById('work-image').value = 'terminal';
-            const tags = [];
-            if (rd.language) tags.push(rd.language.toUpperCase());
-            tags.push('GITHUB');
-            document.getElementById('work-tags').value  = tags.join(', ');
-            renderLinkRows([{ url: rd.html_url, label: 'GitHub Repo' }]);
-
-            const apiKey = localStorage.getItem('gemini_api_key') || '';
-            if (rawDesc && apiKey) {
-                status.textContent = 'AI Summarizing description…';
-                try {
-                    const aiRes = await callGeminiSummary(apiKey, rawDesc);
-                    if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
-                    if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
-                } catch (e) {
-                    console.warn("Gemini Autofill summary failed:", e);
-                }
-            }
-
-            status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
-        }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-xs mt-2 block'; });
-        return;
-    }
-
-    if (/itch\.io/i.test(url)) {
-        const parseHtml = async html => {
-            const doc   = new DOMParser().parseFromString(html, 'text/html');
-            let title   = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
-            title       = title.replace(/\s*by\s+itch\.io$/i, '').trim();
-            const image = doc.querySelector('meta[property="og:image"]')?.content || 'brush';
-            const desc  = (doc.querySelector('meta[property="og:description"]')?.content || '').trim();
-            document.getElementById('work-name').value  = title;
-            document.getElementById('work-image').value = image;
-            document.getElementById('work-desc').value  = desc;
-            document.getElementById('work-ai-summary').value = '';
-            document.getElementById('work-tags').value  = 'ITCH.IO';
-            renderLinkRows([{ url, label: 'Play on Itch.io' }]);
-
-            const apiKey = localStorage.getItem('gemini_api_key') || '';
-            if (desc && apiKey) {
-                status.textContent = 'AI Summarizing description…';
-                try {
-                    const aiRes = await callGeminiSummary(apiKey, desc);
-                    if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
-                    if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
-                } catch (e) {
-                    console.warn("Gemini Autofill summary failed:", e);
-                }
-            }
-
-            status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
-        };
-        fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r => r.text()).then(parseHtml)
-            .catch(() => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`).then(r => r.json()).then(d => parseHtml(d.contents)))
-            .catch(() => { status.textContent = 'Proxy failed. Fill manually.'; status.className = 'text-red-500 text-xs mt-2 block'; });
-        return;
-    }
-    status.textContent = 'Use a GitHub or Itch.io URL.'; status.className = 'text-red-500 text-xs mt-2 block';
-});
-
-/* ══════════════════════════════════════════════════════
-   AI WRITE
-══════════════════════════════════════════════════════ */
-document.getElementById('ai-write-btn').addEventListener('click', () => {
-    const title  = document.getElementById('work-name').value.trim();
-    const tags   = document.getElementById('work-tags').value.trim();
-    const detail = document.getElementById('work-desc');
-    const status = document.getElementById('ai-status');
-    const apiKey = localStorage.getItem('gemini_api_key') || '';
-    if (!title)  { status.textContent = 'Enter a Work Name first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; return; }
-    if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; return; }
-    status.textContent = 'Generating…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block';
-    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `Write a professional, short, engaging description (1-2 sentences, English) for a portfolio project named "${title}" with tags "${tags}". No markdown, no quotes, just the description.` }] }] })
-    }).then(r => r.json()).then(d => {
-        const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) { detail.value = text.trim(); status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block'; }
-        else throw new Error('Invalid AI response');
-    }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
-});
-
-document.getElementById('ai-summarize-btn').addEventListener('click', () => {
-    const desc   = document.getElementById('work-desc').value.trim();
-    const summaryInput = document.getElementById('work-ai-summary');
-    const status = document.getElementById('ai-summarize-status');
-    const apiKey = localStorage.getItem('gemini_api_key') || '';
-    if (!desc)   { status.textContent = 'Enter a Description first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
-    if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
-    status.textContent = 'Summarizing…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block'; status.classList.remove('hidden');
-    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `Summarize the following description into a very short, punchy tagline or summary (maximum 6-8 words, in English). Do not use markdown, quotes, prefix or suffix. Just output the summary text itself. Description: "${desc}"` }] }] })
-    }).then(r => r.json()).then(d => {
-        const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-            summaryInput.value = text.trim().replace(/^["']|["']$/g, '');
-            status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block';
-        }
-        else throw new Error('Invalid AI response');
-    }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
-});
-
-/* ══════════════════════════════════════════════════════
-   RENDER CONTACTS (from ozonzSettings.socials)
-══════════════════════════════════════════════════════ */
-function renderContacts() {
-    const list     = document.getElementById('contacts-list');
-    const socials  = ozonzSettings.socials || [];
-    document.getElementById('contacts-count').textContent = socials.length + ' contact' + (socials.length !== 1 ? 's' : '');
-    if (!socials.length) {
-        list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-8">No contacts yet.</p>';
-        return;
-    }
-    list.innerHTML = socials.map((c, i) => {
-        let iconEl = '';
-        if (c.iconType === 'svg')
-            iconEl = `<svg class="w-5 h-5 fill-current text-primary" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
-        else if (c.iconType === 'image')
-            iconEl = `<img src="${c.iconVal}" class="w-5 h-5 rounded-full object-cover" />`;
-        else
-            iconEl = `<span class="material-symbols-outlined text-base text-primary">${c.iconVal || 'link'}</span>`;
-        return `
-        <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
-            <div class="w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
-                ${iconEl}
-            </div>
-            <div class="flex-1 min-w-0">
-                <h4 class="font-headline-md text-base text-on-surface truncate">${c.name}</h4>
-                <p class="font-body-md text-xs text-on-surface-variant truncate">${c.link || c.url || ''}</p>
-            </div>
-            <div class="flex items-center gap-1">
-                <button onclick="moveContactItem(${i}, -1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
-                    <span class="material-symbols-outlined text-sm">arrow_upward</span>
-                </button>
-                <button onclick="moveContactItem(${i}, 1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === socials.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
-                    <span class="material-symbols-outlined text-sm">arrow_downward</span>
-                </button>
-                <button onclick="openContactModal(${i})" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" title="Edit">
-                    <span class="material-symbols-outlined text-sm">edit</span>
-                </button>
-                <button onclick="deleteContact(${i})" class="w-8 h-8 rounded-full hover:bg-error-container/20 flex items-center justify-center text-error" title="Delete">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                </button>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-/* ══════════════════════════════════════════════════════
-   CONTACT MODAL
-══════════════════════════════════════════════════════ */
-let pendingContactImageFile = null;
-
-window.resetContactImageZone = function resetContactImageZone() {
-    pendingContactImageFile = null;
-    const zone = document.getElementById('contact-img-drop-zone');
-    if (!zone) return;
-    zone.classList.remove('has-image');
-    zone.innerHTML = `
-        <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-        <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-        <span class="remove-img">✕ Remove</span>
-    `;
-    document.getElementById('contact-img-file-input').value = '';
-    document.getElementById('contact-img-upload-progress').classList.remove('visible');
-};
-
-function setContactImagePreviewUrl(url) {
-    const zone = document.getElementById('contact-img-drop-zone');
-    if (!zone) return;
-    zone.classList.add('has-image');
-    zone.innerHTML = `
-        <img class="preview" src="${url}" alt="preview" />
-        <span class="remove-img">✕ Remove</span>
-    `;
-}
-
-function setContactImagePreviewBlob(file) {
-    const url = URL.createObjectURL(file);
-    setContactImagePreviewUrl(url);
-}
-
-async function uploadContactImageToGitHub(file) {
-    const progress = document.getElementById('contact-img-upload-progress');
-    const bar      = document.getElementById('contact-img-progress-bar');
-    const label    = document.getElementById('contact-img-progress-label');
-    progress.classList.add('visible');
-    bar.style.width = '0%';
-    label.textContent = 'Reading file…';
-    label.style.color = '';
-
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            try {
-                bar.style.width = '30%';
-                label.textContent = 'Uploading to GitHub…';
-                const base64   = ev.target.result.split(',')[1];
-                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-                const filename = `works/contact_${Date.now()}_ozonz.${ext}`;
-                bar.style.width = '60%';
-                await ghPutBinary(filename, base64, `Upload contact image: ${file.name}`);
-                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
-                bar.style.width = '100%';
-                label.textContent = '✓ Uploaded!';
-                setTimeout(() => progress.classList.remove('visible'), 1500);
-                resolve(rawUrl);
-            } catch (err) {
-                bar.style.width = '0%';
-                label.textContent = `Error: ${err.message}`;
-                label.style.color = '#ef4444';
-                showToast('Image upload failed: ' + err.message);
-                resolve(null);
-            }
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-function handleContactImageFile(file) {
-    if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
-    if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
-    pendingContactImageFile = file;
-    setContactImagePreviewBlob(file);
-    document.getElementById('contact-icon-val').value = '';
-}
-
-function updateContactIconLabel() {
-    const type  = document.getElementById('contact-icon-type').value;
-    const label = document.getElementById('contact-icon-label');
-    const input = document.getElementById('contact-icon-val');
-    const uploadWrap = document.getElementById('contact-img-upload-wrap');
-    
-    if (type === 'material') {
-        label.textContent = 'Material Symbol Name (e.g. terminal)';
-        input.placeholder = 'terminal';
-        input.required = true;
-        uploadWrap.classList.add('hidden');
-    }
-    else if (type === 'svg') {
-        label.textContent = 'SVG Path D-Attribute';
-        input.placeholder = 'M12 0c-6...';
-        input.required = true;
-        uploadWrap.classList.add('hidden');
-    }
-    else {
-        label.textContent = 'Or enter Image URL';
-        input.placeholder = 'https://...';
-        input.required = false;
-        uploadWrap.classList.remove('hidden');
-    }
-}
-document.getElementById('contact-icon-type').addEventListener('change', updateContactIconLabel);
-
-window.openContactModal = function(idx) {
-    const c = idx != null ? (ozonzSettings.socials || [])[idx] : null;
-    document.getElementById('contact-modal-title').textContent = c ? 'Edit Contact' : 'Add Contact Channel';
-    document.getElementById('contact-edit-id').value = idx != null ? idx : '';
-    document.getElementById('contact-name').value      = c?.name      || '';
-    document.getElementById('contact-link').value      = c?.link || c?.url || '';
-    document.getElementById('contact-icon-type').value = c?.iconType  || 'material';
-    document.getElementById('contact-icon-val').value  = c?.iconVal   || '';
-    updateContactIconLabel();
-    
-    resetContactImageZone();
-    if (c?.iconType === 'image' && c?.iconVal && (c.iconVal.startsWith('http') || c.iconVal.includes('/'))) {
-        setContactImagePreviewUrl(c.iconVal);
-    }
-    
-    document.getElementById('contact-modal').classList.add('open');
-};
-
-document.getElementById('contact-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (pendingContactImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
-    
-    if (!ozonzSettings.socials) ozonzSettings.socials = [];
-    const idx  = document.getElementById('contact-edit-id').value;
-    
-    let iconVal = document.getElementById('contact-icon-val').value.trim();
-    if (document.getElementById('contact-icon-type').value === 'image' && pendingContactImageFile) {
-        const uploaded = await uploadContactImageToGitHub(pendingContactImageFile);
-        if (uploaded) {
-            iconVal = uploaded;
-            document.getElementById('contact-icon-val').value = iconVal;
-        } else {
-            return; // upload failed, abort
-        }
-    }
-
-    const entry = {
-        name:     document.getElementById('contact-name').value.trim(),
-        link:     document.getElementById('contact-link').value.trim(),
-        iconType: document.getElementById('contact-icon-type').value,
-        iconVal:  iconVal,
-    };
-    const i = idx !== '' ? parseInt(idx) : -1;
-    if (i >= 0) ozonzSettings.socials[i] = entry;
-    else        ozonzSettings.socials.push(entry);
-
-    const ok = await saveSettings(i >= 0 ? `Update contact: ${entry.name}` : `Add contact: ${entry.name}`);
-    if (ok) {
-        document.getElementById('contact-modal').classList.remove('open');
-        renderContacts();
-    }
-});
-
-// Contact image drop zone events wiring
-document.getElementById('contact-img-drop-zone').addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
-        e.stopPropagation();
-        window.resetContactImageZone();
-        return;
-    }
-    document.getElementById('contact-img-file-input').click();
-});
-document.getElementById('contact-img-file-input').addEventListener('change', (e) => {
-    if (e.target.files[0]) handleContactImageFile(e.target.files[0]);
-});
-
-const contactDropZone = document.getElementById('contact-img-drop-zone');
-contactDropZone.addEventListener('dragover', (e) => { e.preventDefault(); contactDropZone.classList.add('drag-over'); });
-contactDropZone.addEventListener('dragleave', ()   => { contactDropZone.classList.remove('drag-over'); });
-contactDropZone.addEventListener('drop', (e) => {
-    e.preventDefault(); contactDropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) handleContactImageFile(file);
-});
-
-// Paste from clipboard to contact modal (Ctrl+V)
-document.getElementById('contact-modal').addEventListener('paste', (e) => {
-    if (document.getElementById('contact-icon-type').value !== 'image') return;
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-        if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) { handleContactImageFile(file); break; }
-        }
-    }
-});
-
-window.deleteContact = function(idx) {
-    const c = (ozonzSettings.socials || [])[idx];
-    confirmDialog(`Delete "${c?.name || 'this contact'}"?`, async () => {
-        ozonzSettings.socials.splice(idx, 1);
-        const ok = await saveSettings(`Delete contact: ${c?.name}`);
-        if (ok) renderContacts();
-    });
-};
-
-window.moveContactItem = async function(idx, direction) {
-    const socials = ozonzSettings.socials || [];
-    const targetIdx = idx + direction;
-    if (targetIdx < 0 || targetIdx >= socials.length) return;
-    
-    const temp = socials[idx];
-    socials[idx] = socials[targetIdx];
-    socials[targetIdx] = temp;
-    
-    const ok = await saveSettings(`Reorder contact: ${temp.name || 'item'}`);
-    if (ok) {
-        renderContacts();
-    }
-};
-
-window.renderTeamCheckboxList = function() {
-    const wrap = document.getElementById('work-team-wrap');
-    if (!wrap) return;
-    if (!aritsiaTeams || aritsiaTeams.length === 0) {
-        wrap.innerHTML = '<p class="text-xs text-on-surface-variant text-center">No team members available. Add them in ARITSIA Admin.</p>';
-        return;
-    }
-    wrap.innerHTML = aritsiaTeams.map(tm => {
-        const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
-        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : `<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">${tm.name.charAt(0).toUpperCase()}</div>`);
-        return `
-        <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-variant/30 transition-colors">
-            <input type="checkbox" value="${tm.id}" ${checked} onchange="toggleTeamSelection('${tm.id}', this.checked)" class="rounded text-primary focus:ring-primary bg-surface-container border-outline/30">
-            ${iconHtml}
-            <span class="text-sm text-on-surface">${tm.name}</span>
-        </label>
-        `;
-    }).join('');
-};
-
-window.toggleTeamSelection = function(id, isChecked) {
-    if (isChecked) {
-        if (!selectedTeams.includes(id)) selectedTeams.push(id);
-    } else {
-        selectedTeams = selectedTeams.filter(t => t !== id);
-    }
-};
-
-document.getElementById('contact-cancel').addEventListener('click', () => {
-    document.getElementById('contact-modal').classList.remove('open');
-});
-document.getElementById('contact-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('contact-modal'))
-        document.getElementById('contact-modal').classList.remove('open');
-});
-
-/* ══════════════════════════════════════════════════════
-   TOKEN MANAGEMENT
-══════════════════════════════════════════════════════ */
-function applyToken(token) {
-    ghToken = token.trim();
-    document.getElementById('gh-token-input').value = ghToken;
-    document.getElementById('token-status').textContent = ghToken ? '✓ Token set' : 'No token';
-    document.getElementById('token-status').className = ghToken
-        ? 'text-xs text-green-500' : 'text-xs text-on-surface-variant';
-    if (ghToken) sessionStorage.setItem('ghToken', ghToken);
-    else         sessionStorage.removeItem('ghToken');
-}
-
-document.getElementById('gh-token-save').addEventListener('click', () => {
-    applyToken(document.getElementById('gh-token-input').value);
-    showToast('Token updated');
-    loadData();
-});
-
-/* ══════════════════════════════════════════════════════
-   GEMINI KEY
-══════════════════════════════════════════════════════ */
-document.getElementById('gemini-key-input').value = localStorage.getItem('gemini_api_key') || '';
-if (typeof CONFIG !== 'undefined' && CONFIG.GEMINI_API_KEY && !localStorage.getItem('gemini_api_key')) {
-    localStorage.setItem('gemini_api_key', CONFIG.GEMINI_API_KEY);
-    document.getElementById('gemini-key-input').value = CONFIG.GEMINI_API_KEY;
-}
-document.getElementById('gemini-save-btn').addEventListener('click', () => {
-    localStorage.setItem('gemini_api_key', document.getElementById('gemini-key-input').value.trim());
-    showToast('Gemini API Key saved');
-    document.getElementById('gemini-save-btn').textContent = '✓ Saved!';
-    setTimeout(() => document.getElementById('gemini-save-btn').textContent = 'Save Key', 1500);
-});
-
-
-
-/* ══════════════════════════════════════════════════════
-   LOGIN / LOGOUT
-══════════════════════════════════════════════════════ */
-function attemptLogin() {
-    const pin   = document.getElementById('login-input').value;
-    const token = document.getElementById('login-gh-token').value.trim();
-    if (pin !== PASSCODE) {
-        document.getElementById('login-error').classList.remove('hidden');
-        document.getElementById('login-input').value = '';
-        setTimeout(() => document.getElementById('login-error').classList.add('hidden'), 2500);
-        return;
-    }
-    // Apply token (even if empty — user can set later)
-    applyToken(token || sessionStorage.getItem('ghToken') || '');
-
-    document.getElementById('login-screen').style.display  = 'none';
-    document.getElementById('admin-main').classList.remove('hidden');
-    loadData();
-}
-
-document.getElementById('login-btn').addEventListener('click', attemptLogin);
-document.getElementById('login-input').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
-
-document.getElementById('logout-btn').addEventListener('click', () => {
-    document.getElementById('admin-main').classList.add('hidden');
-    document.getElementById('login-screen').style.display = '';
-    document.getElementById('login-input').value           = '';
-    document.getElementById('login-gh-token').value        = '';
-    ghToken = '';
-});
-
-// Auto-restore session
-(function restoreSession() {
-    const savedToken = sessionStorage.getItem('ghToken');
-    if (savedToken) document.getElementById('login-gh-token').value = savedToken;
-})();
-
-/* ══════════════════════════════════════════════════════
-   UI HELPERS
-══════════════════════════════════════════════════════ */
-function setBadge(ok, msg) {
-    const b = document.getElementById('gh-status-badge');
-    if (ok) {
-        b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Database Connected`;
-        b.className  = 'inline-flex items-center gap-1.5 text-label-md text-green-500 bg-green-500/10 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30';
-    } else {
-        b.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> ${msg || 'Disconnected'}`;
-        b.className  = 'inline-flex items-center gap-1.5 text-label-md text-red-500 bg-red-500/10 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30';
-    }
-}
-
-function showLoading(msg) {
-    const ov = document.getElementById('loading-overlay');
-    document.getElementById('loading-msg').textContent = msg || 'Loading…';
-    ov.classList.remove('hidden');
-}
-function hideLoading() {
-    document.getElementById('loading-overlay').classList.add('hidden');
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-function confirmDialog(msg, cb) {
-    document.getElementById('confirm-msg').textContent = msg;
-    confirmCb = cb;
-    document.getElementById('confirm-modal').classList.add('open');
-}
-document.getElementById('confirm-yes').addEventListener('click', () => {
-    document.getElementById('confirm-modal').classList.remove('open');
-    if (confirmCb) confirmCb();
-    confirmCb = null;
-});
-document.getElementById('confirm-no').addEventListener('click', () => {
-    document.getElementById('confirm-modal').classList.remove('open');
-    confirmCb = null;
-});
-
-window.toggleSection = function(header) {
-    const body = header.closest('.glass').querySelector('.grid, .collapsible-body');
-    const icon = header.querySelector('.toggle-icon');
-    if (!body) return;
-    body.classList.toggle('hidden');
-    if (icon) icon.textContent = body.classList.contains('hidden') ? 'expand_more' : 'expand_less';
-};
-
-/* ══════════════════════════════════════════════════════
-   BUTTONS WIRING
-══════════════════════════════════════════════════════ */
-document.getElementById('add-work-btn').addEventListener('click',    () => openWorkModal(null));
-document.getElementById('add-contact-btn').addEventListener('click', () => openContactModal(null));
-
-/* ══════════════════════════════════════════════════════
-   WEBGL DOT-GRID BACKGROUND
-══════════════════════════════════════════════════════ */
-(function initBG() {
-    const canvas = document.getElementById('bg-canvas');
-    if (!canvas) return;
-    const gl = canvas.getContext('webgl');
-    if (!gl) return;
-    const vert = `attribute vec2 a_p; varying vec2 v_t; void main(){ v_t=a_p*.5+.5; v_t.y=1.-v_t.y; gl_Position=vec4(a_p,0,1); }`;
-    const frag = `precision highp float;
-        uniform vec2 u_r,u_m; uniform float u_s,u_d; varying vec2 v_t;
-        void main(){
-            vec2 px=v_t*u_r;
-            float g=clamp(v_t.x*.5+v_t.y*.5,0.,1.);
-            vec3 bgL=mix(vec3(.98,.965,.922),vec3(1.,.992,.969),g),bgD=vec3(.063,.078,.102);
-            vec3 bg=mix(bgL,bgD,u_d);
-            float sp=26.;vec2 cell=mod(px+sp*.5,sp)-sp*.5;
-            float dot=1.-smoothstep(0.0,1.6,length(cell));
-            float sd=length(px-u_m*u_r);float spot=u_s*exp(-sd*sd/(2.*95.*95.));
-            vec3 dL=mix(vec3(.75,.72,.65),vec3(.35,.38,.45),u_d),dH=vec3(3.0,3.0,3.0);
-            float dim=mix(.35,.25,u_d),lit=dim+spot*2.0,br=mix(dim,lit,spot);
-            vec3 c=bg+mix(dL,dH,spot)*br*dot;
-            gl_FragColor=vec4(c,1.);
-        }`;
-    function mkShader(type, src) {
-        const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;
-    }
-    const prog=gl.createProgram();
-    gl.attachShader(prog,mkShader(gl.VERTEX_SHADER,vert));
-    gl.attachShader(prog,mkShader(gl.FRAGMENT_SHADER,frag));
-    gl.linkProgram(prog);
-    const buf=gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-    const pL=gl.getAttribLocation(prog,'a_p');
-    const rL=gl.getUniformLocation(prog,'u_r'),mL=gl.getUniformLocation(prog,'u_m'),sL=gl.getUniformLocation(prog,'u_s'),dL=gl.getUniformLocation(prog,'u_d');
-    const mouse={x:.5,y:.5},tgt={x:.5,y:.5};let spot=0,ts=0,pin=false,dT=document.documentElement.classList.contains('dark')?1:0;
-    function onMv(e){tgt.x=e.clientX/innerWidth;tgt.y=e.clientY/innerHeight;ts=1;pin=true;}
-    document.addEventListener('mousemove',onMv,{passive:true});
-    document.addEventListener('mouseleave',()=>{pin=false;ts=0;});
-    document.addEventListener('touchmove',e=>{const t=e.touches[0];if(t)onMv({clientX:t.clientX,clientY:t.clientY});},{passive:true});
-    function render(){
-        canvas.width=innerWidth;canvas.height=innerHeight;
-        gl.viewport(0,0,canvas.width,canvas.height);
-        const l=pin?.14:.06;mouse.x+=(tgt.x-mouse.x)*l;mouse.y+=(tgt.y-mouse.y)*l;
-        spot+=(ts-spot)*.12;
-        const id=document.documentElement.classList.contains('dark')?1:0;
-        dT+=(id-dT)*.1;
-        gl.useProgram(prog);gl.enableVertexAttribArray(pL);
-        gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.vertexAttribPointer(pL,2,gl.FLOAT,false,0,0);
-        gl.uniform2f(rL,canvas.width,canvas.height);gl.uniform2f(mL,mouse.x,mouse.y);
-        gl.uniform1f(sL,spot);gl.uniform1f(dL,dT);
-        gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
-})();
-
-/* ══════════════════════════════════════════════════════
-   THEME TOGGLE
-══════════════════════════════════════════════════════ */
-(function initTheme() {
-    const btn  = document.getElementById('theme-toggle');
-    const icon = document.getElementById('theme-icon');
-    if (icon) icon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
-    if (btn) btn.addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        const d = document.documentElement.classList.contains('dark');
-        localStorage.setItem('theme', d ? 'dark' : 'light');
-        if (icon) icon.textContent = d ? 'light_mode' : 'dark_mode';
-    });
-})();
-
-})();
-</script>
 </body>
 </html>
