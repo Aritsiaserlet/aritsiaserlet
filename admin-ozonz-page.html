@@ -629,9 +629,25 @@
                         <div class="space-y-2">
                             <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
                             <select class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none" disabled>
-                                <option>Professional & Technical (Default)</option>
-                            </select>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Team Library Card -->
+                <div class="glass rounded-2xl p-stack-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary">groups</span>
+                            </div>
+                            <h3 class="font-headline-md text-headline-md text-on-surface">Team Library</h3>
+                        </div>
+                        <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" onclick="document.getElementById('team-modal').classList.add('open')">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                    <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2 scroll-hide" id="team-library-list">
+                        <p class="text-on-surface-variant text-sm text-center py-4">No team members yet.</p>
                     </div>
                 </div>
             </div>
@@ -710,6 +726,13 @@
                 <button type="button" id="add-link-btn" class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
                     <span class="material-symbols-outlined text-sm">add</span> Add Link
                 </button>
+            </div>
+
+            <div>
+                <label class="font-label-md text-xs text-primary mb-1 block">Collaborators / Team</label>
+                <div id="work-team-wrap" class="flex flex-col gap-2 mb-2 max-h-[150px] overflow-y-auto bg-surface-container/30 border border-outline/20 rounded-xl p-3">
+                    <p class="text-xs text-on-surface-variant text-center">Loading team members...</p>
+                </div>
             </div>
 
             <div>
@@ -792,6 +815,48 @@
                 <button type="button" id="contact-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
                 <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
                     Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════ TEAM MODAL ═══════════════ -->
+<div id="team-modal" class="modal-backdrop">
+    <div class="glass max-w-md w-full rounded-2xl shadow-2xl p-stack-lg animate-in fade-in zoom-in duration-300">
+        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md">Add Team Member</h2>
+        <form id="team-form" class="space-y-4">
+            <div>
+                <label class="font-label-md text-xs text-primary mb-1 block">Member Name</label>
+                <input type="text" id="team-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. John Doe" />
+            </div>
+            <div>
+                <label class="font-label-md text-xs text-primary mb-1 block">Link URL (optional)</label>
+                <input type="url" id="team-link" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. https://github.com/john" />
+            </div>
+            <!-- Contact Image upload for Team Member -->
+            <div>
+                <label class="font-label-md text-xs text-primary mb-1 block">Avatar Image (optional)</label>
+                <div class="img-drop-zone p-4 mb-2" id="team-img-drop-zone" title="Click or drag image here">
+                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
+                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
+                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+                    <button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>
+                </div>
+                <input type="file" id="team-img-file-input" accept="image/*" class="hidden" />
+
+                <div class="img-upload-progress mb-2" id="team-img-upload-progress">
+                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
+                    <div class="progress-bar-wrap"><div class="progress-bar" id="team-img-progress-bar" style="width:0%"></div></div>
+                    <span id="team-img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
+                </div>
+                <input type="hidden" id="team-image-val" />
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="document.getElementById('team-modal').classList.remove('open')" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
+                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
+                    Save Member
                 </button>
             </div>
         </form>
