@@ -1382,7 +1382,7 @@
     try {
       // Query raw GitHub user content to prevent API rate limit (403 errors)
       let worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`);
-      let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
+      let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`);
       
       if (worksRes.ok) {
           globalWorks = await worksRes.json();
@@ -1406,7 +1406,7 @@
           globalSettings.socials = ensureItchContact(globalSettings.socials);
       }
       
-      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
+      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
       let sharedSettings = {};
       if (sharedSettingsRes.ok) sharedSettings = await sharedSettingsRes.json();
       
@@ -1444,7 +1444,7 @@
 
       // Query raw GitHub user content to prevent API rate limit (403 errors)
       rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
-      rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+      rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
 
       if (rWorks !== null) globalWorks = rWorks;
       if (rSettings !== null) globalSettings = rSettings;
