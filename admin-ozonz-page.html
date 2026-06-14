@@ -1326,26 +1326,14 @@ let pendingImageFile = null;
 
 window.resetImageZone = function resetImageZone() {
     pendingImageFile = null;
-    const zone = document.getElementById('img-drop-zone');
-    zone.classList.remove('has-image');
-    zone.innerHTML = `
-        <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-        <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-        <span class="remove-img">✕ Remove</span>
-    `;
     document.getElementById('img-file-input').value = '';
     document.getElementById('img-upload-progress').classList.remove('visible');
     document.getElementById('work-image').value = '';
 };
 
 function setImagePreviewUrl(url) {
-    const zone = document.getElementById('img-drop-zone');
-    zone.classList.add('has-image');
-    zone.innerHTML = `
-        <img class="preview" src="${url}" alt="preview" />
-        <span class="remove-img">✕ Remove</span>
-    `;
+    // The sleek UI does not have an image preview drop zone.
+    // If we wanted, we could update the input value or add a small preview thumbnail elsewhere.
 }
 
 function setImagePreviewBlob(file) {
