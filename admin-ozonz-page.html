@@ -958,7 +958,7 @@ async function syncGitHubProfileToSettings() {
 ══════════════════════════════════════════════════════ */
 async function loadAritsiaTeams() {
     try {
-        const res = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
+        const res = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
         if (res.ok) {
             const data = await res.json();
             if (data.teams) {
