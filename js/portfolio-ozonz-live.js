@@ -1308,6 +1308,7 @@
     const closeBtn = document.getElementById('project-detail-close-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
+        if (window.carouselInterval) clearInterval(window.carouselInterval);
         document.getElementById('project-detail-modal').classList.add('hidden');
         document.body.style.overflow = '';
       });
@@ -1316,6 +1317,7 @@
     if (modal) {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
+          if (window.carouselInterval) clearInterval(window.carouselInterval);
           modal.classList.add('hidden');
           document.body.style.overflow = '';
         }

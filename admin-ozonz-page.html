@@ -629,7 +629,7 @@
                         <label class="cursor-pointer bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-all">
                             <span class="material-symbols-outlined text-sm">upload</span>
                             <span>Upload</span>
-                            <input accept="image/*" class="hidden" id="img-file-input" type="file"/>
+                            <input accept="image/*" class="hidden" id="img-file-input" type="file" multiple/>
                         </label>
                     </div>
                     <div class="img-upload-progress mt-2" id="img-upload-progress">
@@ -637,6 +637,8 @@
                         <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
                         <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
                     </div>
+                    <!-- Preview queue for multiple images -->
+                    <div id="img-preview-queue" class="flex flex-wrap gap-2 mt-3 empty:hidden"></div>
                 </div>
 
                 <div>
@@ -1207,6 +1209,16 @@ window.openWorkModal = function(id) {
     const img = w?.image;
     const imgVal = Array.isArray(img) ? img[0] : (img || '');
     document.getElementById('work-image').value = imgVal;
+    
+    // Fill image preview queue with existing images
+    const queue = document.getElementById('img-preview-queue');
+    queue.innerHTML = '';
+    let existingImgs = w?.images || [];
+    if (existingImgs.length === 0 && imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
+        existingImgs = [imgVal];
+    }
+    existingImgs.forEach(u => renderQueueItem(u, false));
+
     const tags = w?.tags;
     document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
     document.getElementById('work-desc').value  = w?.desc  || '';
@@ -1224,11 +1236,6 @@ window.openWorkModal = function(id) {
     m.classList.add('open');
     
     // Removed modal positional reset since it is no longer draggable.
-
-    // If editing and has a valid image URL, show preview
-    if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
-        setImagePreviewUrl(imgVal);
-    }
 
     // Links
     renderLinkRows(w?.links || []);
@@ -1271,21 +1278,29 @@ function collectLinks() {
 
 document.getElementById('work-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (pendingImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
+    if (pendingImageFiles.length > 0 && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
 
     const editId  = document.getElementById('work-edit-id').value;
     const tagsVal = document.getElementById('work-tags').value.trim();
 
-    // ── Upload pending image to GitHub if any ──
-    let imgVal = document.getElementById('work-image').value.trim();
-    if (pendingImageFile) {
-        const uploaded = await uploadImageToGitHub(pendingImageFile);
-        if (uploaded) {
-            imgVal = uploaded;
-            document.getElementById('work-image').value = imgVal;
+    // Gather existing URLs from the queue
+    const queueItems = Array.from(document.querySelectorAll('.img-queue-item[data-url]'));
+    let finalImageUrls = queueItems.map(item => item.getAttribute('data-url'));
+
+    // Upload pending images
+    if (pendingImageFiles.length > 0) {
+        const uploadedUrls = await uploadImagesToGitHub(pendingImageFiles);
+        if (uploadedUrls && uploadedUrls.length === pendingImageFiles.length) {
+            finalImageUrls = finalImageUrls.concat(uploadedUrls);
         } else {
-            return; // upload failed, abort
+            return; // upload failed
         }
+    }
+
+    let imgVal = document.getElementById('work-image').value.trim();
+    if (finalImageUrls.length > 0) {
+        imgVal = finalImageUrls[0];
+        document.getElementById('work-image').value = imgVal;
     }
 
     const entry = {
@@ -1297,6 +1312,7 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
         year:  document.getElementById('work-year').value.trim(),
         aiSummary: document.getElementById('work-ai-summary').value.trim(),
         image: imgVal,
+        images: finalImageUrls,
         tags:  tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
         links: collectLinks(),
         team:  Array.from(document.querySelectorAll('.collab-checkbox:checked')).map(cb => cb.value),
@@ -1323,84 +1339,119 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
 /* ══════════════════════════════════════════════════════
    IMAGE UPLOAD SYSTEM
 ══════════════════════════════════════════════════════ */
-let pendingImageFile = null;
+let pendingImageFiles = [];
 
 window.resetImageZone = function resetImageZone() {
-    pendingImageFile = null;
+    pendingImageFiles = [];
     document.getElementById('img-file-input').value = '';
     document.getElementById('img-upload-progress').classList.remove('visible');
     document.getElementById('work-image').value = '';
+    const q = document.getElementById('img-preview-queue');
+    if (q) q.innerHTML = '';
 };
 
-function setImagePreviewUrl(url) {
-    // The sleek UI does not have an image preview drop zone.
-    // If we wanted, we could update the input value or add a small preview thumbnail elsewhere.
+function renderQueueItem(source, isPending, fileObj = null) {
+    const queue = document.getElementById('img-preview-queue');
+    const div = document.createElement('div');
+    div.className = 'img-queue-item relative w-16 h-16 rounded-md overflow-hidden border border-outline/20 group';
+    
+    if (!isPending) {
+        div.setAttribute('data-url', source);
+    }
+    
+    const img = document.createElement('img');
+    img.src = isPending ? URL.createObjectURL(source) : source;
+    img.className = 'w-full h-full object-cover';
+    div.appendChild(img);
+    
+    const rmBtn = document.createElement('button');
+    rmBtn.type = 'button';
+    rmBtn.className = 'absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+    rmBtn.innerHTML = '<span class="material-symbols-outlined text-sm">delete</span>';
+    rmBtn.onclick = () => {
+        div.remove();
+        if (isPending) {
+            pendingImageFiles = pendingImageFiles.filter(f => f !== source);
+            if (pendingImageFiles.length === 0) document.getElementById('work-image').value = '';
+        }
+    };
+    div.appendChild(rmBtn);
+    queue.appendChild(div);
 }
 
-function setImagePreviewBlob(file) {
-    const url = URL.createObjectURL(file);
-    setImagePreviewUrl(url);
-}
-
-async function uploadImageToGitHub(file) {
+async function uploadImagesToGitHub(files) {
     const progress = document.getElementById('img-upload-progress');
     const bar      = document.getElementById('img-progress-bar');
     const label    = document.getElementById('img-progress-label');
     progress.classList.add('visible');
-    bar.style.width = '0%';
-    label.textContent = 'Reading file…';
-    label.style.color = ''; // reset color to default
-
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            try {
-                bar.style.width = '30%';
-                label.textContent = 'Uploading to GitHub…';
-                const base64   = ev.target.result.split(',')[1];
-                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-                const filename = `works/${Date.now()}_ozonz.${ext}`;
-                bar.style.width = '60%';
-                await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
-                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
-                bar.style.width = '100%';
-                label.textContent = '✓ Uploaded!';
-                setTimeout(() => progress.classList.remove('visible'), 1500);
-                resolve(rawUrl);
-            } catch (err) {
-                bar.style.width = '0%';
-                label.textContent = `Error: ${err.message}`;
-                label.style.color = '#ef4444';
-                showToast('Image upload failed: ' + err.message);
-                resolve(null);
-            }
-        };
-        reader.readAsDataURL(file);
-    });
+    
+    let uploadedUrls = [];
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        bar.style.width = `${(i / files.length) * 100}%`;
+        label.textContent = `Uploading file ${i+1} of ${files.length}…`;
+        label.style.color = '';
+        
+        try {
+            const rawUrl = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    try {
+                        const base64   = ev.target.result.split(',')[1];
+                        const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
+                        const filename = `works/${Date.now()}_${i}_ozonz.${ext}`;
+                        await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
+                        resolve(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`);
+                    } catch (err) { reject(err); }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+            uploadedUrls.push(rawUrl);
+        } catch (err) {
+            bar.style.width = '0%';
+            label.textContent = `Error: ${err.message}`;
+            label.style.color = '#ef4444';
+            showToast('Image upload failed: ' + err.message);
+            return null;
+        }
+    }
+    
+    bar.style.width = '100%';
+    label.textContent = '✓ Uploaded!';
+    setTimeout(() => progress.classList.remove('visible'), 1500);
+    return uploadedUrls;
 }
 
-function handleImageFile(file) {
-    if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
-    if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
-    pendingImageFile = file;
-    // Just update the input to show the file name as a visual cue
-    document.getElementById('work-image').value = file.name + ' (Pending)';
+function handleImageFiles(files) {
+    for (const file of files) {
+        if (!file || !file.type.startsWith('image/')) { showToast(`Skipping non-image file: ${file.name}`); continue; }
+        if (file.size > 4 * 1024 * 1024) { showToast(`Skipping large file: ${file.name} (max 4MB)`); continue; }
+        pendingImageFiles.push(file);
+        renderQueueItem(file, true);
+    }
+    if (pendingImageFiles.length > 0) {
+        document.getElementById('work-image').value = pendingImageFiles.length + ' file(s) pending';
+    }
 }
 
 document.getElementById('img-file-input').addEventListener('change', (e) => {
-    if (e.target.files[0]) handleImageFile(e.target.files[0]);
+    if (e.target.files.length > 0) handleImageFiles(e.target.files);
 });
 
 // Paste from clipboard (Ctrl+V)
 document.getElementById('work-modal').addEventListener('paste', (e) => {
     const items = e.clipboardData?.items;
     if (!items) return;
+    const files = [];
     for (const item of items) {
         if (item.type.startsWith('image/')) {
             const file = item.getAsFile();
-            if (file) { handleImageFile(file); break; }
+            if (file) files.push(file);
         }
     }
+    if (files.length > 0) handleImageFiles(files);
 });
 
 window.deleteWork = function(id) {
