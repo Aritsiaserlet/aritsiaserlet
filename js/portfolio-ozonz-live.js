@@ -404,7 +404,7 @@
       uniform float u_holdDown;
       // x,y = pos, z = time, w = intensity
       uniform vec4 u_waves[50];
-      uniform vec4 u_textRects[35];
+      uniform vec4 u_textRects[80];
       varying vec2 v_texCoord;
 
       void main() {
@@ -499,7 +499,7 @@
 
         // Text glow accumulation
         float textGlow = 0.0;
-        for (int i = 0; i < 35; i++) {
+        for (int i = 0; i < 80; i++) {
             vec4 r = u_textRects[i];
             if (r.z > 0.0) {
                 vec2 d = abs(px - r.xy) - r.zw;
@@ -603,10 +603,10 @@
     let pointerInside = false;
     let lastMoveTime = performance.now();
 
-    const textRectsData = new Float32Array(35 * 4);
+    const textRectsData = new Float32Array(80 * 4);
     let textElements = [];
     function findTextElements() {
-      textElements = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .roles-tag'))
+      textElements = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .roles-tag, .group'))
         .filter(el => {
           if (el.closest('.pixel-card') || 
               el.closest('#project-detail-modal') || 
@@ -772,7 +772,7 @@
 
       // Update bounding boxes in textRectsData
       textRectsData.fill(0);
-      const limit = Math.min(textElements.length, 35);
+      const limit = Math.min(textElements.length, 80);
       for (let i = 0; i < limit; i++) {
           const el = textElements[i];
           if (el.offsetWidth === 0 && el.offsetHeight === 0) continue;
