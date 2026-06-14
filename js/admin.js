@@ -55,6 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
     GH_TOKEN = savedToken;
     document.getElementById('adminPanel').style.display = 'block';
     loadWorks();
+    loadAritsiaTeams();
     loadSettings();
   }
 });
@@ -1410,8 +1411,10 @@ function editWork(id) {
   document.getElementById('editBanner').classList.add('visible');
   document.getElementById('submitBtn').textContent = 'SAVE CHANGES';
   document.getElementById('previewBtn').textContent = 'PREVIEW CHANGES';
+  document.getElementById('cancelBtn').style.display = 'block';
 
-  // Scroll to form
+  // Open the add work panel and scroll to it
+  document.getElementById('addWorkPanel').classList.remove('collapsed');
   document.getElementById('imgPreview').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
@@ -1604,23 +1607,34 @@ async function saveTeamLibrary() {
   }
 }
 
+let aritsiaTeams = [];
+
+async function loadAritsiaTeams() {
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.teams) aritsiaTeams = data.teams;
+    }
+  } catch (e) {
+    console.warn("Failed to fetch Aritsia teams", e);
+  }
+  renderTeamCheckboxList();
+}
+
 function renderTeamCheckboxList() {
   const box = document.getElementById('teamCheckboxList');
   if(!box) return;
   box.innerHTML = '';
-  if(!settings.teams || settings.teams.length === 0) {
-    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No team members available. Add some in the Team Library.</div>';
+  if(!aritsiaTeams || aritsiaTeams.length === 0) {
+    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No team members available from Aritsiaserlet.</div>';
     return;
   }
   
-  settings.teams.forEach(tm => {
+  aritsiaTeams.forEach(tm => {
     const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
     
-    let iconHtml = '';
-    if(tm.iconId && settings.icons) {
-      const ic = settings.icons.find(x => x.id === tm.iconId);
-      if(ic) iconHtml = `<img src="${ic.url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">`;
-    }
+    let iconHtml = tm.iconId ? `<img src="${tm.iconId}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : (tm.image ? `<img src="${tm.image}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : `<div style="width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;">${tm.name.charAt(0).toUpperCase()}</div>`);
 
     box.innerHTML += `
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">
