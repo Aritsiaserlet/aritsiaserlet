@@ -25,97 +25,7 @@
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-primary-container": "var(--on-primary-container)",
-                    "tertiary-fixed-dim": "var(--tertiary-fixed-dim)",
-                    "inverse-on-surface": "var(--inverse-on-surface)",
-                    "surface-dim": "var(--surface-dim)",
-                    "inverse-primary": "var(--inverse-primary)",
-                    "surface": "var(--surface)",
-                    "on-primary-fixed": "var(--on-primary-fixed)",
-                    "surface-container-high": "var(--surface-container-high)",
-                    "on-tertiary": "var(--on-tertiary)",
-                    "on-background": "var(--on-background)",
-                    "secondary-fixed": "var(--secondary-fixed)",
-                    "on-secondary-fixed-variant": "var(--on-secondary-fixed-variant)",
-                    "background": "var(--background)",
-                    "error-container": "var(--error-container)",
-                    "on-error": "var(--on-error)",
-                    "surface-bright": "var(--surface-bright)",
-                    "secondary": "var(--secondary)",
-                    "surface-container-low": "var(--surface-container-low)",
-                    "surface-container": "var(--surface-container)",
-                    "on-error-container": "var(--on-error-container)",
-                    "secondary-fixed-dim": "var(--secondary-fixed-dim)",
-                    "surface-variant": "var(--surface-variant)",
-                    "on-primary": "var(--on-primary)",
-                    "secondary-container": "var(--secondary-container)",
-                    "surface-tint": "var(--surface-tint)",
-                    "on-surface": "var(--on-surface)",
-                    "primary-fixed-dim": "var(--primary-fixed-dim)",
-                    "tertiary-container": "var(--tertiary-container)",
-                    "tertiary": "var(--tertiary)",
-                    "tertiary-fixed": "var(--tertiary-fixed)",
-                    "outline-variant": "var(--outline-variant)",
-                    "inverse-surface": "var(--inverse-surface)",
-                    "on-secondary": "var(--on-secondary)",
-                    "surface-container-highest": "var(--surface-container-highest)",
-                    "on-surface-variant": "var(--on-surface-variant)",
-                    "primary": "var(--primary)",
-                    "on-secondary-container": "var(--on-secondary-container)",
-                    "error": "var(--error)",
-                    "on-tertiary-container": "var(--on-tertiary-container)",
-                    "on-secondary-fixed": "var(--on-secondary-fixed)",
-                    "primary-container": "var(--primary-container)",
-                    "on-primary-fixed-variant": "var(--on-primary-fixed-variant)",
-                    "primary-fixed": "var(--primary-fixed)",
-                    "on-tertiary-fixed": "var(--on-tertiary-fixed)",
-                    "outline": "var(--outline)",
-                    "surface-container-lowest": "var(--surface-container-lowest)",
-                    "on-tertiary-fixed-variant": "var(--on-tertiary-fixed-variant)"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "gutter": "24px",
-                    "stack-md": "16px",
-                    "stack-lg": "32px",
-                    "stack-sm": "8px",
-                    "margin-x": "32px",
-                    "container-max": "1440px"
-            },
-            "fontFamily": {
-                    "headline-md": ["Mitr"],
-                    "body-md": ["Space Grotesk"],
-                    "data-mono": ["Space Grotesk"],
-                    "label-md": ["Space Grotesk"],
-                    "headline-lg": ["Mitr"],
-                    "display-lg": ["Mitr"],
-                    "body-lg": ["Space Grotesk"]
-            },
-            "fontSize": {
-                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "400"}],
-                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                    "data-mono": ["14px", {"lineHeight": "1", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
-                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "500"}],
-                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
-            }
-          },
-        },
-      }
-    </script>
+    <link rel="stylesheet" href="css/tailwind.css">
     <style>
         :root {
             /* Light mode color values from the new template */
@@ -633,23 +543,7 @@
                     </div>
                 </div>
 
-                <!-- Team Library Card -->
-                <div class="glass rounded-2xl p-stack-md">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                                <span class="material-symbols-outlined text-primary">groups</span>
-                            </div>
-                            <h3 class="font-headline-md text-headline-md text-on-surface">Team Library</h3>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" onclick="document.getElementById('team-modal').classList.add('open')">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                    </div>
-                    <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2 scroll-hide" id="team-library-list">
-                        <p class="text-on-surface-variant text-sm text-center py-4">No team members yet.</p>
-                    </div>
-                </div>
+
             </div>
         </div>
     </main>
@@ -821,47 +715,7 @@
     </div>
 </div>
 
-<!-- ═══════════════ TEAM MODAL ═══════════════ -->
-<div id="team-modal" class="modal-backdrop">
-    <div class="glass max-w-md w-full rounded-2xl shadow-2xl p-stack-lg animate-in fade-in zoom-in duration-300">
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md">Add Team Member</h2>
-        <form id="team-form" class="space-y-4">
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Member Name</label>
-                <input type="text" id="team-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. John Doe" />
-            </div>
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Link URL (optional)</label>
-                <input type="url" id="team-link" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. https://github.com/john" />
-            </div>
-            <!-- Contact Image upload for Team Member -->
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Avatar Image (optional)</label>
-                <div class="img-drop-zone p-4 mb-2" id="team-img-drop-zone" title="Click or drag image here">
-                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-                    <button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>
-                </div>
-                <input type="file" id="team-img-file-input" accept="image/*" class="hidden" />
 
-                <div class="img-upload-progress mb-2" id="team-img-upload-progress">
-                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
-                    <div class="progress-bar-wrap"><div class="progress-bar" id="team-img-progress-bar" style="width:0%"></div></div>
-                    <span id="team-img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
-                </div>
-                <input type="hidden" id="team-image-val" />
-            </div>
-            
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" onclick="document.getElementById('team-modal').classList.remove('open')" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
-                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
-                    Save Member
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- Confirm modal -->
 <div id="confirm-modal" class="modal-backdrop">
@@ -902,6 +756,7 @@ let ozonzSettings = {};        // { socials: [] }
 let settingsSha   = null;
 let confirmCb     = null;
 let selectedTeams = [];
+let aritsiaTeams  = [];
 
 const itchContact = {
     name: "ITCH.IO",
@@ -1159,6 +1014,14 @@ async function loadData() {
         
         ozonzSettings = loadedSettings;
         
+        try {
+            const aritsiaRes = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
+            if (aritsiaRes.ok) {
+                const aritsiaData = await aritsiaRes.json();
+                if (aritsiaData.teams) aritsiaTeams = aritsiaData.teams;
+            }
+        } catch (e) { console.warn("Failed to fetch Aritsia teams", e); }
+        
         setBadge(true, 'Connected to GitHub');
 
         if (ghToken) {
@@ -1173,7 +1036,6 @@ async function loadData() {
     }
     renderWorks();
     renderContacts();
-    renderTeamLibrary();
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1962,6 +1824,34 @@ window.moveContactItem = async function(idx, direction) {
     const ok = await saveSettings(`Reorder contact: ${temp.name || 'item'}`);
     if (ok) {
         renderContacts();
+    }
+};
+
+window.renderTeamCheckboxList = function() {
+    const wrap = document.getElementById('work-team-wrap');
+    if (!wrap) return;
+    if (!aritsiaTeams || aritsiaTeams.length === 0) {
+        wrap.innerHTML = '<p class="text-xs text-on-surface-variant text-center">No team members available. Add them in ARITSIA Admin.</p>';
+        return;
+    }
+    wrap.innerHTML = aritsiaTeams.map(tm => {
+        const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
+        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : `<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">${tm.name.charAt(0).toUpperCase()}</div>`);
+        return `
+        <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-variant/30 transition-colors">
+            <input type="checkbox" value="${tm.id}" ${checked} onchange="toggleTeamSelection('${tm.id}', this.checked)" class="rounded text-primary focus:ring-primary bg-surface-container border-outline/30">
+            ${iconHtml}
+            <span class="text-sm text-on-surface">${tm.name}</span>
+        </label>
+        `;
+    }).join('');
+};
+
+window.toggleTeamSelection = function(id, isChecked) {
+    if (isChecked) {
+        if (!selectedTeams.includes(id)) selectedTeams.push(id);
+    } else {
+        selectedTeams = selectedTeams.filter(t => t !== id);
     }
 };
 
