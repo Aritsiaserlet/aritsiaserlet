@@ -1102,8 +1102,13 @@
 
 
 
-    <script src="js/config.js"
-        onerror="console.warn('Local config.js not found. Fallback to browser storage for API keys.')"></script>
+    <script>
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            const s = document.createElement('script');
+            s.src = 'js/config.js';
+            document.head.appendChild(s);
+        }
+    </script>
     <script type="module" src="js/portfolio-ozonz-live.js?v=14" defer></script>
     <script>
             // Hide scroll indicator once user scrolls down
