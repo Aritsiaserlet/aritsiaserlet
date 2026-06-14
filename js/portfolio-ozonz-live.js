@@ -1380,24 +1380,9 @@
 
   async function fetchPortfolioData() {
     try {
-      const t = sessionStorage.getItem('ghToken');
-      let worksRes, settingsRes;
-
-      const headers = { 'Accept': 'application/vnd.github.v3.raw' };
-      if (t) {
-        headers['Authorization'] = `token ${t}`;
-      }
-
-      // Query GitHub API directly (authenticated or anonymously) for real-time updates
-      worksRes = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_works.json?ref=main&t=${Date.now()}`, { headers }).catch(() => null);
-      settingsRes = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_settings.json?ref=main&t=${Date.now()}`, { headers }).catch(() => null);
-
-      if (!worksRes || !worksRes.ok) {
-        worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`);
-      }
-      if (!settingsRes || !settingsRes.ok) {
-        settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`);
-      }
+      // Query raw GitHub user content to prevent API rate limit (403 errors)
+      let worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`);
+      let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
       
       if (worksRes.ok) {
           globalWorks = await worksRes.json();
@@ -1457,24 +1442,9 @@
       let rWorks = null;
       let rSettings = null;
 
-      const headers = { 'Accept': 'application/vnd.github.v3.raw' };
-      if (t) {
-        headers['Authorization'] = `token ${t}`;
-      }
-
-      // Query GitHub API directly (authenticated or anonymously) for real-time updates
-      rWorks = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_works.json?ref=main&t=${Date.now()}`, { headers })
-        .then(r => r.ok ? r.json() : null).catch(() => null);
-
-      rSettings = await fetch(`https://api.github.com/repos/${DATA_OWNER}/${DATA_REPO}/contents/ozonz_settings.json?ref=main&t=${Date.now()}`, { headers })
-        .then(r => r.ok ? r.json() : null).catch(() => null);
-
-      if (rWorks === null) {
-        rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
-      }
-      if (rSettings === null) {
-        rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
-      }
+      // Query raw GitHub user content to prevent API rate limit (403 errors)
+      let rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+      let rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
 
       if (rWorks !== null) globalWorks = rWorks;
       if (rSettings !== null) globalSettings = rSettings;
