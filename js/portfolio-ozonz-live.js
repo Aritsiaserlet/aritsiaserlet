@@ -970,7 +970,7 @@
                     ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
                 </div>
                 <h3 class="design-featured-title">${featured.title}</h3>
-                <p class="design-featured-tagline">${getShortDescription(featured.detail)}</p>
+                <p class="design-featured-tagline">${featured.tagline || ''}</p>
                 ${
                   featured.aiSummary
                     ? `<p class="text-primary font-bold text-sm tracking-wider uppercase mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
@@ -1026,7 +1026,7 @@
                     </div>
                     
                     <h3 class="design-side-title">${work.title}</h3>
-                    <p class="design-side-tagline">${getShortDescription(work.detail)}</p>
+                    <p class="design-side-tagline">${work.tagline || ''}</p>
                     
                     <div class="design-side-footer">
                         ${
@@ -1085,7 +1085,7 @@
                     </div>
                     
                     <h3 class="design-side-title">${work.title}</h3>
-                    <p class="design-side-tagline">${getShortDescription(work.detail)}</p>
+                    <p class="design-side-tagline">${work.tagline || ''}</p>
                     
                     <div class="design-side-footer">
                         ${
