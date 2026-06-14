@@ -356,7 +356,5 @@
   color: var(--dark);
   outline: none;
 }
-.gset-range { flex: 1; accent-color: var(--dark); max-width: 120px; padding: 0; border: none; background: transparent; }
-  .gset-label {
-    font-family: 'VT323', monospace; font-size: 22px; color: var(--dark); width: 110px; flex-shrink: 0;
-  }
+.gset-range { flex: 1; accent-color: var(--danger); max-width: 200px; padding: 0; border: none; background: transparent; }
+.gset-label { font-family: 'VT323', monospace; font-size: 24px; color: var(--dark); width: 140px; flex-shrink: 0; }
