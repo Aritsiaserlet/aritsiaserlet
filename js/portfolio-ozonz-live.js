@@ -930,30 +930,47 @@
 
     // Featured Card (Index 0)
     const featured = works[0];
-    const isFeaturedImg = featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.');
+    const isFeaturedImg = featured.image && (featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.'));
     const featuredHTML = `
-        <div class="lg:col-span-8 group relative overflow-hidden rounded-2xl border border-outline/30 cursor-pointer work-card-trigger project-glow reveal h-[500px] md:h-[600px] lg:h-full" data-index="0">
-            <div class="absolute inset-0 bg-black/20 z-10 transition-all duration-500 group-hover:bg-black/10"></div>
+        <div class="lg:col-span-8 work-card-trigger design-featured-card reveal" data-index="0">
             ${
               isFeaturedImg
-                ? `<img alt="${featured.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="${featured.image}" />`
-                : `<div class="absolute inset-0 w-full h-full bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${featured.image}</span></div>`
+                ? `<img alt="${featured.title}" class="design-featured-img" src="${featured.image}" />`
+                : `<div class="absolute inset-0 w-full h-full bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${featured.image || 'brush'}</span></div>`
             }
-            <div class="absolute bottom-0 left-0 w-full p-10 z-20 bg-gradient-to-t from-black/85 via-black/40 to-transparent">
-                <div class="flex flex-wrap gap-3 mb-6">
-                    ${featured.tags.split(',').map(tag => `<span class="text-xs font-bold uppercase tracking-[0.2em] text-white mix-blend-difference">${tag.trim()}</span>`).join('')}
+            <div class="design-featured-gradient"></div>
+            
+            <!-- Top badges -->
+            <div class="absolute top-5 left-5 flex gap-2.5 z-10">
+                <span class="design-featured-badge">★ Featured</span>
+            </div>
+            <div class="absolute top-5 right-5 z-10">
+                <span class="design-featured-year">${featured.year || new Date().getFullYear()}</span>
+            </div>
+            
+            <div class="relative z-10 p-8 md:p-10 flex flex-col">
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
                 </div>
-                <h3 class="text-4xl md:text-5xl font-bold mb-4 uppercase mix-blend-difference text-white">${featured.title}</h3>
-                <p class="text-white text-lg max-w-2xl mb-4 mix-blend-difference">${featured.detail}</p>
+                <h3 class="design-featured-title">${featured.title}</h3>
+                <p class="design-featured-tagline">${featured.detail}</p>
                 ${
                   featured.aiSummary
-                    ? `<p class="text-primary font-bold text-sm tracking-wider uppercase mb-8 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
+                    ? `<p class="text-primary font-bold text-sm tracking-wider uppercase mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
                     : ''
                 }
-                <a href="${featured.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="group/btn inline-flex items-center justify-center relative bg-primary text-on-primary px-8 py-4 font-headline font-bold text-sm transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-105 border-4 border-primary hover:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-y-0 overflow-hidden">
-                    <span class="relative z-10 uppercase tracking-widest">Go Itch.io</span>
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] pointer-events-none"></div>
-                </a>
+                <div>
+                    <a href="${featured.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="design-featured-btn">
+                        <span>Visit Project</span>
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="design-hover-center-pulse">
+                <div class="design-pulse-circle">
+                    <span class="material-symbols-outlined text-2xl">open_in_new</span>
+                </div>
             </div>
         </div>
     `;
@@ -967,28 +984,48 @@
 
       sideWorks.forEach((work, index) => {
         const i = index + 1;
-        const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
+        const isImg = work.image && (work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.'));
 
         const cardHTML = `
-            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 flex-1 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger reveal" data-index="${i}">
-                <div>
-                    <div class="w-full h-48 rounded-xl overflow-hidden mb-6 border border-outline/20 bg-surface/20 flex items-center justify-center">
-                        ${
-                          isImg
-                            ? `<img src="${work.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />`
-                            : `<span class="material-symbols-outlined text-primary text-5xl transition-transform duration-500 group-hover:scale-105">${work.image}</span>`
-                        }
-                    </div>
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold uppercase text-on-background">${work.title}</h3>
-                        <span class="text-on-surface-variant font-mono text-sm">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
+            <div class="design-side-card work-card-trigger reveal" data-index="${i}">
+                <div class="design-side-thumbnail">
+                    ${
+                      isImg
+                        ? `<img src="${work.image}" class="design-side-img" />`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-5xl">${work.image || 'brush'}</span></div>`
+                    }
+                    <div class="design-side-fade"></div>
+                    <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
+                    <div class="design-side-hover-overlay">
+                        <div class="design-side-overlay-circle">
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        ${work.tags.split(',').map(tag => `<span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">${tag.trim()}</span>`).join('')}
+                
+                <div class="design-side-body">
+                    <div class="flex flex-wrap gap-1.5 mb-3">
+                        ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
                     </div>
-                    <a href="${work.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="text-sm font-bold text-primary hover:underline uppercase tracking-wider flex items-center gap-2">View Work <span class="material-symbols-outlined text-xs">open_in_new</span></a>
+                    
+                    <h3 class="design-side-title">${work.title}</h3>
+                    <p class="design-side-tagline">${work.detail}</p>
+                    
+                    <div class="design-side-footer">
+                        ${
+                          work.contributors && work.contributors.length > 1
+                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[11px] font-semibold">
+                                 <span class="material-symbols-outlined text-[13px]">group</span>
+                                 ${work.contributors.length} contributors
+                               </span>`
+                            : `<span />`
+                        }
+                        
+                        <span class="design-side-explore">
+                            <span>Explore</span>
+                            <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                        </span>
+                    </div>
                 </div>
             </div>
         `;
@@ -1006,28 +1043,48 @@
 
       extraWorks.forEach((work, index) => {
         const i = index + 3;
-        const isImg = work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.');
+        const isImg = work.image && (work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.'));
 
         const cardHTML = `
-            <div class="pixel-card project-glow p-8 rounded-2xl border border-outline/30 group hover:border-primary/50 transition-all flex flex-col justify-between cursor-pointer work-card-trigger reveal" data-index="${i}">
-                <div>
-                    <div class="w-full h-48 rounded-xl overflow-hidden mb-6 border border-outline/20 bg-surface/20 flex items-center justify-center">
-                        ${
-                          isImg
-                            ? `<img src="${work.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />`
-                            : `<span class="material-symbols-outlined text-primary text-5xl transition-transform duration-500 group-hover:scale-105">${work.image}</span>`
-                        }
-                    </div>
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold uppercase text-on-background">${work.title}</h3>
-                        <span class="text-on-surface-variant font-mono text-sm">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
+            <div class="design-side-card work-card-trigger reveal" data-index="${i}">
+                <div class="design-side-thumbnail">
+                    ${
+                      isImg
+                        ? `<img src="${work.image}" class="design-side-img" />`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-5xl">${work.image || 'brush'}</span></div>`
+                    }
+                    <div class="design-side-fade"></div>
+                    <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
+                    <div class="design-side-hover-overlay">
+                        <div class="design-side-overlay-circle">
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        ${work.tags.split(',').map(tag => `<span class="px-3 py-1.5 bg-surface-variant text-xs rounded font-bold text-primary uppercase tracking-wider">${tag.trim()}</span>`).join('')}
+                
+                <div class="design-side-body">
+                    <div class="flex flex-wrap gap-1.5 mb-3">
+                        ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
                     </div>
-                    <a href="${work.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="text-sm font-bold text-primary hover:underline uppercase tracking-wider flex items-center gap-2">View Work <span class="material-symbols-outlined text-xs">open_in_new</span></a>
+                    
+                    <h3 class="design-side-title">${work.title}</h3>
+                    <p class="design-side-tagline">${work.detail}</p>
+                    
+                    <div class="design-side-footer">
+                        ${
+                          work.contributors && work.contributors.length > 1
+                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[11px] font-semibold">
+                                 <span class="material-symbols-outlined text-[13px]">group</span>
+                                 ${work.contributors.length} contributors
+                               </span>`
+                            : `<span />`
+                        }
+                        
+                        <span class="design-side-explore">
+                            <span>Explore</span>
+                            <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                        </span>
+                    </div>
                 </div>
             </div>
         `;

@@ -477,6 +477,312 @@
             color: #6b7280 !important;
         }
 
+        /* ─── Archive Box & Featured Project UI Design ─── */
+        /* Common variables mapping to the design token colors */
+        :root {
+            --design-tag-bg: rgba(var(--primary-rgb), 0.10);
+            --design-tag-fg: rgb(var(--primary-rgb));
+            --design-glow: rgba(var(--primary-rgb), 0.20);
+        }
+        
+        .design-featured-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 560px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid var(--outline);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+        }
+        
+        .design-featured-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--primary), 0 0 48px var(--design-glow);
+        }
+        
+        .design-featured-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s ease-out;
+        }
+        
+        .design-featured-card:hover .design-featured-img {
+            transform: scale(1.05);
+        }
+        
+        .design-featured-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 100%);
+            transition: opacity 0.35s ease;
+            opacity: 0.92;
+        }
+        
+        .design-featured-card:hover .design-featured-gradient {
+            opacity: 1;
+        }
+        
+        .design-featured-badge {
+            background: var(--primary);
+            color: var(--on-primary);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 6px;
+        }
+        
+        .design-featured-year {
+            color: rgba(255,255,255,0.55);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+        }
+        
+        .design-featured-tag {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px);
+            color: rgba(255,255,255,0.85);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        
+        .design-featured-title {
+            font-family: 'Mitr', sans-serif;
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            line-height: 1.05;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.01em;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+        
+        .design-featured-tagline {
+            color: rgba(255,255,255,0.65);
+            font-size: 15px;
+            margin: 0 0 24px 0;
+            max-width: 500px;
+        }
+        
+        .design-featured-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--primary);
+            color: var(--on-primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            box-shadow: none;
+            transition: box-shadow 0.3s ease, opacity 0.2s, transform 0.2s;
+        }
+        
+        .design-featured-card:hover .design-featured-btn {
+            box-shadow: 0 8px 32px var(--design-glow);
+        }
+        
+        .design-hover-center-pulse {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .design-featured-card:hover .design-hover-center-pulse {
+            opacity: 1;
+        }
+        
+        .design-pulse-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 32px var(--design-glow);
+            animation: pulse-ring-anim 1.2s infinite ease-in-out;
+        }
+        
+        @keyframes pulse-ring-anim {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        
+        /* Side Card Design */
+        .design-side-card {
+            border-radius: 18px;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            background: rgba(var(--surface-rgb), 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--outline);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            min-height: 260px;
+        }
+        
+        .design-side-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 32px var(--design-glow);
+        }
+        
+        .design-side-thumbnail {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .design-side-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease-out;
+        }
+        
+        .design-side-card:hover .design-side-img {
+            transform: scale(1.07);
+        }
+        
+        .design-side-fade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(var(--surface-rgb), 0.95) 100%);
+        }
+        
+        .design-side-year {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            color: rgba(255,255,255,0.85);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            padding: 3px 10px;
+            border-radius: 5px;
+        }
+        
+        .design-side-hover-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.28);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .design-side-card:hover .design-side-hover-overlay {
+            opacity: 1;
+        }
+        
+        .design-side-overlay-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .design-side-body {
+            padding: 20px 22px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .design-tag-pill {
+            background: var(--design-tag-bg);
+            color: var(--design-tag-fg);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--design-tag-bg);
+            white-space: nowrap;
+        }
+        
+        .design-side-title {
+            font-family: 'Mitr', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--on-background);
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+        }
+        
+        .design-side-tagline {
+            color: var(--on-surface-variant);
+            font-size: 13px;
+            line-height: 1.55;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .design-side-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--outline);
+        }
+        
+        .design-side-explore {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--on-surface-variant);
+            transition: transform 0.2s, color 0.2s;
+        }
+        
+        .design-side-card:hover .design-side-explore {
+            transform: translateX(4px);
+            color: var(--primary);
+        }
+
         .wind-canvas {
             position: fixed;
             inset: 0;
@@ -643,10 +949,10 @@
                         <p class="text-on-surface-variant text-xl">A chronicle of interactive experiences and digital
                             creations.</p>
                     </div>
-                    <button
+                    <a href="https://hamsterhub.co/profile/eaya" target="_blank"
                         class="text-lg font-bold text-primary flex items-center gap-3 tracking-widest transition-all duration-300 hover:-translate-y-2 hover:animate-float-tilt">
                         EXPLORE ALL WORK <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                    </button>
+                    </a>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-10" id="archives-grid">
