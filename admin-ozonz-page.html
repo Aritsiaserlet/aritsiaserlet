@@ -1040,11 +1040,11 @@ async function loadData() {
         if (!loadedWorks) {
             const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
             if (worksRes.ok) {
-                loadedWorks = await worksRes.json();
+                loadedWorks = parseSecureJSON(await worksRes.text());
             } else {
                 try {
                     const r = await fetch('data/ozonz-works.json?t=' + Date.now());
-                    if (r.ok) loadedWorks = await r.json();
+                    if (r.ok) loadedWorks = parseSecureJSON(await r.text());
                     else loadedWorks = [];
                 } catch (_) {
                     loadedWorks = [];
@@ -1057,7 +1057,7 @@ async function loadData() {
             if (!loadedSettings) {
                 const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
                 if (settingsRes.ok) {
-                    loadedSettings = await settingsRes.json();
+                    loadedSettings = parseSecureJSON(await settingsRes.text());
                 }
             }
             if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
