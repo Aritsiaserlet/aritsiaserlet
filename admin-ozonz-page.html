@@ -963,11 +963,12 @@ async function loadAritsiaTeams() {
             const data = await res.json();
             if (data.teams) {
                 aritsiaTeams = data.teams;
-                renderCollaboratorCheckboxes();
             }
         }
     } catch (e) {
         console.warn("Failed to fetch Aritsia teams", e);
+    } finally {
+        renderCollaboratorCheckboxes();
     }
 }
 
