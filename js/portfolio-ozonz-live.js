@@ -956,7 +956,7 @@
         if (w.team && globalSettings.teams) {
           contributors = w.team.map(tid => {
             const t = globalSettings.teams.find(x => x.id === tid);
-            return t ? { name: t.name, avatar: t.image, url: t.url } : null;
+            return t ? { name: t.name, avatar: t.image || t.iconId, url: t.url || t.link } : null;
           }).filter(Boolean);
         }
         const tagline = w.tagline || w.aiSummary || getShortDescription(w.desc || w.description || '');
