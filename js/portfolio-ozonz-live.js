@@ -1406,6 +1406,11 @@
   }
 
 
+  function parseSecureJSON(text) {
+      try { return JSON.parse(text); } 
+      catch (e) { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
+  }
+
   async function fetchPortfolioData() {
     try {
       // Query raw GitHub user content to prevent API rate limit (403 errors)
@@ -1413,11 +1418,11 @@
       let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`);
       
       if (worksRes.ok) {
-          globalWorks = await worksRes.json();
+          globalWorks = parseSecureJSON(await worksRes.text());
       } else {
           try {
               const r = await fetch('data/ozonz-works.json?t=' + Date.now());
-              if (r.ok) globalWorks = await r.json();
+              if (r.ok) globalWorks = parseSecureJSON(await r.text());
               else globalWorks = [];
           } catch (_) {
               globalWorks = [];
@@ -1425,7 +1430,7 @@
       }
       
       if (settingsRes.ok) {
-          globalSettings = await settingsRes.json();
+          globalSettings = parseSecureJSON(await settingsRes.text());
       }
       
       if (!globalSettings || !globalSettings.socials || globalSettings.socials.length === 0) {
@@ -1436,7 +1441,7 @@
       
       const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
       let sharedSettings = {};
-      if (sharedSettingsRes.ok) sharedSettings = await sharedSettingsRes.json();
+      if (sharedSettingsRes.ok) sharedSettings = parseSecureJSON(await sharedSettingsRes.text());
       
       // Inject shared icons and teams
       globalSettings.icons = sharedSettings.icons || [];
@@ -1471,8 +1476,8 @@
       let rSettings = null;
 
       // Query raw GitHub user content to prevent API rate limit (403 errors)
-      rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
-      rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+      rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json?t=${Date.now()}`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
+      rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json?t=${Date.now()}`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
 
       if (rWorks !== null) globalWorks = rWorks;
       if (rSettings !== null) globalSettings = rSettings;
