@@ -369,7 +369,7 @@ body{
   padding:4px 8px;color:var(--dark);outline:none;
 }
 .set-select:focus {background:var(--gold-l);}
-.set-range { flex:1; max-width:200px; accent-color:var(--danger); padding:0; border:none; background:transparent; }
+.set-range { flex:1; max-width:200px; accent-color:var(--primary); padding:0; border:none; background:transparent; }
 
 /* ── Top Nav (Auth & Leaderboard) ── */
 .top-nav {

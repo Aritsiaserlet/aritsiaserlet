@@ -356,5 +356,5 @@
   color: var(--dark);
   outline: none;
 }
-.gset-range { flex: 1; max-width: 200px; accent-color: var(--danger); padding: 0; border: none; background: transparent; }
+.gset-range { flex: 1; max-width: 200px; accent-color: var(--primary); padding: 0; border: none; background: transparent; }
 .gset-label { font-family: 'VT323', monospace; font-size: 24px; color: var(--dark); width: 140px; flex-shrink: 0; }
