@@ -369,11 +369,8 @@
       syncGitHub();
     });
     
+    // Only poll periodically, removed focus/visibility listeners to prevent API rate limiting (403 errors)
     statsTimer = setInterval(syncGitHub, POLL_MS);
-    window.addEventListener('focus', syncGitHub);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) syncGitHub();
-    });
   }
 
   /* ── Dot-grid background + soft cursor spotlight ── */
