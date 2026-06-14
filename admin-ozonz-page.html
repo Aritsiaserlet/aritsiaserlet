@@ -2075,12 +2075,12 @@ document.getElementById('team-form').addEventListener('submit', async (e) => {
     const zone = document.getElementById('team-img-drop-zone');
     if (zone) {
         zone.classList.remove('has-image');
-        zone.innerHTML = \`<span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span><span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span><span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span><button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>\`;
+        zone.innerHTML = `<span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span><span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span><span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span><button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>`;
     }
 
     renderTeamLibrary();
     if (typeof renderTeamCheckboxList === 'function') renderTeamCheckboxList();
-    await saveSettings(\`Add team member: \${name}\`);
+    await saveSettings(`Add team member: ${name}`);
 });
 
 window.renderTeamCheckboxList = function() {
@@ -2092,14 +2092,14 @@ window.renderTeamCheckboxList = function() {
     }
     wrap.innerHTML = ozonzSettings.teams.map(tm => {
         const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
-        const iconHtml = tm.iconId ? \`<img src="\${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">\` : \`<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">\${tm.name.charAt(0).toUpperCase()}</div>\`;
-        return \`
+        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : `<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">${tm.name.charAt(0).toUpperCase()}</div>`;
+        return `
         <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-variant/30 transition-colors">
-            <input type="checkbox" value="\${tm.id}" \${checked} onchange="toggleTeamSelection('\${tm.id}', this.checked)" class="rounded text-primary focus:ring-primary bg-surface-container border-outline/30">
-            \${iconHtml}
-            <span class="text-sm text-on-surface">\${tm.name}</span>
+            <input type="checkbox" value="${tm.id}" ${checked} onchange="toggleTeamSelection('${tm.id}', this.checked)" class="rounded text-primary focus:ring-primary bg-surface-container border-outline/30">
+            ${iconHtml}
+            <span class="text-sm text-on-surface">${tm.name}</span>
         </label>
-        \`;
+        `;
     }).join('');
 };
 
@@ -2117,7 +2117,7 @@ document.getElementById('team-img-drop-zone').addEventListener('click', (e) => {
         e.stopPropagation();
         const zone = document.getElementById('team-img-drop-zone');
         zone.classList.remove('has-image');
-        zone.innerHTML = \`<span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span><span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span><span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span><button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>\`;
+        zone.innerHTML = `<span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span><span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span><span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span><button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>`;
         document.getElementById('team-img-file-input').value = '';
         return;
     }
@@ -2130,7 +2130,7 @@ document.getElementById('team-img-file-input').addEventListener('change', (e) =>
         const url = URL.createObjectURL(file);
         const zone = document.getElementById('team-img-drop-zone');
         zone.classList.add('has-image');
-        zone.innerHTML = \`<img class="preview" src="\${url}" alt="preview" /><span class="remove-img">✕ Remove</span>\`;
+        zone.innerHTML = `<img class="preview" src="${url}" alt="preview" /><span class="remove-img">✕ Remove</span>`;
     }
 });
 
