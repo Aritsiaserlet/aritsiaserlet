@@ -457,6 +457,25 @@
                 
                 waveIntensity += wave * fadeDist * fadeTime * w.w;
 
+                // Edge Backlight Logic (reflecting glow after wave hits edge)
+                if (waveFront > clickDist) {
+                    float edgeDistX = min(px.x, u_resolution.x - px.x);
+                    float edgeDistY = min(px.y, u_resolution.y - px.y);
+                    float minDistToEdge = min(edgeDistX, edgeDistY);
+                    
+                    float edgeZone = 150.0;
+                    if (minDistToEdge < edgeZone) {
+                        float timeSincePass = (waveFront - clickDist) / waveSpeed;
+                        if (timeSincePass < 2.0) { // Fades out over 2 seconds
+                            float edgeProfile = smoothstep(edgeZone, 0.0, minDistToEdge);
+                            float fadeOut = smoothstep(2.0, 0.0, timeSincePass);
+                            float backlight = edgeProfile * fadeOut * fadeDist * w.w * 2.0;
+                            waveIntensity += backlight;
+                        }
+                    }
+                }
+
+
                 // Quake displacement directed away from the wave center (smoothed)
                 if (extraPower > 0.0) {
                     vec2 dir = clickDist > 0.1 ? (px - w.xy * u_resolution) / clickDist : vec2(0.0);
