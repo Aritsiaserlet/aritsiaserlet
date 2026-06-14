@@ -538,12 +538,13 @@
         float brightness = mix(dim, lit, clampedEffect);
         vec3 dotColor = mix(dotColorDim, dotColorLit, clampedEffect);
 
-        // Subtly brighten dots near text without making them too bright
-        float textGlowBoost = textGlow * mix(0.12, 0.18, u_isDark);
-        brightness += textGlowBoost;
+        // Dim dots near text to make text more readable
+        float textDimAmount = textGlow * mix(0.4, 0.7, u_isDark);
+        brightness *= (1.0 - textDimAmount);
 
-        vec3 textGlowColor = mix(vec3(0.75, 0.72, 0.65), vec3(0.6, 0.63, 0.7), u_isDark);
-        dotColor = mix(dotColor, textGlowColor, textGlow * 0.5);
+        vec3 textDimColor = mix(vec3(0.6, 0.6, 0.6), vec3(0.15, 0.15, 0.15), u_isDark);
+        dotColor = mix(dotColor, textDimColor, textGlow * 0.5);
+        dotShape *= (1.0 - textGlow * 0.5);
 
         // Final color mix
         vec3 colorDark = bgDark + dotColor * brightness * dotShape;
