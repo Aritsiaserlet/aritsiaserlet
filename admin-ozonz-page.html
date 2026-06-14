@@ -574,100 +574,101 @@
                 <input type="hidden" id="work-edit-id" />
 
                 <!-- Autofill -->
-                <div class="border border-outline/20 rounded-xl p-4 bg-surface-container/30">
-                    <label class="font-label-md text-xs text-primary mb-1 block">Autofill from URL (Itch.io or GitHub)</label>
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">AUTOFILL FROM URL</label>
                     <div class="flex gap-2">
-                        <input type="url" id="autofill-url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://username.itch.io/game  or  https://github.com/user/repo" />
-                        <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
+                        <input type="url" id="autofill-url" class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-body-md text-sm" placeholder="https://username.itch.io/game or https://github.com/user/repo" />
+                        <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
                             Autofill
                         </button>
                     </div>
                     <p id="autofill-status" class="text-[10px] mt-1.5 hidden"></p>
                 </div>
 
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Work Name</label>
-                <input type="text" id="work-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-
-            <!-- Image upload -->
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Cover Image</label>
-                <div class="img-drop-zone p-4 mb-2" id="img-drop-zone" title="Click or drag image here">
-                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-                    <button type="button" class="remove-img" id="img-remove-btn">✕ Remove</button>
-                </div>
-                <input type="file" id="img-file-input" accept="image/*" class="hidden" />
-
-                <div class="img-upload-progress mb-2" id="img-upload-progress">
-                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
-                    <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
-                    <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="font-label-md text-xs text-primary mb-1 block">TITLE</label>
+                        <input class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" id="work-name" type="text" required />
+                    </div>
+                    
+                    <div>
+                        <label class="font-label-md text-xs text-primary mb-1 block">TAGS (COMMA-SEPARATED)</label>
+                        <input type="text" id="work-tags" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" placeholder="e.g. PIXEL ART, C#, UNITY" required />
+                    </div>
+                    
+                    <div>
+                        <label class="font-label-md text-xs text-primary mb-1 block">YEAR</label>
+                        <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" />
+                    </div>
                 </div>
 
                 <div>
-                    <label class="font-label-md text-[10px] text-on-surface-variant mb-1 block">Or enter URL / Material Icon name</label>
-                    <input type="text" id="work-image" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://... or terminal" />
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="font-label-md text-xs text-primary block">DESCRIPTION</label>
+                        <p id="ai-status" class="text-[10px] hidden text-primary"></p>
+                    </div>
+                    <div class="relative">
+                        <textarea class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10 resize-none" id="work-desc" rows="3" required></textarea>
+                        <button type="button" id="ai-write-btn" class="absolute top-2 right-2 text-primary hover:scale-110 transition-all" title="AI Expand">
+                            <span class="material-symbols-outlined text-xl">auto_fix_high</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Tags (comma-separated)</label>
-                <input type="text" id="work-tags" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. PIXEL ART, C#, UNITY" />
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Year of Creation</label>
-                <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Links (optional)</label>
-                <div id="work-links-wrap" class="flex flex-col gap-2 mb-2"></div>
-                <button type="button" id="add-link-btn" class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">add</span> Add Link
-                </button>
-            </div>
-
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Collaborators / Team</label>
-                <div id="work-team-wrap" class="flex flex-col gap-2 mb-2 max-h-[150px] overflow-y-auto bg-surface-container/30 border border-outline/20 rounded-xl p-3">
-                    <p class="text-xs text-on-surface-variant text-center">Loading team members...</p>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="font-label-md text-xs text-primary block">AI SUMMARY (TAGLINE)</label>
+                        <p id="ai-summarize-status" class="text-[10px] hidden text-primary"></p>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="work-ai-summary" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10" placeholder="e.g. A Python-based bot that tracks user playtime." />
+                        <button type="button" id="ai-summarize-btn" class="absolute top-2 right-2 text-primary hover:scale-110 transition-all" title="AI Summarize">
+                            <span class="material-symbols-outlined text-xl">auto_awesome</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="font-label-md text-xs text-primary block">Description</label>
-                    <button type="button" id="ai-write-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">auto_awesome</span> Write with AI
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">COVER IMAGE URL</label>
+                    <div class="flex gap-2">
+                        <input class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-data-mono text-sm" id="work-image" type="text" placeholder="https://... or material icon" />
+                        <label class="cursor-pointer bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-all">
+                            <span class="material-symbols-outlined text-sm">upload</span>
+                            <span>Upload</span>
+                            <input accept="image/*" class="hidden" id="img-file-input" type="file"/>
+                        </label>
+                    </div>
+                    <div class="img-upload-progress mt-2" id="img-upload-progress">
+                        <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
+                        <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
+                        <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">COLLABORATORS</label>
+                    <div id="collaborator-list" class="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto scroll-hide bg-surface-container/30 border border-outline/10 rounded-xl p-3">
+                        <p class="text-xs text-on-surface-variant text-center w-full">Loading team members...</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">LINKS (OPTIONAL)</label>
+                    <div id="work-links-wrap" class="flex flex-col gap-2 mb-2"></div>
+                    <button type="button" id="add-link-btn" class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">add</span> Add Link
                     </button>
                 </div>
-                <textarea id="work-desc" rows="3" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md resize-none"></textarea>
-                <p id="ai-status" class="text-[10px] mt-1.5 hidden"></p>
-            </div>
 
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="font-label-md text-xs text-primary block">AI Summary (Tagline)</label>
-                    <button type="button" id="ai-summarize-btn" class="text-primary hover:underline text-[10px] font-bold uppercase flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">auto_awesome</span> Summarize with AI
+                <div class="flex justify-end gap-3 mt-stack-lg">
+                    <button type="button" id="work-cancel" class="px-6 py-2 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
+                    <button type="submit" class="px-8 py-2 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all flex items-center gap-2" id="save-work-btn">
+                        <span class="material-symbols-outlined text-sm" id="work-submit-icon">save</span>
+                        <span id="work-submit-label">Save Changes</span>
                     </button>
                 </div>
-                <input type="text" id="work-ai-summary" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. A Python-based bot that tracks user playtime." />
-                <p id="ai-summarize-status" class="text-[10px] mt-1.5 hidden"></p>
-            </div>
-
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" id="work-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
-                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm" id="work-submit-icon">save</span>
-                    <span id="work-submit-label">Save Changes</span>
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -1393,32 +1394,12 @@ function handleImageFile(file) {
     if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
     if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
     pendingImageFile = file;
-    setImagePreviewBlob(file);
-    // clear the URL field so we know to upload
-    document.getElementById('work-image').value = '';
+    // Just update the input to show the file name as a visual cue
+    document.getElementById('work-image').value = file.name + ' (Pending)';
 }
 
-// Zone: event delegation — remove OR open file picker
-document.getElementById('img-drop-zone').addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
-        e.stopPropagation();
-        window.resetImageZone();
-        return;
-    }
-    document.getElementById('img-file-input').click();
-});
 document.getElementById('img-file-input').addEventListener('change', (e) => {
     if (e.target.files[0]) handleImageFile(e.target.files[0]);
-});
-
-// Drag & drop
-const dropZone = document.getElementById('img-drop-zone');
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', ()   => { dropZone.classList.remove('drag-over'); });
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault(); dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) handleImageFile(file);
 });
 
 // Paste from clipboard (Ctrl+V)
