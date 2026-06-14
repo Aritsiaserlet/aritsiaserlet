@@ -393,6 +393,15 @@
             }
         }
 
+        @keyframes modal-enter {
+            0% { opacity: 0; transform: scale(0.94) translateY(24px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .animate-modal-enter {
+            animation: modal-enter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
         .animate-border-glow {
             animation: borderGlow 4s infinite;
         }
@@ -1069,14 +1078,19 @@
 
     <!-- Project Detail Modal -->
     <div id="project-detail-modal"
-        class="fixed inset-0 z-[800] hidden flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
+        class="fixed inset-0 z-[800] hidden bg-black/75 backdrop-blur-md">
         
-        <div
-            class="max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl bg-surface border border-primary/30 shadow-[0_32px_80px_rgba(0,0,0,0.5)] flex flex-col relative">
+        <div id="project-detail-box"
+            class="absolute max-w-2xl w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto rounded-2xl bg-surface border border-primary/30 shadow-[0_32px_80px_rgba(0,0,0,0.5)] flex flex-col">
             
+            <!-- Drag Bar -->
+            <div id="project-detail-drag-bar" class="absolute top-0 left-0 right-0 h-12 z-20 cursor-move flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <div class="w-16 h-1.5 rounded-full bg-white/40 backdrop-blur shadow-sm pointer-events-none"></div>
+            </div>
+
             <!-- Image hero -->
             <div class="relative w-full h-[280px] shrink-0 overflow-hidden">
-                <div id="project-detail-image-container" class="w-full h-full [&>img]:w-full [&>img]:h-full [&>img]:object-cover">
+                <div id="project-detail-image-container" class="w-full h-full [&>img]:w-full [&>img]:h-full [&>img]:object-cover pointer-events-none">
                     <!-- Dynamically filled -->
                 </div>
                 <!-- Gradient overlay -->
@@ -1084,7 +1098,7 @@
                 
                 <!-- Close Button -->
                 <button id="project-detail-close-btn"
-                    class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur flex items-center justify-center text-white border-none cursor-pointer hover:bg-black/70 transition-colors z-10">
+                    class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur flex items-center justify-center text-white border-none cursor-pointer hover:bg-black/70 transition-colors z-30">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>

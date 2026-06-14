@@ -1288,6 +1288,23 @@
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    
+    // Trigger animation
+    const modalContent = document.getElementById('project-detail-box');
+    if (modalContent) {
+      modalContent.classList.remove('animate-modal-enter');
+      void modalContent.offsetWidth; // trigger reflow
+      modalContent.classList.add('animate-modal-enter');
+      
+      // Center modal
+      const vw = window.innerWidth, vh = window.innerHeight;
+      modalContent.style.left = Math.max(0, (vw - Math.min(672, vw-40))/2) + 'px';
+      modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
+      
+      requestAnimationFrame(() => {
+        modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
+      });
+    }
   }
 
   function initProjectDetailModal() {
@@ -1316,6 +1333,44 @@
           alert('เกมนี้ยังไม่มี link ตอนนี้');
         }
       });
+    }
+
+    // Modal drag logic
+    const dragBar = document.getElementById('project-detail-drag-bar');
+    const box = document.getElementById('project-detail-box');
+    if (dragBar && box) {
+      let isDragging = false, startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
+
+      function onDown(e) {
+        isDragging = true;
+        const pos = e.touches ? e.touches[0] : e;
+        startX = pos.clientX;
+        startY = pos.clientY;
+        initialLeft = parseFloat(box.style.left) || 0;
+        initialTop = parseFloat(box.style.top) || 0;
+        if (!e.touches) e.preventDefault();
+      }
+
+      function onMove(e) {
+        if (!isDragging) return;
+        const pos = e.touches ? e.touches[0] : e;
+        const dx = pos.clientX - startX;
+        const dy = pos.clientY - startY;
+        const maxX = window.innerWidth - box.offsetWidth;
+        const maxY = window.innerHeight - 60;
+        box.style.left = Math.max(0, Math.min(maxX, initialLeft + dx)) + 'px';
+        box.style.top = Math.max(0, Math.min(maxY, initialTop + dy)) + 'px';
+      }
+
+      function onUp() { isDragging = false; }
+
+      dragBar.addEventListener('mousedown', onDown);
+      dragBar.addEventListener('touchstart', onDown, {passive: true});
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, {passive: true});
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('touchend', onUp);
     }
   }
 
