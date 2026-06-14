@@ -1424,7 +1424,7 @@
           globalSettings.socials = ensureItchContact(globalSettings.socials);
       }
       
-      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${GH_REPO_OWNER}/${GH_REPO_NAME}/main/settings.json?t=${Date.now()}`);
+      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
       let sharedSettings = {};
       if (sharedSettingsRes.ok) sharedSettings = await sharedSettingsRes.json();
       
