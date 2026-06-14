@@ -1131,23 +1131,28 @@
     const contribSection = document.getElementById('project-detail-contributors-section');
     const contribList = document.getElementById('project-detail-contributors-list');
 
-    titleEl.textContent = w.title;
-    descEl.textContent = w.detail;
-    linkEl.href = w.link;
+    titleEl.textContent = w.title || w.name || '';
+    descEl.textContent = w.detail || w.desc || '';
+    
+    let link = w.link;
+    if (!link && w.links && w.links.length > 0) link = w.links[0].url;
+    linkEl.href = link || '#';
 
     // Set image or icon
     imgContainer.innerHTML = '';
-    const isImg = w.image.startsWith('http') || w.image.includes('/') || w.image.includes('.');
+    const imageVal = w.image || (Array.isArray(w.image) ? w.image[0] : null) || (w.model ? 'view_in_ar' : 'brush');
+    const isImg = typeof imageVal === 'string' && (imageVal.startsWith('http') || imageVal.includes('/') || imageVal.includes('.'));
     if (isImg) {
-      imgContainer.innerHTML = `<img src="${w.image}" class="w-full h-full object-cover" />`;
+      imgContainer.innerHTML = `<img src="${imageVal}" class="w-full h-full object-cover" />`;
     } else {
-      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-8xl">${w.image || 'brush'}</span></div>`;
+      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-8xl">${imageVal || 'brush'}</span></div>`;
     }
 
     // Set tags
     tagsContainer.innerHTML = '';
     if (w.tags) {
-      w.tags.split(',').forEach(tag => {
+      const tagsArray = Array.isArray(w.tags) ? w.tags : (typeof w.tags === 'string' ? w.tags.split(',') : []);
+      tagsArray.forEach(tag => {
         const badge = document.createElement('span');
         badge.className = 'px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-bold uppercase tracking-wider';
         badge.textContent = tag.trim();
@@ -1343,6 +1348,7 @@
 
     // Background refresh for shared icons/teams (non-blocking)
     fetchPortfolioData().then(() => {
+      renderWorks();
       renderContacts();
     });
   }
