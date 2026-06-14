@@ -901,6 +901,7 @@ let worksSha      = null;      // latest SHA for works file
 let ozonzSettings = {};        // { socials: [] }
 let settingsSha   = null;
 let confirmCb     = null;
+let selectedTeams = [];
 
 const itchContact = {
     name: "ITCH.IO",
@@ -1172,6 +1173,7 @@ async function loadData() {
     }
     renderWorks();
     renderContacts();
+    renderTeamLibrary();
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1301,6 +1303,14 @@ window.openWorkModal = function(id) {
     document.getElementById('work-ai-summary').value = w?.aiSummary || '';
     document.getElementById('ai-summarize-status').classList.add('hidden');
 
+    // Init Team
+    if (w && w.team) {
+        selectedTeams = [...w.team];
+    } else {
+        selectedTeams = [];
+    }
+    if (typeof renderTeamCheckboxList === 'function') renderTeamCheckboxList();
+
     // If editing and has a valid image URL, show preview
     if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
         setImagePreviewUrl(imgVal);
@@ -1377,7 +1387,7 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
         image: imgVal,
         tags:  tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
         links: collectLinks(),
-        team:  [],
+        team:  [...selectedTeams],
         tools: [],
         date:  editId
                ? (works.find(w => String(w.id) === editId)?.date || new Date().toISOString())
@@ -1995,6 +2005,133 @@ document.getElementById('gemini-save-btn').addEventListener('click', () => {
     showToast('Gemini API Key saved');
     document.getElementById('gemini-save-btn').textContent = '✓ Saved!';
     setTimeout(() => document.getElementById('gemini-save-btn').textContent = 'Save Key', 1500);
+});
+
+/* ══════════════════════════════════════════════════════
+   TEAM SYSTEM
+══════════════════════════════════════════════════════ */
+function renderTeamLibrary() {
+    const list = document.getElementById('team-library-list');
+    if (!list) return;
+    if (!ozonzSettings.teams || ozonzSettings.teams.length === 0) {
+        list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-4">No team members yet.</p>';
+        return;
+    }
+    list.innerHTML = ozonzSettings.teams.map(tm => {
+        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-8 h-8 rounded-full object-cover border border-outline/30">` : `<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">${tm.name.charAt(0).toUpperCase()}</div>`;
+        return `
+        <div class="flex items-center gap-3 p-3 glass border border-outline/20 rounded-xl relative group">
+            ${iconHtml}
+            <div class="flex-1 overflow-hidden">
+                <p class="font-label-md text-sm text-on-surface truncate">${tm.name}</p>
+                ${tm.link ? `<a href="${tm.link}" target="_blank" class="text-[10px] text-primary hover:underline truncate block">${tm.link}</a>` : ''}
+            </div>
+            <button type="button" onclick="deleteTeamLibraryMember('${tm.id}')" class="w-6 h-6 rounded-md hover:bg-error-container/50 text-error flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-[14px]">close</span>
+            </button>
+        </div>`;
+    }).join('');
+}
+
+window.deleteTeamLibraryMember = function(id) {
+    confirmDialog("Delete this team member?", async () => {
+        ozonzSettings.teams = ozonzSettings.teams.filter(t => t.id !== id);
+        renderTeamLibrary();
+        if (typeof renderTeamCheckboxList === 'function') renderTeamCheckboxList();
+        await saveSettings("Delete team member");
+    });
+};
+
+document.getElementById('team-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('team-name').value.trim();
+    const link = document.getElementById('team-link').value.trim();
+    if (!name) return;
+
+    if (!ozonzSettings.teams) ozonzSettings.teams = [];
+    
+    // Check if there is an uploaded avatar image
+    let iconVal = document.getElementById('team-image-val').value;
+    const fileInput = document.getElementById('team-img-file-input');
+    if (fileInput.files[0]) {
+        if (!ghToken) { showToast('GitHub token required to upload images!'); return; }
+        const uploaded = await uploadImageToGitHub(fileInput.files[0]);
+        if (uploaded) iconVal = uploaded;
+    }
+
+    const newTeam = {
+        id: 'team_' + Date.now(),
+        name: name,
+        link: link,
+        iconId: iconVal
+    };
+
+    ozonzSettings.teams.push(newTeam);
+    document.getElementById('team-modal').classList.remove('open');
+    document.getElementById('team-form').reset();
+    document.getElementById('team-image-val').value = '';
+    
+    // Reset drop zone for team modal
+    const zone = document.getElementById('team-img-drop-zone');
+    if (zone) {
+        zone.classList.remove('has-image');
+        zone.innerHTML = \`<span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span><span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span><span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span><button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>\`;
+    }
+
+    renderTeamLibrary();
+    if (typeof renderTeamCheckboxList === 'function') renderTeamCheckboxList();
+    await saveSettings(\`Add team member: \${name}\`);
+});
+
+window.renderTeamCheckboxList = function() {
+    const wrap = document.getElementById('work-team-wrap');
+    if (!wrap) return;
+    if (!ozonzSettings.teams || ozonzSettings.teams.length === 0) {
+        wrap.innerHTML = '<p class="text-xs text-on-surface-variant text-center">No team members available. Add them in Team Library.</p>';
+        return;
+    }
+    wrap.innerHTML = ozonzSettings.teams.map(tm => {
+        const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
+        const iconHtml = tm.iconId ? \`<img src="\${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">\` : \`<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">\${tm.name.charAt(0).toUpperCase()}</div>\`;
+        return \`
+        <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-variant/30 transition-colors">
+            <input type="checkbox" value="\${tm.id}" \${checked} onchange="toggleTeamSelection('\${tm.id}', this.checked)" class="rounded text-primary focus:ring-primary bg-surface-container border-outline/30">
+            \${iconHtml}
+            <span class="text-sm text-on-surface">\${tm.name}</span>
+        </label>
+        \`;
+    }).join('');
+};
+
+window.toggleTeamSelection = function(id, isChecked) {
+    if (isChecked) {
+        if (!selectedTeams.includes(id)) selectedTeams.push(id);
+    } else {
+        selectedTeams = selectedTeams.filter(t => t !== id);
+    }
+};
+
+// Wiring file input for team modal avatar
+document.getElementById('team-img-drop-zone').addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
+        e.stopPropagation();
+        const zone = document.getElementById('team-img-drop-zone');
+        zone.classList.remove('has-image');
+        zone.innerHTML = \`<span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span><span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span><span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span><button type="button" class="remove-img" id="team-img-remove-btn">✕ Remove</button>\`;
+        document.getElementById('team-img-file-input').value = '';
+        return;
+    }
+    document.getElementById('team-img-file-input').click();
+});
+
+document.getElementById('team-img-file-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const url = URL.createObjectURL(file);
+        const zone = document.getElementById('team-img-drop-zone');
+        zone.classList.add('has-image');
+        zone.innerHTML = \`<img class="preview" src="\${url}" alt="preview" /><span class="remove-img">✕ Remove</span>\`;
+    }
 });
 
 /* ══════════════════════════════════════════════════════
