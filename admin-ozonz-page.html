@@ -964,6 +964,9 @@ async function loadAritsiaTeams() {
             if (data.teams) {
                 aritsiaTeams = data.teams;
             }
+            if (data.icons) {
+                aritsiaIcons = data.icons;
+            }
         }
     } catch (e) {
         console.warn("Failed to fetch Aritsia teams", e);
