@@ -856,9 +856,12 @@ async function ghPutBinary(path, base64content, message) {
 }
 
 async function ghPut(path, content, message, sha) {
+    // Obfuscate the content before saving it (makes it hard to seek data directly from GitHub)
+    // We encode the JSON content into Base64.
+    const obfuscatedContent = btoa(unescape(encodeURIComponent(content)));
     const body = {
         message,
-        content: btoa(unescape(encodeURIComponent(content))),
+        content: btoa(unescape(encodeURIComponent(obfuscatedContent))), // GitHub API requires base64 of the final string
     };
     if (sha) body.sha = sha;
 
@@ -866,13 +869,9 @@ async function ghPut(path, content, message, sha) {
         method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
     });
 
-    // 409 Conflict → fetch latest SHA and retry once
+    // 409 Conflict → Do NOT force push. Require user to reload.
     if (r.status === 409) {
-        const latest = await ghGet(path);
-        if (latest?.sha) { body.sha = latest.sha; }
-        r = await fetch(`${GH_API}/${path}`, {
-            method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-        });
+        throw new Error(`Conflict Detected! Someone else updated the data. Please refresh to load the latest changes before saving.`);
     }
     if (!r.ok) {
         const t = await r.text();
