@@ -1069,51 +1069,61 @@
 
     <!-- Project Detail Modal -->
     <div id="project-detail-modal"
-        class="fixed inset-0 z-[800] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        class="fixed inset-0 z-[800] hidden flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
+        
         <div
-            class="pixel-card p-8 rounded-2xl border border-primary/30 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative bg-background/95">
-            <!-- Close Button -->
-            <button id="project-detail-close-btn"
-                class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-all">
-                <span class="material-symbols-outlined text-2xl">close</span>
-            </button>
-
-            <!-- Project Image/Icon Container -->
-            <div id="project-detail-image-container"
-                class="w-full h-64 md:h-80 rounded-xl overflow-hidden mb-6 border border-outline/20 flex items-center justify-center bg-surface/20">
-                <!-- Dynamically filled -->
-            </div>
-
-            <!-- Title & Tags -->
-            <div class="mb-4">
-                <div id="project-detail-tags" class="flex flex-wrap gap-2 mb-3">
+            class="max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl bg-surface border border-primary/30 shadow-[0_32px_80px_rgba(0,0,0,0.5)] flex flex-col relative">
+            
+            <!-- Image hero -->
+            <div class="relative w-full h-[280px] shrink-0 overflow-hidden">
+                <div id="project-detail-image-container" class="w-full h-full [&>img]:w-full [&>img]:h-full [&>img]:object-cover">
                     <!-- Dynamically filled -->
                 </div>
-                <h3 id="project-detail-title" class="text-3xl md:text-4xl font-bold uppercase text-on-background"></h3>
-                <p id="project-detail-tagline" class="text-primary font-bold text-sm tracking-wide mt-2"></p>
+                <!-- Gradient overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent pointer-events-none"></div>
+                
+                <!-- Close Button -->
+                <button id="project-detail-close-btn"
+                    class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur flex items-center justify-center text-white border-none cursor-pointer hover:bg-black/70 transition-colors z-10">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
             </div>
 
-            <!-- Description -->
-            <div class="mb-6">
-                <h4 class="text-xs font-bold uppercase text-primary mb-2">Project Details</h4>
-                <p id="project-detail-description" class="text-on-surface-variant text-base leading-relaxed"></p>
-            </div>
-
-            <!-- Contributors Section -->
-            <div id="project-detail-contributors-section" class="mb-8 hidden">
-                <h4 class="text-xs font-bold uppercase text-primary mb-3">Contributors / Collaborators</h4>
-                <div id="project-detail-contributors-list" class="flex flex-wrap gap-4">
+            <!-- Body -->
+            <div class="p-7 md:p-8 flex flex-col relative z-10 bg-surface">
+                
+                <!-- Tags -->
+                <div id="project-detail-tags" class="flex flex-wrap gap-1.5 mb-4">
                     <!-- Dynamically filled -->
                 </div>
-            </div>
 
-            <!-- Action Link -->
-            <div class="flex">
+                <!-- Title & Tagline -->
+                <h3 id="project-detail-title" class="font-headline text-[clamp(1.6rem,3vw,2.2rem)] font-bold uppercase text-on-background leading-[1.1] mb-1.5"></h3>
+                <p id="project-detail-tagline" class="text-primary text-[14px] font-semibold mb-5"></p>
+
+                <!-- Description Box -->
+                <div class="bg-surface-variant rounded-xl p-4 md:p-5 mb-5 border border-outline/10">
+                    <p class="text-[10px] font-bold tracking-[0.22em] uppercase text-primary mb-2">Project Details</p>
+                    <p id="project-detail-description" class="text-on-surface-variant text-[14px] leading-[1.7] m-0"></p>
+                </div>
+
+                <!-- Contributors Section -->
+                <div id="project-detail-contributors-section" class="mb-6 hidden flex flex-wrap items-center gap-2.5">
+                    <span class="text-on-surface-variant flex items-center gap-1.5 text-xs">
+                        <span class="material-symbols-outlined text-[13px]">group</span> Contributors
+                    </span>
+                    <div id="project-detail-contributors-list" class="flex flex-wrap gap-2.5">
+                        <!-- Dynamically filled -->
+                    </div>
+                </div>
+
+                <!-- Action Link -->
                 <a id="project-detail-link" href="#" target="_blank"
-                    class="flex-1 bg-primary text-on-primary py-4 rounded-xl font-bold uppercase tracking-wider text-center hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
-                    <span>Visit Project / View Work</span>
-                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    class="w-full py-4 rounded-[14px] bg-primary text-on-primary font-bold text-[13px] tracking-[0.18em] uppercase text-center flex items-center justify-center gap-2.5 shadow-[0_8px_28px_rgba(var(--primary-rgb),0.18)] transition-all hover:opacity-90 hover:scale-[1.015]">
+                    <span>Visit Project</span>
+                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
                 </a>
+                
             </div>
         </div>
     </div>
