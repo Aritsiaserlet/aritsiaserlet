@@ -434,6 +434,7 @@
         // Accumulate waves (both clicks and trails)
         float waveIntensity = 0.0;
         float darkSuppress = 0.0;
+        float edgeBacklightAmount = 0.0;
         vec2 quakeDisplacement = vec2(0.0);
 
         for (int i = 0; i < 50; i++) {
@@ -469,8 +470,8 @@
                         if (timeSincePass < 2.0) { // Fades out over 2 seconds
                             float edgeProfile = smoothstep(edgeZone, 0.0, minDistToEdge);
                             float fadeOut = smoothstep(2.0, 0.0, timeSincePass);
-                            float backlight = edgeProfile * fadeOut * fadeDist * w.w * 2.0;
-                            waveIntensity += backlight;
+                            float backlight = edgeProfile * fadeOut * fadeDist * w.w * 1.5;
+                            edgeBacklightAmount += backlight;
                         }
                     }
                 }
@@ -549,6 +550,9 @@
         vec3 colorLight = mix(bgLight, dotColor, brightness * dotShape);
         
         vec3 color = mix(colorLight, colorDark, u_isDark);
+        
+        vec3 bLightColor = mix(vec3(1.0, 1.0, 1.0), vec3(0.4, 0.6, 0.8), u_isDark);
+        color += bLightColor * edgeBacklightAmount * 0.4;
 
         gl_FragColor = vec4(color, 1.0);
       }
