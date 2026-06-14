@@ -559,22 +559,31 @@
 
 <!-- ═══════════════ WORK MODAL ═══════════════ -->
 <div id="work-modal" class="modal-backdrop">
-    <div class="glass max-w-2xl w-full rounded-2xl shadow-2xl p-stack-lg max-h-[92vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="work-modal-title">Add New Work</h2>
-        <form id="work-form" class="space-y-4">
-            <input type="hidden" id="work-edit-id" />
+    <div id="work-modal-window" class="glass max-w-2xl w-full rounded-2xl shadow-2xl max-h-[92vh] flex flex-col animate-in fade-in zoom-in duration-300" style="position: relative;">
+        <!-- DRAG HEADER -->
+        <div id="work-modal-header" class="px-stack-lg py-4 border-b border-outline/10 flex justify-between items-center cursor-move select-none bg-surface/50 rounded-t-2xl">
+            <h2 class="font-headline-lg text-headline-lg text-primary" id="work-modal-title">Add New Work</h2>
+            <button type="button" class="text-on-surface-variant hover:text-error transition-colors p-1" onclick="closeWorkModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
 
-            <!-- Autofill -->
-            <div class="border border-outline/20 rounded-xl p-4 bg-surface-container/30">
-                <label class="font-label-md text-xs text-primary mb-1 block">Autofill from URL (Itch.io or GitHub)</label>
-                <div class="flex gap-2">
-                    <input type="url" id="autofill-url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://username.itch.io/game  or  https://github.com/user/repo" />
-                    <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
-                        Autofill
-                    </button>
+        <!-- SCROLLABLE BODY -->
+        <div class="p-stack-lg overflow-y-auto scroll-hide flex-1">
+            <form id="work-form" class="space-y-4">
+                <input type="hidden" id="work-edit-id" />
+
+                <!-- Autofill -->
+                <div class="border border-outline/20 rounded-xl p-4 bg-surface-container/30">
+                    <label class="font-label-md text-xs text-primary mb-1 block">Autofill from URL (Itch.io or GitHub)</label>
+                    <div class="flex gap-2">
+                        <input type="url" id="autofill-url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://username.itch.io/game  or  https://github.com/user/repo" />
+                        <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
+                            Autofill
+                        </button>
+                    </div>
+                    <p id="autofill-status" class="text-[10px] mt-1.5 hidden"></p>
                 </div>
-                <p id="autofill-status" class="text-[10px] mt-1.5 hidden"></p>
-            </div>
 
             <div>
                 <label class="font-label-md text-xs text-primary mb-1 block">Work Name</label>
@@ -944,6 +953,48 @@ async function syncGitHubProfileToSettings() {
 }
 
 /* ══════════════════════════════════════════════════════
+   LOAD ARITSIA TEAMS
+══════════════════════════════════════════════════════ */
+async function loadAritsiaTeams() {
+    try {
+        const res = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.teams) {
+                aritsiaTeams = data.teams;
+                renderCollaboratorCheckboxes();
+            }
+        }
+    } catch (e) {
+        console.warn("Failed to fetch Aritsia teams", e);
+    }
+}
+
+function renderCollaboratorCheckboxes() {
+    const container = document.getElementById('collaborator-list');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    if (aritsiaTeams.length === 0) {
+        container.innerHTML = '<p class="text-on-surface-variant text-xs">No team members available.</p>';
+        return;
+    }
+    
+    aritsiaTeams.forEach(tm => {
+        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/20">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/20">` : `<div class="w-5 h-5 rounded-full bg-surface-variant flex items-center justify-center text-[10px] font-bold text-on-surface-variant">${tm.name.charAt(0).toUpperCase()}</div>`);
+        
+        const label = document.createElement('label');
+        label.className = "flex items-center gap-2 bg-surface-container hover:bg-surface-variant transition-colors px-3 py-1.5 border border-outline/20 rounded-lg cursor-pointer";
+        label.innerHTML = `
+            <input type="checkbox" value="${tm.id}" class="collab-checkbox text-primary bg-background border-outline rounded focus:ring-primary h-4 w-4">
+            ${iconHtml}
+            <span class="font-body-md text-sm text-on-surface">${tm.name}</span>
+        `;
+        container.appendChild(label);
+    });
+}
+
+/* ══════════════════════════════════════════════════════
    LOAD FROM DATABASE
 ══════════════════════════════════════════════════════ */
 async function loadData() {
@@ -1014,19 +1065,12 @@ async function loadData() {
         
         ozonzSettings = loadedSettings;
         
-        try {
-            const aritsiaRes = await fetch(`https://raw.githubusercontent.com/Aritsiaserlet/aritsiaserlet/main/settings.json?t=${Date.now()}`);
-            if (aritsiaRes.ok) {
-                const aritsiaData = await aritsiaRes.json();
-                if (aritsiaData.teams) aritsiaTeams = aritsiaData.teams;
-            }
-        } catch (e) { console.warn("Failed to fetch Aritsia teams", e); }
-        
-        setBadge(true, 'Connected to GitHub');
-
+        // Wait for token validation or skip
         if (ghToken) {
             syncGitHubProfileToSettings();
         }
+        
+        await loadAritsiaTeams();
     } catch (err) {
         console.error("loadData error:", err);
         setBadge(false, err.message);
@@ -1118,7 +1162,7 @@ function renderWorks() {
                 ${thumb}
             </div>
             <div class="flex-1 min-w-0">
-                <h4 class="font-headline-md text-base text-on-surface truncate">${w.name || '(Untitled)'}</h4>
+                <h4 class="font-headline-md text-base text-on-surface">${w.name || '(Untitled)'}</h4>
                 <p class="font-body-md text-xs text-on-surface-variant line-clamp-1">${tagStr || w.aiSummary || w.desc || ''}</p>
             </div>
             <div class="flex items-center gap-1">
@@ -1165,13 +1209,19 @@ window.openWorkModal = function(id) {
     document.getElementById('work-ai-summary').value = w?.aiSummary || '';
     document.getElementById('ai-summarize-status').classList.add('hidden');
 
-    // Init Team
-    if (w && w.team) {
-        selectedTeams = [...w.team];
-    } else {
-        selectedTeams = [];
-    }
-    if (typeof renderTeamCheckboxList === 'function') renderTeamCheckboxList();
+    // Set collaborators
+    selectedTeams = w?.team || [];
+    Array.from(document.querySelectorAll('.collab-checkbox')).forEach(cb => {
+        cb.checked = selectedTeams.includes(cb.value);
+    });
+
+    const m = document.getElementById('work-modal');
+    m.classList.add('open');
+    
+    // Reset modal position
+    const win = document.getElementById('work-modal-window');
+    win.style.left = '0px';
+    win.style.top = '0px';
 
     // If editing and has a valid image URL, show preview
     if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
@@ -1180,8 +1230,6 @@ window.openWorkModal = function(id) {
 
     // Links
     renderLinkRows(w?.links || []);
-
-    document.getElementById('work-modal').classList.add('open');
 };
 
 function renderLinkRows(links) {
@@ -1249,7 +1297,7 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
         image: imgVal,
         tags:  tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
         links: collectLinks(),
-        team:  [...selectedTeams],
+        team:  Array.from(document.querySelectorAll('.collab-checkbox:checked')).map(cb => cb.value),
         tools: [],
         date:  editId
                ? (works.find(w => String(w.id) === editId)?.date || new Date().toISOString())
@@ -1415,6 +1463,50 @@ document.getElementById('work-modal').addEventListener('click', e => {
     if (e.target === document.getElementById('work-modal'))
         document.getElementById('work-modal').classList.remove('open');
 });
+
+/* ══════════════════════════════════════════════════════
+   DRAGGABLE MODAL LOGIC
+══════════════════════════════════════════════════════ */
+function initDraggableModal() {
+    const header = document.getElementById('work-modal-header');
+    const win = document.getElementById('work-modal-window');
+    if (!header || !win) return;
+
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+
+    function onDown(e) {
+        if (e.target.closest('button')) return; // Don't drag if clicking close button
+        isDragging = true;
+        startX = e.clientX || (e.touches && e.touches[0].clientX);
+        startY = e.clientY || (e.touches && e.touches[0].clientY);
+        initialLeft = parseInt(win.style.left || 0);
+        initialTop = parseInt(win.style.top || 0);
+    }
+
+    function onMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const cx = e.clientX || (e.touches && e.touches[0].clientX);
+        const cy = e.clientY || (e.touches && e.touches[0].clientY);
+        const dx = cx - startX;
+        const dy = cy - startY;
+        win.style.left = (initialLeft + dx) + 'px';
+        win.style.top = (initialTop + dy) + 'px';
+    }
+
+    function onUp() {
+        isDragging = false;
+    }
+
+    header.addEventListener('mousedown', onDown);
+    header.addEventListener('touchstart', onDown, {passive: true});
+    document.addEventListener('mousemove', onMove, {passive: false});
+    document.addEventListener('touchmove', onMove, {passive: false});
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchend', onUp);
+}
+initDraggableModal();
 
 async function callGeminiSummary(apiKey, rawDesc) {
     const promptText = `You are an assistant that summarizes project/game descriptions for a developer portfolio. Summarize the following raw description into two parts: 1. A clean, professional description (1-2 sentences, in English). 2. A very short, punchy tagline or summary (maximum 6-8 words, in English). Return the result as a raw JSON object with keys "description" and "tagline". Do not include markdown formatting or backticks. Description: "${rawDesc}"`;
@@ -1587,7 +1679,7 @@ function renderContacts() {
                 ${iconEl}
             </div>
             <div class="flex-1 min-w-0">
-                <h4 class="font-headline-md text-base text-on-surface truncate">${c.name}</h4>
+                <h4 class="font-headline-md text-base text-on-surface">${c.name}</h4>
                 <p class="font-body-md text-xs text-on-surface-variant truncate">${c.link || c.url || ''}</p>
             </div>
             <div class="flex items-center gap-1">
