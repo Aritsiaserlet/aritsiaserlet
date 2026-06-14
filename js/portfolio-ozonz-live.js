@@ -505,7 +505,8 @@
                 vec2 d = abs(px - r.xy) - r.zw;
                 float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
                 float glowRadius = 45.0;
-                float intensity = smoothstep(glowRadius, 0.0, dist);
+                float distOutside = max(dist, 0.0);
+                float intensity = 1.0 - smoothstep(0.0, glowRadius, distOutside);
                 textGlow = max(textGlow, intensity);
             }
         }
