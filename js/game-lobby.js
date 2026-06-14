@@ -48,7 +48,7 @@
     
     try {
       const { collection, query, orderBy, limit, getDocs, doc, getDoc, getCountFromServer, where } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-      const { db } = await import('../authManager.js');
+      const { db } = await import('./authManager.js');
       
       // Update Right Panel (Stats)
       const currentUser = window.gameAuthManager ? window.gameAuthManager.getCurrentUser() : null;
