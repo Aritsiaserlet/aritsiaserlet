@@ -1240,12 +1240,38 @@
 
     // Set image or icon
     imgContainer.innerHTML = '';
-    const imageVal = w.image || (Array.isArray(w.image) ? w.image[0] : null) || (w.model ? 'view_in_ar' : 'brush');
-    const isImg = typeof imageVal === 'string' && (imageVal.startsWith('http') || imageVal.includes('/') || imageVal.includes('.'));
-    if (isImg) {
-      imgContainer.innerHTML = `<img src="${imageVal}" class="w-full h-full object-cover" />`;
+    if (window.carouselInterval) clearInterval(window.carouselInterval);
+    
+    const imagesList = [];
+    if (w.images && Array.isArray(w.images) && w.images.length > 0) {
+      imagesList.push(...w.images);
+    } else if (w.image) {
+      imagesList.push(Array.isArray(w.image) ? w.image[0] : w.image);
+    }
+    
+    if (imagesList.length > 0 && typeof imagesList[0] === 'string' && (imagesList[0].startsWith('http') || imagesList[0].includes('/') || imagesList[0].includes('.'))) {
+      imgContainer.className = "w-full h-full relative pointer-events-none";
+      imagesList.forEach((src, idx) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${idx === 0 ? 'opacity-100' : 'opacity-0'}`;
+        imgContainer.appendChild(img);
+      });
+      
+      if (imagesList.length > 1) {
+        let currIdx = 0;
+        const imgElements = imgContainer.querySelectorAll('img');
+        window.carouselInterval = setInterval(() => {
+          imgElements[currIdx].classList.remove('opacity-100');
+          imgElements[currIdx].classList.add('opacity-0');
+          currIdx = (currIdx + 1) % imagesList.length;
+          imgElements[currIdx].classList.remove('opacity-0');
+          imgElements[currIdx].classList.add('opacity-100');
+        }, 3000);
+      }
     } else {
-      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-8xl">${imageVal || 'brush'}</span></div>`;
+      const imageVal = imagesList.length > 0 ? imagesList[0] : (w.model ? 'view_in_ar' : 'brush');
+      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-8xl">${imageVal}</span></div>`;
     }
 
     // Set tags
