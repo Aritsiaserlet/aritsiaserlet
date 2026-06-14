@@ -559,23 +559,15 @@
 
 <!-- ═══════════════ WORK MODAL ═══════════════ -->
 <div id="work-modal" class="modal-backdrop">
-    <div id="work-modal-window" class="glass max-w-2xl w-full rounded-2xl shadow-2xl max-h-[92vh] flex flex-col animate-in fade-in zoom-in duration-300" style="position: relative;">
-        <!-- DRAG HEADER -->
-        <div id="work-modal-header" class="px-stack-lg py-4 border-b border-outline/10 flex justify-between items-center cursor-move select-none bg-surface/50 rounded-t-2xl">
-            <h2 class="font-headline-lg text-headline-lg text-primary" id="work-modal-title">Add New Work</h2>
-            <button type="button" class="text-on-surface-variant hover:text-error transition-colors p-1" onclick="closeWorkModal()">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
+    <div id="work-modal-window" class="glass max-w-2xl w-full rounded-2xl shadow-2xl p-stack-lg max-h-[92vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
+        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="work-modal-title">Add New Work</h2>
+        
+        <form id="work-form" class="space-y-4">
+            <input type="hidden" id="work-edit-id" />
 
-        <!-- SCROLLABLE BODY -->
-        <div class="p-stack-lg overflow-y-auto scroll-hide flex-1">
-            <form id="work-form" class="space-y-4">
-                <input type="hidden" id="work-edit-id" />
-
-                <!-- Autofill -->
-                <div>
-                    <label class="font-label-md text-xs text-primary mb-1 block">AUTOFILL FROM URL</label>
+            <!-- Autofill -->
+            <div>
+                <label class="font-label-md text-xs text-primary mb-1 block">AUTOFILL FROM URL</label>
                     <div class="flex gap-2">
                         <input type="url" id="autofill-url" class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-body-md text-sm" placeholder="https://username.itch.io/game or https://github.com/user/repo" />
                         <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
@@ -1219,10 +1211,7 @@ window.openWorkModal = function(id) {
     const m = document.getElementById('work-modal');
     m.classList.add('open');
     
-    // Reset modal position
-    const win = document.getElementById('work-modal-window');
-    win.style.left = '0px';
-    win.style.top = '0px';
+    // Removed modal positional reset since it is no longer draggable.
 
     // If editing and has a valid image URL, show preview
     if (imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
@@ -1433,49 +1422,7 @@ document.getElementById('work-modal').addEventListener('click', e => {
         document.getElementById('work-modal').classList.remove('open');
 });
 
-/* ══════════════════════════════════════════════════════
-   DRAGGABLE MODAL LOGIC
-══════════════════════════════════════════════════════ */
-function initDraggableModal() {
-    const header = document.getElementById('work-modal-header');
-    const win = document.getElementById('work-modal-window');
-    if (!header || !win) return;
-
-    let isDragging = false;
-    let startX, startY, initialLeft, initialTop;
-
-    function onDown(e) {
-        if (e.target.closest('button')) return; // Don't drag if clicking close button
-        isDragging = true;
-        startX = e.clientX || (e.touches && e.touches[0].clientX);
-        startY = e.clientY || (e.touches && e.touches[0].clientY);
-        initialLeft = parseInt(win.style.left || 0);
-        initialTop = parseInt(win.style.top || 0);
-    }
-
-    function onMove(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const cx = e.clientX || (e.touches && e.touches[0].clientX);
-        const cy = e.clientY || (e.touches && e.touches[0].clientY);
-        const dx = cx - startX;
-        const dy = cy - startY;
-        win.style.left = (initialLeft + dx) + 'px';
-        win.style.top = (initialTop + dy) + 'px';
-    }
-
-    function onUp() {
-        isDragging = false;
-    }
-
-    header.addEventListener('mousedown', onDown);
-    header.addEventListener('touchstart', onDown, {passive: true});
-    document.addEventListener('mousemove', onMove, {passive: false});
-    document.addEventListener('touchmove', onMove, {passive: false});
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('touchend', onUp);
-}
-initDraggableModal();
+// Removed draggable logic as user requested a clean centered popup.
 
 async function callGeminiSummary(apiKey, rawDesc) {
     const promptText = `You are an assistant that summarizes project/game descriptions for a developer portfolio. Summarize the following raw description into two parts: 1. A clean, professional description (1-2 sentences, in English). 2. A very short, punchy tagline or summary (maximum 6-8 words, in English). Return the result as a raw JSON object with keys "description" and "tagline". Do not include markdown formatting or backticks. Description: "${rawDesc}"`;
