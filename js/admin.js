@@ -1178,9 +1178,18 @@ function renderAdminList(){
 
   // Sort by Year (newest first), then by creation date (id) (newest first)
   const displayList = [...filteredWorks].sort((a, b) => {
-    const yearA = a.year ? parseInt(a.year) : 0;
-    const yearB = b.year ? parseInt(b.year) : 0;
-    if (yearB !== yearA) return yearB - yearA;
+    const parseYear = (yStr) => {
+      if (!yStr) return [0, 0];
+      const parts = String(yStr).trim().split(' ');
+      return [parseInt(parts[0]) || 0, parts.length > 1 ? parseInt(parts[1]) || 0 : 0];
+    };
+    const getSubWeight = (sub) => (sub === 0) ? Infinity : sub;
+    
+    const [yA, subA] = parseYear(a.year);
+    const [yB, subB] = parseYear(b.year);
+    
+    if (yB !== yA) return yB - yA;
+    if (subB !== subA) return getSubWeight(subB) - getSubWeight(subA);
     return (b.id || 0) - (a.id || 0);
   });
 

@@ -203,25 +203,35 @@ function renderGallery() {
       return Math.random() - 0.5;
     }
     
+    const parseYear = (yStr, defaultVal) => {
+      if (!yStr) return [defaultVal, 0];
+      const parts = String(yStr).trim().split(' ');
+      return [parseInt(parts[0]) || defaultVal, parts.length > 1 ? parseInt(parts[1]) || 0 : 0];
+    };
+    const getSubWeight = (sub) => (sub === 0) ? Infinity : sub;
+
     if (currentSort === 'most_liked') {
       const likesA = (window.globalLikes && window.globalLikes[a.id]) ? window.globalLikes[a.id] : 0;
       const likesB = (window.globalLikes && window.globalLikes[b.id]) ? window.globalLikes[b.id] : 0;
       if (likesA !== likesB) return likesB - likesA;
       // Fallback if likes are equal
-      const yearA = a.year ? parseInt(a.year) : 0;
-      const yearB = b.year ? parseInt(b.year) : 0;
-      return yearB - yearA;
+      const [yA, subA] = parseYear(a.year, 0);
+      const [yB, subB] = parseYear(b.year, 0);
+      if (yA !== yB) return yB - yA;
+      return getSubWeight(subB) - getSubWeight(subA);
     }
     
     if (currentSort === 'newest') {
-      const yearA = a.year ? parseInt(a.year) : 0;
-      const yearB = b.year ? parseInt(b.year) : 0;
-      return yearB - yearA; // Higher year first
+      const [yA, subA] = parseYear(a.year, 0);
+      const [yB, subB] = parseYear(b.year, 0);
+      if (yA !== yB) return yB - yA;
+      return getSubWeight(subB) - getSubWeight(subA);
     }
     if (currentSort === 'oldest') {
-      const yearA = a.year ? parseInt(a.year) : 9999;
-      const yearB = b.year ? parseInt(b.year) : 9999;
-      return yearA - yearB; // Lower year first
+      const [yA, subA] = parseYear(a.year, 9999);
+      const [yB, subB] = parseYear(b.year, 9999);
+      if (yA !== yB) return yA - yB;
+      return getSubWeight(subA) - getSubWeight(subB);
     }
     
     return 0;
@@ -278,7 +288,7 @@ function renderGallery() {
             3D
           </div>` : ''}
           <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:5;">
-            ${w.year ? `<div style="background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark); padding:2px 6px; font-family:'VT323',monospace; font-size:18px; color:var(--dark); display:flex; align-items:center;">${escapeHTML(w.year.toString())}</div>` : ''}
+            ${w.year ? `<div style="background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark); padding:2px 6px; font-family:'VT323',monospace; font-size:18px; color:var(--dark); display:flex; align-items:center;">${escapeHTML(String(w.year).split(' ')[0])}</div>` : ''}
             <div class="like-btn" tabindex="0" onclick="window.handleLikeClick(event, '${w.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); window.handleLikeClick(event, '${w.id}'); }" style="color:${heartColor}; position:relative; top:0; right:0; z-index:auto;">
               <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
@@ -404,7 +414,7 @@ function openModal(w) {
 
   const yearBadge = document.getElementById('modalYearBadge');
   if(w.year) {
-    yearBadge.innerText = w.year;
+    yearBadge.innerText = String(w.year).split(' ')[0];
     yearBadge.style.display = 'block';
   } else {
     yearBadge.style.display = 'none';
