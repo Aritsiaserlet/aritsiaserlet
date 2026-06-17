@@ -1165,9 +1165,6 @@ function updateStats(){
   document.getElementById('s3d').textContent=works.filter(w=>w.cat==='3d').length;
 }
 
-// ── Drag-and-drop reorder state ──
-let dragSrcIndex = null;
-let isSavingOrder = false;
 
 function renderAdminList(){
   const list=document.getElementById('worksList');
@@ -1179,22 +1176,13 @@ function renderAdminList(){
   if(!filteredWorks.length){list.innerHTML='<p class="no-works">No works found.</p>';return}
   list.innerHTML='';
 
-  // Show hint bar when reorder is available
-  if(!isFiltered) {
-    const hint = document.createElement('div');
-    hint.className = 'reorder-hint';
-    hint.innerHTML = `<span>☰</span> Drag ≡ to reorder — top to bottom = top in portfolio`;
-    list.appendChild(hint);
-  } else {
-    const hint = document.createElement('div');
-    hint.className = 'reorder-hint reorder-hint--warn';
-    hint.innerHTML = `⚠ Reordering only available when Filter = All`;
-    list.appendChild(hint);
-  }
-
-  // Show items in original order so newest is at bottom
-  // For reorder we work on the global `works` array indices
-  const displayList = [...filteredWorks];
+  // Sort by Year (newest first), then by creation date (id) (newest first)
+  const displayList = [...filteredWorks].sort((a, b) => {
+    const yearA = a.year ? parseInt(a.year) : 0;
+    const yearB = b.year ? parseInt(b.year) : 0;
+    if (yearB !== yearA) return yearB - yearA;
+    return (b.id || 0) - (a.id || 0);
+  });
 
   displayList.forEach(w=>{
     const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
@@ -1216,15 +1204,6 @@ function renderAdminList(){
     el.dataset.workId = w.id;
     el.dataset.realIdx = realIdx;
 
-    if(!isFiltered) {
-      el.draggable = true;
-      el.addEventListener('dragstart', onDragStart);
-      el.addEventListener('dragover',  onDragOver);
-      el.addEventListener('dragleave', onDragLeave);
-      el.addEventListener('drop',      onDrop);
-      el.addEventListener('dragend',   onDragEnd);
-    }
-
     let manageWorkEditIconHtml = '';
     if(settings.manageWorkEditIconId && settings.icons) {
       const eIc = settings.icons.find(x => x.id === settings.manageWorkEditIconId);
@@ -1238,7 +1217,6 @@ function renderAdminList(){
     }
 
     el.innerHTML=`
-      ${!isFiltered ? `<div class="witem-drag" title="Drag to reorder">≡</div>` : ''}
       <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${Array.isArray(w.image)?w.image[0]:w.image}">`:`${catIcon}`}</div>
       <div class="witem-info" style="min-width:0;">
         <div class="witem-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;" title="${w.name}">${w.name}</div>
@@ -1250,55 +1228,6 @@ function renderAdminList(){
   });
 }
 
-function onDragStart(e) {
-  dragSrcIndex = this.dataset.realIdx;
-  e.dataTransfer.effectAllowed = 'move';
-  this.classList.add('dragging');
-}
-
-function onDragOver(e) {
-  if (e.preventDefault) e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  this.classList.add('over');
-  return false;
-}
-
-function onDragLeave(e) {
-  this.classList.remove('over');
-}
-
-async function onDrop(e) {
-  if (e.stopPropagation) e.stopPropagation();
-  if (dragSrcIndex !== null && dragSrcIndex !== this.dataset.realIdx) {
-    if(isSavingOrder) return false;
-    isSavingOrder = true;
-    const list = document.getElementById('worksList');
-    list.style.opacity = '0.5';
-    
-    const srcIdx = parseInt(dragSrcIndex);
-    const dstIdx = parseInt(this.dataset.realIdx);
-    
-    const temp = works[srcIdx];
-    works[srcIdx] = works[dstIdx];
-    works[dstIdx] = temp;
-    
-    try {
-      await saveWorks();
-      renderAdminList();
-    } catch(err) {
-      alert("Error saving new order: " + err.message);
-    }
-    
-    list.style.opacity = '1';
-    isSavingOrder = false;
-  }
-  return false;
-}
-
-function onDragEnd(e) {
-  this.classList.remove('dragging');
-  document.querySelectorAll('.witem').forEach(item => item.classList.remove('over'));
-}
 
 let currentWorkLinks = [];
 
@@ -1661,7 +1590,13 @@ function renderTeamCheckboxList() {
   settings.teams.forEach(tm => {
     const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
     
-    let iconHtml = tm.iconId ? `<img src="${tm.iconId}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : (tm.image ? `<img src="${tm.image}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : `<div style="width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;">${tm.name.charAt(0).toUpperCase()}</div>`);
+    let tmIconUrl = '';
+    if(tm.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === tm.iconId);
+      if(ic) tmIconUrl = ic.url;
+    }
+    
+    let iconHtml = tmIconUrl ? `<img src="${tmIconUrl}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : (tm.image ? `<img src="${tm.image}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : `<div style="width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;">${tm.name.charAt(0).toUpperCase()}</div>`);
 
     box.innerHTML += `
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">
