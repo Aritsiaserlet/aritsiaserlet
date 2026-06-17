@@ -294,7 +294,7 @@
     </div>
 
     <!-- Add Work Panel -->
-    <div class="panel-card collapsed" id="addWorkPanel">
+    <div class="panel-card" id="addWorkPanel">
       <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
         <span id="formTitle">ADD NEW WORK</span>
         <span class="toggle-icon">▲</span>
@@ -315,8 +315,8 @@
           <label>Image/Thumbnail</label>
           <div class="img-preview-wrap">
             <div class="img-preview" id="imgPreview" onclick="imgPreviewClick()">
-              <span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>
-              <span style="font-size:16px;color:var(--dark)">Click to upload image</span>
+              <span id="addWorkPlaceholderImage" style="font-size:32px"></span>
+              <span style="font-size:16px;color:var(--dark)">Click or paste image (Ctrl+V)</span>
             </div>
             <div id="extraImgWrap" style="display:none; gap:8px; margin-top:12px; overflow-x:auto; padding-bottom:4px; display:flex;"></div>
             <div class="img-focal-hint" id="focalHint" style="display:none">

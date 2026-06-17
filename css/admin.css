@@ -191,7 +191,7 @@ input[type="file"] {
 .witem-info{flex:1;min-width:0}
 .witem-name{font-size:20px;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
 .witem-cat{font-size:16px;color:var(--mid)}
-.witem-del{background:var(--danger);border:2px solid var(--dark);cursor:pointer;font-size:16px;color:var(--white);padding:4px 8px;box-shadow:2px 2px 0 var(--dark)}
+.witem-del{background:var(--danger);border:2px solid var(--dark);cursor:pointer;font-size:16px;color:var(--white);padding:4px 8px;box-shadow:2px 2px 0 var(--dark);display:flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;}
 .witem-del:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--dark)}
 .no-works{font-size:20px;color:var(--dark);text-align:center;padding:24px}
 .stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
@@ -201,7 +201,7 @@ input[type="file"] {
 .gh-status{font-size:18px;padding:8px 12px;margin-bottom:16px;text-align:center;border:3px solid var(--dark);box-shadow:2px 2px 0 var(--dark)}
 .gh-status.ok{background:var(--success);color:var(--white)}
 .gh-status.err{background:var(--danger);color:var(--white)}
-.witem-edit{background:var(--gold);border:2px solid var(--dark);cursor:pointer;font-size:16px;color:var(--dark);padding:4px 8px;box-shadow:2px 2px 0 var(--dark)}
+.witem-edit{background:var(--gold);border:2px solid var(--dark);cursor:pointer;font-size:16px;color:var(--dark);padding:4px 8px;box-shadow:2px 2px 0 var(--dark);display:flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;}
 .witem-edit:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--dark)}
 .edit-banner{font-size:16px;text-align:center;padding:8px;margin-bottom:14px;background:var(--gold);color:var(--dark);border:3px solid var(--dark);display:none;box-shadow:2px 2px 0 var(--dark)}
 .edit-banner.visible{display:block}

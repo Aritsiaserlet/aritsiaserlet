@@ -57,6 +57,27 @@ window.addEventListener('DOMContentLoaded', () => {
     loadWorks();
     loadAritsiaTeams();
     loadSettings();
+    
+    // Allow pasting images
+    document.addEventListener('paste', (e) => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' && active.type !== 'file' || active.tagName === 'TEXTAREA')) return;
+      
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById('imgFileInput').files = dataTransfer.files;
+            if (typeof onImgFileChange === 'function') onImgFileChange();
+            break;
+          }
+        }
+      }
+    });
   }
 });
 
@@ -864,8 +885,8 @@ window.updateAddWorkPlaceholderIcon = function() {
       const ic = settings.icons.find(x => x.id === settings.addWorkImageIconId);
       if(ic) iconHtml = `<img id="addWorkPlaceholderImage" src="${ic.url}" style="width:48px;height:48px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">`;
     }
-    if (!iconHtml) iconHtml = `<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>`;
-    preview.innerHTML = `${iconHtml}<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+    if (!iconHtml) iconHtml = `<span id="addWorkPlaceholderImage" style="font-size:32px"></span>`;
+    preview.innerHTML = `${iconHtml}<span style="font-size:16px;color:var(--dark)">Click or paste image (Ctrl+V)</span>`;
   }
 }
 
@@ -1203,13 +1224,13 @@ function renderAdminList(){
       el.addEventListener('dragend',   onDragEnd);
     }
 
-    let manageWorkEditIconHtml = 'Edit';
+    let manageWorkEditIconHtml = '';
     if(settings.manageWorkEditIconId && settings.icons) {
       const eIc = settings.icons.find(x => x.id === settings.manageWorkEditIconId);
       if(eIc) manageWorkEditIconHtml = `<img src="${eIc.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
     }
 
-    let manageWorkDeleteIconHtml = 'Del';
+    let manageWorkDeleteIconHtml = '';
     if(settings.manageWorkDeleteIconId && settings.icons) {
       const dIc = settings.icons.find(x => x.id === settings.manageWorkDeleteIconId);
       if(dIc) manageWorkDeleteIconHtml = `<img src="${dIc.url}" style="width:16px;height:16px;object-fit:cover;image-rendering:pixelated;">`;
@@ -1328,7 +1349,7 @@ function resetForm(){
   if (window.updateAddWorkPlaceholderIcon) {
     window.updateAddWorkPlaceholderIcon();
   } else {
-    document.getElementById('imgPreview').innerHTML=`<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>\n<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+    document.getElementById('imgPreview').innerHTML=`<span style="font-size:16px;color:var(--dark)">Click or paste image (Ctrl+V)</span>`;
   }
   
   const extraWrap = document.getElementById('extraImgWrap');
