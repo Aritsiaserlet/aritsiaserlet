@@ -87,7 +87,29 @@
       </div>
     </div>
 
-    
+    <!-- Team Library Panel -->
+    <div class="panel-card collapsed" style="grid-column: 1 / -1;">
+      <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
+        <span>TEAM LIBRARY</span>
+        <span class="toggle-icon">▼</span>
+      </h2>
+      <div class="panel-body">
+        <p style="font-size:16px;color:var(--mid);margin-bottom:16px;">Manage your team members here. You can pick them when adding a Work.</p>
+        
+        <div id="teamLibraryList" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <!-- Filled by JS -->
+        </div>
+        
+        <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="newTeamName" placeholder="Name (e.g. John)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <input type="url" id="newTeamLink" placeholder="Link URL" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <select id="newTeamIcon" style="width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+            <option value="">-- Icon --</option>
+          </select>
+          <button class="anav-btn" onclick="addTeamLibraryMember()">ADD MEMBER</button>
+        </div>
+      </div>
+    </div>
 
 
     <!-- Sound Library Panel -->
