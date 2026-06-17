@@ -71,8 +71,9 @@ window.addEventListener('DOMContentLoaded', () => {
           if (file) {
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
-            document.getElementById('imgFileInput').files = dataTransfer.files;
-            if (typeof onImgFileChange === 'function') onImgFileChange();
+            const input = document.getElementById('imgFileInput');
+            input.files = dataTransfer.files;
+            if (typeof previewImage === 'function') previewImage(input, false);
             break;
           }
         }
@@ -1447,7 +1448,7 @@ let currentImgFocal = 50;
 
 function imgPreviewClick() {
   // Only open file picker if no image loaded yet
-  const img = document.querySelector('#imgPreview img');
+  const img = document.querySelector('#imgPreview img:not(#addWorkPlaceholderImage)');
   if (!img) document.getElementById('imgFileInput').click();
 }
 
