@@ -1033,6 +1033,7 @@ async function saveGameBalance() {
 // ── Add work ──
 async function addWork(){
   const name=document.getElementById('wName').value.trim();
+  const year=document.getElementById('wYear').value.trim();
   const cat=document.getElementById('wCat').value;
   const subcat=document.getElementById('wSubcat').value;
   const desc=document.getElementById('wDesc').value.trim();
@@ -1097,7 +1098,7 @@ async function addWork(){
     if (editingId) {
       const idx = works.findIndex(x => x.id === editingId);
       if (idx !== -1) {
-        works[idx] = { ...works[idx], name, cat,
+        works[idx] = { ...works[idx], name, year, cat,
           subcat: (cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
           desc, links: currentWorkLinks, team: selectedTeams,
           imageFocal: currentImgFocal,
@@ -1108,7 +1109,7 @@ async function addWork(){
       }
     } else {
       works.push({
-        id:Date.now(),name,cat,
+        id:Date.now(),name,year,cat,
         subcat:(cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
         desc,image:imagePath,model:modelPath,
         links:currentWorkLinks, team: selectedTeams,
@@ -1332,6 +1333,7 @@ function removeWorkLink(idx) {
 
 function resetForm(){
   document.getElementById('wName').value='';
+  document.getElementById('wYear').value='';
   document.getElementById('wCat').value='';
   document.getElementById('wSubcat').value='';
   document.getElementById('wDesc').value='';
@@ -1390,6 +1392,7 @@ function editWork(id) {
   editingId = id;
 
   document.getElementById('wName').value = w.name || '';
+  document.getElementById('wYear').value = w.year || '';
   document.getElementById('wCat').value = w.cat || '';
   onCatChange();
   document.getElementById('wSubcat').value = w.subcat || '';

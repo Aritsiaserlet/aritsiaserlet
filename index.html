@@ -72,9 +72,9 @@
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="filter-label">Sort:</span>
           <select id="sortSelect" onchange="handleSortChange()" style="font-family:'VT323',monospace;font-size:20px;border:3px solid var(--dark);background:var(--white);padding:4px 8px;color:var(--dark);outline:none;box-shadow:2px 2px 0 var(--dark);">
+            <option value="random" selected>Random</option>
             <option value="featured">Featured</option>
             <option value="most_liked">Most Liked</option>
-            <option value="random">Random</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
             <option value="alphabetical">Alphabetical</option>
@@ -169,7 +169,10 @@
     <div class="modal-body">
       <div style="display:flex; justify-content:space-between; align-items:flex-start;">
         <h2 class="modal-title" id="modalTitle"></h2>
-        <div class="like-btn" id="modalLikeBtn" onclick="window.handleLikeClick(event, window.currentModalWorkId); if(window.updateModalLikeBtn) window.updateModalLikeBtn();" style="position:relative;top:0;right:0;"></div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div id="modalYearBadge" style="display:none; background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark); padding:2px 6px; font-family:'VT323',monospace; font-size:18px; color:var(--dark);"></div>
+          <div class="like-btn" id="modalLikeBtn" onclick="window.handleLikeClick(event, window.currentModalWorkId); if(window.updateModalLikeBtn) window.updateModalLikeBtn();" style="position:relative;top:0;right:0;"></div>
+        </div>
       </div>
       <div class="modal-badges" id="modalBadges"></div>
       <p class="modal-desc" id="modalDesc"></p>

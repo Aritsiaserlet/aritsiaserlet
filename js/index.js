@@ -55,7 +55,7 @@ let works = [];
 let settings = {};
 let currentMainCat = 'all';
 let currentSubCat = 'all';
-let currentSort = 'featured'; // Default sort
+let currentSort = 'random'; // Default sort
 
 const GH_USER = 'OzonZ';
 const GH_REPO = 'Non-Four-Portfolio-Data';
@@ -287,9 +287,12 @@ function renderGallery() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
             3D
           </div>` : ''}
-          <div class="like-btn" tabindex="0" onclick="window.handleLikeClick(event, '${w.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); window.handleLikeClick(event, '${w.id}'); }" style="color:${heartColor};">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
+          <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:5;">
+            ${w.year ? `<div style="background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark); padding:2px 6px; font-family:'VT323',monospace; font-size:18px; color:var(--dark); display:flex; align-items:center;">${escapeHTML(w.year.toString())}</div>` : ''}
+            <div class="like-btn" tabindex="0" onclick="window.handleLikeClick(event, '${w.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); window.handleLikeClick(event, '${w.id}'); }" style="color:${heartColor}; position:relative; top:0; right:0; z-index:auto;">
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="${heartFill}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
+            </div>
           </div>
         </div>
         <div class="card-info">
@@ -408,6 +411,14 @@ function openModal(w) {
 
   document.getElementById('modalTitle').innerText = safeName;
   document.getElementById('modalDesc').innerText = safeDesc;
+
+  const yearBadge = document.getElementById('modalYearBadge');
+  if(w.year) {
+    yearBadge.innerText = w.year;
+    yearBadge.style.display = 'block';
+  } else {
+    yearBadge.style.display = 'none';
+  }
 
   const badges = document.getElementById('modalBadges');
   badges.innerHTML = `
