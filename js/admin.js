@@ -55,7 +55,6 @@ window.addEventListener('DOMContentLoaded', () => {
     GH_TOKEN = savedToken;
     document.getElementById('adminPanel').style.display = 'block';
     loadWorks();
-    loadAritsiaTeams();
     loadSettings();
     
     // Allow pasting images
@@ -1193,9 +1192,9 @@ function renderAdminList(){
     list.appendChild(hint);
   }
 
-  // Show items in reverse so newest is at top (matching current behavior)
+  // Show items in original order so newest is at bottom
   // For reorder we work on the global `works` array indices
-  const displayList = [...filteredWorks].reverse();
+  const displayList = [...filteredWorks];
 
   displayList.forEach(w=>{
     const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
@@ -1654,12 +1653,12 @@ function renderTeamCheckboxList() {
   const box = document.getElementById('teamCheckboxList');
   if(!box) return;
   box.innerHTML = '';
-  if(!aritsiaTeams || aritsiaTeams.length === 0) {
-    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No team members available from Aritsiaserlet.</div>';
+  if(!settings.teams || settings.teams.length === 0) {
+    box.innerHTML = '<div style="color:var(--dark);font-size:16px;">No team members available in Team Library.</div>';
     return;
   }
   
-  aritsiaTeams.forEach(tm => {
+  settings.teams.forEach(tm => {
     const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
     
     let iconHtml = tm.iconId ? `<img src="${tm.iconId}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : (tm.image ? `<img src="${tm.image}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;border-radius:50%;border:1px solid rgba(0,0,0,0.3);">` : `<div style="width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;">${tm.name.charAt(0).toUpperCase()}</div>`);

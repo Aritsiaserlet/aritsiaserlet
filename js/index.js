@@ -208,33 +208,23 @@ function renderGallery() {
       const likesB = (window.globalLikes && window.globalLikes[b.id]) ? window.globalLikes[b.id] : 0;
       if (likesA !== likesB) return likesB - likesA;
       // Fallback if likes are equal
-      if (a.featured !== b.featured) return a.featured ? -1 : 1;
-      const dA = new Date(a.date || 0).getTime();
-      const dB = new Date(b.date || 0).getTime();
-      if (dA !== dB) return dB - dA;
-      return (a.name || '').localeCompare(b.name || '');
+      const yearA = a.year ? parseInt(a.year) : 0;
+      const yearB = b.year ? parseInt(b.year) : 0;
+      return yearB - yearA;
     }
     
     if (currentSort === 'newest') {
-      return new Date(b.date || 0) - new Date(a.date || 0);
+      const yearA = a.year ? parseInt(a.year) : 0;
+      const yearB = b.year ? parseInt(b.year) : 0;
+      return yearB - yearA; // Higher year first
     }
     if (currentSort === 'oldest') {
-      return new Date(a.date || 0) - new Date(b.date || 0);
-    }
-    if (currentSort === 'alphabetical') {
-      return (a.name || '').localeCompare(b.name || '');
+      const yearA = a.year ? parseInt(a.year) : 9999;
+      const yearB = b.year ? parseInt(b.year) : 9999;
+      return yearA - yearB; // Lower year first
     }
     
-    // Default Fallback (Featured -> Date -> Alphabetical) or "featured" explicit sort
-    if (a.featured !== b.featured) {
-      return a.featured ? -1 : 1;
-    }
-    // Then Date
-    const dA = new Date(a.date || 0).getTime();
-    const dB = new Date(b.date || 0).getTime();
-    if (dA !== dB) return dB - dA;
-    // Then Alphabetical
-    return (a.name || '').localeCompare(b.name || '');
+    return 0;
   });
 
   // Remove existing cards (keep emptyState)
