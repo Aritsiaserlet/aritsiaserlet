@@ -172,6 +172,8 @@ async function loadSettings(){
   renderSoundPicker();
   renderTeamLibrary();
   renderTeamCheckboxList();
+  if (window.renderAdminList) renderAdminList();
+  if (window.updateAddWorkPlaceholderIcon) updateAddWorkPlaceholderIcon();
 }
 
 async function saveWorks(){
@@ -862,6 +864,7 @@ window.updateAddWorkPlaceholderIcon = function() {
       const ic = settings.icons.find(x => x.id === settings.addWorkImageIconId);
       if(ic) iconHtml = `<img id="addWorkPlaceholderImage" src="${ic.url}" style="width:48px;height:48px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">`;
     }
+    if (!iconHtml) iconHtml = `<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>`;
     preview.innerHTML = `${iconHtml}<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
   }
 }
@@ -1325,7 +1328,7 @@ function resetForm(){
   if (window.updateAddWorkPlaceholderIcon) {
     window.updateAddWorkPlaceholderIcon();
   } else {
-    document.getElementById('imgPreview').innerHTML=`<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
+    document.getElementById('imgPreview').innerHTML=`<span id="addWorkPlaceholderImage" style="font-size:32px">🖼️</span>\n<span style="font-size:16px;color:var(--dark)">Click to upload image</span>`;
   }
   
   const extraWrap = document.getElementById('extraImgWrap');
