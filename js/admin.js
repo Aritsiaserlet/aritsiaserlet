@@ -88,14 +88,15 @@ window.addEventListener('DOMContentLoaded', () => {
       const ripple = document.createElement('div');
       ripple.className = 'px-ripple';
       const rect = btn.getBoundingClientRect();
-      ripple.style.left = (e.clientX - rect.left - 4) + 'px';
-      ripple.style.top  = (e.clientY - rect.top  - 4) + 'px';
+      // Center the 24x24px ripple exactly at the click coordinates
+      ripple.style.left = (e.clientX - rect.left - 12) + 'px';
+      ripple.style.top  = (e.clientY - rect.top  - 12) + 'px';
       // Ensure parent can clip
       const prevOverflow = btn.style.overflow;
       btn.style.overflow = 'hidden';
       btn.style.position = btn.style.position || 'relative';
       btn.appendChild(ripple);
-      setTimeout(() => { ripple.remove(); btn.style.overflow = prevOverflow; }, 550);
+      setTimeout(() => { ripple.remove(); btn.style.overflow = prevOverflow; }, 800);
     });
   }
 });

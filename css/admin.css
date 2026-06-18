@@ -225,10 +225,10 @@ input[type="file"] {
 .px-ripple{
   position:absolute;
   width:24px;height:24px;
-  background:rgba(255,255,255,0.4);
-  border:3px solid var(--dark);
+  background:rgba(255,255,255,0.15);
+  border:3px solid rgba(255,255,255,0.8);
   pointer-events:none;
-  animation:pxRipple 0.6s ease-out forwards;
+  animation:pxRipple 0.8s ease-out forwards;
   z-index:999;
   transform-origin:center;
 }

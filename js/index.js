@@ -293,7 +293,7 @@ function renderGallery() {
       card.innerHTML = `
         <div class="card-thumb">
           ${w.image ? `<img src="${Array.isArray(w.image) ? w.image[0] : w.image}" alt="${safeName}" loading="lazy" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
-          ${w.cat === '3d' ? `<div style="position:absolute;top:8px;left:8px;background:var(--white);border:2px solid var(--dark);padding:2px 6px;font-size:14px;display:flex;align-items:center;gap:4px;box-shadow:2px 2px 0 var(--dark);">
+          ${w.cat === '3d' ? `<div style="position:absolute;top:8px;left:8px;background:var(--white);border:2px solid var(--dark);padding:2px 6px;font-size:14px;display:flex;align-items:center;gap:4px;box-shadow:2px 2px 0 var(--dark);z-index:5;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
             3D
           </div>` : ''}
@@ -967,9 +967,10 @@ document.addEventListener('mousedown', (e) => {
     const ripple = document.createElement('div');
     ripple.className = 'px-ripple';
     const rect = btn.getBoundingClientRect();
-    ripple.style.left = (e.clientX - rect.left - 4) + 'px';
-    ripple.style.top = (e.clientY - rect.top - 4) + 'px';
+    // Center the 24x24px ripple exactly at the click coordinates
+    ripple.style.left = (e.clientX - rect.left - 12) + 'px';
+    ripple.style.top = (e.clientY - rect.top - 12) + 'px';
     btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 500);
+    setTimeout(() => ripple.remove(), 800);
   }
 });
