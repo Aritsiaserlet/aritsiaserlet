@@ -891,9 +891,10 @@ window.updateSoundBtn = function(btn, isMuted) {
     if (ic) iconUrl = ic.url;
   }
   if (iconUrl) {
-    btn.innerHTML = `<img src="${iconUrl}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;opacity:${isMuted ? '0.5' : '1'};filter:${isMuted ? 'grayscale(100%)' : 'none'};">`;
+    btn.innerHTML = `<img src="${iconUrl}" style="width:24px;height:24px;object-fit:contain;image-rendering:pixelated;opacity:${isMuted ? '0.35' : '1'};filter:${isMuted ? 'grayscale(100%)' : 'none'};">`;
   } else {
-    btn.textContent = isMuted ? '🔇' : '🔊';
+    // No icon set — show nothing until icon loads
+    btn.innerHTML = '';
   }
 };
 
@@ -955,7 +956,7 @@ window.togglePortfolioBGM = function() {
   const btn = document.getElementById('bgmTogglePortfolio');
   if (btn) {
     if(window.updateSoundBtn) window.updateSoundBtn(btn, !_bgmOn);
-    else btn.textContent = _bgmOn ? '🔊' : '🔇';
+    // else: show nothing if no icon configured
   }
 };
 
