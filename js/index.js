@@ -363,18 +363,7 @@ loadData();
   if (playBtn) playBtn.style.animation = 'fadeUp 0.9s 0.2s ease both, playGlow 2.5s 1s ease-in-out infinite';
 })();
 
-// ── Tab Ripple on Click ──
-document.addEventListener('click', function(e) {
-  const btn = e.target.closest('.tab');
-  if (!btn) return;
-  const ripple = document.createElement('span');
-  ripple.className = 'px-ripple';
-  const rect = btn.getBoundingClientRect();
-  ripple.style.left = (e.clientX - rect.left - 4) + 'px';
-  ripple.style.top  = (e.clientY - rect.top  - 4) + 'px';
-  btn.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 600);
-});
+// ── Tab Ripple on Click removed (now handled globally) ──
 
 // ── Works Section Scroll Reveal ──
 (function() {
@@ -962,15 +951,13 @@ window.togglePortfolioBGM = function() {
 
 // ── Global Micro-interactions ──
 document.addEventListener('mousedown', (e) => {
-  const btn = e.target.closest('button, .tab, .work-card, .like-btn, .admin-btn, .game-btn, .social-btn, .modal-link');
-  if (btn) {
-    const ripple = document.createElement('div');
-    ripple.className = 'px-ripple';
-    const rect = btn.getBoundingClientRect();
-    // Center the 24x24px ripple exactly at the click coordinates
-    ripple.style.left = (e.clientX - rect.left - 12) + 'px';
-    ripple.style.top = (e.clientY - rect.top - 12) + 'px';
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 800);
-  }
+  const ripple = document.createElement('div');
+  ripple.className = 'px-ripple';
+  ripple.style.position = 'fixed';
+  ripple.style.left = (e.clientX - 12) + 'px';
+  ripple.style.top = (e.clientY - 12) + 'px';
+  ripple.style.pointerEvents = 'none';
+  ripple.style.zIndex = '9999';
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 800);
 });

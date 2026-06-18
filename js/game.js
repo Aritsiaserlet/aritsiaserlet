@@ -1103,14 +1103,13 @@ function spawnGoParticles() {
 
 // ── Global Micro-interactions ──
 document.addEventListener('mousedown', (e) => {
-  const btn = e.target.closest('button, .game-btn, .modal-close');
-  if (btn) {
-    const ripple = document.createElement('div');
-    ripple.className = 'px-ripple';
-    const rect = btn.getBoundingClientRect();
-    ripple.style.left = (e.clientX - rect.left - 4) + 'px';
-    ripple.style.top = (e.clientY - rect.top - 4) + 'px';
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 500);
-  }
+  const ripple = document.createElement('div');
+  ripple.className = 'px-ripple';
+  ripple.style.position = 'fixed';
+  ripple.style.left = (e.clientX - 12) + 'px';
+  ripple.style.top = (e.clientY - 12) + 'px';
+  ripple.style.pointerEvents = 'none';
+  ripple.style.zIndex = '9999';
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 800);
 });

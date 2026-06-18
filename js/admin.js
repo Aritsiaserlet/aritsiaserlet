@@ -81,22 +81,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // ── Pixel Square Ripple on click ──
     document.addEventListener('mousedown', (e) => {
-      const btn = e.target.closest('button, .tab, .anav-btn, .submit-btn, .witem-edit, .witem-del');
-      if (!btn) return;
-      // Skip buttons inside scrollable lists (sound/icon pickers) to avoid overflow issues
-      if (btn.closest('#soundPickerGrid, #iconLibraryList, #soundLibraryList')) return;
+      // Don't draw ripple inside scrollable lists to avoid clipping/overflow bugs
+      if (e.target.closest('#soundPickerGrid, #iconLibraryList, #soundLibraryList')) return;
       const ripple = document.createElement('div');
       ripple.className = 'px-ripple';
-      const rect = btn.getBoundingClientRect();
-      // Center the 24x24px ripple exactly at the click coordinates
-      ripple.style.left = (e.clientX - rect.left - 12) + 'px';
-      ripple.style.top  = (e.clientY - rect.top  - 12) + 'px';
-      // Ensure parent can clip
-      const prevOverflow = btn.style.overflow;
-      btn.style.overflow = 'hidden';
-      btn.style.position = btn.style.position || 'relative';
-      btn.appendChild(ripple);
-      setTimeout(() => { ripple.remove(); btn.style.overflow = prevOverflow; }, 800);
+      ripple.style.position = 'fixed';
+      ripple.style.left = (e.clientX - 12) + 'px';
+      ripple.style.top = (e.clientY - 12) + 'px';
+      ripple.style.pointerEvents = 'none';
+      ripple.style.zIndex = '9999';
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 800);
     });
   }
 });
@@ -113,6 +108,35 @@ async function ghGet(path) {
   if(r.status===404)return null;
   if(!r.ok)throw new Error(`GitHub error ${r.status}`);
   return r.json();
+}
+
+let fDB = null, fDoc = null, fGetDoc = null, fSetDoc = null;
+async function initFirebaseSettings() {
+  if (fDB) return;
+  try {
+    const authMod = await import('./authManager.js');
+    const fsMod = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    fDB = authMod.db;
+    fDoc = fsMod.doc;
+    fGetDoc = fsMod.getDoc;
+    fSetDoc = fsMod.setDoc;
+    console.log("Firebase loaded for settings");
+  } catch (e) {
+    console.warn("Firebase init error:", e);
+  }
+}
+initFirebaseSettings();
+
+async function syncSettingsToFirebase(settingsObj) {
+  if (fDB) {
+    try {
+      const ref = fDoc(fDB, 'settings', 'global');
+      await fSetDoc(ref, { settings: settingsObj });
+      console.log("Settings synced to Firebase");
+    } catch(e) {
+      console.warn("Firebase sync error:", e);
+    }
+  }
 }
 
 async function ghPut(path, content, message, sha){
@@ -132,6 +156,14 @@ async function ghPut(path, content, message, sha){
       const t=await r.text();throw new Error(`GitHub PUT error ${r.status}: ${t}`);
     }
   }
+  
+  if (path === JSON_PATH) {
+    try {
+      const parsed = JSON.parse(content);
+      await syncSettingsToFirebase(parsed);
+    } catch(e) {}
+  }
+  
   return r.json();
 }
 
@@ -186,11 +218,29 @@ async function loadWorks(){
 
 let settings={}, settingsSha=null;
 async function loadSettings(){
+  await initFirebaseSettings();
+  let fbSettingsLoaded = false;
+  try {
+    if (fDB) {
+      const ref = fDoc(fDB, 'settings', 'global');
+      const snap = await fGetDoc(ref);
+      if (snap.exists()) {
+        settings = snap.data().settings || {};
+        fbSettingsLoaded = true;
+        console.log("Settings loaded from Firebase");
+      }
+    }
+  } catch(e) { console.warn("Firebase load error", e); }
+
   try{
     const data=await ghGet(JSON_PATH);
     if(data){
       settingsSha=data.sha;
-      settings=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+      if (!fbSettingsLoaded) {
+        settings=JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+        console.log("Settings loaded from GitHub");
+      }
+      
       if(settings.profileImage){
         setMediaPreview('profilePreview', settings.profileImage);
       }
