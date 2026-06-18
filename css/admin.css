@@ -220,3 +220,19 @@ input[type="file"] {
 .prev-cancel:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
 .prev-confirm{flex:1;padding:12px;border:3px solid var(--dark);background:var(--gold);font-family:'VT323',monospace;font-size:24px;color:var(--dark);cursor:pointer;transition:all .1s;box-shadow:4px 4px 0 var(--dark)}
 .prev-confirm:hover{background:var(--gold-l);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
+
+/* ── Pixel Ripple (click effect) ── */
+.px-ripple{
+  position:absolute;
+  width:8px;height:8px;
+  background:rgba(255,255,255,0.7);
+  border:2px solid var(--dark);
+  pointer-events:none;
+  animation:pxRipple 0.5s ease-out forwards;
+  z-index:999;
+  transform-origin:center;
+}
+@keyframes pxRipple{
+  0%  {transform:scale(1);  opacity:0.9;}
+  100%{transform:scale(16); opacity:0;}
+}

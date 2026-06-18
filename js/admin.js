@@ -78,6 +78,25 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+
+    // ── Pixel Square Ripple on click ──
+    document.addEventListener('mousedown', (e) => {
+      const btn = e.target.closest('button, .tab, .anav-btn, .submit-btn, .witem-edit, .witem-del');
+      if (!btn) return;
+      // Skip buttons inside scrollable lists (sound/icon pickers) to avoid overflow issues
+      if (btn.closest('#soundPickerGrid, #iconLibraryList, #soundLibraryList')) return;
+      const ripple = document.createElement('div');
+      ripple.className = 'px-ripple';
+      const rect = btn.getBoundingClientRect();
+      ripple.style.left = (e.clientX - rect.left - 4) + 'px';
+      ripple.style.top  = (e.clientY - rect.top  - 4) + 'px';
+      // Ensure parent can clip
+      const prevOverflow = btn.style.overflow;
+      btn.style.overflow = 'hidden';
+      btn.style.position = btn.style.position || 'relative';
+      btn.appendChild(ripple);
+      setTimeout(() => { ripple.remove(); btn.style.overflow = prevOverflow; }, 550);
+    });
   }
 });
 
