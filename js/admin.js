@@ -1331,7 +1331,12 @@ function editWork(id) {
   document.getElementById('wName').value = w.name || '';
   document.getElementById('wYear').value = w.year || '';
   document.getElementById('wCat').value = w.cat || '';
-  onCatChange();
+  onCatChange(); // This shows/hides modelWrap based on cat
+  if (w.cat === '3d' && w.model) {
+    document.getElementById('modelName').innerText = '✓ Loaded: ' + w.model.split('/').pop();
+  } else {
+    document.getElementById('modelName').innerText = '';
+  }
   document.getElementById('wSubcat').value = w.subcat || '';
   document.getElementById('wDesc').value = w.desc || '';
   
