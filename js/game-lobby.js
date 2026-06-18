@@ -206,17 +206,21 @@
     const master = parseInt(document.getElementById('gsetMasterVol').value, 10);
     const music = parseInt(document.getElementById('gsetMusicVol').value, 10);
     const sfx = parseInt(document.getElementById('gsetSfxVol').value, 10);
+    let currentSettings = {};
     // Save to localStorage
     try {
       const raw = localStorage.getItem('portfolioSettings');
       const s = raw ? JSON.parse(raw) : {};
       s.masterVolume = master; s.musicVolume = music; s.sfxVolume = sfx;
       localStorage.setItem('portfolioSettings', JSON.stringify(s));
+      currentSettings = s;
     } catch(e) {}
     if (window.gameAudio && window.gameAudio.setVolumes) {
       window.gameAudio.setVolumes({ master, music, sfx });
     }
+    window.dispatchEvent(new CustomEvent('gameSettingsChanged', { detail: currentSettings }));
   }
+  window.applyGameSettings = applyGameSettings;
 
   let _gameBgmOn = false;
   window.updateGameBgmBtn = function() {
@@ -243,6 +247,7 @@
       }
     } catch(e) {}
   }
+  window.initGameSettings = initGameSettings;
 
   function setLoadingProgress(pct, text) {
     document.getElementById('loadingBar').style.width = pct + '%';

@@ -1,7 +1,25 @@
-import { db, getCurrentUser, onUserChange, loginWithGoogle, logout } from './authManager.js';
+import { db, getCurrentUser, onUserChange, loginWithGoogle, logout, saveUserSettings } from './authManager.js';
   import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
   
   window.gameAuthManager = { login: loginWithGoogle, logout: logout, getCurrentUser: getCurrentUser };
+
+  window.addEventListener('firebaseSettingsLoaded', (e) => {
+    if (e.detail) {
+      localStorage.setItem('portfolioSettings', JSON.stringify(e.detail));
+      if (window.initGameSettings) window.initGameSettings();
+      if (window.gameAudio && window.gameAudio.setVolumes) {
+        window.gameAudio.setVolumes({
+          master: e.detail.masterVolume ?? 100,
+          music: e.detail.musicVolume ?? 100,
+          sfx: e.detail.sfxVolume ?? 100
+        });
+      }
+    }
+  });
+
+  window.addEventListener('gameSettingsChanged', (e) => {
+    saveUserSettings(e.detail);
+  });
 
   let currentUser = null;
   onUserChange(user => {

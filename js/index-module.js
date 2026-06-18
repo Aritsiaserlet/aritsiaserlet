@@ -1,5 +1,5 @@
-import { initSettings, getSettings, updateSettings } from './settingsManager.js';
-  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike } from './authManager.js';
+  import { initSettings, getSettings, updateSettings } from './settingsManager.js';
+  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike, saveUserSettings } from './authManager.js';
   import { sfxLike, sfxLogin, sfxBtn, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments, toggleMute, startPortfolioBGM } from './audioManager.js';
   
   window.portfolioSettingsManager = { getSettings, updateSettings };
@@ -9,6 +9,24 @@ import { initSettings, getSettings, updateSettings } from './settingsManager.js'
     logout: logout, 
     toggleLike: toggleLike 
   };
+
+  // Sync Firebase settings
+  window.addEventListener('firebaseSettingsLoaded', (e) => {
+    if (e.detail) {
+      updateSettings(e.detail);
+      // Ensure UI is updated if settings modal is open
+      if (document.getElementById('setMasterVol')) {
+        document.getElementById('setMasterVol').value = e.detail.masterVolume !== undefined ? e.detail.masterVolume : 100;
+        document.getElementById('setMusicVol').value = e.detail.musicVolume !== undefined ? e.detail.musicVolume : 100;
+        document.getElementById('setSfxVol').value = e.detail.sfxVolume !== undefined ? e.detail.sfxVolume : 100;
+      }
+    }
+  });
+
+  // Save settings back to Firebase on change
+  window.addEventListener('portfolioSettingsChanged', (e) => {
+    saveUserSettings(e.detail);
+  });
 
   let userHasInteracted = false;
   const interactionHandler = () => {

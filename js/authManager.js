@@ -94,12 +94,30 @@ onAuthStateChanged(auth, async (user) => {
         displayName: user.displayName, // sync in case they changed it
         photoURL: user.photoURL
       });
+      
+      // Dispatch settings if they exist
+      const userData = userSnap.data();
+      if (userData.settings) {
+        window.dispatchEvent(new CustomEvent('firebaseSettingsLoaded', { detail: userData.settings }));
+      }
     }
   }
 
   // Notify listeners
   stateChangeCallbacks.forEach(cb => cb(currentUser));
 });
+
+export async function saveUserSettings(settings) {
+  if (!currentUser) return false;
+  try {
+    const userRef = doc(db, 'users', currentUser.uid);
+    await updateDoc(userRef, { settings });
+    return true;
+  } catch (error) {
+    console.error("Failed to save user settings to Firebase", error);
+    return false;
+  }
+}
 
 export async function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
