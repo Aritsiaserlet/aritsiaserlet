@@ -98,11 +98,11 @@ import { initSettings, getSettings, updateSettings } from './settingsManager.js'
       window.userLikes[workId] = true;
       window.globalLikes[workId] = (window.globalLikes[workId] || 0) + 1;
       btn.style.color = 'var(--danger)';
-      btn.querySelector('svg').style.fill = 'currentColor';
-      // Add heart burst animation
-      btn.style.animation = 'none';
-      void btn.offsetWidth; // trigger reflow
-      btn.style.animation = 'heartBurst 0.3s ease-out forwards';
+      const svgEl = btn.querySelector('svg');
+      svgEl.style.fill = 'currentColor';
+      // CSS class-based animation for heartBurst
+      btn.classList.add('liked');
+      setTimeout(() => btn.classList.remove('liked'), 400);
       // Spawn heart particles
       for(let i=0; i<6; i++) {
         const p = document.createElement('div');

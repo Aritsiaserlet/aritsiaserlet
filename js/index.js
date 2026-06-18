@@ -165,8 +165,8 @@ function applySettings() {
         const ic = settings.icons.find(x => x.id === s.iconId);
         if(ic) url = ic.url;
       }
-      const iconHtml = url ? `<img src="${url}" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">` : '';
-      socBox.innerHTML += `<a href="${s.url}" class="social-btn" target="_blank" rel="noopener">${iconHtml} ${s.name}</a>`;
+      const iconHtml = url ? `<img src="${url}" class="social-icon" style="width:20px;height:20px;object-fit:cover;image-rendering:pixelated;">` : '';
+      socBox.innerHTML += `<a href="${s.url}" class="social-btn" target="_blank" rel="noopener"><span class="social-tooltip">${s.name}</span>${iconHtml} ${s.name}</a>`;
     });
   }
 
@@ -304,6 +304,7 @@ function renderGallery() {
               <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
             </div>
           </div>
+          <div class="card-hover-overlay"><div class="card-hover-overlay-icon">👁</div></div>
         </div>
         <div class="card-info">
           <p class="card-name">${safeName}</p>
@@ -355,6 +356,36 @@ function handleSortChange() {
 }
 
 loadData();
+
+// ── Play Button Glow Animation ──
+(function() {
+  const playBtn = document.getElementById('playGameBtn');
+  if (playBtn) playBtn.style.animation = 'fadeUp 0.9s 0.2s ease both, playGlow 2.5s 1s ease-in-out infinite';
+})();
+
+// ── Tab Ripple on Click ──
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  const ripple = document.createElement('span');
+  ripple.className = 'px-ripple';
+  const rect = btn.getBoundingClientRect();
+  ripple.style.left = (e.clientX - rect.left - 4) + 'px';
+  ripple.style.top  = (e.clientY - rect.top  - 4) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
+
+// ── Works Section Scroll Reveal ──
+(function() {
+  const ws = document.querySelector('.works-section');
+  if (!ws) return;
+  ws.classList.add('scroll-reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => { if(en.isIntersecting) { ws.classList.add('revealed'); obs.disconnect(); } });
+  }, { threshold: 0.08 });
+  obs.observe(ws);
+})();
 
 // ── Modal Logic ──
 function openModal(w) {

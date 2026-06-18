@@ -55,6 +55,7 @@ body{
   padding:6px;margin-bottom:24px;
   box-shadow:var(--pixel-shadow);
   border:4px solid var(--dark);
+  animation: avatarBreathe 3s ease-in-out infinite;
 }
 .avatar-inner{
   width:100%;height:100%;overflow:hidden;
@@ -93,12 +94,25 @@ body{
   border:3px solid var(--dark);
   background:var(--white);
   color:var(--dark);
-  transition:transform .1s,background .1s,box-shadow .1s;
+  transition:transform .15s,background .15s,box-shadow .15s;
   box-shadow:4px 4px 0 var(--dark);
   position:relative;overflow:hidden;
 }
-.social-btn:hover{transform:translate(2px,2px);background:var(--gold-l);box-shadow:2px 2px 0 var(--dark)}
+.social-btn:hover{transform:translate(2px,2px) scale(1.04);background:var(--gold-l);box-shadow:2px 2px 0 var(--dark)}
+.social-btn:hover .social-icon{animation:iconBounce 0.35s ease}
 .social-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--dark)}
+/* Tooltip */
+.social-btn .social-tooltip{
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(4px);
+  background:var(--dark);color:#fff;
+  font-family:'VT323',monospace;font-size:16px;
+  padding:3px 8px;white-space:nowrap;
+  pointer-events:none;
+  opacity:0;transition:opacity .15s, transform .15s;
+  border:2px solid rgba(255,255,255,0.2);
+  z-index:20;
+}
+.social-btn:hover .social-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}
 .social-btn svg{width:20px;height:20px;flex-shrink:0}
 
 /* ── Works Section ── */
@@ -127,16 +141,16 @@ body{
   padding:4px 14px;
   border:3px solid var(--dark);
   background:var(--white);color:var(--dark);
-  cursor:pointer;transition:background .1s, transform .1s;
+  cursor:pointer;transition:background .15s, transform .1s, box-shadow .1s;
   white-space:nowrap;
   box-shadow:2px 2px 0 var(--dark);
   display:inline-flex;align-items:center;gap:6px;
   position:relative;overflow:hidden;
 }
 .tab:hover{background:var(--gold-l);transform:translate(1px,1px);box-shadow:1px 1px 0 var(--dark)}
-.tab.active{background:var(--gold);transform:translate(2px,2px);box-shadow:0 0 0 var(--dark)}
+.tab.active{background:var(--gold);transform:translate(2px,2px);box-shadow:0 0 0 var(--dark);animation:tabPulse 1.8s ease-in-out infinite}
 .subtab{font-size:18px;padding:2px 10px;background:var(--sky4)}
-.subtab.active{background:var(--sky2)}
+.subtab.active{background:var(--sky2);animation:none}
 .sub-row{display:none;gap:8px;flex-wrap:wrap;justify-content:center}
 .sub-row.visible{display:flex}
 
@@ -150,17 +164,39 @@ body{
   border:3px solid var(--dark);
   background:var(--white);
   box-shadow:4px 4px 0 rgba(26,42,58,0.5);
-  cursor:pointer;transition:transform .1s,box-shadow .1s,opacity .25s;
+  cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .25s,border-color .15s;
   animation:cardIn 0.4s ease both;
   position:relative;overflow:hidden;
 }
-.work-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(26,42,58,0.7);background:var(--gold-l)}
-.work-card:hover .card-thumb img{transform:scale(1.06);transition:transform 0.3s ease}
+.work-card:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 rgba(26,42,58,0.8);background:var(--gold-l);border-color:var(--gold-d)}
+.work-card:hover .card-thumb img{transform:scale(1.08);filter:brightness(1.08);transition:transform 0.35s ease-out, filter 0.35s ease-out}
+.work-card:hover .card-hover-overlay{opacity:1}
 .work-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 rgba(26,42,58,0.7)}
 .work-card:focus-visible{outline:4px dashed var(--danger);outline-offset:4px}
 .tab:focus-visible, .nav-btn:focus-visible, .game-btn:focus-visible, .social-btn:focus-visible, .like-btn:focus-visible { outline: 4px dashed var(--danger); outline-offset: 4px; }
 .work-card.hidden{display:none}
 .work-card.fade-out{opacity:0;transform:translateY(10px)}
+/* Card hover overlay */
+.card-hover-overlay{
+  position:absolute;inset:0;
+  background:rgba(26,42,58,0.45);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.2s ease;
+  z-index:6;pointer-events:none;
+}
+.card-hover-overlay-icon{
+  background:var(--gold);
+  border:3px solid var(--dark);
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:3px 3px 0 var(--dark);
+  font-size:24px;
+  transform:scale(0.85);transition:transform 0.2s ease;
+}
+.work-card:hover .card-hover-overlay-icon{transform:scale(1)}
+/* Scroll reveal */
+.works-section.scroll-reveal{opacity:0;transform:translateY(28px);transition:opacity 0.55s ease, transform 0.55s ease}
+.works-section.scroll-reveal.revealed{opacity:1;transform:translateY(0)}
 
 /* ── Skeleton Cards ── */
 .skeleton-card{
@@ -199,12 +235,20 @@ body{
   position:absolute; top:8px; right:8px; z-index:5;
   background:var(--white); border:3px solid var(--dark); box-shadow:2px 2px 0 var(--dark);
   display:flex; align-items:center; gap:6px; padding:2px 6px;
-  cursor:pointer; transition:transform 0.1s;
+  cursor:pointer; transition:transform 0.1s, background 0.15s;
   overflow:hidden;
 }
-.like-btn:hover{ transform:translate(-1px,-1px); }
+.like-btn:hover{ transform:translate(-1px,-1px); background:var(--gold-l); }
 .like-btn:active{ transform:translate(1px,1px); box-shadow:0 0 0 var(--dark); }
-.like-btn svg{ width:20px; height:20px; }
+.like-btn svg{ width:20px; height:20px; transition:transform 0.15s; }
+.like-btn:hover svg{ transform:scale(1.15); }
+.like-btn.liked svg{ animation:heartBurst 0.35s ease; }
+/* Heart particle */
+.heart-particle{
+  position:absolute;pointer-events:none;z-index:50;
+  font-size:14px;animation:heartParticle 0.7s ease-out forwards;
+  transform-origin:center;
+}
 .card-info{padding:12px 14px}
 .card-name{font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:10px;line-height:1.4}
 .card-cats{display:flex;gap:6px;flex-wrap:wrap}
@@ -243,8 +287,30 @@ body{
   100%{background-position:400px 0}
 }
 @keyframes cardIn{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:translateY(0)}
+  from{opacity:0;transform:translateY(20px) scale(0.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+/* Avatar breathing */
+@keyframes avatarBreathe {
+  0%,100%{ box-shadow: var(--pixel-shadow); transform: scale(1); }
+  50%    { box-shadow: 4px 4px 0 rgba(26,42,58,0.3), 0 0 18px rgba(232,200,122,0.5); transform: scale(1.025); }
+}
+/* Play button glow */
+@keyframes playGlow {
+  0%,100%{ box-shadow: 6px 6px 0 var(--dark); }
+  50%    { box-shadow: 6px 6px 0 var(--dark), 0 0 22px rgba(232,200,122,0.7); }
+}
+/* Tab active pulse */
+@keyframes tabPulse {
+  0%,100%{ box-shadow: 0 0 0 var(--dark); }
+  50%    { box-shadow: 0 0 0 var(--dark), 0 0 8px rgba(232,200,122,0.6); }
+}
+/* Social icon bounce */
+@keyframes iconBounce {
+  0%  { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+  60% { transform: translateY(2px); }
+  100%{ transform: translateY(0); }
 }
 /* Pixel ripple */
 .px-ripple {
@@ -260,13 +326,14 @@ body{
   100% { transform: scale(15);  opacity: 0; }
 }
 @keyframes modalSpring {
-  0%   { transform: scale(0.8); opacity: 0; }
-  60%  { transform: scale(1.02); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0%   { transform: scale(0.88) translateY(20px); opacity: 0; }
+  65%  { transform: scale(1.02) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 @keyframes heartBurst {
   0%   { transform: scale(1); }
-  50%  { transform: scale(1.4); }
+  40%  { transform: scale(1.5) rotate(-10deg); }
+  70%  { transform: scale(0.9); }
   100% { transform: scale(1); }
 }
 @keyframes heartParticle {
