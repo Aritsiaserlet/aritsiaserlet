@@ -214,24 +214,34 @@ function renderGallery() {
       const likesA = (window.globalLikes && window.globalLikes[a.id]) ? window.globalLikes[a.id] : 0;
       const likesB = (window.globalLikes && window.globalLikes[b.id]) ? window.globalLikes[b.id] : 0;
       if (likesA !== likesB) return likesB - likesA;
-      // Fallback if likes are equal
+      // Fallback
       const [yA, subA] = parseYear(a.year, 0);
       const [yB, subB] = parseYear(b.year, 0);
       if (yA !== yB) return yB - yA;
-      return getSubWeight(subB) - getSubWeight(subA);
+      const wA = getSubWeight(subA);
+      const wB = getSubWeight(subB);
+      if (wA !== wB) return wB - wA;
+      return b.id - a.id;
     }
     
     if (currentSort === 'newest') {
       const [yA, subA] = parseYear(a.year, 0);
       const [yB, subB] = parseYear(b.year, 0);
       if (yA !== yB) return yB - yA;
-      return getSubWeight(subB) - getSubWeight(subA);
+      const wA = getSubWeight(subA);
+      const wB = getSubWeight(subB);
+      if (wA !== wB) return wB - wA;
+      return b.id - a.id;
     }
+    
     if (currentSort === 'oldest') {
       const [yA, subA] = parseYear(a.year, 9999);
       const [yB, subB] = parseYear(b.year, 9999);
       if (yA !== yB) return yA - yB;
-      return getSubWeight(subA) - getSubWeight(subB);
+      const wA = getSubWeight(subA);
+      const wB = getSubWeight(subB);
+      if (wA !== wB) return wA - wB;
+      return a.id - b.id;
     }
     
     return 0;

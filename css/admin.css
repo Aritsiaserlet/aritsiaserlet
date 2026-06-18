@@ -201,7 +201,7 @@ input[type="file"] {
 .img-focal-hint.visible{display:block}
 .img-preview{width:100%;aspect-ratio:16/10;background:#a8d4f0;border:4px dashed var(--dark);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;position:relative;cursor:pointer;flex-direction:column;gap:8px}
 .img-preview:hover{background:var(--gold-l);border-color:var(--dark)}
-.img-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;image-rendering:pixelated}
+.img-preview img:not(#addWorkPlaceholderImage){position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;image-rendering:pixelated}
 /* Preview modal */
 .prev-overlay{position:fixed;inset:0;z-index:200;background:rgba(20,40,65,.8);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .prev-overlay.open{opacity:1;pointer-events:all}
