@@ -34,7 +34,6 @@ function escapeHTML(str) {
 // Loads wind-vfx.js which draws 3 layers:
 //   1. Wind Streaks  2. Float Particles  3. Cloud Wisps
 (function loadWindVFX() {
-  if (window.__isLiteMode) return; // Adaptive Loading: Skip heavy VFX
   const s = document.createElement('script');
   s.src = 'wind-vfx.js';
   // Remove the pre-existing canvas so wind-vfx.js can create its own
@@ -50,39 +49,6 @@ document.addEventListener('visibilitychange', () => {
     window.windVFX.pause();
   }
 });
-
-// ── Adaptive Loading Toggle ──
-function updatePerfModeBtn() {
-  const btn = document.getElementById('perfModeBtn');
-  if (!btn) return;
-  const savedMode = localStorage.getItem('site_experience_mode');
-  if (savedMode === 'lite') {
-    btn.textContent = 'LITE';
-    btn.style.background = 'var(--danger)';
-    btn.style.color = 'var(--white)';
-  } else if (savedMode === 'high') {
-    btn.textContent = 'HIGH';
-    btn.style.background = 'var(--gold)';
-    btn.style.color = 'var(--dark)';
-  } else {
-    btn.textContent = 'AUTO';
-    btn.style.background = 'var(--white)';
-    btn.style.color = 'var(--dark)';
-  }
-}
-window.togglePerformanceMode = function() {
-  const savedMode = localStorage.getItem('site_experience_mode');
-  if (!savedMode) {
-    localStorage.setItem('site_experience_mode', 'lite');
-  } else if (savedMode === 'lite') {
-    localStorage.setItem('site_experience_mode', 'high');
-  } else {
-    localStorage.removeItem('site_experience_mode');
-  }
-  updatePerfModeBtn();
-  window.location.reload();
-};
-document.addEventListener('DOMContentLoaded', updatePerfModeBtn);
 
 // ── Works Data from GitHub ──
 let works = [];
@@ -170,7 +136,7 @@ function applySettings() {
     const bPos = settings.bgPos || 'center';
     const isVideo = settings.backgroundImage.toLowerCase().includes('.mp4') || settings.backgroundImage.startsWith('data:video');
     
-    if (isVideo && !window.__isLiteMode) {
+    if (isVideo) {
       bg.style.opacity = '0';
       if(bgVid) {
         bgVid.src = settings.backgroundImage;
