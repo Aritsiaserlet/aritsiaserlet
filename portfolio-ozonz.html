@@ -40,10 +40,10 @@
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Mitr:wght@400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Mitr:wght@400;600&display=optional"
         rel="stylesheet" />
     <!-- Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=optional"
         rel="stylesheet" />
     <link rel="stylesheet" href="css/tailwind.css">
     <style>
@@ -1146,8 +1146,8 @@
                 window.addEventListener('scroll', onScroll, { passive: true });
             })();
 
-        // Wind Particle Effect
-        (function () {
+        // Wind Particle Effect — skipped in Lite Mode to save mobile GPU
+        if (!window.__isLiteMode) (function () {
             const canvas = document.getElementById('windCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -1171,21 +1171,25 @@
                 };
             }
             for (let i = 0; i < 40; i++) particles.push(createParticle(Math.random() * H));
-            function animateParticles() {
+            // 30fps cap — visually identical but half the GPU cost
+            const FPS_INTERVAL = 1000 / 30;
+            let lastFrame = 0;
+            function animateParticles(ts) {
+                requestAnimationFrame(animateParticles);
+                if (ts - lastFrame < FPS_INTERVAL) return;
+                lastFrame = ts;
                 ctx.clearRect(0, 0, W, H);
                 const isDark = document.documentElement.classList.contains('dark');
                 const colorPrefix = isDark ? '255,255,255' : '56,107,64';
                 const fireflyPrefix = isDark ? '210,255,150' : '100,180,60';
                 particles.forEach((p, i) => {
-                    p.y -= p.speedY; 
+                    p.y -= p.speedY;
                     p.x += p.speedX + (p.glowing ? Math.sin(p.pulsePhase) * p.swayFactor : 0);
                     p.pulsePhase += p.pulseSpeed;
-                    
                     ctx.beginPath();
                     if (p.glowing) {
                         const pulseOpacity = p.baseOpacity + Math.sin(p.pulsePhase) * 0.5;
                         const finalOpacity = Math.max(0.1, Math.min(1, pulseOpacity));
-                        
                         ctx.save();
                         ctx.shadowBlur = p.size * 5;
                         ctx.shadowColor = `rgba(${fireflyPrefix},${finalOpacity})`;
@@ -1199,9 +1203,9 @@
                         ctx.fill();
                     }
                     if (p.y + p.size < 0) particles[i] = createParticle();
-                }); requestAnimationFrame(animateParticles);
+                });
             }
-            animateParticles();
+            animateParticles(0);
         })();
     </script>
 </body>
