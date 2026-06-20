@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Adaptive Loading AI Decision Script -->
+<script>
+(function() {
+    const savedMode = localStorage.getItem('site_experience_mode');
+    if (savedMode === 'lite') { window.__isLiteMode = true; }
+    else if (savedMode === 'high') { window.__isLiteMode = false; }
+    else {
+        const memory = navigator.deviceMemory || 4;
+        const cores = navigator.hardwareConcurrency || 4;
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const isSlow = connection ? (['slow-2g', '2g', '3g'].includes(connection.effectiveType) || connection.saveData) : false;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isMobileFallback = /Mobi|Android/i.test(navigator.userAgent) && !navigator.deviceMemory;
+        window.__isLiteMode = (memory < 4) || (cores < 4) || isSlow || prefersReducedMotion || isMobileFallback;
+    }
+    document.documentElement.classList.add(window.__isLiteMode ? 'lite-mode' : 'high-end-mode');
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Aritsia's Pixel Art Portfolio & Minigame">
@@ -145,6 +163,15 @@
         <input type="range" class="set-range" id="setSfxVol" min="0" max="100" oninput="saveSettingsUI()" style="flex:1;">
         <button class="nav-btn" id="sfxMuteBtn" onclick="if(window.portfolioAudioManager) { const m = window.portfolioAudioManager.toggleMute('sfx'); if(window.updateSoundBtn) window.updateSoundBtn(this, m); else this.textContent = m ? '🔇' : '🔊'; }" style="padding:0;font-size:24px;box-shadow:none;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;"></button>
       </div>
+    </div>
+
+    <!-- Performance Mode Row -->
+    <div class="set-row" style="margin-top: 20px; border-top: 3px dashed var(--dark); padding-top: 20px; flex-direction: column; align-items: flex-start; gap: 12px;">
+      <div style="font-size:16px; color:var(--dark); width:100%; display:flex; justify-content:space-between; align-items:center;">
+        <span>Performance Mode</span>
+        <button class="nav-btn" id="perfModeBtn" onclick="togglePerformanceMode()" style="padding:4px 8px; font-size:14px; background:var(--white);">AUTO</button>
+      </div>
+      <div style="font-family:'VT323',monospace; font-size:14px; color:var(--dark); opacity:0.8;">Toggle high-end graphics vs battery-saving mode.</div>
     </div>
 
     <!-- Admin Access Row -->

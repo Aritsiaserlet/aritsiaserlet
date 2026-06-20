@@ -2,6 +2,24 @@
 <html class="dark" lang="en">
 
 <head>
+<!-- Adaptive Loading AI Decision Script -->
+<script>
+(function() {
+    const savedMode = localStorage.getItem('site_experience_mode');
+    if (savedMode === 'lite') { window.__isLiteMode = true; }
+    else if (savedMode === 'high') { window.__isLiteMode = false; }
+    else {
+        const memory = navigator.deviceMemory || 4;
+        const cores = navigator.hardwareConcurrency || 4;
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const isSlow = connection ? (['slow-2g', '2g', '3g'].includes(connection.effectiveType) || connection.saveData) : false;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isMobileFallback = /Mobi|Android/i.test(navigator.userAgent) && !navigator.deviceMemory;
+        window.__isLiteMode = (memory < 4) || (cores < 4) || isSlow || prefersReducedMotion || isMobileFallback;
+    }
+    document.documentElement.classList.add(window.__isLiteMode ? 'lite-mode' : 'high-end-mode');
+})();
+</script>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Chanon Thongduang | OzonZ Portfolio</title>
