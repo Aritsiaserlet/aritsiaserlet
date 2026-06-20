@@ -254,6 +254,7 @@ function renderGallery() {
     emptyState.style.display = '';
   } else {
     emptyState.style.display = 'none';
+    const fragment = document.createDocumentFragment();
     filtered.forEach((w, idx) => {
       const card = document.createElement('div');
       card.className = 'work-card';
@@ -314,8 +315,9 @@ function renderGallery() {
             ${toolsHtml ? `<div style="display:flex;gap:4px;margin-left:auto;">${toolsHtml}</div>` : ''}
           </div>
         </div>`;
-      gallery.appendChild(card);
+      fragment.appendChild(card);
     });
+    gallery.appendChild(fragment);
   }
 }
 
