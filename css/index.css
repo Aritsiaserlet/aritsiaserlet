@@ -81,6 +81,41 @@ body{
   box-shadow:var(--pixel-shadow);
 }
 
+/* ── Play Minigame Button ── */
+.play-minigame-btn {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  color: var(--dark);
+  background: var(--gold);
+  border: 4px solid var(--dark);
+  padding: 16px 28px;
+  margin-bottom: 32px;
+  cursor: pointer;
+  box-shadow: 6px 6px 0 var(--dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  animation: fadeUp 0.9s 0.2s ease both, playPulse 2s 1.2s infinite;
+}
+
+.play-minigame-btn:hover {
+  transform: translate(2px, 2px) scale(1.05);
+  box-shadow: 4px 4px 0 var(--dark), 0 0 25px rgba(232, 200, 122, 0.8);
+  background: #ffdb70;
+}
+
+.play-minigame-btn:active {
+  transform: translate(6px, 6px) scale(0.98);
+  box-shadow: 0 0 0 var(--dark);
+}
+
+@keyframes playPulse {
+  0% { transform: scale(1); box-shadow: 6px 6px 0 var(--dark); }
+  50% { transform: scale(1.03); box-shadow: 8px 8px 0 var(--dark), 0 0 20px rgba(232, 200, 122, 0.6); }
+  100% { transform: scale(1); box-shadow: 6px 6px 0 var(--dark); }
+}
+
 /* ── Social Links ── */
 .social-links{
   display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
