@@ -100,10 +100,17 @@ body{
 }
 
 .play-minigame-btn:hover {
-  transform: translate(2px, 2px) scale(1.04);
-  box-shadow: 2px 2px 0 var(--dark);
   background: var(--gold-l);
-  animation: none;
+  box-shadow: 2px 2px 0 var(--dark), 0 0 15px var(--gold-l), 0 0 25px rgba(255, 215, 0, 0.8);
+  animation: btnHoverShake 0.4s infinite ease-in-out;
+}
+
+@keyframes btnHoverShake {
+  0%   { transform: translate(2px, 2px) scale(1.04) rotate(0deg); }
+  25%  { transform: translate(1px, 3px) scale(1.04) rotate(-1.5deg); }
+  50%  { transform: translate(3px, 1px) scale(1.04) rotate(1.5deg); }
+  75%  { transform: translate(1px, 2px) scale(1.04) rotate(-1deg); }
+  100% { transform: translate(2px, 2px) scale(1.04) rotate(0deg); }
 }
 
 .play-minigame-btn:active {
