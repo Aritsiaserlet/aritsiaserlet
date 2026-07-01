@@ -101,15 +101,15 @@ body{
 
 .play-minigame-btn:hover {
   background: var(--gold-l);
-  box-shadow: 2px 2px 0 var(--dark), 0 0 15px var(--gold-l), 0 0 25px rgba(255, 215, 0, 0.8);
-  animation: btnHoverShake 0.4s infinite ease-in-out;
+  /* Use both the spinning glow and the fast shake on hover */
+  animation: borderSpin 1.5s infinite linear, btnHoverShake 0.12s infinite ease-in-out;
 }
 
 @keyframes btnHoverShake {
   0%   { transform: translate(2px, 2px) scale(1.04) rotate(0deg); }
-  25%  { transform: translate(1px, 3px) scale(1.04) rotate(-1.5deg); }
-  50%  { transform: translate(3px, 1px) scale(1.04) rotate(1.5deg); }
-  75%  { transform: translate(1px, 2px) scale(1.04) rotate(-1deg); }
+  25%  { transform: translate(0px, 3px) scale(1.04) rotate(-2deg); }
+  50%  { transform: translate(4px, 1px) scale(1.04) rotate(2deg); }
+  75%  { transform: translate(1px, 4px) scale(1.04) rotate(-1deg); }
   100% { transform: translate(2px, 2px) scale(1.04) rotate(0deg); }
 }
 
@@ -119,11 +119,11 @@ body{
 }
 
 @keyframes borderSpin {
-  0%   { box-shadow: 6px 6px 0 var(--dark), 0px -6px 15px rgba(255, 215, 0, 0.8); }
-  25%  { box-shadow: 6px 6px 0 var(--dark), 6px 0px 15px rgba(255, 215, 0, 0.8); }
-  50%  { box-shadow: 6px 6px 0 var(--dark), 0px 6px 15px rgba(255, 215, 0, 0.8); }
-  75%  { box-shadow: 6px 6px 0 var(--dark), -6px 0px 15px rgba(255, 215, 0, 0.8); }
-  100% { box-shadow: 6px 6px 0 var(--dark), 0px -6px 15px rgba(255, 215, 0, 0.8); }
+  0%   { box-shadow: 6px 6px 0 var(--dark), 0px -10px 20px 4px rgba(255, 215, 0, 1); }
+  25%  { box-shadow: 6px 6px 0 var(--dark), 10px 0px 20px 4px rgba(255, 215, 0, 1); }
+  50%  { box-shadow: 6px 6px 0 var(--dark), 0px 10px 20px 4px rgba(255, 215, 0, 1); }
+  75%  { box-shadow: 6px 6px 0 var(--dark), -10px 0px 20px 4px rgba(255, 215, 0, 1); }
+  100% { box-shadow: 6px 6px 0 var(--dark), 0px -10px 20px 4px rgba(255, 215, 0, 1); }
 }
 
 /* ── Social Links ── */
