@@ -379,6 +379,14 @@ function onModelSelect(input){
   const reader=new FileReader();
   reader.onload=e=>{ currentModelBase64=e.target.result.split(',')[1]; };
   reader.readAsDataURL(file);
+
+  const viewer = document.getElementById('modelViewer');
+  const container = document.getElementById('modelPreviewContainer');
+  if (viewer.src && viewer.src.startsWith('blob:')) {
+    URL.revokeObjectURL(viewer.src);
+  }
+  viewer.src = URL.createObjectURL(file);
+  container.style.display = 'block';
 }
 
 // ── Settings ──
@@ -1372,11 +1380,17 @@ function resetForm(){
   renderToolsCheckboxList();
   
   document.getElementById('imgFileInput').value='';
-  document.getElementById('modelFileInput').value='';
-  document.getElementById('modelName').textContent='';
-
-  currentModelBase64=null;
-  currentModelName=null;
+  document.getElementById('modelFileInput').value = '';
+  document.getElementById('modelName').innerText = '';
+  const container = document.getElementById('modelPreviewContainer');
+  if (container) container.style.display = 'none';
+  const viewer = document.getElementById('modelViewer');
+  if (viewer) {
+    if (viewer.src && viewer.src.startsWith('blob:')) URL.revokeObjectURL(viewer.src);
+    viewer.src = '';
+  }
+  currentModelBase64 = null;
+  currentModelName = null;
   
   document.getElementById('editBanner').classList.remove('visible');
   document.getElementById('focalHint').style.display='none';
@@ -1403,9 +1417,20 @@ function editWork(id) {
   document.getElementById('wCat').value = w.cat || '';
   onCatChange(); // This shows/hides modelWrap based on cat
   if (w.cat === '3d' && w.model) {
-    document.getElementById('modelName').innerText = '✓ Loaded: ' + w.model.split('/').pop();
+    document.getElementById('modelName').innerText = '✓ Loaded: ' + (typeof w.model === 'string' ? w.model.split('/').pop() : 'model');
+    const viewer = document.getElementById('modelViewer');
+    const container = document.getElementById('modelPreviewContainer');
+    viewer.src = Array.isArray(w.model) ? w.model[0] : w.model;
+    container.style.display = 'block';
   } else {
     document.getElementById('modelName').innerText = '';
+    const container = document.getElementById('modelPreviewContainer');
+    if(container) container.style.display = 'none';
+    const viewer = document.getElementById('modelViewer');
+    if (viewer) {
+      if (viewer.src && viewer.src.startsWith('blob:')) URL.revokeObjectURL(viewer.src);
+      viewer.src = '';
+    }
   }
   document.getElementById('wSubcat').value = w.subcat || '';
   document.getElementById('wDesc').value = w.desc || '';

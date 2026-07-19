@@ -8,6 +8,8 @@
 <title>Aritsiaserlet - Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 <script src="js/toastManager.js" defer></script>
 </head>
 <body>
@@ -411,6 +413,9 @@
           <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Export from Blender: File → Export → glTF 2.0 (.glb)</div>
           <input type="file" id="modelFileInput" accept=".glb,.gltf" onchange="onModelSelect(this)" style="width:100%;font-size:16px;padding:8px;border:3px dashed var(--dark);background:var(--white);cursor:pointer;font-family:'VT323',monospace">
           <p id="modelName" style="font-size:16px;color:var(--success);margin-top:6px;min-height:16px"></p>
+          <div id="modelPreviewContainer" style="display:none;margin-top:8px;border:3px solid var(--dark);height:200px;background:var(--sky1);">
+            <model-viewer id="modelViewer" style="width:100%;height:100%;" auto-rotate camera-controls></model-viewer>
+          </div>
         </div>
 
         <div style="display:flex;gap:10px;margin-bottom:8px;">
