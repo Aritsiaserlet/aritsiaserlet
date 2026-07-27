@@ -397,6 +397,7 @@ let gAttackBase64=null, gAttackExt='png';
 
 async function addIconToLibrary() {
   const nameInput = document.getElementById('newIconName');
+  const catInput = document.getElementById('newIconCat');
   const fileInput = document.getElementById('newIconFile');
   if(!nameInput.value.trim() || !fileInput.files[0]) {
     alert("Please provide a name and select an image.");
@@ -425,7 +426,8 @@ async function addIconToLibrary() {
 
   if(!settings.teams) settings.teams = [];
 
-      settings.icons.push({ id, name: nameInput.value.trim(), url });
+      const cat = catInput ? catInput.value : 'web_software';
+      settings.icons.push({ id, name: nameInput.value.trim(), url, cat });
       
       const json = JSON.stringify(settings, null, 2);
       const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new icon', settingsSha);
@@ -456,27 +458,34 @@ function renderIconLibrary() {
       box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No icons uploaded yet.</div>';
     } else {
       settings.icons.forEach((ic, i) => {
+        let catBadge = '';
+        if(ic.cat === 'web') catBadge = '<span style="background:var(--blue);color:white;font-size:10px;padding:2px 4px;margin-top:4px;">WEB</span>';
+        else if(ic.cat === 'software') catBadge = '<span style="background:var(--danger);color:white;font-size:10px;padding:2px 4px;margin-top:4px;">SOFT</span>';
+        else catBadge = '<span style="background:var(--success);color:white;font-size:10px;padding:2px 4px;margin-top:4px;">BOTH</span>';
+
         box.innerHTML += `
           <div style="border:3px solid var(--dark);background:var(--white);padding:8px;display:flex;flex-direction:column;align-items:center;width:100px;text-align:center;position:relative;">
             <button onclick="deleteIcon(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
             <img src="${ic.url}" style="width:32px;height:32px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">
             <span style="font-family:'VT323';font-size:16px;word-break:break-all;line-height:1;">${ic.name}</span>
+            ${catBadge}
           </div>
         `;
       });
     }
   }
 
+  const webCats = ['web', 'web_software'];
   const teamBtn = document.getElementById('teamBtnIcon');
-  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- None --');
+  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- None --', webCats);
   const soundBtn = document.getElementById('soundBtnIcon');
-  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- None --');
+  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- None --', webCats);
   const gameCat = document.getElementById('gameCategoryIcon');
-  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --');
+  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --', webCats);
   const portCat = document.getElementById('portfolioCategoryIcon');
-  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --');
+  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --', webCats);
   const editIcon = document.getElementById('manageWorkEditIcon');
-  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- None --');
+  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- None --', webCats);
   const delIcon = document.getElementById('manageWorkDeleteIcon');
   if(delIcon) delIcon.innerHTML = generateIconOptions(settings.manageWorkDeleteIconId || '', '-- None --');
   const phIcon = document.getElementById('addWorkPlaceholderIcon');
@@ -502,10 +511,13 @@ async function deleteIcon(idx) {
   });
 }
 
-function generateIconOptions(selectedId, defaultLabel = "-- No Icon --") {
+function generateIconOptions(selectedId, defaultLabel = "-- No Icon --", allowedCats = null) {
   let html = `<option value="">${defaultLabel}</option>`;
   if(settings.icons) {
     settings.icons.forEach(ic => {
+      // If allowedCats is provided, check if icon's cat is in the list, or if it has no cat (backward compat)
+      if (allowedCats && ic.cat && !allowedCats.includes(ic.cat)) return;
+      
       const sel = (ic.id === selectedId) ? 'selected' : '';
       html += `<option value="${ic.id}" ${sel}>${ic.name}</option>`;
     });
@@ -522,7 +534,11 @@ function renderToolsCheckboxList() {
     return;
   }
   const activeTools = (editingId && works.find(x=>x.id===editingId) && works.find(x=>x.id===editingId).tools) ? works.find(x=>x.id===editingId).tools : [];
+  const allowedCats = ['software', 'web_software'];
   settings.icons.forEach(ic => {
+    // Only show Software and Web/Software icons for "Tools Used"
+    if (ic.cat && !allowedCats.includes(ic.cat)) return;
+    
     const checked = activeTools.includes(ic.id) ? 'checked' : '';
     box.innerHTML += `
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">

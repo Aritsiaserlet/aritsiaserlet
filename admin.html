@@ -73,6 +73,11 @@
         
         <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
           <input type="text" id="newIconName" placeholder="Icon Name (e.g. Unity)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <select id="newIconCat" style="padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+            <option value="web_software">Web & Software</option>
+            <option value="web">Web Only</option>
+            <option value="software">Software Only</option>
+          </select>
           <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
           <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
         </div>
