@@ -85,7 +85,6 @@ body{
 .play-btn-shaker {
   display: inline-block;
   margin-bottom: 32px;
-  animation: fadeUp 0.9s 0.2s ease both;
 }
 
 .play-btn-shaker:hover {
@@ -114,7 +113,7 @@ body{
   align-items: center;
   gap: 12px;
   transition: background 0.15s;
-  animation: borderSpin 1.5s 1.2s infinite linear;
+  animation: fadeUp 0.9s 0.2s ease both, borderSpin 1.5s 1.2s infinite linear;
   position: relative;
 }
 
