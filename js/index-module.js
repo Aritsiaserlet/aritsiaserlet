@@ -1,5 +1,5 @@
   import { initSettings, getSettings, updateSettings } from './settingsManager.js';
-  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike, saveUserSettings } from './authManager.js';
+  import { loginWithGoogle, logout, onUserChange, db, fetchLikeCounts, fetchUserLikes, toggleLike, saveUserSettings, incrementPageView } from './authManager.js';
   import { sfxLike, sfxLogin, sfxBtn, startBGM, stopBGM, toggleBGM, togglePortfolioBGM as _togglePortfolioBGM, setVolumes, loadSoundAssignments, toggleMute, startPortfolioBGM } from './audioManager.js';
   
   window.portfolioSettingsManager = { getSettings, updateSettings };
@@ -22,6 +22,12 @@
       }
     }
   });
+
+  // Track main page views
+  if (!sessionStorage.getItem('visited_main')) {
+    incrementPageView('main_page');
+    sessionStorage.setItem('visited_main', 'true');
+  }
 
   // Save settings back to Firebase on change
   window.addEventListener('portfolioSettingsChanged', (e) => {
