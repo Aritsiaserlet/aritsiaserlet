@@ -97,20 +97,63 @@ body{
   gap: 12px;
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
   animation: fadeUp 0.9s 0.2s ease both, borderSpin 1.5s 1.2s infinite linear;
+  position: relative;
 }
 
 .play-minigame-btn:hover {
   background: var(--gold-l);
   /* Use both the spinning glow and the fast shake on hover */
-  animation: borderSpin 1.5s infinite linear, btnHoverShake 0.12s infinite ease-in-out;
+  animation: borderSpin 1.5s infinite linear, scaredShake 0.1s infinite ease-in-out;
 }
 
-@keyframes btnHoverShake {
+.play-minigame-btn:hover::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: transparent;
+  pointer-events: none;
+  z-index: 10;
+  animation: sweatSplash 0.4s infinite ease-out;
+}
+
+@keyframes scaredShake {
   0%   { transform: translate(2px, 2px) scale(1.04) rotate(0deg); }
-  25%  { transform: translate(0px, 3px) scale(1.04) rotate(-2deg); }
-  50%  { transform: translate(4px, 1px) scale(1.04) rotate(2deg); }
-  75%  { transform: translate(1px, 4px) scale(1.04) rotate(-1deg); }
+  10%  { transform: translate(-1px, 1px) scale(1.04) rotate(-2deg); }
+  20%  { transform: translate(3px, 0px) scale(1.04) rotate(2deg); }
+  30%  { transform: translate(0px, 3px) scale(1.04) rotate(-1deg); }
+  40%  { transform: translate(4px, -1px) scale(1.04) rotate(1deg); }
+  50%  { transform: translate(-2px, 2px) scale(1.04) rotate(-2deg); }
+  60%  { transform: translate(3px, 1px) scale(1.04) rotate(2deg); }
+  70%  { transform: translate(1px, -2px) scale(1.04) rotate(-1deg); }
+  80%  { transform: translate(-1px, 3px) scale(1.04) rotate(1deg); }
+  90%  { transform: translate(2px, -1px) scale(1.04) rotate(-2deg); }
   100% { transform: translate(2px, 2px) scale(1.04) rotate(0deg); }
+}
+
+@keyframes sweatSplash {
+  0% {
+    box-shadow: 
+      -80px -20px 0 0 var(--gold),
+      80px -20px 0 0 var(--gold),
+      -100px 0px 0 0 var(--gold),
+      100px 10px 0 0 var(--gold),
+      -60px 20px 0 0 var(--gold),
+      60px -10px 0 0 var(--gold);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 
+      -100px -40px 0 -2px var(--gold),
+      90px -50px 0 -2px var(--gold),
+      -130px -10px 0 -2px var(--gold),
+      120px 0px 0 -2px var(--gold),
+      -70px 60px 0 -2px var(--gold),
+      80px -30px 0 -2px var(--gold);
+    opacity: 0;
+  }
 }
 
 .play-minigame-btn:active {
