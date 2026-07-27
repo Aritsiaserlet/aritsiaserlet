@@ -122,43 +122,26 @@ body{
   animation: borderSpin 1.5s infinite linear;
 }
 
-.play-btn-shaker:hover .play-minigame-btn::after {
-  content: "";
+/* ── Pixel Sweat Drops ── */
+.sweat-drop {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  background: transparent;
+  width: 6px;
+  height: 6px;
+  background: #e8c87a;
+  image-rendering: pixelated;
   pointer-events: none;
-  z-index: 10;
-  animation: sweatSplash 0.4s infinite ease-out;
+  z-index: 100;
+  animation: sweatFall 0.6s ease-in forwards;
 }
 
-@keyframes sweatSplash {
-  0% {
-    box-shadow: 
-      -80px -20px 0 0 var(--gold),
-      80px -20px 0 0 var(--gold),
-      -100px 0px 0 0 var(--gold),
-      100px 10px 0 0 var(--gold),
-      -60px 20px 0 0 var(--gold),
-      60px -10px 0 0 var(--gold);
-    opacity: 1;
-  }
-  100% {
-    box-shadow: 
-      -100px -40px 0 -2px var(--gold),
-      90px -50px 0 -2px var(--gold),
-      -130px -10px 0 -2px var(--gold),
-      120px 0px 0 -2px var(--gold),
-      -70px 60px 0 -2px var(--gold),
-      80px -30px 0 -2px var(--gold);
-    opacity: 0;
-  }
+@keyframes sweatFall {
+  0%   { opacity: 1; transform: translateY(0px) scale(1); }
+  60%  { opacity: 1; transform: translateY(18px) scale(0.9); }
+  100% { opacity: 0; transform: translateY(32px) scale(0.5); }
 }
 
 .play-minigame-btn:active {
+
   transform: translate(4px, 4px);
   box-shadow: 0 0 0 var(--dark);
 }

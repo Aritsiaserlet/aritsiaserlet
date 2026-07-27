@@ -202,4 +202,70 @@
   </div>
 </div>
 </body>
+<script>
+// ── Pixel Sweat Drops on Play Button ──
+(function() {
+  let sweatInterval = null;
+
+  function spawnSweatDrop(shaker) {
+    const btn = shaker.querySelector('.play-minigame-btn');
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const shakerRect = shaker.getBoundingClientRect();
+
+    const drop = document.createElement('div');
+    drop.className = 'sweat-drop';
+
+    // Spawn randomly along top/left/right edges of the button
+    const side = Math.random();
+    let x, y;
+    if (side < 0.5) {
+      // top edge
+      x = Math.random() * rect.width;
+      y = -4;
+    } else if (side < 0.75) {
+      // left edge
+      x = -6;
+      y = Math.random() * rect.height;
+    } else {
+      // right edge
+      x = rect.width + 2;
+      y = Math.random() * rect.height;
+    }
+
+    // Position relative to the shaker div
+    drop.style.left = (rect.left - shakerRect.left + x) + 'px';
+    drop.style.top  = (rect.top  - shakerRect.top  + y) + 'px';
+
+    // Random size for variety (4px, 6px, or 8px pixel blocks)
+    const size = [4, 6, 8][Math.floor(Math.random() * 3)];
+    drop.style.width  = size + 'px';
+    drop.style.height = size + 'px';
+
+    shaker.appendChild(drop);
+
+    // Remove after animation ends
+    setTimeout(() => drop.remove(), 650);
+  }
+
+  function startSweat(shaker) {
+    if (sweatInterval) return;
+    sweatInterval = setInterval(() => spawnSweatDrop(shaker), 80);
+  }
+
+  function stopSweat() {
+    clearInterval(sweatInterval);
+    sweatInterval = null;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const shaker = document.querySelector('.play-btn-shaker');
+    if (!shaker) return;
+    shaker.style.position = 'relative';
+    shaker.style.overflow = 'visible';
+    shaker.addEventListener('mouseenter', () => startSweat(shaker));
+    shaker.addEventListener('mouseleave', stopSweat);
+  });
+})();
+</script>
 </html>
