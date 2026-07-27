@@ -489,6 +489,8 @@ function renderIconLibrary() {
   if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- None --', webCats);
   const gameCat = document.getElementById('gameCategoryIcon');
   if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --', webCats);
+  const allCat = document.getElementById('allCategoryIcon');
+  if(allCat) allCat.innerHTML = generateIconOptions(settings.allCategoryIconId || '', '-- None --', webCats);
   const portCat = document.getElementById('portfolioCategoryIcon');
   if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --', webCats);
   const editIcon = document.getElementById('manageWorkEditIcon');
