@@ -458,17 +458,24 @@ function renderIconLibrary() {
       box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No icons uploaded yet.</div>';
     } else {
       settings.icons.forEach((ic, i) => {
-        let catBadge = '';
-        if(ic.cat === 'web') catBadge = '<span style="background:var(--blue);color:white;font-size:10px;padding:2px 4px;margin-top:4px;">WEB</span>';
-        else if(ic.cat === 'software') catBadge = '<span style="background:var(--danger);color:white;font-size:10px;padding:2px 4px;margin-top:4px;">SOFT</span>';
-        else catBadge = '<span style="background:var(--success);color:white;font-size:10px;padding:2px 4px;margin-top:4px;">BOTH</span>';
+        let selWeb = ic.cat === 'web' ? 'selected' : '';
+        let selSoft = ic.cat === 'software' ? 'selected' : '';
+        let selBoth = (!ic.cat || ic.cat === 'web_software') ? 'selected' : '';
+        
+        let catDropdown = `
+          <select onchange="changeIconCategory(${i}, this.value)" style="margin-top:4px;font-size:12px;font-family:'VT323';background:var(--sky4);border:2px solid var(--dark);cursor:pointer;outline:none;">
+            <option value="web_software" ${selBoth}>BOTH</option>
+            <option value="web" ${selWeb}>WEB</option>
+            <option value="software" ${selSoft}>SOFT</option>
+          </select>
+        `;
 
         box.innerHTML += `
           <div style="border:3px solid var(--dark);background:var(--white);padding:8px;display:flex;flex-direction:column;align-items:center;width:100px;text-align:center;position:relative;">
             <button onclick="deleteIcon(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
             <img src="${ic.url}" style="width:32px;height:32px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">
             <span style="font-family:'VT323';font-size:16px;word-break:break-all;line-height:1;">${ic.name}</span>
-            ${catBadge}
+            ${catDropdown}
           </div>
         `;
       });
@@ -489,11 +496,28 @@ function renderIconLibrary() {
   const delIcon = document.getElementById('manageWorkDeleteIcon');
   if(delIcon) delIcon.innerHTML = generateIconOptions(settings.manageWorkDeleteIconId || '', '-- None --');
   const phIcon = document.getElementById('addWorkPlaceholderIcon');
-  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- None --');
-  
+  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkPlaceholderIconId || '', '-- None --', webCats);
+
   const newTeamIcon = document.getElementById('newTeamIcon');
   if(newTeamIcon) newTeamIcon.innerHTML = generateIconOptions('', '-- No Icon --');
 }
+
+async function changeIconCategory(idx, newCat) {
+  if(!settings.icons || !settings.icons[idx]) return;
+  settings.icons[idx].cat = newCat;
+  try {
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update icon category', settingsSha);
+    settingsSha = res.content.sha;
+    renderIconLibrary();
+    renderSettingsUI();
+    renderToolsCheckboxList();
+    if(typeof showToast === 'function') showToast("Category updated!", "success");
+  } catch(e) {
+    alert("Error updating category: " + e.message);
+  }
+}
+
 
 async function deleteIcon(idx) {
   customConfirm("Delete this icon? It will be removed from any links or categories using it.", async () => {
