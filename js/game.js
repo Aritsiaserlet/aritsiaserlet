@@ -494,7 +494,7 @@ function stopCleanup() {
 // ── Init
 // ─────────────────────────────────────────────
 window.initGame = function (portfolioWorks, settings) {
-  worksData    = (portfolioWorks || []).filter(w => w.image);
+  worksData    = (portfolioWorks || []).filter(w => w.image && (Array.isArray(w.image) ? w.image.length > 0 : true));
   gameSettings = settings || {};
 
   canvas = document.getElementById('gameCoreCanvas');
@@ -835,7 +835,7 @@ function spawnEnemy() {
   const size = 160 + Math.random() * 60; // ✦ 160–220px
   const img  = new Image();
   img.crossOrigin = 'anonymous';
-  img.src = w.image;
+  img.src = Array.isArray(w.image) ? w.image[0] : w.image;
   enemies.push({
     x: W + 80, y: player.groundY - size + 30,
     w: size, h: size, img,
