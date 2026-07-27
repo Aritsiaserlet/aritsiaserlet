@@ -181,7 +181,7 @@ function applySettings() {
       const ic = settings.icons.find(x => x.id === c.iconId);
       if(ic) url = ic.url;
     }
-    const iconHtml = url ? `<img src="${url}" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
+    const iconHtml = url ? `<img src="${url}" class="tab-icon" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
     mainTabs.innerHTML += `<button class="tab" data-cat="${id}" onclick="setMainCat('${id}',this)">${iconHtml}${name}</button>`;
   });
 }
