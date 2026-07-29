@@ -1542,9 +1542,9 @@
             b.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]');
             b.classList.add('text-on-surface-variant');
         });
-        e.target.classList.add('active', 'bg-primary', 'text-on-primary', 'shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]');
-        e.target.classList.remove('text-on-surface-variant');
-        currentWorkFilter = e.target.getAttribute('data-filter');
+        btn.classList.add('active', 'bg-primary', 'text-on-primary', 'shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]');
+        btn.classList.remove('text-on-surface-variant');
+        currentWorkFilter = btn.getAttribute('data-filter');
         renderWorks();
       });
     });
