@@ -1003,6 +1003,11 @@ function renderCollaboratorCheckboxes() {
 /* ══════════════════════════════════════════════════════
    LOAD FROM DATABASE
 ══════════════════════════════════════════════════════ */
+function parseSecureJSON(text) {
+    try { return JSON.parse(text); } 
+    catch (e) { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
+}
+
 async function loadData() {
     showLoading('Loading from Repository…');
     try {
