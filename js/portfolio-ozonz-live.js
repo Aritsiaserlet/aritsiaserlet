@@ -1539,10 +1539,10 @@
     filterBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         filterBtns.forEach(b => {
-            b.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]');
+            b.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]');
             b.classList.add('text-on-surface-variant');
         });
-        btn.classList.add('active', 'bg-primary', 'text-on-primary', 'shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]');
+        btn.classList.add('active', 'bg-primary', 'text-on-primary', 'shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]');
         btn.classList.remove('text-on-surface-variant');
         currentWorkFilter = btn.getAttribute('data-filter');
         renderWorks();
