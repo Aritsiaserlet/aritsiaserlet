@@ -9,6 +9,7 @@
   const GH_REPO_NAME = 'aritsiaserlet';
   const DATA_OWNER = 'OzonZ';
   const DATA_REPO = 'Non-Four-Portfolio-Data';
+  let currentWorkFilter = 'all';
 
   const itchContact = {
     name: "ITCH.IO",
@@ -952,6 +953,22 @@
     grid.innerHTML = '';
 
     let works = globalWorks || [];
+    
+    // Apply filtering
+    if (currentWorkFilter !== 'all') {
+        works = works.filter(w => {
+            let tags = Array.isArray(w.tags) ? w.tags.join(', ').toLowerCase() : (typeof w.tags === 'string' ? w.tags.toLowerCase() : `${w.cat || ''} ${w.subcat || ''}`.toLowerCase());
+            if (currentWorkFilter === 'games') {
+                return tags.includes('game') || tags.includes('games');
+            } else if (currentWorkFilter === 'website') {
+                return tags.includes('web') || tags.includes('website');
+            } else if (currentWorkFilter === 'other') {
+                return !tags.includes('game') && !tags.includes('games') && !tags.includes('web') && !tags.includes('website');
+            }
+            return true;
+        });
+    }
+
     if (works.length > 0) {
       works = works.map(w => {
         let image = w.image;
@@ -1516,12 +1533,30 @@
     });
   }
 
+  function initWorkFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    if (!filterBtns.length) return;
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterBtns.forEach(b => {
+            b.classList.remove('active', 'text-primary');
+            b.classList.add('text-on-surface-variant');
+        });
+        e.target.classList.add('active', 'text-primary');
+        e.target.classList.remove('text-on-surface-variant');
+        currentWorkFilter = e.target.getAttribute('data-filter');
+        renderWorks();
+      });
+    });
+  }
+
   async function init() {
     initLocalStorage();
     initBackground();
     initRevealAndTheme();
     initNavbarScroll();
     initSmoothScroll();
+    initWorkFilters();
     
     // Load database settings FIRST so GitHub sync has fallback data ready
     await loadInitialData();
