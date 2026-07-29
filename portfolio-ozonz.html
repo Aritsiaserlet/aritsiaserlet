@@ -916,14 +916,23 @@
                         <p class="text-on-surface-variant text-xl">A chronicle of interactive experiences and digital
                             creations.</p>
                     </div>
-                    <div class="flex flex-wrap items-center gap-4 filter-group" id="work-filters">
-                        <button class="filter-btn active text-lg font-bold text-primary tracking-widest transition-all duration-300 hover:-translate-y-1" data-filter="all">ALL</button>
-                        <span class="text-on-surface-variant/50">•</span>
-                        <button class="filter-btn text-lg font-bold text-on-surface-variant hover:text-primary tracking-widest transition-all duration-300 hover:-translate-y-1" data-filter="games">GAMES</button>
-                        <span class="text-on-surface-variant/50">•</span>
-                        <button class="filter-btn text-lg font-bold text-on-surface-variant hover:text-primary tracking-widest transition-all duration-300 hover:-translate-y-1" data-filter="website">WEBSITE</button>
-                        <span class="text-on-surface-variant/50">•</span>
-                        <button class="filter-btn text-lg font-bold text-on-surface-variant hover:text-primary tracking-widest transition-all duration-300 hover:-translate-y-1" data-filter="other">OTHER</button>
+                    <div class="flex flex-wrap items-center gap-2 filter-group bg-surface-container/20 p-2 rounded-full border border-outline/10 backdrop-blur-md shadow-xl" id="work-filters">
+                        <button class="filter-btn active relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest transition-all duration-500 hover:scale-105 overflow-hidden group bg-primary text-on-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]" data-filter="all">
+                            <span class="relative z-10">ALL</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                        <button class="filter-btn relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="games">
+                            <span class="relative z-10">GAMES</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                        <button class="filter-btn relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="website">
+                            <span class="relative z-10">WEBSITE</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                        <button class="filter-btn relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="other">
+                            <span class="relative z-10">OTHER</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
                     </div>
                 </div>
 
