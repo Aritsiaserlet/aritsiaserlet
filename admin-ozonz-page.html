@@ -1082,6 +1082,9 @@ async function loadData() {
         }
         
         await loadAritsiaTeams();
+        
+        // Update badge on successful load
+        setBadge(true);
     } catch (err) {
         console.error("loadData error:", err);
         setBadge(false, err.message);
