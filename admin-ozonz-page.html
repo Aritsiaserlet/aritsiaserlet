@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="robots" content="noindex, nofollow" />
     <title>OzonZ Admin | Luminous Portfolio Intelligence</title>
     <link rel="icon" type="image/jpeg" href="favicon-small.jpg">
     <!-- Theme Initialization -->
     <script>
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (savedTheme === 'dark' || (savedTheme === null && systemPrefersDark)) {
@@ -19,11 +20,14 @@
         })();
     </script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="css/tailwind.css">
     <style>
@@ -161,31 +165,38 @@
         body {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
         .glass {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 0, 0, 0.1);
         }
+
         .dark .glass {
             background: rgba(28, 32, 38, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             gap: 24px;
         }
+
         .scroll-hide::-webkit-scrollbar {
             display: none;
         }
+
         .scroll-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -201,6 +212,7 @@
             color: #000000 !important;
             background-color: #ffffff !important;
         }
+
         html.dark .admin-input::placeholder {
             color: #6b7280 !important;
         }
@@ -217,6 +229,7 @@
             backdrop-filter: blur(8px);
             padding: 1.5rem;
         }
+
         .modal-backdrop.open {
             display: flex;
         }
@@ -241,6 +254,7 @@
             white-space: nowrap;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
+
         #toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
@@ -258,10 +272,12 @@
             backdrop-filter: blur(8px);
             transition: opacity 0.4s;
         }
+
         #loading-overlay.hidden {
             opacity: 0;
             pointer-events: none;
         }
+
         .spinner {
             width: 40px;
             height: 40px;
@@ -270,8 +286,11 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .link-row {
@@ -297,15 +316,18 @@
             justify-content: center;
             gap: 0.5rem;
         }
+
         .img-drop-zone.drag-over {
             border-color: var(--primary);
             background: var(--primary-container);
         }
+
         .img-drop-zone.has-image {
             border-style: solid;
             border-color: var(--outline);
             padding: 0;
         }
+
         .img-drop-zone img.preview {
             width: 100%;
             height: 140px;
@@ -313,11 +335,12 @@
             border-radius: calc(1rem - 2px);
             display: block;
         }
+
         .img-drop-zone .remove-img {
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             color: white;
             border-radius: 0.5rem;
             padding: 2px 6px;
@@ -325,9 +348,11 @@
             cursor: pointer;
             display: none;
         }
+
         .img-drop-zone.has-image .remove-img {
             display: block;
         }
+
         .img-upload-progress {
             display: none;
             align-items: center;
@@ -336,9 +361,11 @@
             color: var(--on-surface-variant);
             margin-top: 0.5rem;
         }
+
         .img-upload-progress.visible {
             display: flex;
         }
+
         .progress-bar-wrap {
             flex: 1;
             height: 4px;
@@ -346,6 +373,7 @@
             background: var(--surface-container-highest);
             overflow: hidden;
         }
+
         .progress-bar {
             height: 100%;
             background: var(--primary);
@@ -354,225 +382,271 @@
         }
     </style>
 </head>
+
 <body class="bg-background text-on-background selection:bg-primary-container selection:text-on-primary-container">
-<canvas id="bg-canvas"></canvas>
+    <canvas id="bg-canvas"></canvas>
 
-<!-- Loading overlay -->
-<div id="loading-overlay" class="hidden">
-    <div class="flex flex-col items-center gap-4">
-        <div class="spinner"></div>
-        <p id="loading-msg" class="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Loading...</p>
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="flex flex-col items-center gap-4">
+            <div class="spinner"></div>
+            <p id="loading-msg" class="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Loading...
+            </p>
+        </div>
     </div>
-</div>
 
-<!-- Login Screen -->
-<div class="min-h-screen flex items-center justify-center p-gutter" id="login-screen">
-    <div class="relative glass max-w-md w-full rounded-xl p-stack-lg shadow-2xl transition-all duration-500 scale-100 opacity-100">
-        <a href="portfolio-ozonz.html" class="absolute top-4 left-4 text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-xs font-bold">
-            <span class="material-symbols-outlined text-base">arrow_back</span> Portfolio
-        </a>
-        <div class="flex flex-col items-center mb-stack-lg mt-4">
-            <div class="w-16 h-16 bg-primary flex items-center justify-center rounded-full mb-4">
-                <span class="material-symbols-outlined text-on-primary text-3xl">lock</span>
-            </div>
-            <h1 class="font-headline-lg text-headline-lg text-primary">OzonZ Admin</h1>
-            <p class="font-body-md text-body-md text-on-surface-variant">Luminous Portfolio Intelligence</p>
-        </div>
-        <div class="space-y-stack-md">
-            <div class="group">
-                <label class="font-label-md text-label-md text-primary mb-2 block">ADMIN PASSCODE</label>
-                <input class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="login-input" placeholder="••••••" type="password" maxlength="10" autocomplete="off"/>
-                <p id="login-error" class="text-red-500 text-xs mt-2 hidden text-center">Incorrect passcode.</p>
-            </div>
-            <div class="group">
-                <label class="font-label-md text-label-md text-primary mb-2 block">GITHUB TOKEN</label>
-                <input class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="login-gh-token" placeholder="ghp_xxxxxxxxxxxx" type="password" autocomplete="off"/>
-            </div>
-            <button class="w-full bg-primary text-on-primary font-label-md py-4 rounded-lg hover:opacity-90 active:scale-95 transition-all shadow-lg mt-stack-md" id="login-btn">
-                ACCESS PANEL
-            </button>
-        </div>
-        <p class="mt-8 text-center font-body-md text-on-surface-variant text-sm">
-            Secure authentication required for GitHub synchronization.
-        </p>
-    </div>
-</div>
-
-<!-- Admin Main Dashboard (Hidden by default) -->
-<div class="hidden flex min-h-screen" id="admin-main">
-    <!-- Sidebar Navigation -->
-    <aside class="fixed left-0 top-0 h-full w-[280px] glass border-r border-on-surface/10 flex flex-col p-stack-md z-50">
-        <div class="mb-stack-lg px-2">
-            <h2 class="font-headline-md text-headline-md font-bold text-primary">OzonZ Admin</h2>
-            <p class="font-label-md text-label-md text-on-surface-variant opacity-70">Portfolio Management</p>
-        </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary/10 transition-all" href="#">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-label-md">Dashboard</span>
+    <!-- Login Screen -->
+    <div class="min-h-screen flex items-center justify-center p-gutter" id="login-screen">
+        <div
+            class="relative glass max-w-md w-full rounded-xl p-stack-lg shadow-2xl transition-all duration-500 scale-100 opacity-100">
+            <a href="portfolio-ozonz.html"
+                class="absolute top-4 left-4 text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-xs font-bold">
+                <span class="material-symbols-outlined text-base">arrow_back</span> Portfolio
             </a>
-            <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 transition-all" href="portfolio-ozonz.html">
-                <span class="material-symbols-outlined">account_balance_wallet</span>
-                <span class="font-label-md">View Portfolio</span>
-            </a>
-            <button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-all text-left" id="logout-btn">
-                <span class="material-symbols-outlined">logout</span>
-                <span class="font-label-md">Logout</span>
-            </button>
-        </nav>
-        <div class="mt-auto space-y-2">
-            <div class="p-4 bg-surface-container rounded-xl mt-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary text-sm">face</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <p class="font-label-md text-on-surface truncate">Admin User</p>
-                        <p class="text-[10px] text-on-surface-variant">Luminous Protocol</p>
-                    </div>
+            <div class="flex flex-col items-center mb-stack-lg mt-4">
+                <div class="w-16 h-16 bg-primary flex items-center justify-center rounded-full mb-4">
+                    <span class="material-symbols-outlined text-on-primary text-3xl">lock</span>
                 </div>
+                <h1 class="font-headline-lg text-headline-lg text-primary">OzonZ Admin</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant">Luminous Portfolio Intelligence</p>
             </div>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 ml-[280px] p-stack-lg max-w-[1440px] mx-auto w-full">
-        <!-- Top App Bar -->
-        <header class="flex items-center justify-between mb-stack-lg glass p-6 rounded-2xl shadow-sm">
-            <div>
-                <h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="flex items-center gap-1.5 text-label-md text-on-surface-variant bg-surface-variant px-3 py-1 rounded-full text-xs font-bold" id="gh-status-badge">
-                        <span class="w-2 h-2 rounded-full bg-outline animate-pulse"></span>
-                        Connecting…
-                    </span>
+            <div class="space-y-stack-md">
+                <div class="group">
+                    <label class="font-label-md text-label-md text-primary mb-2 block">ADMIN PASSCODE</label>
+                    <input
+                        class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        id="login-input" placeholder="••••••" type="password" maxlength="10" autocomplete="off" />
+                    <p id="login-error" class="text-red-500 text-xs mt-2 hidden text-center">Incorrect passcode.</p>
                 </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md" id="save-all-btn" onclick="location.reload()">
-                    <span class="material-symbols-outlined text-sm">sync</span>
-                    Sync Status
+                <div class="group">
+                    <label class="font-label-md text-label-md text-primary mb-2 block">GITHUB TOKEN</label>
+                    <input
+                        class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        id="login-gh-token" placeholder="ghp_xxxxxxxxxxxx" type="password" autocomplete="off" />
+                </div>
+                <button
+                    class="w-full bg-primary text-on-primary font-label-md py-4 rounded-lg hover:opacity-90 active:scale-95 transition-all shadow-lg mt-stack-md"
+                    id="login-btn">
+                    ACCESS PANEL
                 </button>
             </div>
-        </header>
-
-        <!-- Dashboard Grid -->
-        <div class="bento-grid items-start">
-            <!-- Left Column: Main Content -->
-            <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
-                <!-- Selected Archives (Works List) -->
-                <div class="glass rounded-2xl p-stack-lg flex flex-col">
-                    <div class="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 class="font-headline-md text-headline-md text-on-surface">Selected Archives</h2>
-                            <p id="works-count" class="font-body-md text-on-surface-variant text-sm">— works</p>
-                        </div>
-                        <button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md transition-all hover:scale-105 active:scale-95" id="add-work-btn">
-                            <span class="material-symbols-outlined text-sm">add</span>
-                            New Archive
-                        </button>
-                    </div>
-                    <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="works-list">
-                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                    </div>
-                </div>
-
-                <!-- Contact Channels -->
-                <div class="glass rounded-2xl p-stack-lg flex flex-col">
-                    <div class="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 class="font-headline-md text-headline-md text-on-surface">Channels</h2>
-                            <p id="contacts-count" class="font-body-md text-on-surface-variant text-sm">— contacts</p>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all" id="add-contact-btn">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                    </div>
-                    <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 scroll-hide" id="contacts-list">
-                        <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Settings -->
-            <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-                <!-- GitHub Sync Settings Card -->
-                <div class="glass rounded-2xl p-stack-md flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-label-md text-primary">SECURITY STATUS</h3>
-                            <span class="material-symbols-outlined text-primary">key</span>
-                        </div>
-                        <p class="font-headline-md text-headline-md text-on-surface mb-2">GitHub Token</p>
-                        <p class="font-body-md text-on-surface-variant text-sm mb-6">Required to push changes to your repository. Saved in session storage only.</p>
-                    </div>
-                    <div class="space-y-3">
-                        <input type="password" id="gh-token-input" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-sm" placeholder="ghp_..." />
-                        <div class="flex items-center justify-between bg-surface-container-highest/50 p-3 rounded-xl">
-                            <span id="token-status" class="text-xs text-on-surface-variant">No token</span>
-                            <button id="gh-token-save" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI Settings Card -->
-                <div class="glass rounded-2xl p-stack-md">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
-                                <span class="material-symbols-outlined text-on-secondary-container">auto_awesome</span>
-                            </div>
-                            <h3 class="font-headline-md text-headline-md text-on-surface">Gemini AI Engine</h3>
-                        </div>
-                        <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant" onclick="toggleSection(this)">
-                            <span class="material-symbols-outlined toggle-icon">expand_more</span>
-                        </button>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <div class="space-y-2">
-                            <label class="font-label-md text-xs text-on-surface-variant">GEMINI API KEY</label>
-                            <div class="flex gap-2">
-                                <input class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-data-mono text-sm" id="gemini-key-input" placeholder="AIzaSy..." type="password"/>
-                                <button id="gemini-save-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">Save Key</button>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
-                            <select class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none" disabled>
-                                <option value="json">JSON format</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
+            <p class="mt-8 text-center font-body-md text-on-surface-variant text-sm">
+                Secure authentication required for GitHub synchronization.
+            </p>
         </div>
-    </main>
-</div>
+    </div>
 
-<!-- Theme Toggle -->
-<button class="fixed bottom-gutter right-gutter w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:rotate-12 transition-all active:scale-90 z-[100]" id="theme-toggle" title="Toggle Theme">
-    <span class="material-symbols-outlined text-3xl" id="theme-icon">dark_mode</span>
-</button>
+    <!-- Admin Main Dashboard (Hidden by default) -->
+    <div class="hidden flex min-h-screen" id="admin-main">
+        <!-- Sidebar Navigation -->
+        <aside
+            class="fixed left-0 top-0 h-full w-[280px] glass border-r border-on-surface/10 flex flex-col p-stack-md z-50">
+            <div class="mb-stack-lg px-2">
+                <h2 class="font-headline-md text-headline-md font-bold text-primary">OzonZ Admin</h2>
+                <p class="font-label-md text-label-md text-on-surface-variant opacity-70">Portfolio Management</p>
+            </div>
+            <nav class="flex-1 space-y-2">
+                <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary/10 transition-all"
+                    href="#">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="font-label-md">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 transition-all"
+                    href="portfolio-ozonz.html">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                    <span class="font-label-md">View Portfolio</span>
+                </a>
+                <button
+                    class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-all text-left"
+                    id="logout-btn">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-label-md">Logout</span>
+                </button>
+            </nav>
+            <div class="mt-auto space-y-2">
+                <div class="p-4 bg-surface-container rounded-xl mt-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-sm">face</span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="font-label-md text-on-surface truncate">Admin User</p>
+                            <p class="text-[10px] text-on-surface-variant">Luminous Protocol</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-<!-- Toast -->
-<div id="toast"></div>
+        <!-- Main Content Area -->
+        <main class="flex-1 ml-[280px] p-stack-lg max-w-[1440px] mx-auto w-full">
+            <!-- Top App Bar -->
+            <header class="flex items-center justify-between mb-stack-lg glass p-6 rounded-2xl shadow-sm">
+                <div>
+                    <h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span
+                            class="flex items-center gap-1.5 text-label-md text-on-surface-variant bg-surface-variant px-3 py-1 rounded-full text-xs font-bold"
+                            id="gh-status-badge">
+                            <span class="w-2 h-2 rounded-full bg-outline animate-pulse"></span>
+                            Connecting…
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md"
+                        id="save-all-btn" onclick="location.reload()">
+                        <span class="material-symbols-outlined text-sm">sync</span>
+                        Sync Status
+                    </button>
+                </div>
+            </header>
 
-<!-- ═══════════════ WORK MODAL ═══════════════ -->
-<div id="work-modal" class="modal-backdrop">
-    <div id="work-modal-window" class="glass max-w-2xl w-full rounded-2xl shadow-2xl p-stack-lg max-h-[92vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="work-modal-title">Add New Work</h2>
-        
-        <form id="work-form" class="space-y-4">
-            <input type="hidden" id="work-edit-id" />
+            <!-- Dashboard Grid -->
+            <div class="bento-grid items-start">
+                <!-- Left Column: Main Content -->
+                <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+                    <!-- Selected Archives (Works List) -->
+                    <div class="glass rounded-2xl p-stack-lg flex flex-col">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Selected Archives</h2>
+                                <p id="works-count" class="font-body-md text-on-surface-variant text-sm">— works</p>
+                            </div>
+                            <button
+                                class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md transition-all hover:scale-105 active:scale-95"
+                                id="add-work-btn">
+                                <span class="material-symbols-outlined text-sm">add</span>
+                                New Archive
+                            </button>
+                        </div>
+                        <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-hide" id="works-list">
+                            <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
+                        </div>
+                    </div>
 
-            <!-- Autofill -->
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">AUTOFILL FROM URL</label>
+                    <!-- Contact Channels -->
+                    <div class="glass rounded-2xl p-stack-lg flex flex-col">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Channels</h2>
+                                <p id="contacts-count" class="font-body-md text-on-surface-variant text-sm">— contacts
+                                </p>
+                            </div>
+                            <button
+                                class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all"
+                                id="add-contact-btn">
+                                <span class="material-symbols-outlined">add</span>
+                            </button>
+                        </div>
+                        <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2 scroll-hide" id="contacts-list">
+                            <p class="text-on-surface-variant text-sm text-center py-8">Loading from GitHub…</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Settings -->
+                <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                    <!-- GitHub Sync Settings Card -->
+                    <div class="glass rounded-2xl p-stack-md flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-label-md text-primary">SECURITY STATUS</h3>
+                                <span class="material-symbols-outlined text-primary">key</span>
+                            </div>
+                            <p class="font-headline-md text-headline-md text-on-surface mb-2">GitHub Token</p>
+                            <p class="font-body-md text-on-surface-variant text-sm mb-6">Required to push changes to
+                                your repository. Saved in session storage only.</p>
+                        </div>
+                        <div class="space-y-3">
+                            <input type="password" id="gh-token-input"
+                                class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-sm"
+                                placeholder="ghp_..." />
+                            <div
+                                class="flex items-center justify-between bg-surface-container-highest/50 p-3 rounded-xl">
+                                <span id="token-status" class="text-xs text-on-surface-variant">No token</span>
+                                <button id="gh-token-save"
+                                    class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Settings Card -->
+                    <div class="glass rounded-2xl p-stack-md">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+                                    <span
+                                        class="material-symbols-outlined text-on-secondary-container">auto_awesome</span>
+                                </div>
+                                <h3 class="font-headline-md text-headline-md text-on-surface">Gemini AI Engine</h3>
+                            </div>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant"
+                                onclick="toggleSection(this)">
+                                <span class="material-symbols-outlined toggle-icon">expand_more</span>
+                            </button>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <div class="space-y-2">
+                                <label class="font-label-md text-xs text-on-surface-variant">GEMINI API KEY</label>
+                                <div class="flex gap-2">
+                                    <input
+                                        class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-data-mono text-sm"
+                                        id="gemini-key-input" placeholder="AIzaSy..." type="password" />
+                                    <button id="gemini-save-btn"
+                                        class="bg-primary/20 hover:bg-primary/30 text-primary px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">Save
+                                        Key</button>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="font-label-md text-xs text-on-surface-variant">OUTPUT PREFERENCE</label>
+                                <select
+                                    class="w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-sm text-on-surface border-none"
+                                    disabled>
+                                    <option value="json">JSON format</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button
+        class="fixed bottom-gutter right-gutter w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:rotate-12 transition-all active:scale-90 z-[100]"
+        id="theme-toggle" title="Toggle Theme">
+        <span class="material-symbols-outlined text-3xl" id="theme-icon">dark_mode</span>
+    </button>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- ═══════════════ WORK MODAL ═══════════════ -->
+    <div id="work-modal" class="modal-backdrop">
+        <div id="work-modal-window"
+            class="glass max-w-2xl w-full rounded-2xl shadow-2xl p-stack-lg max-h-[92vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
+            <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="work-modal-title">Add New Work
+            </h2>
+
+            <form id="work-form" class="space-y-4">
+                <input type="hidden" id="work-edit-id" />
+
+                <!-- Autofill -->
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">AUTOFILL FROM URL</label>
                     <div class="flex gap-2">
-                        <input type="url" id="autofill-url" class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-body-md text-sm" placeholder="https://username.itch.io/game or https://github.com/user/repo" />
-                        <button type="button" id="autofill-btn" class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
+                        <input type="url" id="autofill-url"
+                            class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-body-md text-sm"
+                            placeholder="https://username.itch.io/game or https://github.com/user/repo" />
+                        <button type="button" id="autofill-btn"
+                            class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap">
                             Autofill
                         </button>
                     </div>
@@ -582,17 +656,21 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="font-label-md text-xs text-primary mb-1 block">TITLE</label>
-                        <input class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" id="work-name" type="text" required />
+                        <input class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md"
+                            id="work-name" type="text" required />
                     </div>
-                    
+
                     <div>
                         <label class="font-label-md text-xs text-primary mb-1 block">TAGS (COMMA-SEPARATED)</label>
-                        <input type="text" id="work-tags" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" placeholder="e.g. PIXEL ART, C#, UNITY" required />
+                        <input type="text" id="work-tags"
+                            class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md"
+                            placeholder="e.g. PIXEL ART, C#, UNITY" required />
                     </div>
-                    
+
                     <div>
                         <label class="font-label-md text-xs text-primary mb-1 block">YEAR</label>
-                        <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" />
+                        <input type="number" id="work-year" placeholder="e.g. 2026" min="2000" max="2100"
+                            class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md" />
                     </div>
                 </div>
 
@@ -602,8 +680,12 @@
                         <p id="ai-status" class="text-[10px] hidden text-primary"></p>
                     </div>
                     <div class="relative">
-                        <textarea class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10 resize-none" id="work-desc" rows="3" required></textarea>
-                        <button type="button" id="ai-write-btn" class="absolute top-2 right-2 text-primary hover:scale-110 transition-all" title="AI Expand">
+                        <textarea
+                            class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10 resize-none"
+                            id="work-desc" rows="3" required></textarea>
+                        <button type="button" id="ai-write-btn"
+                            class="absolute top-2 right-2 text-primary hover:scale-110 transition-all"
+                            title="AI Expand">
                             <span class="material-symbols-outlined text-xl">auto_fix_high</span>
                         </button>
                     </div>
@@ -615,8 +697,12 @@
                         <p id="ai-summarize-status" class="text-[10px] hidden text-primary"></p>
                     </div>
                     <div class="relative">
-                        <input type="text" id="work-ai-summary" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10" placeholder="e.g. A Python-based bot that tracks user playtime." />
-                        <button type="button" id="ai-summarize-btn" class="absolute top-2 right-2 text-primary hover:scale-110 transition-all" title="AI Summarize">
+                        <input type="text" id="work-ai-summary"
+                            class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10"
+                            placeholder="e.g. A Python-based bot that tracks user playtime." />
+                        <button type="button" id="ai-summarize-btn"
+                            class="absolute top-2 right-2 text-primary hover:scale-110 transition-all"
+                            title="AI Summarize">
                             <span class="material-symbols-outlined text-xl">auto_awesome</span>
                         </button>
                     </div>
@@ -625,16 +711,22 @@
                 <div>
                     <label class="font-label-md text-xs text-primary mb-1 block">COVER IMAGE URL</label>
                     <div class="flex gap-2">
-                        <input class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-data-mono text-sm" id="work-image" type="text" placeholder="https://... or material icon" />
-                        <label class="cursor-pointer bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-all">
+                        <input
+                            class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-data-mono text-sm"
+                            id="work-image" type="text" placeholder="https://... or material icon" />
+                        <label
+                            class="cursor-pointer bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-all">
                             <span class="material-symbols-outlined text-sm">upload</span>
                             <span>Upload</span>
-                            <input accept="image/*" class="hidden" id="img-file-input" type="file" multiple/>
+                            <input accept="image/*" class="hidden" id="img-file-input" type="file" multiple />
                         </label>
                     </div>
                     <div class="img-upload-progress mt-2" id="img-upload-progress">
-                        <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
-                        <div class="progress-bar-wrap"><div class="progress-bar" id="img-progress-bar" style="width:0%"></div></div>
+                        <span
+                            class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar" id="img-progress-bar" style="width:0%"></div>
+                        </div>
                         <span id="img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
                     </div>
                     <!-- Preview queue for multiple images -->
@@ -643,7 +735,8 @@
 
                 <div>
                     <label class="font-label-md text-xs text-primary mb-1 block">COLLABORATORS</label>
-                    <div id="collaborator-list" class="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto scroll-hide bg-surface-container/30 border border-outline/10 rounded-xl p-3">
+                    <div id="collaborator-list"
+                        class="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto scroll-hide bg-surface-container/30 border border-outline/10 rounded-xl p-3">
                         <p class="text-xs text-on-surface-variant text-center w-full">Loading team members...</p>
                     </div>
                 </div>
@@ -651,14 +744,18 @@
                 <div>
                     <label class="font-label-md text-xs text-primary mb-1 block">LINKS (OPTIONAL)</label>
                     <div id="work-links-wrap" class="flex flex-col gap-2 mb-2"></div>
-                    <button type="button" id="add-link-btn" class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
+                    <button type="button" id="add-link-btn"
+                        class="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
                         <span class="material-symbols-outlined text-sm">add</span> Add Link
                     </button>
                 </div>
 
                 <div class="flex justify-end gap-3 mt-stack-lg">
-                    <button type="button" id="work-cancel" class="px-6 py-2 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
-                    <button type="submit" class="px-8 py-2 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all flex items-center gap-2" id="save-work-btn">
+                    <button type="button" id="work-cancel"
+                        class="px-6 py-2 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
+                    <button type="submit"
+                        class="px-8 py-2 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all flex items-center gap-2"
+                        id="save-work-btn">
                         <span class="material-symbols-outlined text-sm" id="work-submit-icon">save</span>
                         <span id="work-submit-label">Save Changes</span>
                     </button>
@@ -666,238 +763,256 @@
             </form>
         </div>
     </div>
-</div>
-
-<!-- ═══════════════ CONTACT MODAL ═══════════════ -->
-<div id="contact-modal" class="modal-backdrop">
-    <div class="glass max-w-md w-full rounded-2xl shadow-2xl p-stack-lg max-h-[90vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="contact-modal-title">Add Contact</h2>
-        <form id="contact-form" class="space-y-4">
-            <input type="hidden" id="contact-edit-id" />
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Channel Name</label>
-                <input type="text" id="contact-name" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" placeholder="e.g. GitHub" />
-            </div>
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Link URL</label>
-                <input type="url" id="contact-link" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-            <div>
-                <label class="font-label-md text-xs text-primary mb-1 block">Icon Type</label>
-                <select id="contact-icon-type" class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-on-surface border-none">
-                    <option value="material">Google Material Symbol</option>
-                    <option value="svg">SVG Path Data</option>
-                    <option value="image">Image URL</option>
-                </select>
-            </div>
-            <!-- Contact Image upload -->
-            <div id="contact-img-upload-wrap" class="hidden">
-                <label class="font-label-md text-xs text-primary mb-1 block">Contact Image</label>
-                <div class="img-drop-zone p-4 mb-2" id="contact-img-drop-zone" title="Click or drag image here">
-                    <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
-                    <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
-                    <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
-                    <button type="button" class="remove-img" id="contact-img-remove-btn">✕ Remove</button>
-                </div>
-                <input type="file" id="contact-img-file-input" accept="image/*" class="hidden" />
-
-                <div class="img-upload-progress mb-2" id="contact-img-upload-progress">
-                    <span class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
-                    <div class="progress-bar-wrap"><div class="progress-bar" id="contact-img-progress-bar" style="width:0%"></div></div>
-                    <span id="contact-img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
-                </div>
-            </div>
-            <div>
-                <label id="contact-icon-label" class="font-label-md text-xs text-primary mb-1 block">Material Symbol Name (e.g. terminal)</label>
-                <input type="text" id="contact-icon-val" required class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
-            </div>
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" id="contact-cancel" class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
-                <button type="submit" class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
-                    Save
-                </button>
-            </div>
-        </form>
     </div>
-</div>
 
+    <!-- ═══════════════ CONTACT MODAL ═══════════════ -->
+    <div id="contact-modal" class="modal-backdrop">
+        <div
+            class="glass max-w-md w-full rounded-2xl shadow-2xl p-stack-lg max-h-[90vh] overflow-y-auto scroll-hide animate-in fade-in zoom-in duration-300">
+            <h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md" id="contact-modal-title">Add Contact
+            </h2>
+            <form id="contact-form" class="space-y-4">
+                <input type="hidden" id="contact-edit-id" />
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">Channel Name</label>
+                    <input type="text" id="contact-name" required
+                        class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md"
+                        placeholder="e.g. GitHub" />
+                </div>
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">Link URL</label>
+                    <input type="url" id="contact-link" required
+                        class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
+                </div>
+                <div>
+                    <label class="font-label-md text-xs text-primary mb-1 block">Icon Type</label>
+                    <select id="contact-icon-type"
+                        class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md text-on-surface border-none">
+                        <option value="material">Google Material Symbol</option>
+                        <option value="svg">SVG Path Data</option>
+                        <option value="image">Image URL</option>
+                    </select>
+                </div>
+                <!-- Contact Image upload -->
+                <div id="contact-img-upload-wrap" class="hidden">
+                    <label class="font-label-md text-xs text-primary mb-1 block">Contact Image</label>
+                    <div class="img-drop-zone p-4 mb-2" id="contact-img-drop-zone" title="Click or drag image here">
+                        <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
+                        <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or
+                            drag image</span>
+                        <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
+                        <button type="button" class="remove-img" id="contact-img-remove-btn">✕ Remove</button>
+                    </div>
+                    <input type="file" id="contact-img-file-input" accept="image/*" class="hidden" />
 
-
-<!-- Confirm modal -->
-<div id="confirm-modal" class="modal-backdrop">
-    <div class="glass max-w-sm w-full rounded-2xl shadow-2xl p-stack-lg text-center animate-in fade-in zoom-in duration-300">
-        <span class="material-symbols-outlined text-error text-5xl mb-4 block">warning</span>
-        <h3 id="confirm-msg" class="font-headline-md text-headline-md mb-2 text-on-surface">Are you sure?</h3>
-        <p class="font-body-md text-on-surface-variant text-sm mb-6">This action is permanent and will synchronize with GitHub immediately.</p>
-        <div class="flex gap-3">
-            <button id="confirm-no" class="flex-1 px-4 py-2.5 bg-surface-container rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Abort</button>
-            <button id="confirm-yes" class="flex-1 px-4 py-2.5 bg-error text-on-error rounded-lg font-label-md shadow-lg active:scale-95 transition-all">Confirm</button>
+                    <div class="img-upload-progress mb-2" id="contact-img-upload-progress">
+                        <span
+                            class="material-symbols-outlined text-primary text-sm animate-spin">progress_activity</span>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar" id="contact-img-progress-bar" style="width:0%"></div>
+                        </div>
+                        <span id="contact-img-progress-label" class="text-[10px] whitespace-nowrap">Uploading…</span>
+                    </div>
+                </div>
+                <div>
+                    <label id="contact-icon-label" class="font-label-md text-xs text-primary mb-1 block">Material Symbol
+                        Name (e.g. terminal)</label>
+                    <input type="text" id="contact-icon-val" required
+                        class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" id="contact-cancel"
+                        class="px-6 py-2.5 rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Cancel</button>
+                    <button type="submit"
+                        class="px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md shadow-lg active:scale-95 transition-all">
+                        Save
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
 
-<script>
-    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-        const s = document.createElement('script');
-        s.src = 'js/config.js';
-        document.head.appendChild(s);
-    }
-</script>
-<script type="module">
 
-(function () {
-'use strict';
 
-/* ══════════════════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════════════════ */
-const PASSCODE       = '977254';
-const GH_USER        = 'OzonZ';
-const GH_REPO        = 'Non-Four-Portfolio-Data';
-const GH_API         = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
-const WORKS_FILE     = 'ozonz_works.json';
-const SETTINGS_FILE  = 'ozonz_settings.json';
+    <!-- Confirm modal -->
+    <div id="confirm-modal" class="modal-backdrop">
+        <div
+            class="glass max-w-sm w-full rounded-2xl shadow-2xl p-stack-lg text-center animate-in fade-in zoom-in duration-300">
+            <span class="material-symbols-outlined text-error text-5xl mb-4 block">warning</span>
+            <h3 id="confirm-msg" class="font-headline-md text-headline-md mb-2 text-on-surface">Are you sure?</h3>
+            <p class="font-body-md text-on-surface-variant text-sm mb-6">This action is permanent and will synchronize
+                with GitHub immediately.</p>
+            <div class="flex gap-3">
+                <button id="confirm-no"
+                    class="flex-1 px-4 py-2.5 bg-surface-container rounded-lg font-label-md text-on-surface-variant hover:bg-surface-variant transition-all">Abort</button>
+                <button id="confirm-yes"
+                    class="flex-1 px-4 py-2.5 bg-error text-on-error rounded-lg font-label-md shadow-lg active:scale-95 transition-all">Confirm</button>
+            </div>
+        </div>
+    </div>
 
-/* ══════════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════════ */
-let ghToken       = '';
-let works         = [];        // live array
-let worksSha      = null;      // latest SHA for works file
-let ozonzSettings = {};        // { socials: [] }
-let settingsSha   = null;
-let confirmCb     = null;
-let selectedTeams = [];
-let aritsiaTeams  = [];
-
-const itchContact = {
-    name: "ITCH.IO",
-    link: "https://ozonz.itch.io",
-    iconType: "svg",
-    iconVal: "M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"
-};
-
-const defaultContacts = [
-    {
-        name: "GITHUB",
-        link: "https://github.com/OzonZ",
-        iconType: "svg",
-        iconVal: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-    },
-    {
-        name: "FACEBOOK",
-        link: "https://www.facebook.com/chanon.thongduang?locale=th_TH",
-        iconType: "svg",
-        iconVal: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-    },
-    {
-        name: "DISCORD",
-        link: "https://discordapp.com/users/1018888909419204658",
-        iconType: "svg",
-        iconVal: "M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"
-    },
-    itchContact,
-    {
-        name: "HAMSTER HUB",
-        link: "https://hamsterhub.co/profile/eaya",
-        iconType: "image",
-        iconVal: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A"
-    }
-];
-
-function ensureItchContact(socials) {
-    if (!Array.isArray(socials)) return [itchContact];
-    const hasItch = socials.some(s => s && s.name && (s.name.toUpperCase() === 'ITCH.IO' || s.name.toUpperCase() === 'ITCHIO'));
-    if (!hasItch) {
-        const hamsterIdx = socials.findIndex(s => s && s.name && s.name.toUpperCase() === 'HAMSTER HUB');
-        if (hamsterIdx >= 0) {
-            socials.splice(hamsterIdx, 0, itchContact);
-        } else {
-            socials.push(itchContact);
+    <script>
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            const s = document.createElement('script');
+            s.src = 'js/config.js';
+            document.head.appendChild(s);
         }
-    }
-    return socials;
-}
+    </script>
+    <script type="module">
 
-/* ══════════════════════════════════════════════════════
-   GITHUB API HELPERS
-══════════════════════════════════════════════════════ */
-function ghHeaders() {
-    return {
-        Authorization:  `Bearer ${ghToken}`,
-        Accept:         'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-    };
-}
+        (function () {
+            'use strict';
 
-async function ghGet(path) {
-    const r = await fetch(`${GH_API}/${path}?t=${Date.now()}`, { headers: ghHeaders() });
-    if (r.status === 404) return null;
-    if (!r.ok) throw new Error(`GitHub GET ${r.status}`);
-    return r.json();
-}
+            /* ══════════════════════════════════════════════════════
+               CONFIG
+            ══════════════════════════════════════════════════════ */
+            const PASSCODE = '977254';
+            const GH_USER = 'OzonZ';
+            const GH_REPO = 'Non-Four-Portfolio-Data';
+            const GH_API = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
+            const WORKS_FILE = 'ozonz_works.json';
+            const SETTINGS_FILE = 'ozonz_settings.json';
 
-async function ghPutBinary(path, base64content, message) {
-    let sha;
-    try {
-        const existing = await ghGet(path);
-        if (existing?.sha) sha = existing.sha;
-    } catch (_) {}
-    const body = { message, content: base64content };
-    if (sha) body.sha = sha;
-    let r = await fetch(`${GH_API}/${path}`, {
-        method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-    });
-    if (!r.ok) {
-        const t = await r.text();
-        throw new Error(`GitHub PUT binary ${r.status}: ${t}`);
-    }
-    return r.json();
-}
+            /* ══════════════════════════════════════════════════════
+               STATE
+            ══════════════════════════════════════════════════════ */
+            let ghToken = '';
+            let works = [];        // live array
+            let worksSha = null;      // latest SHA for works file
+            let ozonzSettings = {};        // { socials: [] }
+            let settingsSha = null;
+            let confirmCb = null;
+            let selectedTeams = [];
+            let aritsiaTeams = [];
 
-async function ghPut(path, content, message, sha) {
-    // Obfuscate the content before saving it (makes it hard to seek data directly from GitHub)
-    // We encode the JSON content into Base64.
-    const obfuscatedContent = btoa(unescape(encodeURIComponent(content)));
-    const body = {
-        message,
-        content: btoa(unescape(encodeURIComponent(obfuscatedContent))), // GitHub API requires base64 of the final string
-    };
-    if (sha) body.sha = sha;
+            const itchContact = {
+                name: "ITCH.IO",
+                link: "https://ozonz.itch.io",
+                iconType: "svg",
+                iconVal: "M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"
+            };
 
-    let r = await fetch(`${GH_API}/${path}`, {
-        method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-    });
+            const defaultContacts = [
+                {
+                    name: "GITHUB",
+                    link: "https://github.com/OzonZ",
+                    iconType: "svg",
+                    iconVal: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                },
+                {
+                    name: "FACEBOOK",
+                    link: "https://www.facebook.com/chanon.thongduang?locale=th_TH",
+                    iconType: "svg",
+                    iconVal: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                },
+                {
+                    name: "DISCORD",
+                    link: "https://discordapp.com/users/1018888909419204658",
+                    iconType: "svg",
+                    iconVal: "M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"
+                },
+                itchContact,
+                {
+                    name: "HAMSTER HUB",
+                    link: "https://hamsterhub.co/profile/eaya",
+                    iconType: "image",
+                    iconVal: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A"
+                }
+            ];
 
-    // 409 Conflict → Do NOT force push. Require user to reload.
-    if (r.status === 409) {
-        throw new Error(`Conflict Detected! Someone else updated the data. Please refresh to load the latest changes before saving.`);
-    }
-    if (!r.ok) {
-        const t = await r.text();
-        throw new Error(`GitHub PUT ${r.status}: ${t}`);
-    }
-    return r.json();
-}
+            function ensureItchContact(socials) {
+                if (!Array.isArray(socials)) return [itchContact];
+                const hasItch = socials.some(s => s && s.name && (s.name.toUpperCase() === 'ITCH.IO' || s.name.toUpperCase() === 'ITCHIO'));
+                if (!hasItch) {
+                    const hamsterIdx = socials.findIndex(s => s && s.name && s.name.toUpperCase() === 'HAMSTER HUB');
+                    if (hamsterIdx >= 0) {
+                        socials.splice(hamsterIdx, 0, itchContact);
+                    } else {
+                        socials.push(itchContact);
+                    }
+                }
+                return socials;
+            }
 
-function decodeGH(b64) {
-    return JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
-}
+            /* ══════════════════════════════════════════════════════
+               GITHUB API HELPERS
+            ══════════════════════════════════════════════════════ */
+            function ghHeaders() {
+                return {
+                    Authorization: `Bearer ${ghToken}`,
+                    Accept: 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json',
+                };
+            }
 
-async function syncGitHubProfileToSettings() {
-    if (!ghToken) return;
-    try {
-        const headers = { 
-            Authorization: `token ${ghToken}`,
-            Accept: 'application/vnd.github+json'
-        };
-        const uRes = await fetch(`https://api.github.com/users/${GH_USER}`, { headers });
-        if (!uRes.ok) return;
-        const u = await uRes.json();
-        
-        let contributions = null;
-        try {
-            const query = `
+            async function ghGet(path) {
+                const r = await fetch(`${GH_API}/${path}?t=${Date.now()}`, { headers: ghHeaders() });
+                if (r.status === 404) return null;
+                if (!r.ok) throw new Error(`GitHub GET ${r.status}`);
+                return r.json();
+            }
+
+            async function ghPutBinary(path, base64content, message) {
+                let sha;
+                try {
+                    const existing = await ghGet(path);
+                    if (existing?.sha) sha = existing.sha;
+                } catch (_) { }
+                const body = { message, content: base64content };
+                if (sha) body.sha = sha;
+                let r = await fetch(`${GH_API}/${path}`, {
+                    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
+                });
+                if (!r.ok) {
+                    const t = await r.text();
+                    throw new Error(`GitHub PUT binary ${r.status}: ${t}`);
+                }
+                return r.json();
+            }
+
+            async function ghPut(path, content, message, sha) {
+                // Obfuscate the content before saving it (makes it hard to seek data directly from GitHub)
+                // We encode the JSON content into Base64.
+                const obfuscatedContent = btoa(unescape(encodeURIComponent(content)));
+                const body = {
+                    message,
+                    content: btoa(unescape(encodeURIComponent(obfuscatedContent))), // GitHub API requires base64 of the final string
+                };
+                if (sha) body.sha = sha;
+
+                let r = await fetch(`${GH_API}/${path}`, {
+                    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
+                });
+
+                // 409 Conflict → Do NOT force push. Require user to reload.
+                if (r.status === 409) {
+                    throw new Error(`Conflict Detected! Someone else updated the data. Please refresh to load the latest changes before saving.`);
+                }
+                if (!r.ok) {
+                    const t = await r.text();
+                    throw new Error(`GitHub PUT ${r.status}: ${t}`);
+                }
+                return r.json();
+            }
+
+            function decodeGH(b64) {
+                return JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
+            }
+
+            async function syncGitHubProfileToSettings() {
+                if (!ghToken) return;
+                try {
+                    const headers = {
+                        Authorization: `token ${ghToken}`,
+                        Accept: 'application/vnd.github+json'
+                    };
+                    const uRes = await fetch(`https://api.github.com/users/${GH_USER}`, { headers });
+                    if (!uRes.ok) return;
+                    const u = await uRes.json();
+
+                    let contributions = null;
+                    try {
+                        const query = `
               query($username: String!) {
                 user(login: $username) {
                   contributionsCollection {
@@ -908,269 +1023,269 @@ async function syncGitHubProfileToSettings() {
                 }
               }
             `;
-            const gqlRes = await fetch('https://api.github.com/graphql', {
-              method: 'POST',
-              headers: {
-                'Authorization': `bearer ${ghToken}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                query,
-                variables: { username: GH_USER }
-              })
-            });
-            if (gqlRes.ok) {
-              const gqlData = await gqlRes.json();
-              if (gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions !== undefined) {
-                contributions = gqlData.data.user.contributionsCollection.contributionCalendar.totalContributions;
-              }
-            }
-        } catch (_) {}
-        
-        if (contributions === null) {
-            try {
-                const cr = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}`);
-                if (cr.ok) {
-                    const cal = await cr.json();
-                    if (cal.total) contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+                        const gqlRes = await fetch('https://api.github.com/graphql', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `bearer ${ghToken}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                query,
+                                variables: { username: GH_USER }
+                            })
+                        });
+                        if (gqlRes.ok) {
+                            const gqlData = await gqlRes.json();
+                            if (gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions !== undefined) {
+                                contributions = gqlData.data.user.contributionsCollection.contributionCalendar.totalContributions;
+                            }
+                        }
+                    } catch (_) { }
+
+                    if (contributions === null) {
+                        try {
+                            const cr = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}`);
+                            if (cr.ok) {
+                                const cal = await cr.json();
+                                if (cal.total) contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+                            }
+                        } catch (_) { }
+                    }
+
+                    ozonzSettings.githubProfile = {
+                        name: u.name || u.login,
+                        login: u.login,
+                        avatarUrl: u.avatar_url,
+                        bio: u.bio || '',
+                        publicRepos: u.public_repos || 0,
+                        contributions: contributions || 0,
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    // Automatically save settings silently in the background
+                    await saveSettings(`Sync GitHub profile info: @${GH_USER}`, true);
+                } catch (err) {
+                    console.error("Failed to sync GitHub profile to settings:", err);
                 }
-            } catch (_) {}
-        }
-
-        ozonzSettings.githubProfile = {
-            name: u.name || u.login,
-            login: u.login,
-            avatarUrl: u.avatar_url,
-            bio: u.bio || '',
-            publicRepos: u.public_repos || 0,
-            contributions: contributions || 0,
-            updatedAt: new Date().toISOString()
-        };
-
-        // Automatically save settings silently in the background
-        await saveSettings(`Sync GitHub profile info: @${GH_USER}`, true);
-    } catch (err) {
-        console.error("Failed to sync GitHub profile to settings:", err);
-    }
-}
-
-/* ══════════════════════════════════════════════════════
-   LOAD ARITSIA TEAMS
-══════════════════════════════════════════════════════ */
-async function loadAritsiaTeams() {
-    try {
-        const res = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
-        if (res.ok) {
-            const data = await res.json();
-            if (data.teams) {
-                aritsiaTeams = data.teams;
             }
-            if (data.icons) {
-                aritsiaIcons = data.icons;
-            }
-        }
-    } catch (e) {
-        console.warn("Failed to fetch Aritsia teams", e);
-    } finally {
-        renderCollaboratorCheckboxes();
-    }
-}
 
-function renderCollaboratorCheckboxes() {
-    const container = document.getElementById('collaborator-list');
-    if (!container) return;
-    container.innerHTML = '';
-    
-    if (aritsiaTeams.length === 0) {
-        container.innerHTML = '<p class="text-on-surface-variant text-xs">No team members available.</p>';
-        return;
-    }
-    
-    aritsiaTeams.forEach(tm => {
-        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/20">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/20">` : `<div class="w-5 h-5 rounded-full bg-surface-variant flex items-center justify-center text-[10px] font-bold text-on-surface-variant">${tm.name.charAt(0).toUpperCase()}</div>`);
-        
-        const label = document.createElement('label');
-        label.className = "flex items-center gap-2 bg-surface-container hover:bg-surface-variant transition-colors px-3 py-1.5 border border-outline/20 rounded-lg cursor-pointer";
-        label.innerHTML = `
+            /* ══════════════════════════════════════════════════════
+               LOAD ARITSIA TEAMS
+            ══════════════════════════════════════════════════════ */
+            async function loadAritsiaTeams() {
+                try {
+                    const res = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.teams) {
+                            aritsiaTeams = data.teams;
+                        }
+                        if (data.icons) {
+                            aritsiaIcons = data.icons;
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Failed to fetch Aritsia teams", e);
+                } finally {
+                    renderCollaboratorCheckboxes();
+                }
+            }
+
+            function renderCollaboratorCheckboxes() {
+                const container = document.getElementById('collaborator-list');
+                if (!container) return;
+                container.innerHTML = '';
+
+                if (aritsiaTeams.length === 0) {
+                    container.innerHTML = '<p class="text-on-surface-variant text-xs">No team members available.</p>';
+                    return;
+                }
+
+                aritsiaTeams.forEach(tm => {
+                    const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/20">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/20">` : `<div class="w-5 h-5 rounded-full bg-surface-variant flex items-center justify-center text-[10px] font-bold text-on-surface-variant">${tm.name.charAt(0).toUpperCase()}</div>`);
+
+                    const label = document.createElement('label');
+                    label.className = "flex items-center gap-2 bg-surface-container hover:bg-surface-variant transition-colors px-3 py-1.5 border border-outline/20 rounded-lg cursor-pointer";
+                    label.innerHTML = `
             <input type="checkbox" value="${tm.id}" class="collab-checkbox text-primary bg-background border-outline rounded focus:ring-primary h-4 w-4">
             ${iconHtml}
             <span class="font-body-md text-sm text-on-surface">${tm.name}</span>
         `;
-        container.appendChild(label);
-    });
-}
-
-/* ══════════════════════════════════════════════════════
-   LOAD FROM DATABASE
-══════════════════════════════════════════════════════ */
-function parseSecureJSON(text) {
-    try { return JSON.parse(text); } 
-    catch (e) { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
-}
-
-async function loadData() {
-    showLoading('Loading from Repository…');
-    try {
-        let loadedWorks = null;
-        let loadedSettings = null;
-
-        // Try using GitHub API first if token is available (always gets the latest, non-cached content)
-        if (ghToken) {
-            try {
-                const worksData = await ghGet(WORKS_FILE);
-                if (worksData) {
-                    worksSha = worksData.sha;
-                    if (worksData.content) {
-                        loadedWorks = decodeGH(worksData.content);
-                    }
-                }
-            } catch (err) {
-                console.warn("Failed to fetch works via GitHub API:", err);
+                    container.appendChild(label);
+                });
             }
 
-            try {
-                const settingsData = await ghGet(SETTINGS_FILE);
-                if (settingsData) {
-                    settingsSha = settingsData.sha;
-                    if (settingsData.content) {
-                        loadedSettings = decodeGH(settingsData.content);
-                    }
-                }
-            } catch (err) {
-                console.warn("Failed to fetch settings via GitHub API:", err);
+            /* ══════════════════════════════════════════════════════
+               LOAD FROM DATABASE
+            ══════════════════════════════════════════════════════ */
+            function parseSecureJSON(text) {
+                try { return JSON.parse(text); }
+                catch (e) { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
             }
-        }
 
-        // Fallback to raw github fetch if API fetch failed or wasn't run
-        if (!loadedWorks) {
-            const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
-            if (worksRes.ok) {
-                loadedWorks = parseSecureJSON(await worksRes.text());
-            } else {
+            async function loadData() {
+                showLoading('Loading from Repository…');
                 try {
-                    const r = await fetch('data/ozonz-works.json?t=' + Date.now());
-                    if (r.ok) loadedWorks = parseSecureJSON(await r.text());
-                    else loadedWorks = [];
-                } catch (_) {
-                    loadedWorks = [];
+                    let loadedWorks = null;
+                    let loadedSettings = null;
+
+                    // Try using GitHub API first if token is available (always gets the latest, non-cached content)
+                    if (ghToken) {
+                        try {
+                            const worksData = await ghGet(WORKS_FILE);
+                            if (worksData) {
+                                worksSha = worksData.sha;
+                                if (worksData.content) {
+                                    loadedWorks = decodeGH(worksData.content);
+                                }
+                            }
+                        } catch (err) {
+                            console.warn("Failed to fetch works via GitHub API:", err);
+                        }
+
+                        try {
+                            const settingsData = await ghGet(SETTINGS_FILE);
+                            if (settingsData) {
+                                settingsSha = settingsData.sha;
+                                if (settingsData.content) {
+                                    loadedSettings = decodeGH(settingsData.content);
+                                }
+                            }
+                        } catch (err) {
+                            console.warn("Failed to fetch settings via GitHub API:", err);
+                        }
+                    }
+
+                    // Fallback to raw github fetch if API fetch failed or wasn't run
+                    if (!loadedWorks) {
+                        const worksRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${WORKS_FILE}?t=${Date.now()}`);
+                        if (worksRes.ok) {
+                            loadedWorks = parseSecureJSON(await worksRes.text());
+                        } else {
+                            try {
+                                const r = await fetch('data/ozonz-works.json?t=' + Date.now());
+                                if (r.ok) loadedWorks = parseSecureJSON(await r.text());
+                                else loadedWorks = [];
+                            } catch (_) {
+                                loadedWorks = [];
+                            }
+                        }
+                    }
+                    works = loadedWorks || [];
+
+                    if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
+                        if (!loadedSettings) {
+                            const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
+                            if (settingsRes.ok) {
+                                loadedSettings = parseSecureJSON(await settingsRes.text());
+                            }
+                        }
+                        if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
+                            loadedSettings = { socials: defaultContacts };
+                        }
+                    }
+
+                    if (loadedSettings) {
+                        loadedSettings.socials = ensureItchContact(loadedSettings.socials);
+                    }
+
+                    ozonzSettings = loadedSettings;
+
+                    // Wait for token validation or skip
+                    if (ghToken) {
+                        syncGitHubProfileToSettings();
+                    }
+
+                    await loadAritsiaTeams();
+
+                    // Update badge on successful load
+                    setBadge(true);
+                } catch (err) {
+                    console.error("loadData error:", err);
+                    setBadge(false, err.message);
+                    showToast('Load error: ' + err.message);
+                } finally {
+                    hideLoading();
+                }
+                renderWorks();
+                renderContacts();
+            }
+
+            /* ══════════════════════════════════════════════════════
+               SAVE WORKS → GITHUB
+               ══════════════════════════════════════════════════════ */
+            async function saveWorks(actionLabel) {
+                showLoading('Saving to GitHub…');
+                try {
+                    if (!ghToken) {
+                        showToast('GitHub token is required to save changes!');
+                        return false;
+                    }
+                    let sha = null;
+                    try {
+                        const fileData = await ghGet(WORKS_FILE);
+                        if (fileData?.sha) sha = fileData.sha;
+                    } catch (_) { }
+
+                    const content = JSON.stringify(works, null, 4);
+                    await ghPut(WORKS_FILE, content, actionLabel, sha);
+                    showToast('✓ ' + actionLabel);
+                    setBadge(true, 'Connected to GitHub');
+                    return true;
+                } catch (err) {
+                    console.error("saveWorks error:", err);
+                    showToast('Error: ' + err.message);
+                    setBadge(false, err.message);
+                    return false;
+                } finally {
+                    hideLoading();
                 }
             }
-        }
-        works = loadedWorks || [];
 
-        if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
-            if (!loadedSettings) {
-                const settingsRes = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${SETTINGS_FILE}?t=${Date.now()}`);
-                if (settingsRes.ok) {
-                    loadedSettings = parseSecureJSON(await settingsRes.text());
+            async function saveSettings(actionLabel, silent = false) {
+                if (!silent) showLoading('Saving settings to GitHub…');
+                try {
+                    if (!ghToken) {
+                        if (!silent) showToast('GitHub token is required to save settings!');
+                        return false;
+                    }
+                    let sha = null;
+                    try {
+                        const fileData = await ghGet(SETTINGS_FILE);
+                        if (fileData?.sha) sha = fileData.sha;
+                    } catch (_) { }
+
+                    const content = JSON.stringify(ozonzSettings, null, 4);
+                    await ghPut(SETTINGS_FILE, content, actionLabel, sha);
+                    if (!silent) showToast('✓ ' + actionLabel);
+                    return true;
+                } catch (err) {
+                    console.error("saveSettings error:", err);
+                    if (!silent) showToast('Error: ' + err.message);
+                    return false;
+                } finally {
+                    if (!silent) hideLoading();
                 }
             }
-            if (!loadedSettings || !loadedSettings.socials || loadedSettings.socials.length === 0) {
-                loadedSettings = { socials: defaultContacts };
-            }
-        }
-        
-        if (loadedSettings) {
-            loadedSettings.socials = ensureItchContact(loadedSettings.socials);
-        }
-        
-        ozonzSettings = loadedSettings;
-        
-        // Wait for token validation or skip
-        if (ghToken) {
-            syncGitHubProfileToSettings();
-        }
-        
-        await loadAritsiaTeams();
-        
-        // Update badge on successful load
-        setBadge(true);
-    } catch (err) {
-        console.error("loadData error:", err);
-        setBadge(false, err.message);
-        showToast('Load error: ' + err.message);
-    } finally {
-        hideLoading();
-    }
-    renderWorks();
-    renderContacts();
-}
 
-/* ══════════════════════════════════════════════════════
-   SAVE WORKS → GITHUB
-   ══════════════════════════════════════════════════════ */
-async function saveWorks(actionLabel) {
-    showLoading('Saving to GitHub…');
-    try {
-        if (!ghToken) {
-            showToast('GitHub token is required to save changes!');
-            return false;
-        }
-        let sha = null;
-        try {
-            const fileData = await ghGet(WORKS_FILE);
-            if (fileData?.sha) sha = fileData.sha;
-        } catch (_) {}
-
-        const content = JSON.stringify(works, null, 4);
-        await ghPut(WORKS_FILE, content, actionLabel, sha);
-        showToast('✓ ' + actionLabel);
-        setBadge(true, 'Connected to GitHub');
-        return true;
-    } catch (err) {
-        console.error("saveWorks error:", err);
-        showToast('Error: ' + err.message);
-        setBadge(false, err.message);
-        return false;
-    } finally {
-        hideLoading();
-    }
-}
-
-async function saveSettings(actionLabel, silent = false) {
-    if (!silent) showLoading('Saving settings to GitHub…');
-    try {
-        if (!ghToken) {
-            if (!silent) showToast('GitHub token is required to save settings!');
-            return false;
-        }
-        let sha = null;
-        try {
-            const fileData = await ghGet(SETTINGS_FILE);
-            if (fileData?.sha) sha = fileData.sha;
-        } catch (_) {}
-
-        const content = JSON.stringify(ozonzSettings, null, 4);
-        await ghPut(SETTINGS_FILE, content, actionLabel, sha);
-        if (!silent) showToast('✓ ' + actionLabel);
-        return true;
-    } catch (err) {
-        console.error("saveSettings error:", err);
-        if (!silent) showToast('Error: ' + err.message);
-        return false;
-    } finally {
-        if (!silent) hideLoading();
-    }
-}
-
-/* ══════════════════════════════════════════════════════
-   RENDER WORKS
-══════════════════════════════════════════════════════ */
-function renderWorks() {
-    const list = document.getElementById('works-list');
-    document.getElementById('works-count').textContent = works.length + ' work' + (works.length !== 1 ? 's' : '');
-    if (!works.length) {
-        list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-8">No works yet. Add the first one!</p>';
-        return;
-    }
-    list.innerHTML = works.map((w, i) => {
-        const img = Array.isArray(w.image) ? w.image[0] : w.image;
-        const isUrl = img && (img.startsWith('http') || img.includes('/') || img.includes('.'));
-        const thumb = isUrl
-            ? `<img src="${img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'" />`
-            : `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary"><span class="material-symbols-outlined text-2xl">${img || 'brush'}</span></div>`;
-        const tagStr = Array.isArray(w.tags) ? w.tags.join(', ') : (w.tags || '');
-        return `
+            /* ══════════════════════════════════════════════════════
+               RENDER WORKS
+            ══════════════════════════════════════════════════════ */
+            function renderWorks() {
+                const list = document.getElementById('works-list');
+                document.getElementById('works-count').textContent = works.length + ' work' + (works.length !== 1 ? 's' : '');
+                if (!works.length) {
+                    list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-8">No works yet. Add the first one!</p>';
+                    return;
+                }
+                list.innerHTML = works.map((w, i) => {
+                    const img = Array.isArray(w.image) ? w.image[0] : w.image;
+                    const isUrl = img && (img.startsWith('http') || img.includes('/') || img.includes('.'));
+                    const thumb = isUrl
+                        ? `<img src="${img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'" />`
+                        : `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary"><span class="material-symbols-outlined text-2xl">${img || 'brush'}</span></div>`;
+                    const tagStr = Array.isArray(w.tags) ? w.tags.join(', ') : (w.tags || '');
+                    return `
         <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
             <div class="w-20 h-16 bg-surface-container rounded-lg overflow-hidden shrink-0">
                 ${thumb}
@@ -1194,70 +1309,70 @@ function renderWorks() {
                 </button>
             </div>
         </div>`;
-    }).join('');
-}
+                }).join('');
+            }
 
-/* ══════════════════════════════════════════════════════
-   WORK MODAL
-══════════════════════════════════════════════════════ */
-window.openWorkModal = function(id) {
-    const w = id ? works.find(x => String(x.id) === String(id)) : null;
-    document.getElementById('work-modal-title').textContent = w ? 'Edit Work' : 'Add New Work';
-    document.getElementById('work-edit-id').value           = w ? w.id : '';
-    document.getElementById('autofill-url').value           = '';
-    document.getElementById('autofill-status').classList.add('hidden');
-    document.getElementById('ai-status').classList.add('hidden');
+            /* ══════════════════════════════════════════════════════
+               WORK MODAL
+            ══════════════════════════════════════════════════════ */
+            window.openWorkModal = function (id) {
+                const w = id ? works.find(x => String(x.id) === String(id)) : null;
+                document.getElementById('work-modal-title').textContent = w ? 'Edit Work' : 'Add New Work';
+                document.getElementById('work-edit-id').value = w ? w.id : '';
+                document.getElementById('autofill-url').value = '';
+                document.getElementById('autofill-status').classList.add('hidden');
+                document.getElementById('ai-status').classList.add('hidden');
 
-    // Reset image upload zone
-    resetImageZone();
+                // Reset image upload zone
+                resetImageZone();
 
-    // Reset form
-    document.getElementById('work-name').value  = w?.name  || '';
-    const img = w?.image;
-    const imgVal = Array.isArray(img) ? img[0] : (img || '');
-    document.getElementById('work-image').value = imgVal;
-    
-    // Fill image preview queue with existing images
-    const queue = document.getElementById('img-preview-queue');
-    queue.innerHTML = '';
-    let existingImgs = w?.images || [];
-    if (existingImgs.length === 0 && imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
-        existingImgs = [imgVal];
-    }
-    existingImgs.forEach(u => renderQueueItem(u, false));
+                // Reset form
+                document.getElementById('work-name').value = w?.name || '';
+                const img = w?.image;
+                const imgVal = Array.isArray(img) ? img[0] : (img || '');
+                document.getElementById('work-image').value = imgVal;
 
-    const tags = w?.tags;
-    document.getElementById('work-tags').value  = Array.isArray(tags) ? tags.join(', ') : (tags || '');
-    document.getElementById('work-desc').value  = w?.desc  || '';
-    document.getElementById('work-year').value  = w?.year  || '';
-    document.getElementById('work-ai-summary').value = w?.aiSummary || '';
-    document.getElementById('ai-summarize-status').classList.add('hidden');
+                // Fill image preview queue with existing images
+                const queue = document.getElementById('img-preview-queue');
+                queue.innerHTML = '';
+                let existingImgs = w?.images || [];
+                if (existingImgs.length === 0 && imgVal && (imgVal.startsWith('http') || imgVal.includes('/'))) {
+                    existingImgs = [imgVal];
+                }
+                existingImgs.forEach(u => renderQueueItem(u, false));
 
-    // Set collaborators
-    selectedTeams = w?.team || [];
-    Array.from(document.querySelectorAll('.collab-checkbox')).forEach(cb => {
-        cb.checked = selectedTeams.includes(cb.value);
-    });
+                const tags = w?.tags;
+                document.getElementById('work-tags').value = Array.isArray(tags) ? tags.join(', ') : (tags || '');
+                document.getElementById('work-desc').value = w?.desc || '';
+                document.getElementById('work-year').value = w?.year || '';
+                document.getElementById('work-ai-summary').value = w?.aiSummary || '';
+                document.getElementById('ai-summarize-status').classList.add('hidden');
 
-    const m = document.getElementById('work-modal');
-    m.classList.add('open');
-    
-    // Removed modal positional reset since it is no longer draggable.
+                // Set collaborators
+                selectedTeams = w?.team || [];
+                Array.from(document.querySelectorAll('.collab-checkbox')).forEach(cb => {
+                    cb.checked = selectedTeams.includes(cb.value);
+                });
 
-    // Links
-    renderLinkRows(w?.links || []);
-};
+                const m = document.getElementById('work-modal');
+                m.classList.add('open');
 
-function renderLinkRows(links) {
-    const wrap = document.getElementById('work-links-wrap');
-    wrap.innerHTML = '';
-    links.forEach((l, i) => {
-        wrap.insertAdjacentHTML('beforeend', makeLinkRow(i, l.url || '', l.label || ''));
-    });
-}
+                // Removed modal positional reset since it is no longer draggable.
 
-function makeLinkRow(i, url = '', label = '') {
-    return `
+                // Links
+                renderLinkRows(w?.links || []);
+            };
+
+            function renderLinkRows(links) {
+                const wrap = document.getElementById('work-links-wrap');
+                wrap.innerHTML = '';
+                links.forEach((l, i) => {
+                    wrap.insertAdjacentHTML('beforeend', makeLinkRow(i, l.url || '', l.label || ''));
+                });
+            }
+
+            function makeLinkRow(i, url = '', label = '') {
+                return `
     <div class="link-row" data-link-idx="${i}">
         <input type="url" class="admin-input flex-1 bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="https://..." value="${url}" />
         <input type="text" class="admin-input bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs" placeholder="Label" style="max-width:130px" value="${label}" />
@@ -1265,401 +1380,401 @@ function makeLinkRow(i, url = '', label = '') {
             <span class="material-symbols-outlined text-lg">close</span>
         </button>
     </div>`;
-}
+            }
 
-window.removeLinkRow = function(btn) { btn.closest('.link-row').remove(); };
-document.getElementById('add-link-btn').addEventListener('click', () => {
-    const wrap = document.getElementById('work-links-wrap');
-    const idx  = wrap.querySelectorAll('.link-row').length;
-    wrap.insertAdjacentHTML('beforeend', makeLinkRow(idx));
-});
-
-function collectLinks() {
-    return Array.from(document.querySelectorAll('#work-links-wrap .link-row'))
-        .map(row => ({
-            url:   row.querySelector('input[type="url"]').value.trim(),
-            label: row.querySelector('input[type="text"]').value.trim(),
-        }))
-        .filter(l => l.url);
-}
-
-document.getElementById('work-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (pendingImageFiles.length > 0 && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
-
-    const editId  = document.getElementById('work-edit-id').value;
-    const tagsVal = document.getElementById('work-tags').value.trim();
-
-    // Gather existing URLs from the queue
-    const queueItems = Array.from(document.querySelectorAll('.img-queue-item[data-url]'));
-    let finalImageUrls = queueItems.map(item => item.getAttribute('data-url'));
-
-    // Upload pending images
-    if (pendingImageFiles.length > 0) {
-        const uploadedUrls = await uploadImagesToGitHub(pendingImageFiles);
-        if (uploadedUrls && uploadedUrls.length === pendingImageFiles.length) {
-            finalImageUrls = finalImageUrls.concat(uploadedUrls);
-        } else {
-            return; // upload failed
-        }
-    }
-
-    let imgVal = document.getElementById('work-image').value.trim();
-    if (finalImageUrls.length > 0) {
-        imgVal = finalImageUrls[0];
-        document.getElementById('work-image').value = imgVal;
-    }
-
-    const entry = {
-        id:    editId ? Number(editId) : Date.now(),
-        name:  document.getElementById('work-name').value.trim(),
-        cat:   'ozonz',
-        subcat: '',
-        desc:  document.getElementById('work-desc').value.trim(),
-        year:  document.getElementById('work-year').value.trim(),
-        aiSummary: document.getElementById('work-ai-summary').value.trim(),
-        image: imgVal,
-        images: finalImageUrls,
-        tags:  tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
-        links: collectLinks(),
-        team:  Array.from(document.querySelectorAll('.collab-checkbox:checked')).map(cb => cb.value),
-        tools: [],
-        date:  editId
-               ? (works.find(w => String(w.id) === editId)?.date || new Date().toISOString())
-               : new Date().toISOString(),
-    };
-
-    if (editId) {
-        const idx = works.findIndex(w => String(w.id) === editId);
-        if (idx >= 0) works[idx] = entry;
-    } else {
-        works.push(entry);  // oldest first / add to bottom
-    }
-
-    const ok = await saveWorks(editId ? `Update work: ${entry.name}` : `Add work: ${entry.name}`);
-    if (ok) {
-        document.getElementById('work-modal').classList.remove('open');
-        renderWorks();
-    }
-});
-
-/* ══════════════════════════════════════════════════════
-   IMAGE UPLOAD SYSTEM
-══════════════════════════════════════════════════════ */
-let pendingImageFiles = [];
-
-window.resetImageZone = function resetImageZone() {
-    pendingImageFiles = [];
-    document.getElementById('img-file-input').value = '';
-    document.getElementById('img-upload-progress').classList.remove('visible');
-    document.getElementById('work-image').value = '';
-    const q = document.getElementById('img-preview-queue');
-    if (q) q.innerHTML = '';
-};
-
-function renderQueueItem(source, isPending, fileObj = null) {
-    const queue = document.getElementById('img-preview-queue');
-    const div = document.createElement('div');
-    div.className = 'img-queue-item relative w-16 h-16 rounded-md overflow-hidden border border-outline/20 group';
-    
-    if (!isPending) {
-        div.setAttribute('data-url', source);
-    }
-    
-    const img = document.createElement('img');
-    img.src = isPending ? URL.createObjectURL(source) : source;
-    img.className = 'w-full h-full object-cover';
-    div.appendChild(img);
-    
-    const rmBtn = document.createElement('button');
-    rmBtn.type = 'button';
-    rmBtn.className = 'absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
-    rmBtn.innerHTML = '<span class="material-symbols-outlined text-sm">delete</span>';
-    rmBtn.onclick = () => {
-        div.remove();
-        if (isPending) {
-            pendingImageFiles = pendingImageFiles.filter(f => f !== source);
-            if (pendingImageFiles.length === 0) document.getElementById('work-image').value = '';
-        }
-    };
-    div.appendChild(rmBtn);
-    queue.appendChild(div);
-}
-
-async function uploadImagesToGitHub(files) {
-    const progress = document.getElementById('img-upload-progress');
-    const bar      = document.getElementById('img-progress-bar');
-    const label    = document.getElementById('img-progress-label');
-    progress.classList.add('visible');
-    
-    let uploadedUrls = [];
-    
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        bar.style.width = `${(i / files.length) * 100}%`;
-        label.textContent = `Uploading file ${i+1} of ${files.length}…`;
-        label.style.color = '';
-        
-        try {
-            const rawUrl = await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    try {
-                        const base64   = ev.target.result.split(',')[1];
-                        const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-                        const filename = `works/${Date.now()}_${i}_ozonz.${ext}`;
-                        await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
-                        resolve(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`);
-                    } catch (err) { reject(err); }
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
+            window.removeLinkRow = function (btn) { btn.closest('.link-row').remove(); };
+            document.getElementById('add-link-btn').addEventListener('click', () => {
+                const wrap = document.getElementById('work-links-wrap');
+                const idx = wrap.querySelectorAll('.link-row').length;
+                wrap.insertAdjacentHTML('beforeend', makeLinkRow(idx));
             });
-            uploadedUrls.push(rawUrl);
-        } catch (err) {
-            bar.style.width = '0%';
-            label.textContent = `Error: ${err.message}`;
-            label.style.color = '#ef4444';
-            showToast('Image upload failed: ' + err.message);
-            return null;
-        }
-    }
-    
-    bar.style.width = '100%';
-    label.textContent = '✓ Uploaded!';
-    setTimeout(() => progress.classList.remove('visible'), 1500);
-    return uploadedUrls;
-}
 
-function handleImageFiles(files) {
-    for (const file of files) {
-        if (!file || !file.type.startsWith('image/')) { showToast(`Skipping non-image file: ${file.name}`); continue; }
-        if (file.size > 4 * 1024 * 1024) { showToast(`Skipping large file: ${file.name} (max 4MB)`); continue; }
-        pendingImageFiles.push(file);
-        renderQueueItem(file, true);
-    }
-    if (pendingImageFiles.length > 0) {
-        document.getElementById('work-image').value = pendingImageFiles.length + ' file(s) pending';
-    }
-}
+            function collectLinks() {
+                return Array.from(document.querySelectorAll('#work-links-wrap .link-row'))
+                    .map(row => ({
+                        url: row.querySelector('input[type="url"]').value.trim(),
+                        label: row.querySelector('input[type="text"]').value.trim(),
+                    }))
+                    .filter(l => l.url);
+            }
 
-document.getElementById('img-file-input').addEventListener('change', (e) => {
-    if (e.target.files.length > 0) handleImageFiles(e.target.files);
-});
+            document.getElementById('work-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (pendingImageFiles.length > 0 && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
 
-// Paste from clipboard (Ctrl+V)
-document.getElementById('work-modal').addEventListener('paste', (e) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    const files = [];
-    for (const item of items) {
-        if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) files.push(file);
-        }
-    }
-    if (files.length > 0) handleImageFiles(files);
-});
+                const editId = document.getElementById('work-edit-id').value;
+                const tagsVal = document.getElementById('work-tags').value.trim();
 
-window.deleteWork = function(id) {
-    const w = works.find(x => String(x.id) === String(id));
-    confirmDialog(`Delete "${w?.name || 'this work'}"? This cannot be undone.`, async () => {
-        works = works.filter(x => String(x.id) !== String(id));
-        const ok = await saveWorks(`Delete work: ${w?.name}`);
-        if (ok) renderWorks();
-    });
-};
+                // Gather existing URLs from the queue
+                const queueItems = Array.from(document.querySelectorAll('.img-queue-item[data-url]'));
+                let finalImageUrls = queueItems.map(item => item.getAttribute('data-url'));
 
-window.moveWorkItem = async function(idx, direction) {
-    const targetIdx = idx + direction;
-    if (targetIdx < 0 || targetIdx >= works.length) return;
-    
-    const temp = works[idx];
-    works[idx] = works[targetIdx];
-    works[targetIdx] = temp;
-    
-    const ok = await saveWorks(`Reorder work: ${temp.name || 'item'}`);
-    if (ok) {
-        renderWorks();
-    }
-};
+                // Upload pending images
+                if (pendingImageFiles.length > 0) {
+                    const uploadedUrls = await uploadImagesToGitHub(pendingImageFiles);
+                    if (uploadedUrls && uploadedUrls.length === pendingImageFiles.length) {
+                        finalImageUrls = finalImageUrls.concat(uploadedUrls);
+                    } else {
+                        return; // upload failed
+                    }
+                }
 
-document.getElementById('work-cancel').addEventListener('click', () => {
-    document.getElementById('work-modal').classList.remove('open');
-});
-document.getElementById('work-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('work-modal'))
-        document.getElementById('work-modal').classList.remove('open');
-});
+                let imgVal = document.getElementById('work-image').value.trim();
+                if (finalImageUrls.length > 0) {
+                    imgVal = finalImageUrls[0];
+                    document.getElementById('work-image').value = imgVal;
+                }
 
-// Removed draggable logic as user requested a clean centered popup.
+                const entry = {
+                    id: editId ? Number(editId) : Date.now(),
+                    name: document.getElementById('work-name').value.trim(),
+                    cat: 'ozonz',
+                    subcat: '',
+                    desc: document.getElementById('work-desc').value.trim(),
+                    year: document.getElementById('work-year').value.trim(),
+                    aiSummary: document.getElementById('work-ai-summary').value.trim(),
+                    image: imgVal,
+                    images: finalImageUrls,
+                    tags: tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
+                    links: collectLinks(),
+                    team: Array.from(document.querySelectorAll('.collab-checkbox:checked')).map(cb => cb.value),
+                    tools: [],
+                    date: editId
+                        ? (works.find(w => String(w.id) === editId)?.date || new Date().toISOString())
+                        : new Date().toISOString(),
+                };
 
-async function callGeminiSummary(apiKey, rawDesc) {
-    const promptText = `You are an assistant that summarizes project/game descriptions for a developer portfolio. Summarize the following raw description into two parts: 1. A clean, professional description (1-2 sentences, in English). 2. A very short, punchy tagline or summary (maximum 6-8 words, in English). Return the result as a raw JSON object with keys "description" and "tagline". Do not include markdown formatting or backticks. Description: "${rawDesc}"`;
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
-    });
-    if (!res.ok) throw new Error(`Gemini status ${res.status}`);
-    const data = await res.json();
-    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-    try {
-        return JSON.parse(text);
-    } catch (e) {
-        const descMatch = text.match(/"description"\s*:\s*"([^"]+)"/);
-        const taglineMatch = text.match(/"tagline"\s*:\s*"([^"]+)"/);
-        return {
-            description: descMatch ? descMatch[1] : null,
-            tagline: taglineMatch ? taglineMatch[1] : null
-        };
-    }
-}
+                if (editId) {
+                    const idx = works.findIndex(w => String(w.id) === editId);
+                    if (idx >= 0) works[idx] = entry;
+                } else {
+                    works.push(entry);  // oldest first / add to bottom
+                }
 
-document.getElementById('autofill-btn').addEventListener('click', () => {
-    const url    = document.getElementById('autofill-url').value.trim();
-    const status = document.getElementById('autofill-status');
-    if (!url) { status.textContent = 'Enter a URL first.'; status.className = 'text-red-500 text-xs mt-2 block'; return; }
+                const ok = await saveWorks(editId ? `Update work: ${entry.name}` : `Add work: ${entry.name}`);
+                if (ok) {
+                    document.getElementById('work-modal').classList.remove('open');
+                    renderWorks();
+                }
+            });
 
-    status.textContent = 'Fetching…'; status.className = 'text-on-surface-variant text-xs mt-2 block';
+            /* ══════════════════════════════════════════════════════
+               IMAGE UPLOAD SYSTEM
+            ══════════════════════════════════════════════════════ */
+            let pendingImageFiles = [];
 
-    const ghMatch = url.match(/github\.com\/([^/]+)\/([^/]+)/i);
-    if (ghMatch) {
-        const owner = ghMatch[1];
-        let   repo  = ghMatch[2].split(/[#?]/)[0].replace(/\.git$/, '');
-        Promise.all([
-            fetch(`https://api.github.com/repos/${owner}/${repo}`).then(r => r.json()),
-            fetch(`https://api.github.com/repos/${owner}/${repo}/contributors`).then(r => r.ok ? r.json() : []).catch(() => []),
-        ]).then(async ([rd, cd]) => {
-            const title = rd.name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            document.getElementById('work-name').value  = title;
-            const rawDesc = rd.description || '';
-            document.getElementById('work-desc').value  = rawDesc;
-            document.getElementById('work-ai-summary').value = '';
-            document.getElementById('work-image').value = 'terminal';
-            const tags = [];
-            if (rd.language) tags.push(rd.language.toUpperCase());
-            tags.push('GITHUB');
-            document.getElementById('work-tags').value  = tags.join(', ');
-            renderLinkRows([{ url: rd.html_url, label: 'GitHub Repo' }]);
+            window.resetImageZone = function resetImageZone() {
+                pendingImageFiles = [];
+                document.getElementById('img-file-input').value = '';
+                document.getElementById('img-upload-progress').classList.remove('visible');
+                document.getElementById('work-image').value = '';
+                const q = document.getElementById('img-preview-queue');
+                if (q) q.innerHTML = '';
+            };
 
-            const apiKey = localStorage.getItem('gemini_api_key') || '';
-            if (rawDesc && apiKey) {
-                status.textContent = 'AI Summarizing description…';
-                try {
-                    const aiRes = await callGeminiSummary(apiKey, rawDesc);
-                    if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
-                    if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
-                } catch (e) {
-                    console.warn("Gemini Autofill summary failed:", e);
+            function renderQueueItem(source, isPending, fileObj = null) {
+                const queue = document.getElementById('img-preview-queue');
+                const div = document.createElement('div');
+                div.className = 'img-queue-item relative w-16 h-16 rounded-md overflow-hidden border border-outline/20 group';
+
+                if (!isPending) {
+                    div.setAttribute('data-url', source);
+                }
+
+                const img = document.createElement('img');
+                img.src = isPending ? URL.createObjectURL(source) : source;
+                img.className = 'w-full h-full object-cover';
+                div.appendChild(img);
+
+                const rmBtn = document.createElement('button');
+                rmBtn.type = 'button';
+                rmBtn.className = 'absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+                rmBtn.innerHTML = '<span class="material-symbols-outlined text-sm">delete</span>';
+                rmBtn.onclick = () => {
+                    div.remove();
+                    if (isPending) {
+                        pendingImageFiles = pendingImageFiles.filter(f => f !== source);
+                        if (pendingImageFiles.length === 0) document.getElementById('work-image').value = '';
+                    }
+                };
+                div.appendChild(rmBtn);
+                queue.appendChild(div);
+            }
+
+            async function uploadImagesToGitHub(files) {
+                const progress = document.getElementById('img-upload-progress');
+                const bar = document.getElementById('img-progress-bar');
+                const label = document.getElementById('img-progress-label');
+                progress.classList.add('visible');
+
+                let uploadedUrls = [];
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    bar.style.width = `${(i / files.length) * 100}%`;
+                    label.textContent = `Uploading file ${i + 1} of ${files.length}…`;
+                    label.style.color = '';
+
+                    try {
+                        const rawUrl = await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = async (ev) => {
+                                try {
+                                    const base64 = ev.target.result.split(',')[1];
+                                    const ext = file.name.split('.').pop().toLowerCase() || 'jpg';
+                                    const filename = `works/${Date.now()}_${i}_ozonz.${ext}`;
+                                    await ghPutBinary(filename, base64, `Upload work image: ${file.name}`);
+                                    resolve(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`);
+                                } catch (err) { reject(err); }
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                        uploadedUrls.push(rawUrl);
+                    } catch (err) {
+                        bar.style.width = '0%';
+                        label.textContent = `Error: ${err.message}`;
+                        label.style.color = '#ef4444';
+                        showToast('Image upload failed: ' + err.message);
+                        return null;
+                    }
+                }
+
+                bar.style.width = '100%';
+                label.textContent = '✓ Uploaded!';
+                setTimeout(() => progress.classList.remove('visible'), 1500);
+                return uploadedUrls;
+            }
+
+            function handleImageFiles(files) {
+                for (const file of files) {
+                    if (!file || !file.type.startsWith('image/')) { showToast(`Skipping non-image file: ${file.name}`); continue; }
+                    if (file.size > 4 * 1024 * 1024) { showToast(`Skipping large file: ${file.name} (max 4MB)`); continue; }
+                    pendingImageFiles.push(file);
+                    renderQueueItem(file, true);
+                }
+                if (pendingImageFiles.length > 0) {
+                    document.getElementById('work-image').value = pendingImageFiles.length + ' file(s) pending';
                 }
             }
 
-            status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
-        }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-xs mt-2 block'; });
-        return;
-    }
+            document.getElementById('img-file-input').addEventListener('change', (e) => {
+                if (e.target.files.length > 0) handleImageFiles(e.target.files);
+            });
 
-    if (/itch\.io/i.test(url)) {
-        const parseHtml = async html => {
-            const doc   = new DOMParser().parseFromString(html, 'text/html');
-            let title   = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
-            title       = title.replace(/\s*by\s+itch\.io$/i, '').trim();
-            const image = doc.querySelector('meta[property="og:image"]')?.content || 'brush';
-            const desc  = (doc.querySelector('meta[property="og:description"]')?.content || '').trim();
-            document.getElementById('work-name').value  = title;
-            document.getElementById('work-image').value = image;
-            document.getElementById('work-desc').value  = desc;
-            document.getElementById('work-ai-summary').value = '';
-            document.getElementById('work-tags').value  = 'ITCH.IO';
-            renderLinkRows([{ url, label: 'Play on Itch.io' }]);
+            // Paste from clipboard (Ctrl+V)
+            document.getElementById('work-modal').addEventListener('paste', (e) => {
+                const items = e.clipboardData?.items;
+                if (!items) return;
+                const files = [];
+                for (const item of items) {
+                    if (item.type.startsWith('image/')) {
+                        const file = item.getAsFile();
+                        if (file) files.push(file);
+                    }
+                }
+                if (files.length > 0) handleImageFiles(files);
+            });
 
-            const apiKey = localStorage.getItem('gemini_api_key') || '';
-            if (desc && apiKey) {
-                status.textContent = 'AI Summarizing description…';
+            window.deleteWork = function (id) {
+                const w = works.find(x => String(x.id) === String(id));
+                confirmDialog(`Delete "${w?.name || 'this work'}"? This cannot be undone.`, async () => {
+                    works = works.filter(x => String(x.id) !== String(id));
+                    const ok = await saveWorks(`Delete work: ${w?.name}`);
+                    if (ok) renderWorks();
+                });
+            };
+
+            window.moveWorkItem = async function (idx, direction) {
+                const targetIdx = idx + direction;
+                if (targetIdx < 0 || targetIdx >= works.length) return;
+
+                const temp = works[idx];
+                works[idx] = works[targetIdx];
+                works[targetIdx] = temp;
+
+                const ok = await saveWorks(`Reorder work: ${temp.name || 'item'}`);
+                if (ok) {
+                    renderWorks();
+                }
+            };
+
+            document.getElementById('work-cancel').addEventListener('click', () => {
+                document.getElementById('work-modal').classList.remove('open');
+            });
+            document.getElementById('work-modal').addEventListener('click', e => {
+                if (e.target === document.getElementById('work-modal'))
+                    document.getElementById('work-modal').classList.remove('open');
+            });
+
+            // Removed draggable logic as user requested a clean centered popup.
+
+            async function callGeminiSummary(apiKey, rawDesc) {
+                const promptText = `You are an assistant that summarizes project/game descriptions for a developer portfolio. Summarize the following raw description into two parts: 1. A clean, professional description (1-2 sentences, in English). 2. A very short, punchy tagline or summary (maximum 6-8 words, in English). Return the result as a raw JSON object with keys "description" and "tagline". Do not include markdown formatting or backticks. Description: "${rawDesc}"`;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+                if (!res.ok) throw new Error(`Gemini status ${res.status}`);
+                const data = await res.json();
+                let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                text = text.replace(/```json/g, '').replace(/```/g, '').trim();
                 try {
-                    const aiRes = await callGeminiSummary(apiKey, desc);
-                    if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
-                    if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
+                    return JSON.parse(text);
                 } catch (e) {
-                    console.warn("Gemini Autofill summary failed:", e);
+                    const descMatch = text.match(/"description"\s*:\s*"([^"]+)"/);
+                    const taglineMatch = text.match(/"tagline"\s*:\s*"([^"]+)"/);
+                    return {
+                        description: descMatch ? descMatch[1] : null,
+                        tagline: taglineMatch ? taglineMatch[1] : null
+                    };
                 }
             }
 
-            status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
-        };
-        fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r => r.text()).then(parseHtml)
-            .catch(() => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`).then(r => r.json()).then(d => parseHtml(d.contents)))
-            .catch(() => { status.textContent = 'Proxy failed. Fill manually.'; status.className = 'text-red-500 text-xs mt-2 block'; });
-        return;
-    }
-    status.textContent = 'Use a GitHub or Itch.io URL.'; status.className = 'text-red-500 text-xs mt-2 block';
-});
+            document.getElementById('autofill-btn').addEventListener('click', () => {
+                const url = document.getElementById('autofill-url').value.trim();
+                const status = document.getElementById('autofill-status');
+                if (!url) { status.textContent = 'Enter a URL first.'; status.className = 'text-red-500 text-xs mt-2 block'; return; }
 
-/* ══════════════════════════════════════════════════════
-   AI WRITE
-══════════════════════════════════════════════════════ */
-document.getElementById('ai-write-btn').addEventListener('click', () => {
-    const title  = document.getElementById('work-name').value.trim();
-    const tags   = document.getElementById('work-tags').value.trim();
-    const detail = document.getElementById('work-desc');
-    const status = document.getElementById('ai-status');
-    const apiKey = localStorage.getItem('gemini_api_key') || '';
-    if (!title)  { status.textContent = 'Enter a Work Name first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; return; }
-    if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; return; }
-    status.textContent = 'Generating…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block';
-    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `Write a professional, short, engaging description (1-2 sentences, English) for a portfolio project named "${title}" with tags "${tags}". No markdown, no quotes, just the description.` }] }] })
-    }).then(r => r.json()).then(d => {
-        const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) { detail.value = text.trim(); status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block'; }
-        else throw new Error('Invalid AI response');
-    }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
-});
+                status.textContent = 'Fetching…'; status.className = 'text-on-surface-variant text-xs mt-2 block';
 
-document.getElementById('ai-summarize-btn').addEventListener('click', () => {
-    const desc   = document.getElementById('work-desc').value.trim();
-    const summaryInput = document.getElementById('work-ai-summary');
-    const status = document.getElementById('ai-summarize-status');
-    const apiKey = localStorage.getItem('gemini_api_key') || '';
-    if (!desc)   { status.textContent = 'Enter a Description first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
-    if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
-    status.textContent = 'Summarizing…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block'; status.classList.remove('hidden');
-    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `Summarize the following description into a very short, punchy tagline or summary (maximum 6-8 words, in English). Do not use markdown, quotes, prefix or suffix. Just output the summary text itself. Description: "${desc}"` }] }] })
-    }).then(r => r.json()).then(d => {
-        const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-            summaryInput.value = text.trim().replace(/^["']|["']$/g, '');
-            status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block';
-        }
-        else throw new Error('Invalid AI response');
-    }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
-});
+                const ghMatch = url.match(/github\.com\/([^/]+)\/([^/]+)/i);
+                if (ghMatch) {
+                    const owner = ghMatch[1];
+                    let repo = ghMatch[2].split(/[#?]/)[0].replace(/\.git$/, '');
+                    Promise.all([
+                        fetch(`https://api.github.com/repos/${owner}/${repo}`).then(r => r.json()),
+                        fetch(`https://api.github.com/repos/${owner}/${repo}/contributors`).then(r => r.ok ? r.json() : []).catch(() => []),
+                    ]).then(async ([rd, cd]) => {
+                        const title = rd.name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        document.getElementById('work-name').value = title;
+                        const rawDesc = rd.description || '';
+                        document.getElementById('work-desc').value = rawDesc;
+                        document.getElementById('work-ai-summary').value = '';
+                        document.getElementById('work-image').value = 'terminal';
+                        const tags = [];
+                        if (rd.language) tags.push(rd.language.toUpperCase());
+                        tags.push('GITHUB');
+                        document.getElementById('work-tags').value = tags.join(', ');
+                        renderLinkRows([{ url: rd.html_url, label: 'GitHub Repo' }]);
 
-/* ══════════════════════════════════════════════════════
-   RENDER CONTACTS (from ozonzSettings.socials)
-══════════════════════════════════════════════════════ */
-function renderContacts() {
-    const list     = document.getElementById('contacts-list');
-    const socials  = ozonzSettings.socials || [];
-    document.getElementById('contacts-count').textContent = socials.length + ' contact' + (socials.length !== 1 ? 's' : '');
-    if (!socials.length) {
-        list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-8">No contacts yet.</p>';
-        return;
-    }
-    list.innerHTML = socials.map((c, i) => {
-        let iconEl = '';
-        if (c.iconType === 'svg')
-            iconEl = `<svg class="w-5 h-5 fill-current text-primary" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
-        else if (c.iconType === 'image')
-            iconEl = `<img src="${c.iconVal}" class="w-5 h-5 rounded-full object-cover" />`;
-        else
-            iconEl = `<span class="material-symbols-outlined text-base text-primary">${c.iconVal || 'link'}</span>`;
-        return `
+                        const apiKey = localStorage.getItem('gemini_api_key') || '';
+                        if (rawDesc && apiKey) {
+                            status.textContent = 'AI Summarizing description…';
+                            try {
+                                const aiRes = await callGeminiSummary(apiKey, rawDesc);
+                                if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
+                                if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
+                            } catch (e) {
+                                console.warn("Gemini Autofill summary failed:", e);
+                            }
+                        }
+
+                        status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
+                    }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-xs mt-2 block'; });
+                    return;
+                }
+
+                if (/itch\.io/i.test(url)) {
+                    const parseHtml = async html => {
+                        const doc = new DOMParser().parseFromString(html, 'text/html');
+                        let title = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
+                        title = title.replace(/\s*by\s+itch\.io$/i, '').trim();
+                        const image = doc.querySelector('meta[property="og:image"]')?.content || 'brush';
+                        const desc = (doc.querySelector('meta[property="og:description"]')?.content || '').trim();
+                        document.getElementById('work-name').value = title;
+                        document.getElementById('work-image').value = image;
+                        document.getElementById('work-desc').value = desc;
+                        document.getElementById('work-ai-summary').value = '';
+                        document.getElementById('work-tags').value = 'ITCH.IO';
+                        renderLinkRows([{ url, label: 'Play on Itch.io' }]);
+
+                        const apiKey = localStorage.getItem('gemini_api_key') || '';
+                        if (desc && apiKey) {
+                            status.textContent = 'AI Summarizing description…';
+                            try {
+                                const aiRes = await callGeminiSummary(apiKey, desc);
+                                if (aiRes.description) document.getElementById('work-desc').value = aiRes.description;
+                                if (aiRes.tagline) document.getElementById('work-ai-summary').value = aiRes.tagline;
+                            } catch (e) {
+                                console.warn("Gemini Autofill summary failed:", e);
+                            }
+                        }
+
+                        status.textContent = '✓ Autofill successful!'; status.className = 'text-green-500 text-xs mt-2 block';
+                    };
+                    fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).then(r => r.text()).then(parseHtml)
+                        .catch(() => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`).then(r => r.json()).then(d => parseHtml(d.contents)))
+                        .catch(() => { status.textContent = 'Proxy failed. Fill manually.'; status.className = 'text-red-500 text-xs mt-2 block'; });
+                    return;
+                }
+                status.textContent = 'Use a GitHub or Itch.io URL.'; status.className = 'text-red-500 text-xs mt-2 block';
+            });
+
+            /* ══════════════════════════════════════════════════════
+               AI WRITE
+            ══════════════════════════════════════════════════════ */
+            document.getElementById('ai-write-btn').addEventListener('click', () => {
+                const title = document.getElementById('work-name').value.trim();
+                const tags = document.getElementById('work-tags').value.trim();
+                const detail = document.getElementById('work-desc');
+                const status = document.getElementById('ai-status');
+                const apiKey = localStorage.getItem('gemini_api_key') || '';
+                if (!title) { status.textContent = 'Enter a Work Name first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; return; }
+                if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; return; }
+                status.textContent = 'Generating…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block';
+                fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `Write a professional, short, engaging description (1-2 sentences, English) for a portfolio project named "${title}" with tags "${tags}". No markdown, no quotes, just the description.` }] }] })
+                }).then(r => r.json()).then(d => {
+                    const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) { detail.value = text.trim(); status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block'; }
+                    else throw new Error('Invalid AI response');
+                }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
+            });
+
+            document.getElementById('ai-summarize-btn').addEventListener('click', () => {
+                const desc = document.getElementById('work-desc').value.trim();
+                const summaryInput = document.getElementById('work-ai-summary');
+                const status = document.getElementById('ai-summarize-status');
+                const apiKey = localStorage.getItem('gemini_api_key') || '';
+                if (!desc) { status.textContent = 'Enter a Description first.'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
+                if (!apiKey) { status.textContent = 'Set a Gemini API Key first (AI Settings).'; status.className = 'text-red-500 text-[10px] mt-1 block'; status.classList.remove('hidden'); return; }
+                status.textContent = 'Summarizing…'; status.className = 'text-on-surface-variant text-[10px] mt-1 block'; status.classList.remove('hidden');
+                fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `Summarize the following description into a very short, punchy tagline or summary (maximum 6-8 words, in English). Do not use markdown, quotes, prefix or suffix. Just output the summary text itself. Description: "${desc}"` }] }] })
+                }).then(r => r.json()).then(d => {
+                    const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        summaryInput.value = text.trim().replace(/^["']|["']$/g, '');
+                        status.textContent = '✓ Done!'; status.className = 'text-green-500 text-[10px] mt-1 block';
+                    }
+                    else throw new Error('Invalid AI response');
+                }).catch(err => { status.textContent = 'Error: ' + err.message; status.className = 'text-red-500 text-[10px] mt-1 block'; });
+            });
+
+            /* ══════════════════════════════════════════════════════
+               RENDER CONTACTS (from ozonzSettings.socials)
+            ══════════════════════════════════════════════════════ */
+            function renderContacts() {
+                const list = document.getElementById('contacts-list');
+                const socials = ozonzSettings.socials || [];
+                document.getElementById('contacts-count').textContent = socials.length + ' contact' + (socials.length !== 1 ? 's' : '');
+                if (!socials.length) {
+                    list.innerHTML = '<p class="text-on-surface-variant text-sm text-center py-8">No contacts yet.</p>';
+                    return;
+                }
+                list.innerHTML = socials.map((c, i) => {
+                    let iconEl = '';
+                    if (c.iconType === 'svg')
+                        iconEl = `<svg class="w-5 h-5 fill-current text-primary" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
+                    else if (c.iconType === 'image')
+                        iconEl = `<img src="${c.iconVal}" class="w-5 h-5 rounded-full object-cover" />`;
+                    else
+                        iconEl = `<span class="material-symbols-outlined text-base text-primary">${c.iconVal || 'link'}</span>`;
+                    return `
         <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
             <div class="w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center text-primary flex-shrink-0">
                 ${iconEl}
@@ -1683,406 +1798,406 @@ function renderContacts() {
                 </button>
             </div>
         </div>`;
-    }).join('');
-}
+                }).join('');
+            }
 
-/* ══════════════════════════════════════════════════════
-   CONTACT MODAL
-══════════════════════════════════════════════════════ */
-let pendingContactImageFile = null;
+            /* ══════════════════════════════════════════════════════
+               CONTACT MODAL
+            ══════════════════════════════════════════════════════ */
+            let pendingContactImageFile = null;
 
-window.resetContactImageZone = function resetContactImageZone() {
-    pendingContactImageFile = null;
-    const zone = document.getElementById('contact-img-drop-zone');
-    if (!zone) return;
-    zone.classList.remove('has-image');
-    zone.innerHTML = `
+            window.resetContactImageZone = function resetContactImageZone() {
+                pendingContactImageFile = null;
+                const zone = document.getElementById('contact-img-drop-zone');
+                if (!zone) return;
+                zone.classList.remove('has-image');
+                zone.innerHTML = `
         <span class="material-symbols-outlined text-primary text-3xl">add_photo_alternate</span>
         <span class="text-xs text-on-surface-variant font-bold uppercase tracking-wider block">Click or drag image</span>
         <span class="text-[10px] text-on-surface-variant block">(JPG, PNG, GIF, WebP · max 4 MB)</span>
         <span class="remove-img">✕ Remove</span>
     `;
-    document.getElementById('contact-img-file-input').value = '';
-    document.getElementById('contact-img-upload-progress').classList.remove('visible');
-};
+                document.getElementById('contact-img-file-input').value = '';
+                document.getElementById('contact-img-upload-progress').classList.remove('visible');
+            };
 
-function setContactImagePreviewUrl(url) {
-    const zone = document.getElementById('contact-img-drop-zone');
-    if (!zone) return;
-    zone.classList.add('has-image');
-    zone.innerHTML = `
+            function setContactImagePreviewUrl(url) {
+                const zone = document.getElementById('contact-img-drop-zone');
+                if (!zone) return;
+                zone.classList.add('has-image');
+                zone.innerHTML = `
         <img class="preview" src="${url}" alt="preview" />
         <span class="remove-img">✕ Remove</span>
     `;
-}
-
-function setContactImagePreviewBlob(file) {
-    const url = URL.createObjectURL(file);
-    setContactImagePreviewUrl(url);
-}
-
-async function uploadContactImageToGitHub(file) {
-    const progress = document.getElementById('contact-img-upload-progress');
-    const bar      = document.getElementById('contact-img-progress-bar');
-    const label    = document.getElementById('contact-img-progress-label');
-    progress.classList.add('visible');
-    bar.style.width = '0%';
-    label.textContent = 'Reading file…';
-    label.style.color = '';
-
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            try {
-                bar.style.width = '30%';
-                label.textContent = 'Uploading to GitHub…';
-                const base64   = ev.target.result.split(',')[1];
-                const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
-                const filename = `works/contact_${Date.now()}_ozonz.${ext}`;
-                bar.style.width = '60%';
-                await ghPutBinary(filename, base64, `Upload contact image: ${file.name}`);
-                const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
-                bar.style.width = '100%';
-                label.textContent = '✓ Uploaded!';
-                setTimeout(() => progress.classList.remove('visible'), 1500);
-                resolve(rawUrl);
-            } catch (err) {
-                bar.style.width = '0%';
-                label.textContent = `Error: ${err.message}`;
-                label.style.color = '#ef4444';
-                showToast('Image upload failed: ' + err.message);
-                resolve(null);
             }
-        };
-        reader.readAsDataURL(file);
-    });
-}
 
-function handleContactImageFile(file) {
-    if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
-    if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
-    pendingContactImageFile = file;
-    setContactImagePreviewBlob(file);
-    document.getElementById('contact-icon-val').value = '';
-}
+            function setContactImagePreviewBlob(file) {
+                const url = URL.createObjectURL(file);
+                setContactImagePreviewUrl(url);
+            }
 
-function updateContactIconLabel() {
-    const type  = document.getElementById('contact-icon-type').value;
-    const label = document.getElementById('contact-icon-label');
-    const input = document.getElementById('contact-icon-val');
-    const uploadWrap = document.getElementById('contact-img-upload-wrap');
-    
-    if (type === 'material') {
-        label.textContent = 'Material Symbol Name (e.g. terminal)';
-        input.placeholder = 'terminal';
-        input.required = true;
-        uploadWrap.classList.add('hidden');
-    }
-    else if (type === 'svg') {
-        label.textContent = 'SVG Path D-Attribute';
-        input.placeholder = 'M12 0c-6...';
-        input.required = true;
-        uploadWrap.classList.add('hidden');
-    }
-    else {
-        label.textContent = 'Or enter Image URL';
-        input.placeholder = 'https://...';
-        input.required = false;
-        uploadWrap.classList.remove('hidden');
-    }
-}
-document.getElementById('contact-icon-type').addEventListener('change', updateContactIconLabel);
+            async function uploadContactImageToGitHub(file) {
+                const progress = document.getElementById('contact-img-upload-progress');
+                const bar = document.getElementById('contact-img-progress-bar');
+                const label = document.getElementById('contact-img-progress-label');
+                progress.classList.add('visible');
+                bar.style.width = '0%';
+                label.textContent = 'Reading file…';
+                label.style.color = '';
 
-window.openContactModal = function(idx) {
-    const c = idx != null ? (ozonzSettings.socials || [])[idx] : null;
-    document.getElementById('contact-modal-title').textContent = c ? 'Edit Contact' : 'Add Contact Channel';
-    document.getElementById('contact-edit-id').value = idx != null ? idx : '';
-    document.getElementById('contact-name').value      = c?.name      || '';
-    document.getElementById('contact-link').value      = c?.link || c?.url || '';
-    document.getElementById('contact-icon-type').value = c?.iconType  || 'material';
-    document.getElementById('contact-icon-val').value  = c?.iconVal   || '';
-    updateContactIconLabel();
-    
-    resetContactImageZone();
-    if (c?.iconType === 'image' && c?.iconVal && (c.iconVal.startsWith('http') || c.iconVal.includes('/'))) {
-        setContactImagePreviewUrl(c.iconVal);
-    }
-    
-    document.getElementById('contact-modal').classList.add('open');
-};
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        try {
+                            bar.style.width = '30%';
+                            label.textContent = 'Uploading to GitHub…';
+                            const base64 = ev.target.result.split(',')[1];
+                            const ext = file.name.split('.').pop().toLowerCase() || 'jpg';
+                            const filename = `works/contact_${Date.now()}_ozonz.${ext}`;
+                            bar.style.width = '60%';
+                            await ghPutBinary(filename, base64, `Upload contact image: ${file.name}`);
+                            const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filename}`;
+                            bar.style.width = '100%';
+                            label.textContent = '✓ Uploaded!';
+                            setTimeout(() => progress.classList.remove('visible'), 1500);
+                            resolve(rawUrl);
+                        } catch (err) {
+                            bar.style.width = '0%';
+                            label.textContent = `Error: ${err.message}`;
+                            label.style.color = '#ef4444';
+                            showToast('Image upload failed: ' + err.message);
+                            resolve(null);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
 
-document.getElementById('contact-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (pendingContactImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
-    
-    if (!ozonzSettings.socials) ozonzSettings.socials = [];
-    const idx  = document.getElementById('contact-edit-id').value;
-    
-    let iconVal = document.getElementById('contact-icon-val').value.trim();
-    if (document.getElementById('contact-icon-type').value === 'image' && pendingContactImageFile) {
-        const uploaded = await uploadContactImageToGitHub(pendingContactImageFile);
-        if (uploaded) {
-            iconVal = uploaded;
-            document.getElementById('contact-icon-val').value = iconVal;
-        } else {
-            return; // upload failed, abort
-        }
-    }
+            function handleContactImageFile(file) {
+                if (!file || !file.type.startsWith('image/')) { showToast('Please select an image file.'); return; }
+                if (file.size > 4 * 1024 * 1024) { showToast('Image too large — max 4 MB.'); return; }
+                pendingContactImageFile = file;
+                setContactImagePreviewBlob(file);
+                document.getElementById('contact-icon-val').value = '';
+            }
 
-    const entry = {
-        name:     document.getElementById('contact-name').value.trim(),
-        link:     document.getElementById('contact-link').value.trim(),
-        iconType: document.getElementById('contact-icon-type').value,
-        iconVal:  iconVal,
-    };
-    const i = idx !== '' ? parseInt(idx) : -1;
-    if (i >= 0) ozonzSettings.socials[i] = entry;
-    else        ozonzSettings.socials.push(entry);
+            function updateContactIconLabel() {
+                const type = document.getElementById('contact-icon-type').value;
+                const label = document.getElementById('contact-icon-label');
+                const input = document.getElementById('contact-icon-val');
+                const uploadWrap = document.getElementById('contact-img-upload-wrap');
 
-    const ok = await saveSettings(i >= 0 ? `Update contact: ${entry.name}` : `Add contact: ${entry.name}`);
-    if (ok) {
-        document.getElementById('contact-modal').classList.remove('open');
-        renderContacts();
-    }
-});
+                if (type === 'material') {
+                    label.textContent = 'Material Symbol Name (e.g. terminal)';
+                    input.placeholder = 'terminal';
+                    input.required = true;
+                    uploadWrap.classList.add('hidden');
+                }
+                else if (type === 'svg') {
+                    label.textContent = 'SVG Path D-Attribute';
+                    input.placeholder = 'M12 0c-6...';
+                    input.required = true;
+                    uploadWrap.classList.add('hidden');
+                }
+                else {
+                    label.textContent = 'Or enter Image URL';
+                    input.placeholder = 'https://...';
+                    input.required = false;
+                    uploadWrap.classList.remove('hidden');
+                }
+            }
+            document.getElementById('contact-icon-type').addEventListener('change', updateContactIconLabel);
 
-// Contact image drop zone events wiring
-document.getElementById('contact-img-drop-zone').addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
-        e.stopPropagation();
-        window.resetContactImageZone();
-        return;
-    }
-    document.getElementById('contact-img-file-input').click();
-});
-document.getElementById('contact-img-file-input').addEventListener('change', (e) => {
-    if (e.target.files[0]) handleContactImageFile(e.target.files[0]);
-});
+            window.openContactModal = function (idx) {
+                const c = idx != null ? (ozonzSettings.socials || [])[idx] : null;
+                document.getElementById('contact-modal-title').textContent = c ? 'Edit Contact' : 'Add Contact Channel';
+                document.getElementById('contact-edit-id').value = idx != null ? idx : '';
+                document.getElementById('contact-name').value = c?.name || '';
+                document.getElementById('contact-link').value = c?.link || c?.url || '';
+                document.getElementById('contact-icon-type').value = c?.iconType || 'material';
+                document.getElementById('contact-icon-val').value = c?.iconVal || '';
+                updateContactIconLabel();
 
-const contactDropZone = document.getElementById('contact-img-drop-zone');
-contactDropZone.addEventListener('dragover', (e) => { e.preventDefault(); contactDropZone.classList.add('drag-over'); });
-contactDropZone.addEventListener('dragleave', ()   => { contactDropZone.classList.remove('drag-over'); });
-contactDropZone.addEventListener('drop', (e) => {
-    e.preventDefault(); contactDropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) handleContactImageFile(file);
-});
+                resetContactImageZone();
+                if (c?.iconType === 'image' && c?.iconVal && (c.iconVal.startsWith('http') || c.iconVal.includes('/'))) {
+                    setContactImagePreviewUrl(c.iconVal);
+                }
 
-// Paste from clipboard to contact modal (Ctrl+V)
-document.getElementById('contact-modal').addEventListener('paste', (e) => {
-    if (document.getElementById('contact-icon-type').value !== 'image') return;
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-        if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) { handleContactImageFile(file); break; }
-        }
-    }
-});
+                document.getElementById('contact-modal').classList.add('open');
+            };
 
-window.deleteContact = function(idx) {
-    const c = (ozonzSettings.socials || [])[idx];
-    confirmDialog(`Delete "${c?.name || 'this contact'}"?`, async () => {
-        ozonzSettings.socials.splice(idx, 1);
-        const ok = await saveSettings(`Delete contact: ${c?.name}`);
-        if (ok) renderContacts();
-    });
-};
+            document.getElementById('contact-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (pendingContactImageFile && !ghToken) { showToast('GitHub token is required to upload images!'); return; }
 
-window.moveContactItem = async function(idx, direction) {
-    const socials = ozonzSettings.socials || [];
-    const targetIdx = idx + direction;
-    if (targetIdx < 0 || targetIdx >= socials.length) return;
-    
-    const temp = socials[idx];
-    socials[idx] = socials[targetIdx];
-    socials[targetIdx] = temp;
-    
-    const ok = await saveSettings(`Reorder contact: ${temp.name || 'item'}`);
-    if (ok) {
-        renderContacts();
-    }
-};
+                if (!ozonzSettings.socials) ozonzSettings.socials = [];
+                const idx = document.getElementById('contact-edit-id').value;
 
-window.renderTeamCheckboxList = function() {
-    const wrap = document.getElementById('work-team-wrap');
-    if (!wrap) return;
-    if (!aritsiaTeams || aritsiaTeams.length === 0) {
-        wrap.innerHTML = '<p class="text-xs text-on-surface-variant text-center">No team members available. Add them in ARITSIA Admin.</p>';
-        return;
-    }
-    wrap.innerHTML = aritsiaTeams.map(tm => {
-        const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
-        const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : `<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">${tm.name.charAt(0).toUpperCase()}</div>`);
-        return `
+                let iconVal = document.getElementById('contact-icon-val').value.trim();
+                if (document.getElementById('contact-icon-type').value === 'image' && pendingContactImageFile) {
+                    const uploaded = await uploadContactImageToGitHub(pendingContactImageFile);
+                    if (uploaded) {
+                        iconVal = uploaded;
+                        document.getElementById('contact-icon-val').value = iconVal;
+                    } else {
+                        return; // upload failed, abort
+                    }
+                }
+
+                const entry = {
+                    name: document.getElementById('contact-name').value.trim(),
+                    link: document.getElementById('contact-link').value.trim(),
+                    iconType: document.getElementById('contact-icon-type').value,
+                    iconVal: iconVal,
+                };
+                const i = idx !== '' ? parseInt(idx) : -1;
+                if (i >= 0) ozonzSettings.socials[i] = entry;
+                else ozonzSettings.socials.push(entry);
+
+                const ok = await saveSettings(i >= 0 ? `Update contact: ${entry.name}` : `Add contact: ${entry.name}`);
+                if (ok) {
+                    document.getElementById('contact-modal').classList.remove('open');
+                    renderContacts();
+                }
+            });
+
+            // Contact image drop zone events wiring
+            document.getElementById('contact-img-drop-zone').addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-img') || e.target.closest('.remove-img')) {
+                    e.stopPropagation();
+                    window.resetContactImageZone();
+                    return;
+                }
+                document.getElementById('contact-img-file-input').click();
+            });
+            document.getElementById('contact-img-file-input').addEventListener('change', (e) => {
+                if (e.target.files[0]) handleContactImageFile(e.target.files[0]);
+            });
+
+            const contactDropZone = document.getElementById('contact-img-drop-zone');
+            contactDropZone.addEventListener('dragover', (e) => { e.preventDefault(); contactDropZone.classList.add('drag-over'); });
+            contactDropZone.addEventListener('dragleave', () => { contactDropZone.classList.remove('drag-over'); });
+            contactDropZone.addEventListener('drop', (e) => {
+                e.preventDefault(); contactDropZone.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file) handleContactImageFile(file);
+            });
+
+            // Paste from clipboard to contact modal (Ctrl+V)
+            document.getElementById('contact-modal').addEventListener('paste', (e) => {
+                if (document.getElementById('contact-icon-type').value !== 'image') return;
+                const items = e.clipboardData?.items;
+                if (!items) return;
+                for (const item of items) {
+                    if (item.type.startsWith('image/')) {
+                        const file = item.getAsFile();
+                        if (file) { handleContactImageFile(file); break; }
+                    }
+                }
+            });
+
+            window.deleteContact = function (idx) {
+                const c = (ozonzSettings.socials || [])[idx];
+                confirmDialog(`Delete "${c?.name || 'this contact'}"?`, async () => {
+                    ozonzSettings.socials.splice(idx, 1);
+                    const ok = await saveSettings(`Delete contact: ${c?.name}`);
+                    if (ok) renderContacts();
+                });
+            };
+
+            window.moveContactItem = async function (idx, direction) {
+                const socials = ozonzSettings.socials || [];
+                const targetIdx = idx + direction;
+                if (targetIdx < 0 || targetIdx >= socials.length) return;
+
+                const temp = socials[idx];
+                socials[idx] = socials[targetIdx];
+                socials[targetIdx] = temp;
+
+                const ok = await saveSettings(`Reorder contact: ${temp.name || 'item'}`);
+                if (ok) {
+                    renderContacts();
+                }
+            };
+
+            window.renderTeamCheckboxList = function () {
+                const wrap = document.getElementById('work-team-wrap');
+                if (!wrap) return;
+                if (!aritsiaTeams || aritsiaTeams.length === 0) {
+                    wrap.innerHTML = '<p class="text-xs text-on-surface-variant text-center">No team members available. Add them in ARITSIA Admin.</p>';
+                    return;
+                }
+                wrap.innerHTML = aritsiaTeams.map(tm => {
+                    const checked = selectedTeams.includes(tm.id) ? 'checked' : '';
+                    const iconHtml = tm.iconId ? `<img src="${tm.iconId}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : (tm.image ? `<img src="${tm.image}" class="w-5 h-5 rounded-full object-cover border border-outline/30">` : `<div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">${tm.name.charAt(0).toUpperCase()}</div>`);
+                    return `
         <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-variant/30 transition-colors">
             <input type="checkbox" value="${tm.id}" ${checked} onchange="toggleTeamSelection('${tm.id}', this.checked)" class="rounded text-primary focus:ring-primary bg-surface-container border-outline/30">
             ${iconHtml}
             <span class="text-sm text-on-surface">${tm.name}</span>
         </label>
         `;
-    }).join('');
-};
+                }).join('');
+            };
 
-window.toggleTeamSelection = function(id, isChecked) {
-    if (isChecked) {
-        if (!selectedTeams.includes(id)) selectedTeams.push(id);
-    } else {
-        selectedTeams = selectedTeams.filter(t => t !== id);
-    }
-};
+            window.toggleTeamSelection = function (id, isChecked) {
+                if (isChecked) {
+                    if (!selectedTeams.includes(id)) selectedTeams.push(id);
+                } else {
+                    selectedTeams = selectedTeams.filter(t => t !== id);
+                }
+            };
 
-document.getElementById('contact-cancel').addEventListener('click', () => {
-    document.getElementById('contact-modal').classList.remove('open');
-});
-document.getElementById('contact-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('contact-modal'))
-        document.getElementById('contact-modal').classList.remove('open');
-});
+            document.getElementById('contact-cancel').addEventListener('click', () => {
+                document.getElementById('contact-modal').classList.remove('open');
+            });
+            document.getElementById('contact-modal').addEventListener('click', e => {
+                if (e.target === document.getElementById('contact-modal'))
+                    document.getElementById('contact-modal').classList.remove('open');
+            });
 
-/* ══════════════════════════════════════════════════════
-   TOKEN MANAGEMENT
-══════════════════════════════════════════════════════ */
-function applyToken(token) {
-    ghToken = token.trim();
-    document.getElementById('gh-token-input').value = ghToken;
-    document.getElementById('token-status').textContent = ghToken ? '✓ Token set' : 'No token';
-    document.getElementById('token-status').className = ghToken
-        ? 'text-xs text-green-500' : 'text-xs text-on-surface-variant';
-    if (ghToken) sessionStorage.setItem('ghToken', ghToken);
-    else         sessionStorage.removeItem('ghToken');
-}
+            /* ══════════════════════════════════════════════════════
+               TOKEN MANAGEMENT
+            ══════════════════════════════════════════════════════ */
+            function applyToken(token) {
+                ghToken = token.trim();
+                document.getElementById('gh-token-input').value = ghToken;
+                document.getElementById('token-status').textContent = ghToken ? '✓ Token set' : 'No token';
+                document.getElementById('token-status').className = ghToken
+                    ? 'text-xs text-green-500' : 'text-xs text-on-surface-variant';
+                if (ghToken) sessionStorage.setItem('ghToken', ghToken);
+                else sessionStorage.removeItem('ghToken');
+            }
 
-document.getElementById('gh-token-save').addEventListener('click', () => {
-    applyToken(document.getElementById('gh-token-input').value);
-    showToast('Token updated');
-    loadData();
-});
+            document.getElementById('gh-token-save').addEventListener('click', () => {
+                applyToken(document.getElementById('gh-token-input').value);
+                showToast('Token updated');
+                loadData();
+            });
 
-/* ══════════════════════════════════════════════════════
-   GEMINI KEY
-══════════════════════════════════════════════════════ */
-document.getElementById('gemini-key-input').value = localStorage.getItem('gemini_api_key') || '';
-if (typeof CONFIG !== 'undefined' && CONFIG.GEMINI_API_KEY && !localStorage.getItem('gemini_api_key')) {
-    localStorage.setItem('gemini_api_key', CONFIG.GEMINI_API_KEY);
-    document.getElementById('gemini-key-input').value = CONFIG.GEMINI_API_KEY;
-}
-document.getElementById('gemini-save-btn').addEventListener('click', () => {
-    localStorage.setItem('gemini_api_key', document.getElementById('gemini-key-input').value.trim());
-    showToast('Gemini API Key saved');
-    document.getElementById('gemini-save-btn').textContent = '✓ Saved!';
-    setTimeout(() => document.getElementById('gemini-save-btn').textContent = 'Save Key', 1500);
-});
+            /* ══════════════════════════════════════════════════════
+               GEMINI KEY
+            ══════════════════════════════════════════════════════ */
+            document.getElementById('gemini-key-input').value = localStorage.getItem('gemini_api_key') || '';
+            if (typeof CONFIG !== 'undefined' && CONFIG.GEMINI_API_KEY && !localStorage.getItem('gemini_api_key')) {
+                localStorage.setItem('gemini_api_key', CONFIG.GEMINI_API_KEY);
+                document.getElementById('gemini-key-input').value = CONFIG.GEMINI_API_KEY;
+            }
+            document.getElementById('gemini-save-btn').addEventListener('click', () => {
+                localStorage.setItem('gemini_api_key', document.getElementById('gemini-key-input').value.trim());
+                showToast('Gemini API Key saved');
+                document.getElementById('gemini-save-btn').textContent = '✓ Saved!';
+                setTimeout(() => document.getElementById('gemini-save-btn').textContent = 'Save Key', 1500);
+            });
 
 
 
-/* ══════════════════════════════════════════════════════
-   LOGIN / LOGOUT
-══════════════════════════════════════════════════════ */
-function attemptLogin() {
-    const pin   = document.getElementById('login-input').value;
-    const token = document.getElementById('login-gh-token').value.trim();
-    if (pin !== PASSCODE) {
-        document.getElementById('login-error').classList.remove('hidden');
-        document.getElementById('login-input').value = '';
-        setTimeout(() => document.getElementById('login-error').classList.add('hidden'), 2500);
-        return;
-    }
-    // Apply token (even if empty — user can set later)
-    applyToken(token || sessionStorage.getItem('ghToken') || '');
+            /* ══════════════════════════════════════════════════════
+               LOGIN / LOGOUT
+            ══════════════════════════════════════════════════════ */
+            function attemptLogin() {
+                const pin = document.getElementById('login-input').value;
+                const token = document.getElementById('login-gh-token').value.trim();
+                if (pin !== PASSCODE) {
+                    document.getElementById('login-error').classList.remove('hidden');
+                    document.getElementById('login-input').value = '';
+                    setTimeout(() => document.getElementById('login-error').classList.add('hidden'), 2500);
+                    return;
+                }
+                // Apply token (even if empty — user can set later)
+                applyToken(token || sessionStorage.getItem('ghToken') || '');
 
-    document.getElementById('login-screen').style.display  = 'none';
-    document.getElementById('admin-main').classList.remove('hidden');
-    loadData();
-}
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-main').classList.remove('hidden');
+                loadData();
+            }
 
-document.getElementById('login-btn').addEventListener('click', attemptLogin);
-document.getElementById('login-input').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+            document.getElementById('login-btn').addEventListener('click', attemptLogin);
+            document.getElementById('login-input').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
 
-document.getElementById('logout-btn').addEventListener('click', () => {
-    document.getElementById('admin-main').classList.add('hidden');
-    document.getElementById('login-screen').style.display = '';
-    document.getElementById('login-input').value           = '';
-    document.getElementById('login-gh-token').value        = '';
-    ghToken = '';
-});
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                document.getElementById('admin-main').classList.add('hidden');
+                document.getElementById('login-screen').style.display = '';
+                document.getElementById('login-input').value = '';
+                document.getElementById('login-gh-token').value = '';
+                ghToken = '';
+            });
 
-// Auto-restore session
-(function restoreSession() {
-    const savedToken = sessionStorage.getItem('ghToken');
-    if (savedToken) document.getElementById('login-gh-token').value = savedToken;
-})();
+            // Auto-restore session
+            (function restoreSession() {
+                const savedToken = sessionStorage.getItem('ghToken');
+                if (savedToken) document.getElementById('login-gh-token').value = savedToken;
+            })();
 
-/* ══════════════════════════════════════════════════════
-   UI HELPERS
-══════════════════════════════════════════════════════ */
-function setBadge(ok, msg) {
-    const b = document.getElementById('gh-status-badge');
-    if (ok) {
-        b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Database Connected`;
-        b.className  = 'inline-flex items-center gap-1.5 text-label-md text-green-500 bg-green-500/10 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30';
-    } else {
-        b.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> ${msg || 'Disconnected'}`;
-        b.className  = 'inline-flex items-center gap-1.5 text-label-md text-red-500 bg-red-500/10 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30';
-    }
-}
+            /* ══════════════════════════════════════════════════════
+               UI HELPERS
+            ══════════════════════════════════════════════════════ */
+            function setBadge(ok, msg) {
+                const b = document.getElementById('gh-status-badge');
+                if (ok) {
+                    b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Database Connected`;
+                    b.className = 'inline-flex items-center gap-1.5 text-label-md text-green-500 bg-green-500/10 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30';
+                } else {
+                    b.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> ${msg || 'Disconnected'}`;
+                    b.className = 'inline-flex items-center gap-1.5 text-label-md text-red-500 bg-red-500/10 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30';
+                }
+            }
 
-function showLoading(msg) {
-    const ov = document.getElementById('loading-overlay');
-    document.getElementById('loading-msg').textContent = msg || 'Loading…';
-    ov.classList.remove('hidden');
-}
-function hideLoading() {
-    document.getElementById('loading-overlay').classList.add('hidden');
-}
+            function showLoading(msg) {
+                const ov = document.getElementById('loading-overlay');
+                document.getElementById('loading-msg').textContent = msg || 'Loading…';
+                ov.classList.remove('hidden');
+            }
+            function hideLoading() {
+                document.getElementById('loading-overlay').classList.add('hidden');
+            }
 
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-}
+            function showToast(msg) {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 2800);
+            }
 
-function confirmDialog(msg, cb) {
-    document.getElementById('confirm-msg').textContent = msg;
-    confirmCb = cb;
-    document.getElementById('confirm-modal').classList.add('open');
-}
-document.getElementById('confirm-yes').addEventListener('click', () => {
-    document.getElementById('confirm-modal').classList.remove('open');
-    if (confirmCb) confirmCb();
-    confirmCb = null;
-});
-document.getElementById('confirm-no').addEventListener('click', () => {
-    document.getElementById('confirm-modal').classList.remove('open');
-    confirmCb = null;
-});
+            function confirmDialog(msg, cb) {
+                document.getElementById('confirm-msg').textContent = msg;
+                confirmCb = cb;
+                document.getElementById('confirm-modal').classList.add('open');
+            }
+            document.getElementById('confirm-yes').addEventListener('click', () => {
+                document.getElementById('confirm-modal').classList.remove('open');
+                if (confirmCb) confirmCb();
+                confirmCb = null;
+            });
+            document.getElementById('confirm-no').addEventListener('click', () => {
+                document.getElementById('confirm-modal').classList.remove('open');
+                confirmCb = null;
+            });
 
-window.toggleSection = function(header) {
-    const body = header.closest('.glass').querySelector('.grid, .collapsible-body');
-    const icon = header.querySelector('.toggle-icon');
-    if (!body) return;
-    body.classList.toggle('hidden');
-    if (icon) icon.textContent = body.classList.contains('hidden') ? 'expand_more' : 'expand_less';
-};
+            window.toggleSection = function (header) {
+                const body = header.closest('.glass').querySelector('.grid, .collapsible-body');
+                const icon = header.querySelector('.toggle-icon');
+                if (!body) return;
+                body.classList.toggle('hidden');
+                if (icon) icon.textContent = body.classList.contains('hidden') ? 'expand_more' : 'expand_less';
+            };
 
-/* ══════════════════════════════════════════════════════
-   BUTTONS WIRING
-══════════════════════════════════════════════════════ */
-document.getElementById('add-work-btn').addEventListener('click',    () => openWorkModal(null));
-document.getElementById('add-contact-btn').addEventListener('click', () => openContactModal(null));
+            /* ══════════════════════════════════════════════════════
+               BUTTONS WIRING
+            ══════════════════════════════════════════════════════ */
+            document.getElementById('add-work-btn').addEventListener('click', () => openWorkModal(null));
+            document.getElementById('add-contact-btn').addEventListener('click', () => openContactModal(null));
 
-/* ══════════════════════════════════════════════════════
-   WEBGL DOT-GRID BACKGROUND
-══════════════════════════════════════════════════════ */
-(function initBG() {
-    const canvas = document.getElementById('bg-canvas');
-    if (!canvas) return;
-    const gl = canvas.getContext('webgl');
-    if (!gl) return;
-    const vert = `attribute vec2 a_p; varying vec2 v_t; void main(){ v_t=a_p*.5+.5; v_t.y=1.-v_t.y; gl_Position=vec4(a_p,0,1); }`;
-    const frag = `precision highp float;
+            /* ══════════════════════════════════════════════════════
+               WEBGL DOT-GRID BACKGROUND
+            ══════════════════════════════════════════════════════ */
+            (function initBG() {
+                const canvas = document.getElementById('bg-canvas');
+                if (!canvas) return;
+                const gl = canvas.getContext('webgl');
+                if (!gl) return;
+                const vert = `attribute vec2 a_p; varying vec2 v_t; void main(){ v_t=a_p*.5+.5; v_t.y=1.-v_t.y; gl_Position=vec4(a_p,0,1); }`;
+                const frag = `precision highp float;
         uniform vec2 u_r,u_m; uniform float u_s,u_d; varying vec2 v_t;
         void main(){
             vec2 px=v_t*u_r;
@@ -2097,55 +2212,56 @@ document.getElementById('add-contact-btn').addEventListener('click', () => openC
             vec3 c=bg+mix(dL,dH,spot)*br*dot;
             gl_FragColor=vec4(c,1.);
         }`;
-    function mkShader(type, src) {
-        const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;
-    }
-    const prog=gl.createProgram();
-    gl.attachShader(prog,mkShader(gl.VERTEX_SHADER,vert));
-    gl.attachShader(prog,mkShader(gl.FRAGMENT_SHADER,frag));
-    gl.linkProgram(prog);
-    const buf=gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-    const pL=gl.getAttribLocation(prog,'a_p');
-    const rL=gl.getUniformLocation(prog,'u_r'),mL=gl.getUniformLocation(prog,'u_m'),sL=gl.getUniformLocation(prog,'u_s'),dL=gl.getUniformLocation(prog,'u_d');
-    const mouse={x:.5,y:.5},tgt={x:.5,y:.5};let spot=0,ts=0,pin=false,dT=document.documentElement.classList.contains('dark')?1:0;
-    function onMv(e){tgt.x=e.clientX/innerWidth;tgt.y=e.clientY/innerHeight;ts=1;pin=true;}
-    document.addEventListener('mousemove',onMv,{passive:true});
-    document.addEventListener('mouseleave',()=>{pin=false;ts=0;});
-    document.addEventListener('touchmove',e=>{const t=e.touches[0];if(t)onMv({clientX:t.clientX,clientY:t.clientY});},{passive:true});
-    function render(){
-        canvas.width=innerWidth;canvas.height=innerHeight;
-        gl.viewport(0,0,canvas.width,canvas.height);
-        const l=pin?.14:.06;mouse.x+=(tgt.x-mouse.x)*l;mouse.y+=(tgt.y-mouse.y)*l;
-        spot+=(ts-spot)*.12;
-        const id=document.documentElement.classList.contains('dark')?1:0;
-        dT+=(id-dT)*.1;
-        gl.useProgram(prog);gl.enableVertexAttribArray(pL);
-        gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.vertexAttribPointer(pL,2,gl.FLOAT,false,0,0);
-        gl.uniform2f(rL,canvas.width,canvas.height);gl.uniform2f(mL,mouse.x,mouse.y);
-        gl.uniform1f(sL,spot);gl.uniform1f(dL,dT);
-        gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
-})();
+                function mkShader(type, src) {
+                    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s;
+                }
+                const prog = gl.createProgram();
+                gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, vert));
+                gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, frag));
+                gl.linkProgram(prog);
+                const buf = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+                const pL = gl.getAttribLocation(prog, 'a_p');
+                const rL = gl.getUniformLocation(prog, 'u_r'), mL = gl.getUniformLocation(prog, 'u_m'), sL = gl.getUniformLocation(prog, 'u_s'), dL = gl.getUniformLocation(prog, 'u_d');
+                const mouse = { x: .5, y: .5 }, tgt = { x: .5, y: .5 }; let spot = 0, ts = 0, pin = false, dT = document.documentElement.classList.contains('dark') ? 1 : 0;
+                function onMv(e) { tgt.x = e.clientX / innerWidth; tgt.y = e.clientY / innerHeight; ts = 1; pin = true; }
+                document.addEventListener('mousemove', onMv, { passive: true });
+                document.addEventListener('mouseleave', () => { pin = false; ts = 0; });
+                document.addEventListener('touchmove', e => { const t = e.touches[0]; if (t) onMv({ clientX: t.clientX, clientY: t.clientY }); }, { passive: true });
+                function render() {
+                    canvas.width = innerWidth; canvas.height = innerHeight;
+                    gl.viewport(0, 0, canvas.width, canvas.height);
+                    const l = pin ? .14 : .06; mouse.x += (tgt.x - mouse.x) * l; mouse.y += (tgt.y - mouse.y) * l;
+                    spot += (ts - spot) * .12;
+                    const id = document.documentElement.classList.contains('dark') ? 1 : 0;
+                    dT += (id - dT) * .1;
+                    gl.useProgram(prog); gl.enableVertexAttribArray(pL);
+                    gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.vertexAttribPointer(pL, 2, gl.FLOAT, false, 0, 0);
+                    gl.uniform2f(rL, canvas.width, canvas.height); gl.uniform2f(mL, mouse.x, mouse.y);
+                    gl.uniform1f(sL, spot); gl.uniform1f(dL, dT);
+                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); requestAnimationFrame(render);
+                }
+                requestAnimationFrame(render);
+            })();
 
-/* ══════════════════════════════════════════════════════
-   THEME TOGGLE
-══════════════════════════════════════════════════════ */
-(function initTheme() {
-    const btn  = document.getElementById('theme-toggle');
-    const icon = document.getElementById('theme-icon');
-    if (icon) icon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
-    if (btn) btn.addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        const d = document.documentElement.classList.contains('dark');
-        localStorage.setItem('theme', d ? 'dark' : 'light');
-        if (icon) icon.textContent = d ? 'light_mode' : 'dark_mode';
-    });
-})();
+            /* ══════════════════════════════════════════════════════
+               THEME TOGGLE
+            ══════════════════════════════════════════════════════ */
+            (function initTheme() {
+                const btn = document.getElementById('theme-toggle');
+                const icon = document.getElementById('theme-icon');
+                if (icon) icon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+                if (btn) btn.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    const d = document.documentElement.classList.contains('dark');
+                    localStorage.setItem('theme', d ? 'dark' : 'light');
+                    if (icon) icon.textContent = d ? 'light_mode' : 'dark_mode';
+                });
+            })();
 
-})();
-</script>
+        })();
+    </script>
 </body>
+
 </html>
