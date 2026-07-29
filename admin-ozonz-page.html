@@ -824,7 +824,7 @@ function ensureItchContact(socials) {
 ══════════════════════════════════════════════════════ */
 function ghHeaders() {
     return {
-        Authorization:  `token ${ghToken}`,
+        Authorization:  `Bearer ${ghToken}`,
         Accept:         'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
     };
