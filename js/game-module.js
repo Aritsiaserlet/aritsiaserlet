@@ -1,4 +1,4 @@
-import { db, getCurrentUser, onUserChange, loginWithGoogle, logout, saveUserSettings } from './authManager.js';
+import { db, getCurrentUser, onUserChange, loginWithGoogle, logout, saveUserSettings, incrementPageView } from './authManager.js';
   import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
   
   window.gameAuthManager = { login: loginWithGoogle, logout: logout, getCurrentUser: getCurrentUser };
@@ -99,6 +99,13 @@ import { db, getCurrentUser, onUserChange, loginWithGoogle, logout, saveUserSett
     }
   };
 
+  // Track game page views
+  if (!sessionStorage.getItem('visited_game')) {
+    incrementPageView('game_page');
+    sessionStorage.setItem('visited_game', 'true');
+  }
+
+  // --- Audio Integrations ---
   import { startBGM, stopBGM, toggleBGM, setVolumes, sfxHit, sfxScore, sfxCombo, sfxBoost, sfxMiss, sfxGameOver, sfxDive, loadSoundAssignments, toggleMute, updateGameSoundBtn, startLobbyBGM } from './audioManager.js';
   
   // Read volume settings from localStorage on load

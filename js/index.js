@@ -172,7 +172,15 @@ function applySettings() {
 
   // Render Filter Tabs
   const mainTabs = document.getElementById('mainTabs');
-  mainTabs.innerHTML = `<span class="filter-label">Category:</span><button class="tab active" data-cat="all" onclick="setMainCat('all',this)">All</button>`;
+  
+  let allIconUrl = '';
+  if(settings.allCategoryIconId && settings.icons) {
+    const allIc = settings.icons.find(x => x.id === settings.allCategoryIconId);
+    if(allIc) allIconUrl = allIc.url;
+  }
+  const allIconHtml = allIconUrl ? `<img src="${allIconUrl}" class="tab-icon" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
+  
+  mainTabs.innerHTML = `<span class="filter-label">Category:</span><button class="tab active" data-cat="all" onclick="setMainCat('all',this)">${allIconHtml}All</button>`;
   ['game','mod','3d'].forEach(id => {
     const c = settings.categories && settings.categories[id] ? settings.categories[id] : {};
     const name = c.name || (id==='game'?'Game':id==='mod'?'Minecraft Mod':'3D Model');
@@ -181,7 +189,7 @@ function applySettings() {
       const ic = settings.icons.find(x => x.id === c.iconId);
       if(ic) url = ic.url;
     }
-    const iconHtml = url ? `<img src="${url}" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
+    const iconHtml = url ? `<img src="${url}" class="tab-icon" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
     mainTabs.innerHTML += `<button class="tab" data-cat="${id}" onclick="setMainCat('${id}',this)">${iconHtml}${name}</button>`;
   });
 }

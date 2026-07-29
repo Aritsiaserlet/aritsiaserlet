@@ -231,3 +231,27 @@ export async function toggleLike(workId, isLiking) {
     return false;
   }
 }
+
+// ── Page Views Tracking ──
+export async function incrementPageView(pageName) {
+  try {
+    const statsRef = doc(db, 'stats', 'pageViews');
+    await setDoc(statsRef, { [pageName]: increment(1) }, { merge: true });
+  } catch (error) {
+    console.error("Failed to increment page view:", error);
+  }
+}
+
+export async function fetchPageViews() {
+  try {
+    const statsRef = doc(db, 'stats', 'pageViews');
+    const docSnap = await getDoc(statsRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    }
+    return { main_page: 0, game_page: 0 };
+  } catch (error) {
+    console.error("Failed to fetch page views:", error);
+    return { main_page: 0, game_page: 0 };
+  }
+}

@@ -8,6 +8,8 @@
 <title>Aritsiaserlet - Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 <script src="js/toastManager.js" defer></script>
 </head>
 <body>
@@ -32,6 +34,30 @@
          onmouseout="if(!this.classList.contains('editing')){ this.style.background=window.ghConnected ? '#abebc6' : '#fadbd8'; this.querySelector('#ghStatus').textContent=window.ghConnected ? '✓ Connected to GitHub' : '✗ GitHub connection failed'; }">
       <div id="ghStatus" style="margin:0; border:none; padding:0; background:transparent; font-size:28px; width:100%; text-align:center; color:var(--dark);">Checking connection...</div>
     </div>
+    
+    <!-- Page Views Stats Box -->
+    <div style="grid-column: 1 / -1; display:flex; gap: 20px; margin-top: 10px; margin-bottom: 20px;">
+      <div style="flex:1; border:4px solid var(--dark); background:var(--sky4); padding:16px; box-shadow:6px 6px 0 rgba(0,0,0,0.3); text-align:center;">
+        <div style="font-family:'Press Start 2P',cursive; font-size:12px; color:var(--dark); margin-bottom:8px;">MAIN PAGE VIEWS</div>
+        <div id="statMainViews" style="font-size:36px; font-weight:bold; color:var(--dark);">--</div>
+      </div>
+      <div style="flex:1; border:4px solid var(--dark); background:var(--gold-l); padding:16px; box-shadow:6px 6px 0 rgba(0,0,0,0.3); text-align:center;">
+        <div style="font-family:'Press Start 2P',cursive; font-size:12px; color:var(--dark); margin-bottom:8px;">MINIGAME VIEWS</div>
+        <div id="statGameViews" style="font-size:36px; font-weight:bold; color:var(--dark);">--</div>
+      </div>
+    </div>
+    <script type="module">
+      import { fetchPageViews } from './js/authManager.js';
+      async function loadStats() {
+        const stats = await fetchPageViews();
+        document.getElementById('statMainViews').innerText = stats.main_page || 0;
+        document.getElementById('statGameViews').innerText = stats.game_page || 0;
+      }
+      // Load once, then refresh every 10 seconds if admin stays on page
+      loadStats();
+      setInterval(loadStats, 10000);
+    </script>
+
     <!-- Icon Library Panel -->
     <div class="panel-card collapsed" style="grid-column: 1 / -1;">
       <h2 onclick="this.parentElement.classList.toggle('collapsed'); this.querySelector('.toggle-icon').textContent = this.parentElement.classList.contains('collapsed') ? '▼' : '▲';">
@@ -47,6 +73,11 @@
         
         <div style="border:3px solid var(--dark);background:var(--sky4);padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
           <input type="text" id="newIconName" placeholder="Icon Name (e.g. Unity)" style="flex:1;min-width:150px;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+          <select id="newIconCat" style="padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);">
+            <option value="web_software">Web & Software</option>
+            <option value="web">Web Only</option>
+            <option value="software">Software Only</option>
+          </select>
           <input type="file" id="newIconFile" accept="image/*" style="font-size:12px;width:200px;">
           <button class="anav-btn" onclick="addIconToLibrary()">UPLOAD ICON</button>
         </div>
@@ -65,6 +96,10 @@
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Game Category Icon:</label>
               <select id="gameCategoryIcon" onchange="settings.gameCategoryIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">All Category Icon:</label>
+              <select id="allCategoryIcon" onchange="settings.allCategoryIconId=this.value; saveSettings();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Portfolio Category Icon:</label>
@@ -411,6 +446,9 @@
           <div style="font-size:16px;color:var(--mid);margin-bottom:8px">Export from Blender: File → Export → glTF 2.0 (.glb)</div>
           <input type="file" id="modelFileInput" accept=".glb,.gltf" onchange="onModelSelect(this)" style="width:100%;font-size:16px;padding:8px;border:3px dashed var(--dark);background:var(--white);cursor:pointer;font-family:'VT323',monospace">
           <p id="modelName" style="font-size:16px;color:var(--success);margin-top:6px;min-height:16px"></p>
+          <div id="modelPreviewContainer" style="display:none;margin-top:8px;border:3px solid var(--dark);height:200px;background:var(--sky1);">
+            <model-viewer id="modelViewer" style="width:100%;height:100%;" auto-rotate camera-controls></model-viewer>
+          </div>
         </div>
 
         <div style="display:flex;gap:10px;margin-bottom:8px;">

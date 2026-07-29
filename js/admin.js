@@ -379,6 +379,14 @@ function onModelSelect(input){
   const reader=new FileReader();
   reader.onload=e=>{ currentModelBase64=e.target.result.split(',')[1]; };
   reader.readAsDataURL(file);
+
+  const viewer = document.getElementById('modelViewer');
+  const container = document.getElementById('modelPreviewContainer');
+  if (viewer.src && viewer.src.startsWith('blob:')) {
+    URL.revokeObjectURL(viewer.src);
+  }
+  viewer.src = URL.createObjectURL(file);
+  container.style.display = 'block';
 }
 
 // ── Settings ──
@@ -389,6 +397,7 @@ let gAttackBase64=null, gAttackExt='png';
 
 async function addIconToLibrary() {
   const nameInput = document.getElementById('newIconName');
+  const catInput = document.getElementById('newIconCat');
   const fileInput = document.getElementById('newIconFile');
   if(!nameInput.value.trim() || !fileInput.files[0]) {
     alert("Please provide a name and select an image.");
@@ -417,7 +426,8 @@ async function addIconToLibrary() {
 
   if(!settings.teams) settings.teams = [];
 
-      settings.icons.push({ id, name: nameInput.value.trim(), url });
+      const cat = catInput ? catInput.value : 'web_software';
+      settings.icons.push({ id, name: nameInput.value.trim(), url, cat });
       
       const json = JSON.stringify(settings, null, 2);
       const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with new icon', settingsSha);
@@ -448,35 +458,68 @@ function renderIconLibrary() {
       box.innerHTML = '<div style="color:var(--mid);font-size:16px;">No icons uploaded yet.</div>';
     } else {
       settings.icons.forEach((ic, i) => {
+        let selWeb = ic.cat === 'web' ? 'selected' : '';
+        let selSoft = ic.cat === 'software' ? 'selected' : '';
+        let selBoth = (!ic.cat || ic.cat === 'web_software') ? 'selected' : '';
+        
+        let catDropdown = `
+          <select onchange="changeIconCategory(${i}, this.value)" style="margin-top:4px;font-size:12px;font-family:'VT323';background:var(--sky4);border:2px solid var(--dark);cursor:pointer;outline:none;">
+            <option value="web_software" ${selBoth}>BOTH</option>
+            <option value="web" ${selWeb}>WEB</option>
+            <option value="software" ${selSoft}>SOFT</option>
+          </select>
+        `;
+
         box.innerHTML += `
           <div style="border:3px solid var(--dark);background:var(--white);padding:8px;display:flex;flex-direction:column;align-items:center;width:100px;text-align:center;position:relative;">
             <button onclick="deleteIcon(${i})" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:3px solid var(--dark);width:24px;height:24px;cursor:pointer;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;">X</button>
             <img src="${ic.url}" style="width:32px;height:32px;object-fit:cover;image-rendering:pixelated;margin-bottom:8px;">
             <span style="font-family:'VT323';font-size:16px;word-break:break-all;line-height:1;">${ic.name}</span>
+            ${catDropdown}
           </div>
         `;
       });
     }
   }
 
+  const webCats = ['web', 'web_software'];
   const teamBtn = document.getElementById('teamBtnIcon');
-  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- None --');
+  if(teamBtn) teamBtn.innerHTML = generateIconOptions(settings.teamBtnIconId || '', '-- None --', webCats);
   const soundBtn = document.getElementById('soundBtnIcon');
-  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- None --');
+  if(soundBtn) soundBtn.innerHTML = generateIconOptions(settings.soundBtnIconId || '', '-- None --', webCats);
   const gameCat = document.getElementById('gameCategoryIcon');
-  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --');
+  if(gameCat) gameCat.innerHTML = generateIconOptions(settings.gameCategoryIconId || '', '-- None --', webCats);
+  const allCat = document.getElementById('allCategoryIcon');
+  if(allCat) allCat.innerHTML = generateIconOptions(settings.allCategoryIconId || '', '-- None --', webCats);
   const portCat = document.getElementById('portfolioCategoryIcon');
-  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --');
+  if(portCat) portCat.innerHTML = generateIconOptions(settings.portfolioCategoryIconId || '', '-- None --', webCats);
   const editIcon = document.getElementById('manageWorkEditIcon');
-  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- None --');
+  if(editIcon) editIcon.innerHTML = generateIconOptions(settings.manageWorkEditIconId || '', '-- None --', webCats);
   const delIcon = document.getElementById('manageWorkDeleteIcon');
   if(delIcon) delIcon.innerHTML = generateIconOptions(settings.manageWorkDeleteIconId || '', '-- None --');
   const phIcon = document.getElementById('addWorkPlaceholderIcon');
-  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkImageIconId || '', '-- None --');
-  
+  if(phIcon) phIcon.innerHTML = generateIconOptions(settings.addWorkPlaceholderIconId || '', '-- None --', webCats);
+
   const newTeamIcon = document.getElementById('newTeamIcon');
   if(newTeamIcon) newTeamIcon.innerHTML = generateIconOptions('', '-- No Icon --');
 }
+
+async function changeIconCategory(idx, newCat) {
+  if(!settings.icons || !settings.icons[idx]) return;
+  settings.icons[idx].cat = newCat;
+  try {
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update icon category', settingsSha);
+    settingsSha = res.content.sha;
+    renderIconLibrary();
+    renderSettingsUI();
+    renderToolsCheckboxList();
+    if(typeof showToast === 'function') showToast("Category updated!", "success");
+  } catch(e) {
+    alert("Error updating category: " + e.message);
+  }
+}
+
 
 async function deleteIcon(idx) {
   customConfirm("Delete this icon? It will be removed from any links or categories using it.", async () => {
@@ -494,10 +537,13 @@ async function deleteIcon(idx) {
   });
 }
 
-function generateIconOptions(selectedId, defaultLabel = "-- No Icon --") {
+function generateIconOptions(selectedId, defaultLabel = "-- No Icon --", allowedCats = null) {
   let html = `<option value="">${defaultLabel}</option>`;
   if(settings.icons) {
     settings.icons.forEach(ic => {
+      // If allowedCats is provided, check if icon's cat is in the list, or if it has no cat (backward compat)
+      if (allowedCats && ic.cat && !allowedCats.includes(ic.cat)) return;
+      
       const sel = (ic.id === selectedId) ? 'selected' : '';
       html += `<option value="${ic.id}" ${sel}>${ic.name}</option>`;
     });
@@ -514,7 +560,11 @@ function renderToolsCheckboxList() {
     return;
   }
   const activeTools = (editingId && works.find(x=>x.id===editingId) && works.find(x=>x.id===editingId).tools) ? works.find(x=>x.id===editingId).tools : [];
+  const allowedCats = ['software', 'web_software'];
   settings.icons.forEach(ic => {
+    // Only show Software and Web/Software icons for "Tools Used"
+    if (ic.cat && !allowedCats.includes(ic.cat)) return;
+    
     const checked = activeTools.includes(ic.id) ? 'checked' : '';
     box.innerHTML += `
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--white);padding:4px 8px;border:2px solid var(--dark);">
@@ -1372,11 +1422,17 @@ function resetForm(){
   renderToolsCheckboxList();
   
   document.getElementById('imgFileInput').value='';
-  document.getElementById('modelFileInput').value='';
-  document.getElementById('modelName').textContent='';
-
-  currentModelBase64=null;
-  currentModelName=null;
+  document.getElementById('modelFileInput').value = '';
+  document.getElementById('modelName').innerText = '';
+  const container = document.getElementById('modelPreviewContainer');
+  if (container) container.style.display = 'none';
+  const viewer = document.getElementById('modelViewer');
+  if (viewer) {
+    if (viewer.src && viewer.src.startsWith('blob:')) URL.revokeObjectURL(viewer.src);
+    viewer.src = '';
+  }
+  currentModelBase64 = null;
+  currentModelName = null;
   
   document.getElementById('editBanner').classList.remove('visible');
   document.getElementById('focalHint').style.display='none';
@@ -1403,9 +1459,20 @@ function editWork(id) {
   document.getElementById('wCat').value = w.cat || '';
   onCatChange(); // This shows/hides modelWrap based on cat
   if (w.cat === '3d' && w.model) {
-    document.getElementById('modelName').innerText = '✓ Loaded: ' + w.model.split('/').pop();
+    document.getElementById('modelName').innerText = '✓ Loaded: ' + (typeof w.model === 'string' ? w.model.split('/').pop() : 'model');
+    const viewer = document.getElementById('modelViewer');
+    const container = document.getElementById('modelPreviewContainer');
+    viewer.src = Array.isArray(w.model) ? w.model[0] : w.model;
+    container.style.display = 'block';
   } else {
     document.getElementById('modelName').innerText = '';
+    const container = document.getElementById('modelPreviewContainer');
+    if(container) container.style.display = 'none';
+    const viewer = document.getElementById('modelViewer');
+    if (viewer) {
+      if (viewer.src && viewer.src.startsWith('blob:')) URL.revokeObjectURL(viewer.src);
+      viewer.src = '';
+    }
   }
   document.getElementById('wSubcat').value = w.subcat || '';
   document.getElementById('wDesc').value = w.desc || '';

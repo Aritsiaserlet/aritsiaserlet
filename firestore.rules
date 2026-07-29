@@ -13,6 +13,11 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
+    // Stats Collection (Page Views)
+    match /stats/{documentId} {
+      allow read, write: if true;
+    }
+
     // 2. Users Collection
     match /users/{userId} {
       allow read: if true;
