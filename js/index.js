@@ -55,7 +55,7 @@ let works = [];
 let settings = {};
 let currentMainCat = 'all';
 let currentSubCat = 'all';
-let currentSort = 'random'; // Default sort
+let currentSort = 'newest'; // Default sort
 
 const GH_USER = 'OzonZ';
 const GH_REPO = 'Non-Four-Portfolio-Data';
