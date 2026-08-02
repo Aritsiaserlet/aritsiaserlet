@@ -956,6 +956,59 @@ function setMediaPreview(idBase, url) {
   }
 }
 
+let currentCropper = null;
+let cropTarget = null;
+let cropFileExt = '';
+
+window.openCropper = function(imageSrc, target, ext, aspectRatio = NaN) {
+  cropTarget = target;
+  cropFileExt = ext === 'jpg' ? 'jpeg' : ext; // canvas toDataURL uses jpeg
+  const overlay = document.getElementById('cropperOverlay');
+  const img = document.getElementById('cropperImage');
+  img.src = imageSrc;
+  overlay.style.display = 'flex';
+  
+  if (currentCropper) currentCropper.destroy();
+  
+  img.onload = () => {
+    currentCropper = new Cropper(img, {
+      aspectRatio: aspectRatio,
+      viewMode: 1,
+      background: false,
+      zoomable: false,
+    });
+  };
+};
+
+window.cancelCrop = function() {
+  document.getElementById('cropperOverlay').style.display = 'none';
+  if (currentCropper) {
+    currentCropper.destroy();
+    currentCropper = null;
+  }
+};
+
+window.confirmCrop = function() {
+  if (!currentCropper) return;
+  const canvas = currentCropper.getCroppedCanvas();
+  if (!canvas) return;
+  
+  const fullData = canvas.toDataURL('image/' + cropFileExt, 0.9);
+  const base64Data = fullData.split(',')[1];
+  
+  if (cropTarget === 'profile') {
+    profileBase64 = base64Data;
+    profileExt = cropFileExt === 'jpeg' ? 'jpg' : cropFileExt;
+    setMediaPreview('profilePreview', fullData);
+  } else if (cropTarget === 'bg') {
+    bgBase64 = base64Data;
+    bgExt = cropFileExt === 'jpeg' ? 'jpg' : cropFileExt;
+    setMediaPreview('bgPreview', fullData);
+  }
+  
+  cancelCrop();
+};
+
 function previewProfile(input){
   const file=input.files[0];
   if(!file)return;
@@ -964,8 +1017,12 @@ function previewProfile(input){
   const reader=new FileReader();
   reader.onload=e=>{
     const full=e.target.result;
-    profileBase64=full.split(',')[1];
-    setMediaPreview('profilePreview', full);
+    if (profileExt === 'gif' || profileExt === 'mp4') {
+      profileBase64=full.split(',')[1];
+      setMediaPreview('profilePreview', full);
+    } else {
+      openCropper(full, 'profile', profileExt, 1);
+    }
   };
   reader.readAsDataURL(file);
 }
@@ -978,8 +1035,12 @@ function previewBg(input){
   const reader=new FileReader();
   reader.onload=e=>{
     const full=e.target.result;
-    bgBase64=full.split(',')[1];
-    setMediaPreview('bgPreview', full);
+    if (bgExt === 'gif' || bgExt === 'mp4') {
+      bgBase64=full.split(',')[1];
+      setMediaPreview('bgPreview', full);
+    } else {
+      openCropper(full, 'bg', bgExt, 16/9);
+    }
   };
   reader.readAsDataURL(file);
 }
