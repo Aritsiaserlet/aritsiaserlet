@@ -315,12 +315,24 @@ function renderImagePreview() {
   initAdminImgDrag();
 }
 
+let workCropQueue = [];
+
+function processWorkCropQueue(input) {
+  if (workCropQueue.length === 0) {
+    renderImagePreview();
+    if (input) input.value = '';
+    return;
+  }
+  const nextItem = workCropQueue[0];
+  openCropper(nextItem.full, 'work', nextItem.ext, NaN);
+}
+
 function previewImage(input, isAppend = false) {
   if(!input.files || input.files.length===0) return;
   if(!isAppend) currentImagesArray = [];
   
-  let validFiles = Array.from(input.files).filter(f => f.size <= 4*1024*1024);
-  if(validFiles.length < input.files.length) alert('Some images were too large (max 4MB) and were skipped.');
+  let validFiles = Array.from(input.files).filter(f => f.size <= 15*1024*1024);
+  if(validFiles.length < input.files.length) alert('Some images were too large (max 15MB) and were skipped.');
   if(validFiles.length === 0) {
     renderImagePreview();
     return;
@@ -333,12 +345,16 @@ function previewImage(input, isAppend = false) {
     reader.onload = e => {
       const full = e.target.result;
       const base64 = full.split(',')[1];
-      currentImagesArray.push({ type: 'file', ext, base64 });
-      loadedCount++;
       
+      if (ext === 'gif' || ext === 'mp4') {
+        currentImagesArray.push({ type: 'file', ext, base64 });
+      } else {
+        workCropQueue.push({ full, ext, base64 });
+      }
+      
+      loadedCount++;
       if (loadedCount === validFiles.length) {
-        renderImagePreview();
-        input.value = '';
+        processWorkCropQueue(input);
       }
     };
     reader.readAsDataURL(file);
@@ -986,12 +1002,22 @@ window.cancelCrop = function() {
     currentCropper.destroy();
     currentCropper = null;
   }
+  if (cropTarget === 'work') {
+    const item = workCropQueue.shift();
+    if (item) {
+      currentImagesArray.push({ type: 'file', ext: item.ext, base64: item.base64 });
+      processWorkCropQueue(null);
+    }
+  }
 };
 
 window.confirmCrop = function() {
   if (!currentCropper) return;
   const canvas = currentCropper.getCroppedCanvas();
-  if (!canvas) return;
+  if (!canvas) {
+    window.cancelCrop();
+    return;
+  }
   
   const fullData = canvas.toDataURL('image/' + cropFileExt, 0.9);
   const base64Data = fullData.split(',')[1];
@@ -1004,9 +1030,22 @@ window.confirmCrop = function() {
     bgBase64 = base64Data;
     bgExt = cropFileExt === 'jpeg' ? 'jpg' : cropFileExt;
     setMediaPreview('bgPreview', fullData);
+  } else if (cropTarget === 'work') {
+    const item = workCropQueue.shift();
+    if (item) {
+      currentImagesArray.push({ type: 'file', ext: cropFileExt === 'jpeg' ? 'jpg' : cropFileExt, base64: base64Data });
+    }
   }
   
-  cancelCrop();
+  document.getElementById('cropperOverlay').style.display = 'none';
+  if (currentCropper) {
+    currentCropper.destroy();
+    currentCropper = null;
+  }
+  
+  if (cropTarget === 'work') {
+    processWorkCropQueue(null);
+  }
 };
 
 function previewProfile(input){
