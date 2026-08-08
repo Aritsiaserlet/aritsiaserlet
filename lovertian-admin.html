@@ -404,36 +404,17 @@
 
       <!-- Floating Emojis Picker Section -->
       <div style="margin-top: 28px; border-top: 3px dashed var(--dark); padding-top: 20px;">
-        <h3 style="font-family:'Press Start 2P',cursive; font-size:13px; color:var(--dark); margin-bottom:10px;">✨ FLOATING BACKGROUND EMOJIS</h3>
+        <h3 style="font-family:'Press Start 2P',cursive; font-size:13px; color:var(--dark); margin-bottom:10px;">✨ FLOATING BACKGROUND PIXEL ICONS</h3>
         <p style="font-size:19px; color:var(--mid); margin-top:0; margin-bottom:12px;">
-          คลิก Emoji ด้านล่างเพื่อเพิ่มลงในรายการ Background (จะลอยคละร่วมกับรูปภาพไอคอนที่อัปโหลดไว้)
+          คลิกไอคอน Pixel Art ด้านล่างเพื่อเพิ่มลงในรายการ Background (จะลอยบนหน้า LoverTian ทันที)
         </p>
 
-        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌸')">🌸</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💖')">💖</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💗')">💗</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💓')">💓</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💕')">💕</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💞')">💞</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('❤️')">❤️</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('❣️')">❣️</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💌')">💌</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('✨')">✨</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💫')">💫</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌹')">🌹</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌻')">🌻</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌺')">🌺</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🦋')">🦋</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🎀')">🎀</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🧸')">🧸</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🎁')">🎁</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('⭐')">⭐</button>
-          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌙')">🌙</button>
+        <div id="bgPixelPalette" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
+          <!-- Filled by JS with Pixel Art SVGs -->
         </div>
 
         <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <input type="text" id="bgEmojiInput" placeholder="Emojis (e.g. 🌸 💖 💗 ✨)" style="flex:1; padding:10px; font-family:'VT323',monospace; font-size:24px; border:3px solid var(--dark);">
+          <input type="text" id="bgEmojiInput" placeholder="Emojis/Pixel Assets" style="flex:1; padding:10px; font-family:'VT323',monospace; font-size:24px; border:3px solid var(--dark);">
           <button class="anav-btn" onclick="saveBgEmojis()">SAVE EMOJIS</button>
         </div>
       </div>
@@ -445,11 +426,11 @@
   <!-- Envelope Seal Emoji Panel -->
   <div class="panel-card">
     <div class="panel-header">
-      <h2><span>💌 ENVELOPE SEAL EMOJI (ตราประทับซองจดหมาย)</span></h2>
+      <h2><span>💌 ENVELOPE SEAL ICON (ตราประทับซองจดหมาย)</span></h2>
     </div>
     <div class="panel-body">
       <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
-        เลือก Emoji สำหรับตราประทับตรงกลางซองจดหมายในหน้า LoverTian
+        เลือกไอคอน Pixel Art สำหรับตราประทับตรงกลางซองจดหมายในหน้า LoverTian
       </p>
 
       <div style="display:flex; gap:20px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
@@ -461,34 +442,17 @@
 
         <!-- Emoji Quick Pick Palette -->
         <div style="flex:1; min-width:260px;">
-          <div style="font-size:16px; color:var(--dark); margin-bottom:8px;">คลิก Emoji ด้านล่างเพื่อตั้งค่าเป็นตราประทับ:</div>
-          <div style="display:flex; flex-wrap:wrap; gap:8px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💌')">💌</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('❤️')">❤️</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💖')">💖</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💗')">💗</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💓')">💓</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💕')">💕</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💞')">💞</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('❣️')">❣️</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🌸')">🌸</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🌹')">🌹</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🌺')">🌺</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🎀')">🎀</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🧸')">🧸</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('✨')">✨</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('⭐')">⭐</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('👑')">👑</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💍')">💍</button>
-            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🕊️')">🕊️</button>
+          <div style="font-size:16px; color:var(--dark); margin-bottom:8px;">คลิกไอคอน Pixel Art ด้านล่างเพื่อตั้งค่าเป็นตราประทับ:</div>
+          <div id="sealPixelPalette" style="display:flex; flex-wrap:wrap; gap:8px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
+            <!-- Filled by JS with Pixel Art SVGs -->
           </div>
         </div>
       </div>
 
       <!-- Input & Save Row -->
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-        <input type="text" id="sealEmojiInput" placeholder="Seal Emoji (e.g. 💌)" oninput="updateSealPreview(this.value)" style="width:160px; padding:10px; font-family:'VT323',monospace; font-size:24px; border:3px solid var(--dark); text-align:center;">
-        <button class="anav-btn" onclick="saveSealEmoji()">SAVE ENVELOPE SEAL EMOJI</button>
+        <input type="text" id="sealEmojiInput" placeholder="Seal Icon / Emoji" oninput="updateSealPreview(this.value)" style="width:240px; padding:10px; font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); text-align:center;">
+        <button class="anav-btn" onclick="saveSealEmoji()">SAVE ENVELOPE SEAL ICON</button>
       </div>
     </div>
   </div>
@@ -693,6 +657,7 @@ async function loadSettings() {
 
   renderLoverTianLibrary();
   renderPixelPresets();
+  renderPixelPalettes();
 
   // Load Background Emojis
   const bgEmojiInput = document.getElementById('bgEmojiInput');
@@ -788,37 +753,60 @@ async function addLoverTianIcon() {
   reader.readAsDataURL(file);
 }
 
-async function deleteLoverTianIcon(idx) {
-  if (!confirm("คุณต้องการลบ Icon นี้ใช่หรือไม่?")) return;
+// ── Pixel Art Palette (22 Authentic 8-bit Pixel Art SVGs) ──
+const PIXEL_PALETTE = [
+  { id: 'px_sakura', name: 'Sakura', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M4 1h4v2H4zM1 4h2v4H1zM9 4h2v4H9zM4 9h4v2H4z" fill="#ff9ff3"/><path d="M3 2h2v2H3zM7 2h2v2H7zM3 8h2v2H3zM7 8h2v2H7zM4 4h4v4H4z" fill="#fd79a8"/><path d="M5 5h2v2H5z" fill="#feca57"/><path d="M4 0h4v1H4zM8 1h1v1H8zM9 2h1v2H9zM11 4h1v4H11zM9 8h1v2H9zM8 10h1v1H8zM4 11h4v1H4zM3 10h1v1H3zM2 8h1v2H2zM0 4h1v4H0zM2 2h1v2H2zM3 1h1v1H3z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_sparkle', name: 'Sparkle Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#fd79a8"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M0 0h2v2H0zM1 1h2v2H1z" fill="#feca57"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_pink', name: 'Pink Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#ff7675"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_red', name: 'Red Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#e74c3c"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ff7675"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_dark', name: 'Dark Red Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#c0392b"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#e74c3c"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#1a2a3a"/></svg>` },
+  { id: 'px_heart_double', name: 'Double Hearts', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 12" width="30" height="26" shape-rendering="crispEdges"><path d="M1 2h3v1H1zM5 2h3v1H5zM0 3h9v3H0zM1 6h7v2H1zM2 8h5v1H2zM3 9h3v1H3zM4 10h1v1H4z" fill="#fd79a8"/><path d="M8 1h3v1H8zM12 1h2v1H12zM7 2h7v3H7zM8 5h5v2H8zM9 7h3v1H9z" fill="#e84393"/><path d="M1 3h1v1H1z" fill="#ffffff"/></svg>` },
+  { id: 'px_heart_exclaim', name: 'Heart Exclaim', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 12" width="24" height="28" shape-rendering="crispEdges"><path d="M1 1h3v1H1zM6 1h3v1H6zM0 2h10v3H0zM1 5h8v2H1zM2 7h6v1H2zM3 8h4v1H3zM4 9h2v1H4z" fill="#e74c3c"/><path d="M4 10h2v2H4z" fill="#e74c3c"/><path d="M1 2h1v1H1z" fill="#ffffff"/></svg>` },
+  { id: 'px_letter_envelope', name: 'Envelope', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 10" width="30" height="22" shape-rendering="crispEdges"><path d="M1 1h12v8H1z" fill="#fffef5"/><path d="M2 2h10v1H2zM3 3h8v1H3zM4 4h6v1H4zM5 5h4v1H5z" fill="#ffeaa7"/><path d="M6 4h2v2H6zM5 5h4v1H5z" fill="#e74c3c"/><path d="M0 0h14v1H0zM0 9h14v1H0zM0 0h1v10H0zM13 0h1v10H13z" fill="#2d3436"/></svg>` },
+  { id: 'px_sparkle_blue', name: 'Blue Sparkle', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9" width="26" height="26" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#54a0ff"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#74b9ff"/></svg>` },
+  { id: 'px_sparkle_gold', name: 'Gold Sparkle', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9" width="26" height="26" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#feca57"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#ffdd59"/></svg>` },
+  { id: 'px_rose', name: 'Red Rose', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="26" height="28" shape-rendering="crispEdges"><path d="M3 1h5v4H3z" fill="#e74c3c"/><path d="M4 2h2v2H4z" fill="#ff7675"/><path d="M5 5h1v4H5z" fill="#10ac84"/><path d="M3 7h2v2H3zM6 6h2v2H6z" fill="#1dd1a1"/><path d="M3 0h5v1H3zM8 1h1v4H8zM3 5h5v1H3zM2 1h1v4H2zM5 9h1v3H5zM2 7h1v1H2zM3 9h2v1H3zM6 6h1v1H6zM8 8h1v1H8z" fill="#2d3436"/></svg>` },
+  { id: 'px_sunflower', name: 'Sunflower', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 11" width="26" height="26" shape-rendering="crispEdges"><path d="M4 0h3v11H4zM0 4h11v3H0zM2 2h7v7H2z" fill="#feca57"/><path d="M4 4h3v3H4z" fill="#8395a7"/></svg>` },
+  { id: 'px_hibiscus', name: 'Hibiscus', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 11" width="26" height="26" shape-rendering="crispEdges"><path d="M2 1h7v9H2zM1 2h9v7H1z" fill="#ff9ff3"/><path d="M4 4h3v3H4z" fill="#feca57"/><path d="M5 2h1v3H5z" fill="#ffdd59"/></svg>` },
+  { id: 'px_butterfly', name: 'Butterfly', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10" width="28" height="24" shape-rendering="crispEdges"><path d="M1 1h4v4H1zM7 1h4v4H7z" fill="#54a0ff"/><path d="M2 5h3v3H2zM7 5h3v3H7z" fill="#48dbfb"/><path d="M5 0h2v10H5z" fill="#2d3436"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ffffff"/></svg>` },
+  { id: 'px_ribbon', name: 'Ribbon', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 9" width="30" height="21" shape-rendering="crispEdges"><path d="M1 2h4v4H1zM8 2h4v4H8z" fill="#ff9ff3"/><path d="M5 3h3v3H5z" fill="#fd79a8"/><path d="M6 4h1v1H6z" fill="#ffffff"/><path d="M2 6h2v2H2zM9 6h2v2H9z" fill="#e84393"/></svg>` },
+  { id: 'px_bear', name: 'Cute Bear', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 11" width="28" height="26" shape-rendering="crispEdges"><path d="M1 1h3v3H1zM8 1h3v3H8z" fill="#cc8e35"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ff7675"/><path d="M1 3h10v6H1z" fill="#e1b12c"/><path d="M4 6h4v3H4z" fill="#fffef5"/><path d="M3 5h1v1H3zM8 5h1v1H8zM5 6h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_gift', name: 'Gift Box', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 11" width="26" height="26" shape-rendering="crispEdges"><path d="M1 1h9v9H1z" fill="#feca57"/><path d="M5 1h1v9H5zM1 5h9v1H1z" fill="#ee5253"/><path d="M3 0h5v1H3z" fill="#ff6b6b"/></svg>` },
+  { id: 'px_star', name: 'Gold Star', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 11" width="26" height="26" shape-rendering="crispEdges"><path d="M5 1h1v2H5zM4 3h3v2H4zM1 4h9v2H1zM2 6h7v2H2zM3 8h2v2H3zM6 8h2v2H6z" fill="#feca57"/><path d="M5 2h1v1H5zM4 4h1v1H4z" fill="#ffffff"/></svg>` },
+  { id: 'px_moon', name: 'Crescent Moon', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="24" height="24" shape-rendering="crispEdges"><path d="M3 1h4v1H3zM2 2h3v1H2zM1 3h3v4H1zM2 7h3v1H2zM3 8h4v1H3z" fill="#feca57"/><path d="M3 3h1v1H3z" fill="#fffef5"/></svg>` },
+  { id: 'px_crown', name: 'Crown', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 9" width="28" height="23" shape-rendering="crispEdges"><path d="M1 1h1v7H1zM5 1h1v7H5zM9 1h1v7H9zM2 4h7v4H2z" fill="#feca57"/><path d="M1 1h1v1H1zM5 1h1v1H5zM9 1h1v1H9z" fill="#ffdd59"/><path d="M2 7h7v1H2z" fill="#ee5253"/></svg>` },
+  { id: 'px_ring', name: 'Diamond Ring', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="26" height="28" shape-rendering="crispEdges"><path d="M4 1h3v3H4z" fill="#48dbfb"/><path d="M5 2h1v1H5z" fill="#ffffff"/><path d="M2 5h7v5H2z" fill="#feca57"/><path d="M4 7h3v2H4z" fill="#fffef5"/></svg>` },
+  { id: 'px_dove', name: 'White Dove', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10" width="28" height="24" shape-rendering="crispEdges"><path d="M2 1h5v4H2zM6 4h5v4H6zM3 5h7v3H3z" fill="#ffffff"/><path d="M8 2h1v1H8z" fill="#2d3436"/><path d="M11 5h1v2H11z" fill="#ff9f43"/></svg>` }
+];
 
-  if (settings.lovertianIcons && settings.lovertianIcons[idx]) {
-    settings.lovertianIcons.splice(idx, 1);
-    try {
-      showMsg("กำลังลบ Icon...");
-      const json = JSON.stringify(settings, null, 2);
-      const res = await ghPut(JSON_PATH, json, 'Delete LoverTian icon', settingsSha);
-      settingsSha = res.content.sha;
-      showMsg("✓ ลบ Icon สำเร็จ!");
-      renderLoverTianLibrary();
-    } catch(e) {
-      alert("Error deleting icon: " + e.message);
-    }
+const PIXEL_PRESETS = PIXEL_PALETTE;
+
+function renderPixelPalettes() {
+  const bgPalette = document.getElementById('bgPixelPalette');
+  const sealPalette = document.getElementById('sealPixelPalette');
+
+  if (bgPalette) {
+    bgPalette.innerHTML = '';
+    PIXEL_PALETTE.forEach(p => {
+      bgPalette.innerHTML += `
+        <button type="button" class="emoji-picker-btn" onclick="appendBgPixelIcon('${p.id}')" title="${p.name}">
+          ${p.svg}
+        </button>
+      `;
+    });
+  }
+
+  if (sealPalette) {
+    sealPalette.innerHTML = '';
+    PIXEL_PALETTE.forEach(p => {
+      sealPalette.innerHTML += `
+        <button type="button" class="emoji-picker-btn" onclick="selectSealPixelIcon('${p.id}')" title="${p.name}">
+          ${p.svg}
+        </button>
+      `;
+    });
   }
 }
-
-// ── Pixel Art Presets Data ──
-const PIXEL_PRESETS = [
-  { id: 'px_heart_red', name: 'Pixel Red Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#e74c3c"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ff7675"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
-  { id: 'px_heart_pink', name: 'Pixel Pink Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#fd79a8"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
-  { id: 'px_flower_sakura', name: 'Pixel Sakura', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges"><path d="M4 1h4v2H4zM1 4h2v4H1zM9 4h2v4H9zM4 9h4v2H4z" fill="#ff9ff3"/><path d="M3 2h2v2H3zM7 2h2v2H7zM3 8h2v2H3zM7 8h2v2H7zM4 4h4v4H4z" fill="#fd79a8"/><path d="M5 5h2v2H5z" fill="#feca57"/><path d="M4 0h4v1H4zM8 1h1v1H8zM9 2h1v2H9zM11 4h1v4H11zM9 8h1v2H9zM8 10h1v1H8zM4 11h4v1H4zM3 10h1v1H3zM2 8h1v2H2zM0 4h1v4H0zM2 2h1v2H2zM3 1h1v1H3z" fill="#2d3436"/></svg>` },
-  { id: 'px_letter_love', name: 'Pixel Envelope', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 10" width="36" height="26" shape-rendering="crispEdges"><path d="M1 1h12v8H1z" fill="#fffef5"/><path d="M2 2h10v1H2zM3 3h8v1H3zM4 4h6v1H4zM5 5h4v1H5z" fill="#ffeaa7"/><path d="M6 4h2v2H6zM5 5h4v1H5z" fill="#e74c3c"/><path d="M0 0h14v1H0zM0 9h14v1H0zM0 0h1v10H0zM13 0h1v10H13z" fill="#2d3436"/></svg>` },
-  { id: 'px_star_gold', name: 'Pixel Gold Star', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 11" width="36" height="36" shape-rendering="crispEdges"><path d="M5 1h1v2H5zM4 3h3v2H4zM1 4h9v2H1zM2 6h7v2H2zM3 8h2v2H3zM6 8h2v2H6z" fill="#feca57"/><path d="M5 2h1v1H5zM4 4h1v1H4z" fill="#ffffff"/><path d="M5 0h1v1H5zM6 1h1v2H6zM7 3h2v1H7zM9 3h2v1H9zM10 4h1v2H10zM9 6h1v1H9zM8 7h1v1H8zM8 8h1v2H8zM6 10h2v1H6zM5 9h1v1H5zM3 10h2v1H3zM2 8h1v2H2zM2 7h1v1H2zM1 6h1v1H1zM0 4h1v2H0zM0 3h2v1H0zM2 3h2v1H2zM4 1h1v2H4z" fill="#2d3436"/></svg>` },
-  { id: 'px_sparkle_magic', name: 'Pixel Sparkle', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9" width="32" height="32" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#54a0ff"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#74b9ff"/></svg>` },
-  { id: 'px_rose_red', name: 'Pixel Red Rose', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="32" height="35" shape-rendering="crispEdges"><path d="M3 1h5v4H3z" fill="#e74c3c"/><path d="M4 2h2v2H4z" fill="#ff7675"/><path d="M5 5h1v4H5z" fill="#10ac84"/><path d="M3 7h2v2H3zM6 6h2v2H6z" fill="#1dd1a1"/><path d="M3 0h5v1H3zM8 1h1v4H8zM3 5h5v1H3zM2 1h1v4H2zM5 9h1v3H5zM2 7h1v1H2zM3 9h2v1H3zM6 6h1v1H6zM8 8h1v1H8z" fill="#2d3436"/></svg>` },
-  { id: 'px_ribbon_pink', name: 'Pixel Ribbon', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 9" width="38" height="26" shape-rendering="crispEdges"><path d="M1 2h4v4H1zM8 2h4v4H8z" fill="#ff9ff3"/><path d="M5 3h3v3H5z" fill="#fd79a8"/><path d="M6 4h1v1H6z" fill="#ffffff"/><path d="M2 6h2v2H2zM9 6h2v2H9z" fill="#e84393"/><path d="M1 1h4v1H1zM8 1h4v1H8zM0 2h1v4H0zM12 2h1v4H12zM5 2h3v1H5zM5 5h3v1H5zM1 6h4v1H1zM8 6h4v1H8z" fill="#2d3436"/></svg>` },
-  { id: 'px_ring_diamond', name: 'Pixel Diamond Ring', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="32" height="35" shape-rendering="crispEdges"><path d="M4 1h3v3H4z" fill="#48dbfb"/><path d="M5 2h1v1H5z" fill="#ffffff"/><path d="M2 5h7v5H2z" fill="#feca57"/><path d="M4 7h3v2H4z" fill="#fffef5"/><path d="M4 0h3v1H4zM3 1h1v2H3zM7 1h1v2H7zM4 4h3v1H4zM2 4h1v1H2zM8 4h1v1H8zM1 5h1v5H1zM9 5h1v5H9zM2 10h7v1H2z" fill="#2d3436"/></svg>` },
-  { id: 'px_bear_cute', name: 'Pixel Cute Bear', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 11" width="36" height="33" shape-rendering="crispEdges"><path d="M1 1h3v3H1zM8 1h3v3H8z" fill="#cc8e35"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ff7675"/><path d="M1 3h10v6H1z" fill="#e1b12c"/><path d="M4 6h4v3H4z" fill="#fffef5"/><path d="M3 5h1v1H3zM8 5h1v1H8zM5 6h2v1H5z" fill="#2d3436"/></svg>` }
-];
 
 function renderPixelPresets() {
   const grid = document.getElementById('pixelPresetGrid');
@@ -838,48 +826,31 @@ function renderPixelPresets() {
   });
 }
 
-async function addPixelPresetToBg(id) {
-  const p = PIXEL_PRESETS.find(x => x.id === id);
+function appendBgPixelIcon(id) {
+  const p = PIXEL_PALETTE.find(x => x.id === id);
   if (!p) return;
   const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg)}`;
   if (!settings.lovertianIcons) settings.lovertianIcons = [];
-  
+
   if (!settings.lovertianIcons.some(x => x.id === p.id)) {
     settings.lovertianIcons.push({ id: p.id, name: p.name, url: dataUrl });
-    try {
-      showMsg("กำลังเพิ่ม Pixel Asset...");
-      const json = JSON.stringify(settings, null, 2);
-      const res = await ghPut(JSON_PATH, json, `Add pixel preset ${p.name} to background`, settingsSha);
-      settingsSha = res.content.sha;
-      showMsg(`✓ เพิ่ม ${p.name} ลงใน Background เรียบร้อย!`);
-      renderLoverTianLibrary();
-    } catch(e) {
-      alert("Error adding pixel preset: " + e.message);
-    }
+    renderLoverTianLibrary();
+    showMsg(`✓ เพิ่ม Pixel Icon ${p.name} ลงใน Background เรียบร้อย!`);
   } else {
-    alert(`${p.name} มีอยู่ใน Background แล้ว`);
+    showMsg(`${p.name} มีอยู่ใน Background แล้ว`);
   }
 }
 
-async function setPixelPresetAsSeal(id) {
-  const p = PIXEL_PRESETS.find(x => x.id === id);
+function selectSealPixelIcon(id) {
+  const p = PIXEL_PALETTE.find(x => x.id === id);
   if (!p) return;
   const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg)}`;
   settings.lovertianEnvelopeSealEmoji = dataUrl;
-  
+
   const input = document.getElementById('sealEmojiInput');
   if (input) input.value = dataUrl;
   updateSealPreview(dataUrl);
-
-  try {
-    showMsg("กำลังบันทึก Pixel Seal...");
-    const json = JSON.stringify(settings, null, 2);
-    const res = await ghPut(JSON_PATH, json, `Set ${p.name} as envelope seal`, settingsSha);
-    settingsSha = res.content.sha;
-    showMsg(`✓ ตั้งค่า ${p.name} เป็นตราประทับซองจดหมายเรียบร้อย!`);
-  } catch(e) {
-    alert("Error setting pixel seal: " + e.message);
-  }
+  showMsg(`✓ เลือก ${p.name} เป็นตราประทับแล้ว (อย่าลืมกด SAVE)`);
 }
 
 // ── Emoji Picker Helpers ──
