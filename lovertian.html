@@ -384,7 +384,6 @@
       justify-content: center;
       align-items: center;
       min-height: 60px;
-      position: relative;
     }
 
     .btn-yes {
@@ -942,12 +941,7 @@ let noInitialized = false;
 function initNoButton() {
   if (noInitialized) return;
   noInitialized = true;
-  const btn = document.getElementById('btnNo');
-  const row = document.getElementById('answerRow');
-  const rowRect = row.getBoundingClientRect();
-  // Place it in the answer row area to the right of YES
-  btn.style.left = (rowRect.left + rowRect.width - btn.offsetWidth - 16) + 'px';
-  btn.style.top  = (rowRect.top  + (rowRect.height - btn.offsetHeight) / 2) + 'px';
+  // Let CSS Flexbox handle initial positioning (no logic needed)
 }
 
 // ── Open Envelope ──
@@ -998,7 +992,7 @@ function runAway(btn) {
   noRunCount++;
 
   if (noRunCount === 1) {
-    btn.style.position = 'fixed';
+    btn.style.position = 'absolute';
   }
 
   // Shrink button text gradually (min size = 6px)
@@ -1010,22 +1004,19 @@ function runAway(btn) {
 
   // Calculate safe zone to keep button inside the letter-box
   const box      = document.getElementById('letterBox');
-  const boxRect  = box.getBoundingClientRect();
   const btnW     = btn.offsetWidth  || 80;
   const btnH     = btn.offsetHeight || 40;
 
   const margin   = 10;
-  const minX     = boxRect.left   + margin;
-  const maxX     = boxRect.right  - btnW - margin;
-  const minY     = boxRect.top    + margin;
-  const maxY     = boxRect.bottom - btnH - margin;
+  const maxX     = box.offsetWidth  - btnW - margin;
+  const maxY     = box.offsetHeight - btnH - margin;
 
-  let newLeft = minX + Math.random() * (maxX - minX);
-  let newTop  = minY + Math.random() * (maxY - minY);
+  let newLeft = margin + Math.random() * (maxX - margin * 2);
+  let newTop  = margin + Math.random() * (maxY - margin * 2);
 
-  // Clamp to viewport just in case
-  newLeft = Math.max(0, Math.min(newLeft, window.innerWidth  - btnW));
-  newTop  = Math.max(0, Math.min(newTop,  window.innerHeight - btnH));
+  // Clamp to box bounds just in case
+  newLeft = Math.max(margin, Math.min(newLeft, maxX));
+  newTop  = Math.max(margin, Math.min(newTop, maxY));
 
   btn.style.left = newLeft + 'px';
   btn.style.top  = newTop  + 'px';
@@ -1035,6 +1026,7 @@ function resetNo() {
   noRunCount = 0;
   const btn = document.getElementById('btnNo');
   btn.style.display   = '';
+  btn.style.position  = '';
   btn.style.fontSize  = '';
   btn.style.padding   = '';
   btn.style.left      = '';
