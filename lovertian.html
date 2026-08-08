@@ -420,7 +420,7 @@
       cursor: pointer;
       box-shadow: 4px 4px 0 var(--dark);
       white-space: nowrap;
-      position: fixed;
+      position: relative;
       transition: left 0.08s ease, top 0.08s ease, font-size 0.3s, padding 0.3s;
       z-index: 9999;
     }
@@ -650,7 +650,7 @@
         <div class="env-seal" id="envSeal"><span data-px="px_letter_envelope"></span></div>
       </div>
     </div>
-    <div class="env-hint" id="envHint">[ คลิกเพื่อเปิดจดหมาย ]</div>
+    <div class="env-hint" id="envHint">[ Click to open letter ]</div>
   </div>
 </main>
 
@@ -669,17 +669,17 @@
     <div class="letter-content" id="letterContent">
       <div class="letter-lines" id="letterLines"></div>
       <div class="letter-deco"><span data-px="px_heart_pink"></span> <span data-px="px_heart_sparkle"></span> <span data-px="px_heart_pink"></span></div>
-      <div class="letter-greeting">ถึง... คนที่ฉันอยากบอก <span data-px="px_sakura"></span></div>
-      <div class="letter-text">
-        ฉันนั่งคิดมานานแล้ว<br>
-        ว่าจะพูดยังไงดี...<br><br>
-        แต่ทุกครั้งที่เห็นหน้าเธอ<br>
-        คำพูดมันหายไปหมดเลย <span data-px="px_sparkle_gold"></span><br><br>
-        เลยขอส่งจดหมายฉบับนี้มาแทน <span data-px="px_letter_envelope"></span>
+      <div class="letter-greeting" id="lGreeting">To... the one I want to tell <span data-px="px_sakura"></span></div>
+      <div class="letter-text" id="lBody">
+        I've been thinking for a long time<br>
+        about what to say...<br><br>
+        But every time I see your face<br>
+        the words just disappear <span data-px="px_sparkle_gold"></span><br><br>
+        So I'm sending this letter instead <span data-px="px_letter_envelope"></span>
       </div>
       <div class="letter-divider"></div>
-      <div class="letter-question">
-        เธอจะ<span data-px="px_heart_red"></span>ยอมเป็นแฟนกัน<span data-px="px_heart_red"></span>ฉันไหม?
+      <div class="letter-question" id="lQuestion">
+        Will you<span data-px="px_heart_red"></span>be my girlfriend?<span data-px="px_heart_red"></span>
       </div>
 
       <!-- Answer buttons -->
@@ -688,16 +688,16 @@
         <button class="btn-no" id="btnNo" onmouseenter="runAway(this)">&#10007; No</button>
       </div>
 
-      <div class="letter-signature">&#8212; ด้วยความรัก, AritsiaZ <span data-px="px_sakura"></span></div>
+      <div class="letter-signature" id="lSignature">&#8212; With love, AritsiaZ <span data-px="px_sakura"></span></div>
     </div>
 
     <!-- Yes Screen (hidden initially) -->
     <div class="yes-screen" id="yesScreen">
       <div class="yes-emoji"><span data-px="px_bear" style="font-size: 1.5em; display: inline-block;"></span></div>
       <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!!</div>
-      <div class="yes-sub">
-        ขอบคุณมากๆ เลยนะ <span data-px="px_heart_sparkle"></span><br>
-        ฉันดีใจมากที่สุดในโลก!
+      <div class="yes-sub" id="lYesSub">
+        Thank you so much <span data-px="px_heart_sparkle"></span><br>
+        I'm the happiest person in the world!
       </div>
       <div style="font-size: 36px; margin-top: 8px;"><span data-px="px_heart_pink"></span> <span data-px="px_heart_double"></span> <span data-px="px_heart_pink"></span></div>
     </div>
@@ -717,7 +717,7 @@
     </div>
     <div class="token-modal-body">
       <div style="font-family:'VT323',monospace;font-size:22px;color:var(--dark);">
-        กรุณากรอก GitHub Token เพื่อเข้าสู่ LoverTian Admin:
+        Enter GitHub Token to access LoverTian Admin:
       </div>
       <input type="password" id="ltTokenInput" class="token-modal-input" placeholder="GitHub Token (ghp_... / github_pat_...)" onkeydown="if(event.key==='Enter')submitLtToken()">
       <div id="ltTokenError" style="color:#c0392b;font-size:18px;font-family:'VT323',monospace;display:none;"></div>
@@ -807,7 +807,7 @@ function submitLtToken() {
     window.location.href = 'lovertian-admin.html';
   } else {
     if (err) {
-      err.textContent = 'กรุณากรอก GitHub Token ก่อนทำรายการ';
+      err.textContent = 'Please enter GitHub Token first';
       err.style.display = 'block';
     }
   }
@@ -826,6 +826,13 @@ async function spawnHearts() {
     if (settingsObj.lovertianIcons) ltIcons = settingsObj.lovertianIcons;
     if (settingsObj.lovertianEmojis && settingsObj.lovertianEmojis.length > 0) ltEmojis = settingsObj.lovertianEmojis;
     if (settingsObj.lovertianEnvelopeSealEmoji) sealEmoji = settingsObj.lovertianEnvelopeSealEmoji;
+
+    // Custom Letter Text
+    if (settingsObj.lovertianLetterGreeting) document.getElementById('lGreeting').innerHTML = settingsObj.lovertianLetterGreeting;
+    if (settingsObj.lovertianLetterBody) document.getElementById('lBody').innerHTML = settingsObj.lovertianLetterBody;
+    if (settingsObj.lovertianLetterQuestion) document.getElementById('lQuestion').innerHTML = settingsObj.lovertianLetterQuestion;
+    if (settingsObj.lovertianLetterSignature) document.getElementById('lSignature').innerHTML = settingsObj.lovertianLetterSignature;
+    if (settingsObj.lovertianLetterYesSub) document.getElementById('lYesSub').innerHTML = settingsObj.lovertianLetterYesSub;
   }
 
   // Try loading settings from Firebase Firestore
@@ -989,6 +996,10 @@ let noRunCount = 0;
 
 function runAway(btn) {
   noRunCount++;
+
+  if (noRunCount === 1) {
+    btn.style.position = 'fixed';
+  }
 
   // Shrink button text gradually (min size = 6px)
   const newSize = Math.max(6, 14 - noRunCount * 1.2);

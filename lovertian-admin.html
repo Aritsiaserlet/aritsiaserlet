@@ -378,11 +378,11 @@
   <!-- Built-in Pixel Art Presets Card -->
   <div class="panel-card">
     <div class="panel-header" style="background: var(--sky3);">
-      <h2><span>🎮 BUILT-IN PIXEL ART PRESET GALLERY (คลังไอคอนพิกเซลสำเร็จรูป)</span></h2>
+      <h2><span>🎮 BUILT-IN PIXEL ART PRESET GALLERY</span></h2>
     </div>
     <div class="panel-body">
       <p style="font-size: 20px; color: var(--dark); margin-top: 0; margin-bottom: 16px;">
-        คลิกไอคอน Pixel Art ด้านล่างเพื่อเพิ่มลงในหมวด Background หรือเลือกเป็นตราประทับซองจดหมายได้ทันที!
+        Click a Pixel Art icon below to add it to your Background or set it as the Envelope Seal!
       </p>
 
       <div id="pixelPresetGrid" style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:12px;">
@@ -398,7 +398,7 @@
     </div>
     <div class="panel-body">
       <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
-        อัปโหลดไอคอน/รูปภาพตกแต่ง เพื่อนำไปลอยเป็น Background ในหน้า LoverTian (หากยังไม่มีรูปภาพ ระบบจะใช้ Emoji หัวใจสำรอง)
+        Upload icons/images to float in the background of LoverTian page.
       </p>
 
       <!-- Asset Grid -->
@@ -417,7 +417,7 @@
       <div style="margin-top: 28px; border-top: 3px dashed var(--dark); padding-top: 20px;">
         <h3 style="font-family:'Press Start 2P',cursive; font-size:13px; color:var(--dark); margin-bottom:10px;">✨ FLOATING BACKGROUND PIXEL ICONS</h3>
         <p style="font-size:19px; color:var(--mid); margin-top:0; margin-bottom:12px;">
-          คลิกไอคอน Pixel Art ด้านล่างเพื่อเพิ่มลงในรายการ Background (จะลอยบนหน้า LoverTian ทันที)
+          Click a Pixel Art icon below to add it to the Background list (it will float on the LoverTian page immediately).
         </p>
 
         <div id="bgPixelPalette" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
@@ -437,11 +437,11 @@
   <!-- Envelope Seal Emoji Panel -->
   <div class="panel-card">
     <div class="panel-header">
-      <h2><span><span data-px="px_letter_envelope"></span> ENVELOPE SEAL ICON (ตราประทับซองจดหมาย)</span></h2>
+      <h2><span><span data-px="px_letter_envelope"></span> ENVELOPE SEAL ICON</span></h2>
     </div>
     <div class="panel-body">
       <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
-        เลือกไอคอน Pixel Art สำหรับตราประทับตรงกลางซองจดหมายในหน้า LoverTian
+        Select a Pixel Art icon to be the seal in the middle of the envelope on the LoverTian page.
       </p>
 
       <div style="display:flex; gap:20px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
@@ -453,7 +453,7 @@
 
         <!-- Emoji Quick Pick Palette -->
         <div style="flex:1; min-width:260px;">
-          <div style="font-size:16px; color:var(--dark); margin-bottom:8px;">คลิกไอคอน Pixel Art ด้านล่างเพื่อตั้งค่าเป็นตราประทับ:</div>
+          <div style="font-size:16px; color:var(--dark); margin-bottom:8px;">Click a Pixel Art icon below to set as seal:</div>
           <div id="sealPixelPalette" style="display:flex; flex-wrap:wrap; gap:8px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
             <!-- Filled by JS with Pixel Art SVGs -->
           </div>
@@ -464,6 +464,39 @@
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
         <input type="text" id="sealEmojiInput" placeholder="Seal Icon / Emoji" oninput="updateSealPreview(this.value)" style="width:240px; padding:10px; font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); text-align:center;">
         <button class="anav-btn" onclick="saveSealEmoji()">SAVE ENVELOPE SEAL ICON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Letter Content Panel -->
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2><span><span data-px="px_letter_envelope"></span> LETTER CONTENT CONFIGURATION</span></h2>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
+        Customize the text inside the love letter. You can use HTML tags (like &lt;br&gt; for new line) and Pixel Arts.
+      </p>
+
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+        <label style="font-weight:bold; color:var(--dark);">Greeting</label>
+        <textarea id="cfgLetterGreeting" rows="2" style="font-family:'VT323',monospace; font-size:18px; padding:8px; border:3px solid var(--dark);"></textarea>
+
+        <label style="font-weight:bold; color:var(--dark);">Letter Body</label>
+        <textarea id="cfgLetterBody" rows="6" style="font-family:'VT323',monospace; font-size:18px; padding:8px; border:3px solid var(--dark);"></textarea>
+
+        <label style="font-weight:bold; color:var(--dark);">Question</label>
+        <textarea id="cfgLetterQuestion" rows="2" style="font-family:'VT323',monospace; font-size:18px; padding:8px; border:3px solid var(--dark);"></textarea>
+
+        <label style="font-weight:bold; color:var(--dark);">Signature</label>
+        <textarea id="cfgLetterSignature" rows="2" style="font-family:'VT323',monospace; font-size:18px; padding:8px; border:3px solid var(--dark);"></textarea>
+
+        <label style="font-weight:bold; color:var(--dark);">"Yes" Response Subtitle</label>
+        <textarea id="cfgLetterYesSub" rows="3" style="font-family:'VT323',monospace; font-size:18px; padding:8px; border:3px solid var(--dark);"></textarea>
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <button class="anav-btn" onclick="saveLetterContent()">SAVE LETTER CONTENT</button>
       </div>
     </div>
   </div>
@@ -479,7 +512,7 @@
     </div>
     <div class="token-modal-body">
       <div style="font-family:'VT323',monospace;font-size:22px;color:var(--dark);">
-        กรุณากรอก GitHub Token เพื่อเข้าสู่ LoverTian Admin:
+        Enter GitHub Token to access LoverTian Admin:
       </div>
       <input type="password" id="ltTokenInput" class="token-modal-input" placeholder="GitHub Token (ghp_... / github_pat_...)" onkeydown="if(event.key==='Enter')submitLtToken()">
       <div id="ltTokenError" style="color:#c0392b;font-size:18px;font-family:'VT323',monospace;display:none;"></div>
@@ -558,7 +591,7 @@ function submitLtToken() {
     loadSettings();
   } else {
     if (err) {
-      err.textContent = 'กรุณากรอก GitHub Token ก่อนทำรายการ';
+      err.textContent = 'Please enter GitHub Token first';
       err.style.display = 'block';
     }
   }
@@ -682,6 +715,15 @@ async function loadSettings() {
   const currentSeal = settings.lovertianEnvelopeSealEmoji || ('data:image/svg+xml;utf8,' + encodeURIComponent(PIXEL_PALETTE.find(x=>x.id==='px_letter_envelope').svg));
   if (sealEmojiInput) sealEmojiInput.value = currentSeal;
   updateSealPreview(currentSeal);
+
+  // Load Letter Content
+  if (document.getElementById('cfgLetterGreeting')) {
+    document.getElementById('cfgLetterGreeting').value = settings.lovertianLetterGreeting || 'To... the one I want to tell <span data-px="px_sakura"></span>';
+    document.getElementById('cfgLetterBody').value = settings.lovertianLetterBody || 'I\'ve been thinking for a long time<br>\nabout what to say...<br><br>\nBut every time I see your face<br>\nthe words just disappear <span data-px="px_sparkle_gold"></span><br><br>\nSo I\'m sending this letter instead <span data-px="px_letter_envelope"></span>';
+    document.getElementById('cfgLetterQuestion').value = settings.lovertianLetterQuestion || 'Will you<span data-px="px_heart_red"></span>be my girlfriend?<span data-px="px_heart_red"></span>';
+    document.getElementById('cfgLetterSignature').value = settings.lovertianLetterSignature || '&#8212; With love, AritsiaZ <span data-px="px_sakura"></span>';
+    document.getElementById('cfgLetterYesSub').value = settings.lovertianLetterYesSub || 'Thank you so much <span data-px="px_heart_sparkle"></span><br>\nI\'m the happiest person in the world!';
+  }
 }
 
 function renderLoverTianLibrary() {
@@ -691,14 +733,14 @@ function renderLoverTianLibrary() {
   const ltIcons = settings.lovertianIcons || [];
 
   if (ltIcons.length === 0) {
-    box.innerHTML = '<div style="color:var(--mid);font-size:20px;">ยังไม่มี Icon ในหมวด LoverTian (ระบบจะใช้ Emoji หัวใจสำรอง)</div>';
+    box.innerHTML = '<div style="color:var(--mid);font-size:20px;">No Icons in LoverTian yet (Heart Emojis will be used as fallback)</div>';
     return;
   }
 
   ltIcons.forEach((ic, idx) => {
     box.innerHTML += `
       <div class="asset-item">
-        <button class="asset-del-btn" onclick="deleteLoverTianIcon(${idx})" title="ลบ Icon นี้">✕</button>
+        <button class="asset-del-btn" onclick="deleteLoverTianIcon(${idx})" title="Delete this Icon">✕</button>
         <img src="${ic.url}" alt="${ic.name}">
         <span class="asset-name">${ic.name}</span>
       </div>
@@ -719,7 +761,7 @@ async function addLoverTianIcon() {
   const btn = document.getElementById('uploadBtn');
 
   if (!nameInput.value.trim() || !fileInput.files[0]) {
-    alert("กรุณาระบุชื่อ Icon และเลือกไฟล์รูปภาพ");
+    alert("Please specify an Icon Name and select an image file");
     return;
   }
 
@@ -731,7 +773,7 @@ async function addLoverTianIcon() {
     try {
       btn.disabled = true;
       btn.innerText = "UPLOADING...";
-      showMsg("กำลังอัปโหลดไฟล์ภาพไปยัง GitHub...");
+      showMsg("Uploading image to GitHub...");
 
       const base64 = e.target.result.split(',')[1];
       const safeName = sanitizeFilename(nameInput.value);
@@ -744,18 +786,19 @@ async function addLoverTianIcon() {
       if (!settings.lovertianIcons) settings.lovertianIcons = [];
       settings.lovertianIcons.push({ id, name: nameInput.value.trim(), url });
 
-      showMsg("กำลังอัปเดต settings.json...");
+      showMsg("Updating settings.json...");
       const json = JSON.stringify(settings, null, 2);
       const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with LoverTian icon', settingsSha);
       settingsSha = saveResult.content.sha;
 
       nameInput.value = '';
       fileInput.value = '';
-      showMsg("✓ อัปโหลดสำเร็จ!");
+      showMsg("✓ Upload successful!");
       renderLoverTianLibrary();
     } catch(err) {
-      alert("Error uploading LoverTian icon: " + err.message);
-      showMsg("✗ อัปโหลดล้มเหลว: " + err.message, true);
+      btn.disabled = false;
+      btn.innerText = "UPLOAD BACKGROUND ICON";
+      showMsg("✗ Upload failed: " + err.message, true);
     } finally {
       btn.disabled = false;
       btn.innerText = "UPLOAD BACKGROUND ICON";
@@ -857,9 +900,9 @@ function appendBgPixelIcon(id) {
   if (!settings.lovertianIcons.some(x => x.id === p.id)) {
     settings.lovertianIcons.push({ id: p.id, name: p.name, url: dataUrl });
     renderLoverTianLibrary();
-    showMsg(`✓ เพิ่ม Pixel Icon ${p.name} ลงใน Background เรียบร้อย!`);
+    showMsg(`✓ Added ${p.name} to Background successfully!`);
   } else {
-    showMsg(`${p.name} มีอยู่ใน Background แล้ว`);
+    showMsg(`${p.name} is already in the Background list`);
   }
 }
 
@@ -872,7 +915,7 @@ function selectSealPixelIcon(id) {
   const input = document.getElementById('sealEmojiInput');
   if (input) input.value = dataUrl;
   updateSealPreview(dataUrl);
-  showMsg(`✓ เลือก ${p.name} เป็นตราประทับแล้ว (อย่าลืมกด SAVE)`);
+  showMsg(`✓ Selected ${p.name} as seal (Don't forget to SAVE)`);
 }
 
 // ── Emoji Picker Helpers ──
@@ -909,11 +952,11 @@ async function saveBgEmojis() {
   settings.lovertianEmojis = emojis;
 
   try {
-    showMsg("กำลังบันทึก Background Emojis...");
+    showMsg("Saving Background Emojis...");
     const json = JSON.stringify(settings, null, 2);
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian background emojis', settingsSha);
     settingsSha = res.content.sha;
-    showMsg("✓ บันทึก Background Emojis สำเร็จ!");
+    showMsg("✓ Background Emojis saved successfully!");
   } catch(e) {
     alert("Error saving background emojis: " + e.message);
   }
@@ -925,13 +968,32 @@ async function saveSealEmoji() {
   settings.lovertianEnvelopeSealEmoji = emoji || '💌';
 
   try {
-    showMsg("กำลังบันทึก Envelope Seal Emoji...");
+    showMsg("Saving Envelope Seal Icon...");
     const json = JSON.stringify(settings, null, 2);
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian envelope seal emoji', settingsSha);
     settingsSha = res.content.sha;
-    showMsg("✓ บันทึก Envelope Seal Emoji สำเร็จ!");
+    showMsg("✓ Envelope Seal Icon saved successfully!");
   } catch(e) {
     alert("Error saving seal emoji: " + e.message);
+  }
+}
+
+async function saveLetterContent() {
+  settings.lovertianLetterGreeting = document.getElementById('cfgLetterGreeting').value.trim();
+  settings.lovertianLetterBody = document.getElementById('cfgLetterBody').value.trim();
+  settings.lovertianLetterQuestion = document.getElementById('cfgLetterQuestion').value.trim();
+  settings.lovertianLetterSignature = document.getElementById('cfgLetterSignature').value.trim();
+  settings.lovertianLetterYesSub = document.getElementById('cfgLetterYesSub').value.trim();
+
+  try {
+    showMsg("Saving Letter Content...");
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update LoverTian letter content', settingsSha);
+    settingsSha = res.content.sha;
+    syncSettingsToFirebase(settings);
+    showMsg("✓ Letter Content saved successfully!");
+  } catch(e) {
+    alert("Error saving letter content: " + e.message);
   }
 }
 </script>
