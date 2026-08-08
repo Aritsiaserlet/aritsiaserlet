@@ -1,251 +1,742 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LoverTian | AritsiaZ Web</title>
+  <meta name="description" content="A special letter for someone special — LoverTian by AritsiaZ">
+  <title>LoverTian | AritsiaZ</title>
   <link rel="icon" type="image/jpeg" href="favicon-small.jpg">
-  
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
 
   <style>
-    :root {
-      --bg-dark: #0f172a;
-      --surface-dark: #1e293b;
-      --greybox-bg: #334155;
-      --greybox-border: #64748b;
-      --greybox-accent: #94a3b8;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-gold: #e8c87a;
-    }
+    /* ── LoverTian Page Styles ── */
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
+    .lovertian-page {
+      position: relative;
+      z-index: 5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px;
+      justify-content: center;
+      padding: 40px 20px 80px;
+      gap: 0;
     }
 
-    .container {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+    /* Floating hearts background */
+    .hearts-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
     }
 
-    /* Top Navbar */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--surface-dark);
-      border: 2px solid var(--greybox-border);
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    .float-heart {
+      position: absolute;
+      font-size: 24px;
+      animation: heartFloat linear infinite;
+      opacity: 0.35;
+      bottom: -40px;
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    @keyframes heartFloat {
+      0%   { transform: translateY(0) rotate(-15deg); opacity: 0; }
+      10%  { opacity: 0.35; }
+      90%  { opacity: 0.35; }
+      100% { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
     }
 
-    .brand-icon {
-      font-size: 28px;
-      color: var(--accent-gold);
+    /* ── Top Nav back button ── */
+    .lt-nav {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
     }
 
-    h1.title {
-      font-family: 'VT323', monospace;
-      font-size: 32px;
-      letter-spacing: 2px;
-      color: var(--accent-gold);
-      margin: 0;
-    }
-
-    .back-btn {
+    .lt-nav a {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--greybox-bg);
-      color: var(--text-main);
-      text-decoration: none;
       font-family: 'VT323', monospace;
-      font-size: 20px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 2px solid var(--greybox-border);
-      transition: all 0.2s ease;
+      font-size: 22px;
+      color: var(--dark);
+      background: var(--white);
+      border: 3px solid var(--dark);
+      padding: 6px 14px;
+      box-shadow: 3px 3px 0 var(--dark);
+      text-decoration: none;
+      transition: all 0.1s;
     }
 
-    .back-btn:hover {
-      background: var(--accent-gold);
-      color: #0f172a;
-      border-color: var(--accent-gold);
-      transform: translateY(-2px);
+    .lt-nav a:hover {
+      background: var(--gold-l);
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--dark);
     }
 
-    /* Greybox Placeholder Area */
-    .greybox-card {
-      background: var(--surface-dark);
-      border: 2px dashed var(--greybox-border);
-      border-radius: 16px;
-      padding: 40px 24px;
+    /* ── Title ── */
+    .lt-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 22px;
+      color: var(--dark);
+      text-shadow: 4px 4px 0 rgba(255, 255, 255, 0.8);
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      text-align: center;
+      animation: fadeUp 0.9s ease both;
+      position: relative;
+      z-index: 5;
+    }
+
+    .lt-title span {
+      color: #c0392b;
+    }
+
+    /* ── Envelope ── */
+    .envelope-wrap {
+      position: relative;
+      z-index: 5;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 20px;
-      min-height: 420px;
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.2);
+      animation: fadeUp 0.9s 0.2s ease both;
+    }
+
+    .envelope {
+      width: 340px;
+      height: 230px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .envelope:hover {
+      transform: translateY(-6px) scale(1.03);
+    }
+
+    .envelope.opened {
+      animation: envelopeShake 0.4s ease;
+      pointer-events: none;
+    }
+
+    @keyframes envelopeShake {
+      0%   { transform: rotate(0deg); }
+      20%  { transform: rotate(-5deg) translateY(-4px); }
+      40%  { transform: rotate(5deg)  translateY(-8px); }
+      60%  { transform: rotate(-3deg) translateY(-4px); }
+      80%  { transform: rotate(3deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* Envelope body */
+    .env-body {
+      width: 100%;
+      height: 100%;
+      background: var(--gold-l);
+      border: 4px solid var(--dark);
+      box-shadow: 6px 6px 0 var(--dark);
       position: relative;
       overflow: hidden;
     }
 
-    .greybox-watermark {
+    /* Envelope triangle flap (top) */
+    .env-flap {
+      width: 0;
+      height: 0;
+      border-left: 170px solid transparent;
+      border-right: 170px solid transparent;
+      border-top: 120px solid var(--gold);
       position: absolute;
-      top: 16px;
-      left: 20px;
-      font-family: 'VT323', monospace;
-      font-size: 16px;
-      color: var(--text-muted);
-      opacity: 0.6;
-      letter-spacing: 1px;
+      top: 0;
+      left: 0;
+      z-index: 3;
+      transform-origin: top center;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: drop-shadow(0 4px 0 rgba(26,42,58,0.25));
     }
 
-    .greybox-content {
-      width: 100%;
-      max-width: 600px;
-      background: var(--greybox-bg);
-      border: 2px solid var(--greybox-border);
-      border-radius: 12px;
-      padding: 32px 20px;
+    .envelope.opened .env-flap {
+      transform: rotateX(180deg);
+    }
+
+    /* Envelope inner bottom V */
+    .env-bottom {
+      width: 0;
+      height: 0;
+      border-left: 170px solid transparent;
+      border-right: 170px solid transparent;
+      border-bottom: 120px solid var(--gold-d);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    /* Envelope side Vs */
+    .env-left {
+      width: 0;
+      height: 0;
+      border-top: 115px solid transparent;
+      border-bottom: 115px solid transparent;
+      border-left: 130px solid rgba(232,200,122,0.6);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+
+    .env-right {
+      width: 0;
+      height: 0;
+      border-top: 115px solid transparent;
+      border-bottom: 115px solid transparent;
+      border-right: 130px solid rgba(232,200,122,0.6);
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 2;
+    }
+
+    /* Heart seal */
+    .env-seal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      z-index: 4;
+      animation: sealPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes sealPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50%       { transform: translate(-50%, -50%) scale(1.15); }
+    }
+
+    .envelope.opened .env-seal {
+      animation: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Click hint */
+    .env-hint {
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      color: var(--dark);
+      margin-top: 18px;
+      opacity: 0.8;
+      animation: hintBlink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes hintBlink {
+      0%, 100% { opacity: 0.8; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* ── Letter Modal ── */
+    .letter-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(20, 40, 65, 0.75);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 16px;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+    }
+
+    .letter-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .letter-box {
+      background: #fffef5;
+      border: 4px solid var(--dark);
+      width: calc(100vw - 40px);
+      max-width: 520px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
+      padding: 0;
+      transform: scale(0.88) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
     }
 
-    .greybox-icon-wrap {
-      width: 72px;
-      height: 72px;
-      background: rgba(148, 163, 184, 0.15);
-      border: 2px dashed var(--greybox-border);
-      border-radius: 50%;
+    .letter-overlay.open .letter-box {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Letter header strip */
+    .letter-header {
+      background: var(--gold);
+      border-bottom: 4px solid var(--dark);
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 10px;
     }
 
-    .greybox-icon-wrap span {
-      font-size: 36px;
-      color: var(--greybox-accent);
+    .letter-header-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 13px;
+      color: var(--dark);
+      letter-spacing: 2px;
     }
 
-    .greybox-title {
+    /* Letter close btn */
+    .letter-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: #c0392b;
+      border: 3px solid var(--dark);
+      width: 32px;
+      height: 32px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      z-index: 4;
+      box-shadow: 2px 2px 0 var(--dark);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .letter-close:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--dark);
+    }
+
+    /* Letter lines decoration */
+    .letter-content {
+      padding: 28px 32px 24px;
+      position: relative;
+    }
+
+    .letter-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .letter-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(100, 120, 200, 0.12);
+    }
+
+    /* Letter text */
+    .letter-greeting {
       font-family: 'VT323', monospace;
-      font-size: 28px;
-      color: var(--accent-gold);
+      font-size: 26px;
+      color: var(--dark);
+      margin-bottom: 18px;
     }
 
-    .greybox-subtitle {
+    .letter-text {
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      color: var(--dark);
+      line-height: 1.75;
+      margin-bottom: 28px;
+    }
+
+    .letter-question {
+      font-family: 'Press Start 2P', cursive;
       font-size: 14px;
-      color: var(--text-muted);
-      max-width: 440px;
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    .letter-question span {
+      color: #c0392b;
+    }
+
+    /* ── Yes / No Buttons ── */
+    .answer-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      min-height: 60px;
+      position: relative;
+    }
+
+    .btn-yes {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 16px;
+      color: var(--dark);
+      background: var(--gold);
+      border: 4px solid var(--dark);
+      padding: 14px 32px;
+      cursor: pointer;
+      box-shadow: 5px 5px 0 var(--dark);
+      transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn-yes:hover {
+      background: var(--gold-l);
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 var(--dark);
+    }
+
+    .btn-yes:active {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 var(--dark);
+    }
+
+    .btn-no {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      color: var(--dark);
+      background: var(--white);
+      border: 4px solid var(--dark);
+      padding: 10px 22px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--dark);
+      white-space: nowrap;
+      position: fixed;
+      transition: left 0.08s ease, top 0.08s ease, font-size 0.3s, padding 0.3s;
+      z-index: 9999;
+    }
+
+    /* ── Yes Response Screen ── */
+    .yes-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 32px 20px;
+      text-align: center;
+    }
+
+    .yes-screen.show {
+      display: flex;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .yes-emoji {
+      font-size: 56px;
+      animation: yesJump 0.5s ease infinite alternate;
+    }
+
+    @keyframes yesJump {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-12px); }
+    }
+
+    .yes-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 18px;
+      color: #c0392b;
+      line-height: 1.6;
+    }
+
+    .yes-sub {
+      font-family: 'VT323', monospace;
+      font-size: 26px;
+      color: var(--dark);
       line-height: 1.5;
     }
 
-    /* Skeleton Grey Wireframe Boxes */
-    .skeleton-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
+    /* ── Letter signature ── */
+    .letter-signature {
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      color: var(--dark);
+      text-align: right;
+      margin-top: 12px;
+      opacity: 0.85;
+    }
+
+    /* divider */
+    .letter-divider {
       width: 100%;
-      margin-top: 8px;
+      height: 3px;
+      background: var(--dark);
+      margin: 20px 0;
+      opacity: 0.15;
     }
 
-    .skeleton-box {
-      height: 80px;
-      background: rgba(148, 163, 184, 0.1);
-      border: 1px dashed var(--greybox-border);
-      border-radius: 8px;
+    /* Decorative hearts on letter */
+    .letter-deco {
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-family: 'VT323', monospace;
-      font-size: 16px;
-      color: var(--greybox-accent);
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 18px;
     }
 
-    footer {
-      text-align: center;
-      font-family: 'VT323', monospace;
-      font-size: 18px;
-      color: var(--text-muted);
-      margin-top: auto;
-      padding: 16px 0;
+    /* ── Confetti burst ── */
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--dark);
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall 1.2s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+      100% { transform: translate(var(--cx), var(--cy)) rotate(720deg) scale(0); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand-group">
-        <span class="material-symbols-outlined brand-icon">favorite</span>
-        <h1 class="title">LOVER TIAN</h1>
+
+<!-- Floating hearts background -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- Custom background from index style -->
+<div class="custom-bg" id="customBg"></div>
+
+<!-- Back nav -->
+<div class="lt-nav">
+  <a href="index.html">&#8592; Portfolio</a>
+</div>
+
+<!-- Main page -->
+<main class="lovertian-page">
+  <h1 class="lt-title">LOVER<span>&#9829;</span>TIAN</h1>
+
+  <!-- Envelope -->
+  <div class="envelope-wrap" id="envelopeWrap">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+      <div class="env-body">
+        <div class="env-flap"></div>
+        <div class="env-bottom"></div>
+        <div class="env-left"></div>
+        <div class="env-right"></div>
+        <div class="env-seal">&#128140;</div>
       </div>
-      <a href="index.html" class="back-btn">
-        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span>
-        Portfolio
-      </a>
-    </header>
-
-    <main>
-      <div class="greybox-card">
-        <div class="greybox-watermark">[ GREYBOX MODE — RAKTIANNA ]</div>
-
-        <div class="greybox-content">
-          <div class="greybox-icon-wrap">
-            <span class="material-symbols-outlined">widgets</span>
-          </div>
-
-          <h2 class="greybox-title">LoverTian Page Placeholder</h2>
-          <p class="greybox-subtitle">
-            Welcome to LoverTian! Access granted via secret code <strong>RakTianNa</strong>.
-            This module is currently in greybox placeholder mode.
-          </p>
-
-          <div class="skeleton-grid">
-            <div class="skeleton-box">GREYBOX #1</div>
-            <div class="skeleton-box">GREYBOX #2</div>
-            <div class="skeleton-box">GREYBOX #3</div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <footer>
-      &copy; 2026 AritsiaZ Web — LoverTian Module
-    </footer>
+    </div>
+    <div class="env-hint" id="envHint">[ คลิกเพื่อเปิดจดหมาย ]</div>
   </div>
+</main>
+
+<!-- Letter Modal -->
+<div class="letter-overlay" id="letterOverlay">
+  <div class="letter-box" id="letterBox">
+    <!-- Header -->
+    <div class="letter-header">
+      <span>&#128140;</span>
+      <div class="letter-header-title">LOVE LETTER</div>
+      <span>&#128140;</span>
+    </div>
+    <button class="letter-close" onclick="closeLetter()">&#10005;</button>
+
+    <!-- Letter body -->
+    <div class="letter-content" id="letterContent">
+      <div class="letter-lines" id="letterLines"></div>
+      <div class="letter-deco">&#128151; &#128150; &#128151;</div>
+      <div class="letter-greeting">ถึง... คนที่ฉันอยากบอก &#127800;</div>
+      <div class="letter-text">
+        ฉันนั่งคิดมานานแล้ว<br>
+        ว่าจะพูดยังไงดี...<br><br>
+        แต่ทุกครั้งที่เห็นหน้าเธอ<br>
+        คำพูดมันหายไปหมดเลย &#10027;<br><br>
+        เลยขอส่งจดหมายฉบับนี้มาแทน &#9993;
+      </div>
+      <div class="letter-divider"></div>
+      <div class="letter-question">
+        เธอจะ<span>&#10084;</span>ยอมเป็นแฟนกัน<span>&#10084;</span>ฉันไหม?
+      </div>
+
+      <!-- Answer buttons -->
+      <div class="answer-row" id="answerRow">
+        <button class="btn-yes" id="btnYes" onclick="sayYes()">&#10003; YES !</button>
+        <button class="btn-no" id="btnNo" onmouseenter="runAway(this)">&#10007; No</button>
+      </div>
+
+      <div class="letter-signature">&#8212; ด้วยความรัก, AritsiaZ &#127800;</div>
+    </div>
+
+    <!-- Yes Screen (hidden initially) -->
+    <div class="yes-screen" id="yesScreen">
+      <div class="yes-emoji">&#129392;</div>
+      <div class="yes-title">YAY!! &#127881;<br>SHE SAID YES!!</div>
+      <div class="yes-sub">
+        ขอบคุณมากๆ เลยนะ &#128150;<br>
+        ฉันดีใจมากที่สุดในโลก!
+      </div>
+      <div style="font-size: 36px; margin-top: 8px;">&#128151; &#128149; &#128151;</div>
+    </div>
+  </div>
+</div>
+
+<footer style="position:fixed;bottom:16px;left:0;right:0;text-align:center;font-family:'VT323',monospace;font-size:18px;color:var(--dark);opacity:0.6;z-index:5;pointer-events:none;">
+  &copy; 2026 AritsiaZ &mdash; LoverTian &#128140;
+</footer>
+
+<script>
+// ── Floating Hearts ──
+(function spawnHearts() {
+  const bg = document.getElementById('heartsBg');
+  const emojis = ['\u{1F497}', '\u{1F496}', '\u{1F495}', '\u2764\uFE0F', '\u{1F338}', '\u2728', '\u{1F4AB}'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('div');
+    h.className = 'float-heart';
+    h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.fontSize = (16 + Math.random() * 22) + 'px';
+    const dur = 8 + Math.random() * 12;
+    h.style.animationDuration = dur + 's';
+    h.style.animationDelay = -(Math.random() * dur) + 's';
+    bg.appendChild(h);
+  }
+})();
+
+// ── Letter lines ──
+(function drawLines() {
+  const container = document.getElementById('letterLines');
+  for (let i = 0; i < 18; i++) {
+    const line = document.createElement('div');
+    line.className = 'letter-line';
+    line.style.top = (40 + i * 32) + 'px';
+    container.appendChild(line);
+  }
+})();
+
+// ── Position No button initially ──
+let noInitialized = false;
+function initNoButton() {
+  if (noInitialized) return;
+  noInitialized = true;
+  const btn = document.getElementById('btnNo');
+  const row = document.getElementById('answerRow');
+  const rowRect = row.getBoundingClientRect();
+  // Place it in the answer row area to the right of YES
+  btn.style.left = (rowRect.left + rowRect.width - btn.offsetWidth - 16) + 'px';
+  btn.style.top  = (rowRect.top  + (rowRect.height - btn.offsetHeight) / 2) + 'px';
+}
+
+// ── Open Envelope ──
+function openEnvelope() {
+  const env = document.getElementById('envelope');
+  const hint = document.getElementById('envHint');
+  env.classList.add('opened');
+  hint.style.display = 'none';
+
+  setTimeout(() => {
+    const overlay = document.getElementById('letterOverlay');
+    overlay.classList.add('open');
+    // Initialize No button position after modal is visible
+    setTimeout(initNoButton, 200);
+  }, 600);
+}
+
+// ── Close Letter ──
+function closeLetter() {
+  document.getElementById('letterOverlay').classList.remove('open');
+  setTimeout(() => {
+    const env = document.getElementById('envelope');
+    env.classList.remove('opened');
+    env.style.pointerEvents = 'auto';
+    document.getElementById('envHint').style.display = '';
+    // Reset letter state
+    document.getElementById('letterContent').style.display = '';
+    document.getElementById('yesScreen').classList.remove('show');
+    resetNo();
+    noInitialized = false;
+  }, 400);
+}
+
+// ── Say Yes ──
+function sayYes() {
+  spawnConfetti();
+  document.getElementById('letterContent').style.display = 'none';
+  document.getElementById('yesScreen').classList.add('show');
+  // Hide No button
+  const btn = document.getElementById('btnNo');
+  btn.style.display = 'none';
+}
+
+// ── No Button Run Away ──
+let noRunCount = 0;
+
+function runAway(btn) {
+  noRunCount++;
+
+  // Shrink button text gradually (min size = 6px)
+  const newSize = Math.max(6, 14 - noRunCount * 1.2);
+  const newPadY = Math.max(2, 10 - noRunCount);
+  const newPadX = Math.max(4, 22 - noRunCount * 2);
+  btn.style.fontSize = newSize + 'px';
+  btn.style.padding  = newPadY + 'px ' + newPadX + 'px';
+
+  // Calculate safe zone to keep button inside the letter-box
+  const box      = document.getElementById('letterBox');
+  const boxRect  = box.getBoundingClientRect();
+  const btnW     = btn.offsetWidth  || 80;
+  const btnH     = btn.offsetHeight || 40;
+
+  const margin   = 10;
+  const minX     = boxRect.left   + margin;
+  const maxX     = boxRect.right  - btnW - margin;
+  const minY     = boxRect.top    + margin;
+  const maxY     = boxRect.bottom - btnH - margin;
+
+  let newLeft = minX + Math.random() * (maxX - minX);
+  let newTop  = minY + Math.random() * (maxY - minY);
+
+  // Clamp to viewport just in case
+  newLeft = Math.max(0, Math.min(newLeft, window.innerWidth  - btnW));
+  newTop  = Math.max(0, Math.min(newTop,  window.innerHeight - btnH));
+
+  btn.style.left = newLeft + 'px';
+  btn.style.top  = newTop  + 'px';
+}
+
+function resetNo() {
+  noRunCount = 0;
+  const btn = document.getElementById('btnNo');
+  btn.style.display   = '';
+  btn.style.fontSize  = '';
+  btn.style.padding   = '';
+  btn.style.left      = '';
+  btn.style.top       = '';
+  btn.style.transition = '';
+}
+
+// ── Confetti ──
+function spawnConfetti() {
+  const colors = ['#e8c87a', '#f5e0a0', '#4a9fd4', '#7ec8e8', '#c0392b', '#aaddee', '#fff'];
+  for (let i = 0; i < 45; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.background   = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    piece.style.width  = (8 + Math.random() * 10) + 'px';
+    piece.style.height = (8 + Math.random() * 10) + 'px';
+    piece.style.left   = (window.innerWidth  / 2 + (Math.random() - 0.5) * 80) + 'px';
+    piece.style.top    = (window.innerHeight / 2 + (Math.random() - 0.5) * 80) + 'px';
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = 100 + Math.random() * 250;
+    piece.style.setProperty('--cx', Math.cos(angle) * dist + 'px');
+    piece.style.setProperty('--cy', Math.sin(angle) * dist + 'px');
+    piece.style.animationDelay = (Math.random() * 0.3) + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 1600);
+  }
+}
+</script>
 </body>
 </html>
