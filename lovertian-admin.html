@@ -227,6 +227,123 @@
     }
     .msg-box.ok { display: block; background: #abebc6; border: 2px solid var(--dark); color: #145a32; }
     .msg-box.err { display: block; background: #fadbd8; border: 2px solid var(--dark); color: #78281f; }
+
+    /* Emoji Picker Buttons */
+    .emoji-picker-btn {
+      background: var(--white);
+      border: 2px solid var(--dark);
+      font-size: 24px;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.1s;
+      box-shadow: 2px 2px 0 var(--dark);
+      user-select: none;
+    }
+    .emoji-picker-btn:hover {
+      transform: scale(1.15) translateY(-2px);
+      background: var(--gold-l);
+    }
+
+    /* ── Token Access Modal ── */
+    .token-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(20, 40, 65, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .token-modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .token-modal-box {
+      background: #fffef5;
+      border: 4px solid var(--dark);
+      width: calc(100vw - 40px);
+      max-width: 460px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .token-modal-overlay.open .token-modal-box {
+      transform: scale(1);
+    }
+    .token-modal-header {
+      background: var(--gold);
+      border-bottom: 4px solid var(--dark);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 13px;
+      color: var(--dark);
+    }
+    .token-modal-close {
+      background: var(--danger);
+      color: white;
+      border: 2px solid var(--dark);
+      width: 28px;
+      height: 28px;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .token-modal-close:hover {
+      background: #c0392b;
+    }
+    .token-modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .token-modal-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      border: 3px solid var(--dark);
+      background: var(--white);
+      box-sizing: border-box;
+      outline: none;
+    }
+    .token-modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .lt-modal-btn {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      padding: 10px 16px;
+      border: 3px solid var(--dark);
+      box-shadow: 3px 3px 0 var(--dark);
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .lt-modal-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--dark);
+    }
+    .lt-modal-btn.yes {
+      background: var(--gold);
+      color: var(--dark);
+    }
+    .lt-modal-btn.cancel {
+      background: var(--sky4);
+      color: var(--dark);
+    }
   </style>
 </head>
 <body>
@@ -245,6 +362,22 @@
   <!-- GitHub Connection Box -->
   <div id="ghStatusBox" class="gh-status-box" onclick="editTokenPrompt()">
     <div id="ghStatus">Checking connection to GitHub...</div>
+  </div>
+
+  <!-- Built-in Pixel Art Presets Card -->
+  <div class="panel-card">
+    <div class="panel-header" style="background: var(--sky3);">
+      <h2><span>🎮 BUILT-IN PIXEL ART PRESET GALLERY (คลังไอคอนพิกเซลสำเร็จรูป)</span></h2>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 20px; color: var(--dark); margin-top: 0; margin-bottom: 16px;">
+        คลิกไอคอน Pixel Art ด้านล่างเพื่อเพิ่มลงในหมวด Background หรือเลือกเป็นตราประทับซองจดหมายได้ทันที!
+      </p>
+
+      <div id="pixelPresetGrid" style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:12px;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
   </div>
 
   <!-- LoverTian Assets Panel -->
@@ -269,10 +402,118 @@
         <button class="anav-btn" id="uploadBtn" onclick="addLoverTianIcon()">UPLOAD BACKGROUND ICON</button>
       </div>
 
+      <!-- Floating Emojis Picker Section -->
+      <div style="margin-top: 28px; border-top: 3px dashed var(--dark); padding-top: 20px;">
+        <h3 style="font-family:'Press Start 2P',cursive; font-size:13px; color:var(--dark); margin-bottom:10px;">✨ FLOATING BACKGROUND EMOJIS</h3>
+        <p style="font-size:19px; color:var(--mid); margin-top:0; margin-bottom:12px;">
+          คลิก Emoji ด้านล่างเพื่อเพิ่มลงในรายการ Background (จะลอยคละร่วมกับรูปภาพไอคอนที่อัปโหลดไว้)
+        </p>
+
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌸')">🌸</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💖')">💖</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💗')">💗</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💓')">💓</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💕')">💕</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💞')">💞</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('❤️')">❤️</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('❣️')">❣️</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💌')">💌</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('✨')">✨</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('💫')">💫</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌹')">🌹</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌻')">🌻</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌺')">🌺</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🦋')">🦋</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🎀')">🎀</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🧸')">🧸</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🎁')">🎁</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('⭐')">⭐</button>
+          <button type="button" class="emoji-picker-btn" onclick="appendBgEmoji('🌙')">🌙</button>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="bgEmojiInput" placeholder="Emojis (e.g. 🌸 💖 💗 ✨)" style="flex:1; padding:10px; font-family:'VT323',monospace; font-size:24px; border:3px solid var(--dark);">
+          <button class="anav-btn" onclick="saveBgEmojis()">SAVE EMOJIS</button>
+        </div>
+      </div>
+
       <div id="msgBox" class="msg-box"></div>
     </div>
   </div>
 
+  <!-- Envelope Seal Emoji Panel -->
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2><span>💌 ENVELOPE SEAL EMOJI (ตราประทับซองจดหมาย)</span></h2>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
+        เลือก Emoji สำหรับตราประทับตรงกลางซองจดหมายในหน้า LoverTian
+      </p>
+
+      <div style="display:flex; gap:20px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
+        <!-- Seal Live Preview Box -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+          <div style="font-size:16px; color:var(--dark); font-weight:bold;">PREVIEW</div>
+          <div id="sealPreview" style="font-size: 50px; border: 4px solid var(--dark); background: var(--gold-l); width: 88px; height: 88px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0 var(--dark);">💌</div>
+        </div>
+
+        <!-- Emoji Quick Pick Palette -->
+        <div style="flex:1; min-width:260px;">
+          <div style="font-size:16px; color:var(--dark); margin-bottom:8px;">คลิก Emoji ด้านล่างเพื่อตั้งค่าเป็นตราประทับ:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; background:var(--sky4); padding:10px; border:3px solid var(--dark);">
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💌')">💌</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('❤️')">❤️</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💖')">💖</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💗')">💗</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💓')">💓</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💕')">💕</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💞')">💞</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('❣️')">❣️</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🌸')">🌸</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🌹')">🌹</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🌺')">🌺</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🎀')">🎀</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🧸')">🧸</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('✨')">✨</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('⭐')">⭐</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('👑')">👑</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('💍')">💍</button>
+            <button type="button" class="emoji-picker-btn" onclick="selectSealEmoji('🕊️')">🕊️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input & Save Row -->
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <input type="text" id="sealEmojiInput" placeholder="Seal Emoji (e.g. 💌)" oninput="updateSealPreview(this.value)" style="width:160px; padding:10px; font-family:'VT323',monospace; font-size:24px; border:3px solid var(--dark); text-align:center;">
+        <button class="anav-btn" onclick="saveSealEmoji()">SAVE ENVELOPE SEAL EMOJI</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Retro Token Access Modal -->
+<div class="token-modal-overlay" id="tokenModalOverlay" onclick="if(event.target===this)closeTokenModal()">
+  <div class="token-modal-box">
+    <div class="token-modal-header">
+      <span>⚙ LOVERTIAN ADMIN</span>
+      <button class="token-modal-close" onclick="closeTokenModal()">✕</button>
+    </div>
+    <div class="token-modal-body">
+      <div style="font-family:'VT323',monospace;font-size:22px;color:var(--dark);">
+        กรุณากรอก GitHub Token เพื่อเข้าสู่ LoverTian Admin:
+      </div>
+      <input type="password" id="ltTokenInput" class="token-modal-input" placeholder="GitHub Token (ghp_... / github_pat_...)" onkeydown="if(event.key==='Enter')submitLtToken()">
+      <div id="ltTokenError" style="color:#c0392b;font-size:18px;font-family:'VT323',monospace;display:none;"></div>
+      <div class="token-modal-actions">
+        <button class="lt-modal-btn cancel" onclick="closeTokenModal()">CANCEL</button>
+        <button class="lt-modal-btn yes" onclick="submitLtToken()">SUBMIT</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -297,19 +538,11 @@ function sanitizeFilename(name) {
   return name.replace(/[^a-z0-9]/gi, '_').toLowerCase().replace(/_+/g, '_').replace(/^_|_$/g, '') || 'file';
 }
 
-// ── Auth Check ──
+// ── Auth Check & Modal ──
 window.addEventListener('DOMContentLoaded', () => {
   const savedToken = sessionStorage.getItem('ghToken');
   if(!savedToken) {
-    const inputToken = prompt("กรุณากรอก GitHub Personal Access Token เพื่อเข้าสู่ LoverTian Admin:");
-    if(inputToken && inputToken.trim()) {
-      sessionStorage.setItem('ghToken', inputToken.trim());
-      GH_TOKEN = inputToken.trim();
-      document.getElementById('adminContainer').style.display = 'flex';
-      loadSettings();
-    } else {
-      window.location.href = 'lovertian.html';
-    }
+    openTokenModal();
   } else {
     GH_TOKEN = savedToken;
     document.getElementById('adminContainer').style.display = 'flex';
@@ -317,17 +550,52 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+function openTokenModal() {
+  const overlay = document.getElementById('tokenModalOverlay');
+  const input = document.getElementById('ltTokenInput');
+  const err = document.getElementById('ltTokenError');
+  if (input) input.value = GH_TOKEN || '';
+  if (err) err.style.display = 'none';
+  if (overlay) {
+    overlay.classList.add('open');
+    setTimeout(() => { if(input) input.focus(); }, 100);
+  }
+}
+
+function closeTokenModal() {
+  const overlay = document.getElementById('tokenModalOverlay');
+  if (overlay) overlay.classList.remove('open');
+  if (!sessionStorage.getItem('ghToken')) {
+    window.location.href = 'lovertian.html';
+  }
+}
+
+function submitLtToken() {
+  const input = document.getElementById('ltTokenInput');
+  const err = document.getElementById('ltTokenError');
+  const val = input ? input.value.trim() : '';
+
+  if (val) {
+    sessionStorage.setItem('ghToken', val);
+    GH_TOKEN = val;
+    closeTokenModal();
+    document.getElementById('adminContainer').style.display = 'flex';
+    loadSettings();
+  } else {
+    if (err) {
+      err.textContent = 'กรุณากรอก GitHub Token ก่อนทำรายการ';
+      err.style.display = 'block';
+    }
+  }
+}
+
 function logout(){
   sessionStorage.removeItem('ghToken');
   window.location.href = 'lovertian.html';
 }
 
 function editTokenPrompt() {
-  const t = prompt("Enter new GitHub Token:", GH_TOKEN);
-  if(t !== null && t.trim()) {
-    sessionStorage.setItem('ghToken', t.trim());
-    location.reload();
-  }
+  openTokenModal();
 }
 
 // ── GitHub API Helpers ──
@@ -424,6 +692,20 @@ async function loadSettings() {
   }
 
   renderLoverTianLibrary();
+  renderPixelPresets();
+
+  // Load Background Emojis
+  const bgEmojiInput = document.getElementById('bgEmojiInput');
+  if (bgEmojiInput) {
+    const emojis = settings.lovertianEmojis || ['🌸', '💖', '💗', '💓', '❤️', '✨', '💫'];
+    bgEmojiInput.value = Array.isArray(emojis) ? emojis.join(' ') : emojis;
+  }
+
+  // Load Envelope Seal Emoji
+  const sealEmojiInput = document.getElementById('sealEmojiInput');
+  const currentSeal = settings.lovertianEnvelopeSealEmoji || '💌';
+  if (sealEmojiInput) sealEmojiInput.value = currentSeal;
+  updateSealPreview(currentSeal);
 }
 
 function renderLoverTianLibrary() {
@@ -521,6 +803,142 @@ async function deleteLoverTianIcon(idx) {
     } catch(e) {
       alert("Error deleting icon: " + e.message);
     }
+  }
+}
+
+// ── Pixel Art Presets Data ──
+const PIXEL_PRESETS = [
+  { id: 'px_heart_red', name: 'Pixel Red Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#e74c3c"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ff7675"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_pink', name: 'Pixel Pink Heart', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#fd79a8"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_flower_sakura', name: 'Pixel Sakura', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges"><path d="M4 1h4v2H4zM1 4h2v4H1zM9 4h2v4H9zM4 9h4v2H4z" fill="#ff9ff3"/><path d="M3 2h2v2H3zM7 2h2v2H7zM3 8h2v2H3zM7 8h2v2H7zM4 4h4v4H4z" fill="#fd79a8"/><path d="M5 5h2v2H5z" fill="#feca57"/><path d="M4 0h4v1H4zM8 1h1v1H8zM9 2h1v2H9zM11 4h1v4H11zM9 8h1v2H9zM8 10h1v1H8zM4 11h4v1H4zM3 10h1v1H3zM2 8h1v2H2zM0 4h1v4H0zM2 2h1v2H2zM3 1h1v1H3z" fill="#2d3436"/></svg>` },
+  { id: 'px_letter_love', name: 'Pixel Envelope', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 10" width="36" height="26" shape-rendering="crispEdges"><path d="M1 1h12v8H1z" fill="#fffef5"/><path d="M2 2h10v1H2zM3 3h8v1H3zM4 4h6v1H4zM5 5h4v1H5z" fill="#ffeaa7"/><path d="M6 4h2v2H6zM5 5h4v1H5z" fill="#e74c3c"/><path d="M0 0h14v1H0zM0 9h14v1H0zM0 0h1v10H0zM13 0h1v10H13z" fill="#2d3436"/></svg>` },
+  { id: 'px_star_gold', name: 'Pixel Gold Star', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 11" width="36" height="36" shape-rendering="crispEdges"><path d="M5 1h1v2H5zM4 3h3v2H4zM1 4h9v2H1zM2 6h7v2H2zM3 8h2v2H3zM6 8h2v2H6z" fill="#feca57"/><path d="M5 2h1v1H5zM4 4h1v1H4z" fill="#ffffff"/><path d="M5 0h1v1H5zM6 1h1v2H6zM7 3h2v1H7zM9 3h2v1H9zM10 4h1v2H10zM9 6h1v1H9zM8 7h1v1H8zM8 8h1v2H8zM6 10h2v1H6zM5 9h1v1H5zM3 10h2v1H3zM2 8h1v2H2zM2 7h1v1H2zM1 6h1v1H1zM0 4h1v2H0zM0 3h2v1H0zM2 3h2v1H2zM4 1h1v2H4z" fill="#2d3436"/></svg>` },
+  { id: 'px_sparkle_magic', name: 'Pixel Sparkle', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9" width="32" height="32" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#54a0ff"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#74b9ff"/></svg>` },
+  { id: 'px_rose_red', name: 'Pixel Red Rose', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="32" height="35" shape-rendering="crispEdges"><path d="M3 1h5v4H3z" fill="#e74c3c"/><path d="M4 2h2v2H4z" fill="#ff7675"/><path d="M5 5h1v4H5z" fill="#10ac84"/><path d="M3 7h2v2H3zM6 6h2v2H6z" fill="#1dd1a1"/><path d="M3 0h5v1H3zM8 1h1v4H8zM3 5h5v1H3zM2 1h1v4H2zM5 9h1v3H5zM2 7h1v1H2zM3 9h2v1H3zM6 6h1v1H6zM8 8h1v1H8z" fill="#2d3436"/></svg>` },
+  { id: 'px_ribbon_pink', name: 'Pixel Ribbon', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 9" width="38" height="26" shape-rendering="crispEdges"><path d="M1 2h4v4H1zM8 2h4v4H8z" fill="#ff9ff3"/><path d="M5 3h3v3H5z" fill="#fd79a8"/><path d="M6 4h1v1H6z" fill="#ffffff"/><path d="M2 6h2v2H2zM9 6h2v2H9z" fill="#e84393"/><path d="M1 1h4v1H1zM8 1h4v1H8zM0 2h1v4H0zM12 2h1v4H12zM5 2h3v1H5zM5 5h3v1H5zM1 6h4v1H1zM8 6h4v1H8z" fill="#2d3436"/></svg>` },
+  { id: 'px_ring_diamond', name: 'Pixel Diamond Ring', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="32" height="35" shape-rendering="crispEdges"><path d="M4 1h3v3H4z" fill="#48dbfb"/><path d="M5 2h1v1H5z" fill="#ffffff"/><path d="M2 5h7v5H2z" fill="#feca57"/><path d="M4 7h3v2H4z" fill="#fffef5"/><path d="M4 0h3v1H4zM3 1h1v2H3zM7 1h1v2H7zM4 4h3v1H4zM2 4h1v1H2zM8 4h1v1H8zM1 5h1v5H1zM9 5h1v5H9zM2 10h7v1H2z" fill="#2d3436"/></svg>` },
+  { id: 'px_bear_cute', name: 'Pixel Cute Bear', svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 11" width="36" height="33" shape-rendering="crispEdges"><path d="M1 1h3v3H1zM8 1h3v3H8z" fill="#cc8e35"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ff7675"/><path d="M1 3h10v6H1z" fill="#e1b12c"/><path d="M4 6h4v3H4z" fill="#fffef5"/><path d="M3 5h1v1H3zM8 5h1v1H8zM5 6h2v1H5z" fill="#2d3436"/></svg>` }
+];
+
+function renderPixelPresets() {
+  const grid = document.getElementById('pixelPresetGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  PIXEL_PRESETS.forEach(p => {
+    grid.innerHTML += `
+      <div style="border:3px solid var(--dark); background:var(--white); padding:10px; display:flex; flex-direction:column; align-items:center; width:130px; text-align:center; box-shadow:4px 4px 0 var(--dark);">
+        <div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+          ${p.svg}
+        </div>
+        <span style="font-family:'VT323'; font-size:17px; margin-bottom:8px; line-height:1; color:var(--dark);">${p.name}</span>
+        <button onclick="addPixelPresetToBg('${p.id}')" style="font-family:'VT323'; font-size:16px; padding:3px 6px; background:var(--gold-l); border:2px solid var(--dark); cursor:pointer; width:100%; margin-bottom:4px;">+ Background</button>
+        <button onclick="setPixelPresetAsSeal('${p.id}')" style="font-family:'VT323'; font-size:16px; padding:3px 6px; background:var(--sky4); border:2px solid var(--dark); cursor:pointer; width:100%;">+ Seal Icon</button>
+      </div>
+    `;
+  });
+}
+
+async function addPixelPresetToBg(id) {
+  const p = PIXEL_PRESETS.find(x => x.id === id);
+  if (!p) return;
+  const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg)}`;
+  if (!settings.lovertianIcons) settings.lovertianIcons = [];
+  
+  if (!settings.lovertianIcons.some(x => x.id === p.id)) {
+    settings.lovertianIcons.push({ id: p.id, name: p.name, url: dataUrl });
+    try {
+      showMsg("กำลังเพิ่ม Pixel Asset...");
+      const json = JSON.stringify(settings, null, 2);
+      const res = await ghPut(JSON_PATH, json, `Add pixel preset ${p.name} to background`, settingsSha);
+      settingsSha = res.content.sha;
+      showMsg(`✓ เพิ่ม ${p.name} ลงใน Background เรียบร้อย!`);
+      renderLoverTianLibrary();
+    } catch(e) {
+      alert("Error adding pixel preset: " + e.message);
+    }
+  } else {
+    alert(`${p.name} มีอยู่ใน Background แล้ว`);
+  }
+}
+
+async function setPixelPresetAsSeal(id) {
+  const p = PIXEL_PRESETS.find(x => x.id === id);
+  if (!p) return;
+  const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg)}`;
+  settings.lovertianEnvelopeSealEmoji = dataUrl;
+  
+  const input = document.getElementById('sealEmojiInput');
+  if (input) input.value = dataUrl;
+  updateSealPreview(dataUrl);
+
+  try {
+    showMsg("กำลังบันทึก Pixel Seal...");
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, `Set ${p.name} as envelope seal`, settingsSha);
+    settingsSha = res.content.sha;
+    showMsg(`✓ ตั้งค่า ${p.name} เป็นตราประทับซองจดหมายเรียบร้อย!`);
+  } catch(e) {
+    alert("Error setting pixel seal: " + e.message);
+  }
+}
+
+// ── Emoji Picker Helpers ──
+function appendBgEmoji(emoji) {
+  const input = document.getElementById('bgEmojiInput');
+  if (!input) return;
+  const current = input.value.trim();
+  if (!current.includes(emoji)) {
+    input.value = current ? current + ' ' + emoji : emoji;
+  }
+}
+
+function selectSealEmoji(emoji) {
+  const input = document.getElementById('sealEmojiInput');
+  if (input) input.value = emoji;
+  updateSealPreview(emoji);
+}
+
+function updateSealPreview(val) {
+  const prev = document.getElementById('sealPreview');
+  if (!prev) return;
+  val = (val || '').trim();
+  if (val.startsWith('data:image/') || val.startsWith('http') || val.startsWith('<svg')) {
+    prev.innerHTML = `<img src="${val}" style="width:48px;height:48px;object-fit:contain;image-rendering:pixelated;">`;
+  } else {
+    prev.textContent = val || '💌';
+  }
+}
+
+async function saveBgEmojis() {
+  const input = document.getElementById('bgEmojiInput');
+  const text = input ? input.value.trim() : '';
+  const emojis = text.split(/\s+/).filter(Boolean);
+  settings.lovertianEmojis = emojis;
+
+  try {
+    showMsg("กำลังบันทึก Background Emojis...");
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update LoverTian background emojis', settingsSha);
+    settingsSha = res.content.sha;
+    showMsg("✓ บันทึก Background Emojis สำเร็จ!");
+  } catch(e) {
+    alert("Error saving background emojis: " + e.message);
+  }
+}
+
+async function saveSealEmoji() {
+  const input = document.getElementById('sealEmojiInput');
+  const emoji = input ? input.value.trim() : '💌';
+  settings.lovertianEnvelopeSealEmoji = emoji || '💌';
+
+  try {
+    showMsg("กำลังบันทึก Envelope Seal Emoji...");
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update LoverTian envelope seal emoji', settingsSha);
+    settingsSha = res.content.sha;
+    showMsg("✓ บันทึก Envelope Seal Emoji สำเร็จ!");
+  } catch(e) {
+    alert("Error saving seal emoji: " + e.message);
   }
 }
 </script>

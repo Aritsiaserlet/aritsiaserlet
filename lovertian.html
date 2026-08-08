@@ -507,6 +507,107 @@
       0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
       100% { transform: translate(var(--cx), var(--cy)) rotate(720deg) scale(0); opacity: 0; }
     }
+
+    /* ── Token Access Modal ── */
+    .token-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(20, 40, 65, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .token-modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .token-modal-box {
+      background: #fffef5;
+      border: 4px solid var(--dark);
+      width: calc(100vw - 40px);
+      max-width: 460px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .token-modal-overlay.open .token-modal-box {
+      transform: scale(1);
+    }
+    .token-modal-header {
+      background: var(--gold);
+      border-bottom: 4px solid var(--dark);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 13px;
+      color: var(--dark);
+    }
+    .token-modal-close {
+      background: var(--danger);
+      color: white;
+      border: 2px solid var(--dark);
+      width: 28px;
+      height: 28px;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .token-modal-close:hover {
+      background: #c0392b;
+    }
+    .token-modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .token-modal-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      border: 3px solid var(--dark);
+      background: var(--white);
+      box-sizing: border-box;
+      outline: none;
+    }
+    .token-modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .lt-modal-btn {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      padding: 10px 16px;
+      border: 3px solid var(--dark);
+      box-shadow: 3px 3px 0 var(--dark);
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .lt-modal-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--dark);
+    }
+    .lt-modal-btn.yes {
+      background: var(--gold);
+      color: var(--dark);
+    }
+    .lt-modal-btn.cancel {
+      background: var(--sky4);
+      color: var(--dark);
+    }
   </style>
 </head>
 <body>
@@ -535,7 +636,7 @@
         <div class="env-bottom"></div>
         <div class="env-left"></div>
         <div class="env-right"></div>
-        <div class="env-seal">&#128140;</div>
+        <div class="env-seal" id="envSeal">&#128140;</div>
       </div>
     </div>
     <div class="env-hint" id="envHint">[ คลิกเพื่อเปิดจดหมาย ]</div>
@@ -596,17 +697,68 @@
   &copy; 2026 AritsiaZ &mdash; LoverTian &#128140;
 </footer>
 
+<!-- Retro Token Access Modal -->
+<div class="token-modal-overlay" id="tokenModalOverlay" onclick="if(event.target===this)closeTokenModal()">
+  <div class="token-modal-box">
+    <div class="token-modal-header">
+      <span>⚙ LOVERTIAN ADMIN</span>
+      <button class="token-modal-close" onclick="closeTokenModal()">✕</button>
+    </div>
+    <div class="token-modal-body">
+      <div style="font-family:'VT323',monospace;font-size:22px;color:var(--dark);">
+        กรุณากรอก GitHub Token เพื่อเข้าสู่ LoverTian Admin:
+      </div>
+      <input type="password" id="ltTokenInput" class="token-modal-input" placeholder="GitHub Token (ghp_... / github_pat_...)" onkeydown="if(event.key==='Enter')submitLtToken()">
+      <div id="ltTokenError" style="color:#c0392b;font-size:18px;font-family:'VT323',monospace;display:none;"></div>
+      <div class="token-modal-actions">
+        <button class="lt-modal-btn cancel" onclick="closeTokenModal()">CANCEL</button>
+        <button class="lt-modal-btn yes" onclick="submitLtToken()">SUBMIT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-// ── Admin Navigation ──
+// ── Admin Navigation Modal ──
 function goToAdmin() {
   const token = sessionStorage.getItem('ghToken');
   if (token) {
     window.location.href = 'lovertian-admin.html';
   } else {
-    const inputToken = prompt("กรุณากรอก GitHub Personal Access Token เพื่อเข้าสู่ LoverTian Admin:");
-    if (inputToken && inputToken.trim()) {
-      sessionStorage.setItem('ghToken', inputToken.trim());
-      window.location.href = 'lovertian-admin.html';
+    openTokenModal();
+  }
+}
+
+function openTokenModal() {
+  const overlay = document.getElementById('tokenModalOverlay');
+  const input = document.getElementById('ltTokenInput');
+  const err = document.getElementById('ltTokenError');
+  if (input) input.value = '';
+  if (err) err.style.display = 'none';
+  if (overlay) {
+    overlay.classList.add('open');
+    setTimeout(() => { if(input) input.focus(); }, 100);
+  }
+}
+
+function closeTokenModal() {
+  const overlay = document.getElementById('tokenModalOverlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function submitLtToken() {
+  const input = document.getElementById('ltTokenInput');
+  const err = document.getElementById('ltTokenError');
+  const val = input ? input.value.trim() : '';
+
+  if (val) {
+    sessionStorage.setItem('ghToken', val);
+    closeTokenModal();
+    window.location.href = 'lovertian-admin.html';
+  } else {
+    if (err) {
+      err.textContent = 'กรุณากรอก GitHub Token ก่อนทำรายการ';
+      err.style.display = 'block';
     }
   }
 }
@@ -615,6 +767,16 @@ function goToAdmin() {
 async function spawnHearts() {
   const bg = document.getElementById('heartsBg');
   let ltIcons = [];
+  let ltEmojis = [];
+  let sealEmoji = '';
+
+  // Function to apply loaded settings
+  function applySettings(settingsObj) {
+    if (!settingsObj) return;
+    if (settingsObj.lovertianIcons) ltIcons = settingsObj.lovertianIcons;
+    if (settingsObj.lovertianEmojis && settingsObj.lovertianEmojis.length > 0) ltEmojis = settingsObj.lovertianEmojis;
+    if (settingsObj.lovertianEnvelopeSealEmoji) sealEmoji = settingsObj.lovertianEnvelopeSealEmoji;
+  }
 
   // Try loading settings from Firebase Firestore
   try {
@@ -622,36 +784,45 @@ async function spawnHearts() {
     const fsMod = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
     const ref = fsMod.doc(authMod.db, 'settings', 'global');
     const snap = await fsMod.getDoc(ref);
-    if (snap.exists() && snap.data().settings && snap.data().settings.lovertianIcons) {
-      ltIcons = snap.data().settings.lovertianIcons;
+    if (snap.exists() && snap.data().settings) {
+      applySettings(snap.data().settings);
     }
   } catch(e) {
     console.warn("Firebase fetch fallback:", e);
   }
 
-  // Fallback to GitHub raw JSON if Firebase yields no icons
-  if (!ltIcons || ltIcons.length === 0) {
+  // Fallback to GitHub raw JSON if needed
+  if (ltIcons.length === 0 && ltEmojis.length === 0) {
     try {
       const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
-        if (data.lovertianIcons && data.lovertianIcons.length > 0) {
-          ltIcons = data.lovertianIcons;
-        }
+        applySettings(data);
       }
     } catch(e) {
       console.warn("GitHub fetch fallback error:", e);
     }
   }
 
+  // Apply envelope seal emoji
+  if (sealEmoji) {
+    const sealEl = document.getElementById('envSeal');
+    if (sealEl) sealEl.textContent = sealEmoji;
+  }
+
   bg.innerHTML = '';
   const defaultEmojis = ['\u{1F497}', '\u{1F496}', '\u{1F495}', '\u2764\uFE0F', '\u{1F338}', '\u2728', '\u{1F4AB}'];
+  const activeEmojis = ltEmojis.length > 0 ? ltEmojis : defaultEmojis;
 
-  for (let i = 0; i < 22; i++) {
+  const totalElements = 24;
+  for (let i = 0; i < totalElements; i++) {
     const h = document.createElement('div');
     h.className = 'float-heart';
 
-    if (ltIcons && ltIcons.length > 0) {
+    // Randomly choose between image icon (if available) or text emoji
+    const useImage = (ltIcons.length > 0 && Math.random() < 0.5);
+
+    if (useImage) {
       const randomIcon = ltIcons[Math.floor(Math.random() * ltIcons.length)];
       const img = document.createElement('img');
       img.src = randomIcon.url;
@@ -661,7 +832,7 @@ async function spawnHearts() {
       img.style.height = size + 'px';
       h.appendChild(img);
     } else {
-      h.textContent = defaultEmojis[Math.floor(Math.random() * defaultEmojis.length)];
+      h.textContent = activeEmojis[Math.floor(Math.random() * activeEmojis.length)];
       h.style.fontSize = (16 + Math.random() * 22) + 'px';
     }
 
