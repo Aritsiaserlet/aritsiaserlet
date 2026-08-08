@@ -1,0 +1,17 @@
+import urllib.parse
+
+svgs = {
+  'heart_red': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#e74c3c"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ff7675"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>',
+  'envelope': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 10" width="30" height="22" shape-rendering="crispEdges"><path d="M1 1h12v8H1z" fill="#fffef5"/><path d="M2 2h10v1H2zM3 3h8v1H3zM4 4h6v1H4zM5 5h4v1H5z" fill="#ffeaa7"/><path d="M6 4h2v2H6zM5 5h4v1H5z" fill="#e74c3c"/><path d="M0 0h14v1H0zM0 9h14v1H0zM0 0h1v10H0zM13 0h1v10H13z" fill="#2d3436"/></svg>',
+  'heart_pink': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#ff7675"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>',
+  'heart_sparkle': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#fd79a8"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M0 0h2v2H0zM1 1h2v2H1z" fill="#feca57"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>',
+  'heart_double': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 12" width="30" height="26" shape-rendering="crispEdges"><path d="M1 2h3v1H1zM5 2h3v1H5zM0 3h9v3H0zM1 6h7v2H1zM2 8h5v1H2zM3 9h3v1H3zM4 10h1v1H4z" fill="#fd79a8"/><path d="M8 1h3v1H8zM12 1h2v1H12zM7 2h7v3H7zM8 5h5v2H8zM9 7h3v1H9z" fill="#e84393"/><path d="M1 3h1v1H1z" fill="#ffffff"/></svg>',
+  'sakura': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="28" height="28" shape-rendering="crispEdges"><path d="M4 1h4v2H4zM1 4h2v4H1zM9 4h2v4H9zM4 9h4v2H4z" fill="#ff9ff3"/><path d="M3 2h2v2H3zM7 2h2v2H7zM3 8h2v2H3zM7 8h2v2H7zM4 4h4v4H4z" fill="#fd79a8"/><path d="M5 5h2v2H5z" fill="#feca57"/><path d="M4 0h4v1H4zM8 1h1v1H8zM9 2h1v2H9zM11 4h1v4H11zM9 8h1v2H9zM8 10h1v1H8zM4 11h4v1H4zM3 10h1v1H3zM2 8h1v2H2zM0 4h1v4H0zM2 2h1v2H2zM3 1h1v1H3z" fill="#2d3436"/></svg>',
+  'sparkle_gold': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9" width="26" height="26" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#feca57"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#ffdd59"/></svg>'
+}
+
+with open("out.txt", "w") as f:
+  for k, v in svgs.items():
+    url = "data:image/svg+xml;utf8," + urllib.parse.quote(v)
+    img = f'<img src="{url}" alt="{k}" style="width:1em; height:1em; vertical-align:-0.15em; image-rendering:pixelated; display:inline-block;">'
+    f.write(f"{k}::::{img}\n")

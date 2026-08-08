@@ -608,6 +608,17 @@
       background: var(--sky4);
       color: var(--dark);
     }
+
+    /* Pixel Emoji Class */
+    .px-emo {
+      display: inline-block;
+      vertical-align: middle;
+      width: 1.15em;
+      height: 1.15em;
+      image-rendering: pixelated;
+      margin: 0 4px;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
@@ -626,7 +637,7 @@
 
 <!-- Main page -->
 <main class="lovertian-page">
-  <h1 class="lt-title">LOVER<span>&#9829;</span>TIAN</h1>
+  <h1 class="lt-title">LOVER<span data-px="px_heart_red"></span>TIAN</h1>
 
   <!-- Envelope -->
   <div class="envelope-wrap" id="envelopeWrap">
@@ -636,7 +647,7 @@
         <div class="env-bottom"></div>
         <div class="env-left"></div>
         <div class="env-right"></div>
-        <div class="env-seal" id="envSeal">&#128140;</div>
+        <div class="env-seal" id="envSeal"><span data-px="px_letter_envelope"></span></div>
       </div>
     </div>
     <div class="env-hint" id="envHint">[ คลิกเพื่อเปิดจดหมาย ]</div>
@@ -648,27 +659,27 @@
   <div class="letter-box" id="letterBox">
     <!-- Header -->
     <div class="letter-header">
-      <span>&#128140;</span>
+      <span data-px="px_letter_envelope"></span>
       <div class="letter-header-title">LOVE LETTER</div>
-      <span>&#128140;</span>
+      <span data-px="px_letter_envelope"></span>
     </div>
     <button class="letter-close" onclick="closeLetter()">&#10005;</button>
 
     <!-- Letter body -->
     <div class="letter-content" id="letterContent">
       <div class="letter-lines" id="letterLines"></div>
-      <div class="letter-deco">&#128151; &#128150; &#128151;</div>
-      <div class="letter-greeting">ถึง... คนที่ฉันอยากบอก &#127800;</div>
+      <div class="letter-deco"><span data-px="px_heart_pink"></span> <span data-px="px_heart_sparkle"></span> <span data-px="px_heart_pink"></span></div>
+      <div class="letter-greeting">ถึง... คนที่ฉันอยากบอก <span data-px="px_sakura"></span></div>
       <div class="letter-text">
         ฉันนั่งคิดมานานแล้ว<br>
         ว่าจะพูดยังไงดี...<br><br>
         แต่ทุกครั้งที่เห็นหน้าเธอ<br>
-        คำพูดมันหายไปหมดเลย &#10027;<br><br>
-        เลยขอส่งจดหมายฉบับนี้มาแทน &#9993;
+        คำพูดมันหายไปหมดเลย <span data-px="px_sparkle_gold"></span><br><br>
+        เลยขอส่งจดหมายฉบับนี้มาแทน <span data-px="px_letter_envelope"></span>
       </div>
       <div class="letter-divider"></div>
       <div class="letter-question">
-        เธอจะ<span>&#10084;</span>ยอมเป็นแฟนกัน<span>&#10084;</span>ฉันไหม?
+        เธอจะ<span data-px="px_heart_red"></span>ยอมเป็นแฟนกัน<span data-px="px_heart_red"></span>ฉันไหม?
       </div>
 
       <!-- Answer buttons -->
@@ -677,31 +688,31 @@
         <button class="btn-no" id="btnNo" onmouseenter="runAway(this)">&#10007; No</button>
       </div>
 
-      <div class="letter-signature">&#8212; ด้วยความรัก, AritsiaZ &#127800;</div>
+      <div class="letter-signature">&#8212; ด้วยความรัก, AritsiaZ <span data-px="px_sakura"></span></div>
     </div>
 
     <!-- Yes Screen (hidden initially) -->
     <div class="yes-screen" id="yesScreen">
-      <div class="yes-emoji">&#129392;</div>
-      <div class="yes-title">YAY!! &#127881;<br>SHE SAID YES!!</div>
+      <div class="yes-emoji"><span data-px="px_bear" style="font-size: 1.5em; display: inline-block;"></span></div>
+      <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!!</div>
       <div class="yes-sub">
-        ขอบคุณมากๆ เลยนะ &#128150;<br>
+        ขอบคุณมากๆ เลยนะ <span data-px="px_heart_sparkle"></span><br>
         ฉันดีใจมากที่สุดในโลก!
       </div>
-      <div style="font-size: 36px; margin-top: 8px;">&#128151; &#128149; &#128151;</div>
+      <div style="font-size: 36px; margin-top: 8px;"><span data-px="px_heart_pink"></span> <span data-px="px_heart_double"></span> <span data-px="px_heart_pink"></span></div>
     </div>
   </div>
 </div>
 
 <footer style="position:fixed;bottom:16px;left:0;right:0;text-align:center;font-family:'VT323',monospace;font-size:18px;color:var(--dark);opacity:0.6;z-index:5;pointer-events:none;">
-  &copy; 2026 AritsiaZ &mdash; LoverTian &#128140;
+  &copy; 2026 AritsiaZ &mdash; LoverTian <span data-px="px_letter_envelope"></span>
 </footer>
 
 <!-- Retro Token Access Modal -->
 <div class="token-modal-overlay" id="tokenModalOverlay" onclick="if(event.target===this)closeTokenModal()">
   <div class="token-modal-box">
     <div class="token-modal-header">
-      <span>⚙ LOVERTIAN ADMIN</span>
+      <span><span data-px="px_star"></span> LOVERTIAN ADMIN</span>
       <button class="token-modal-close" onclick="closeTokenModal()">✕</button>
     </div>
     <div class="token-modal-body">
@@ -719,6 +730,45 @@
 </div>
 
 <script>
+const PIXEL_PALETTE = [
+  { id: 'px_sakura', name: 'Sakura', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M4 1h4v2H4zM1 4h2v4H1zM9 4h2v4H9zM4 9h4v2H4z" fill="#ff9ff3"/><path d="M3 2h2v2H3zM7 2h2v2H7zM3 8h2v2H3zM7 8h2v2H7zM4 4h4v4H4z" fill="#fd79a8"/><path d="M5 5h2v2H5z" fill="#feca57"/><path d="M4 0h4v1H4zM8 1h1v1H8zM9 2h1v2H9zM11 4h1v4H11zM9 8h1v2H9zM8 10h1v1H8zM4 11h4v1H4zM3 10h1v1H3zM2 8h1v2H2zM0 4h1v4H0zM2 2h1v2H2zM3 1h1v1H3z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_sparkle', name: 'Sparkle Heart', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#fd79a8"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M0 0h2v2H0zM1 1h2v2H1z" fill="#feca57"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_pink', name: 'Pink Heart', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#ff7675"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_red', name: 'Red Heart', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#e74c3c"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ff7675"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_heart_dark', name: 'Dark Red Heart', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#c0392b"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#e74c3c"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#1a2a3a"/></svg>` },
+  { id: 'px_heart_double', name: 'Double Hearts', svg: `<svg class="px-emo" viewBox="0 0 14 12" shape-rendering="crispEdges"><path d="M1 2h3v1H1zM5 2h3v1H5zM0 3h9v3H0zM1 6h7v2H1zM2 8h5v1H2zM3 9h3v1H3zM4 10h1v1H4z" fill="#fd79a8"/><path d="M8 1h3v1H8zM12 1h2v1H12zM7 2h7v3H7zM8 5h5v2H8zM9 7h3v1H9z" fill="#e84393"/><path d="M1 3h1v1H1z" fill="#ffffff"/></svg>` },
+  { id: 'px_heart_exclaim', name: 'Heart Exclaim', svg: `<svg class="px-emo" viewBox="0 0 10 12" shape-rendering="crispEdges"><path d="M1 1h3v1H1zM6 1h3v1H6zM0 2h10v3H0zM1 5h8v2H1zM2 7h6v1H2zM3 8h4v1H3zM4 9h2v1H4z" fill="#e74c3c"/><path d="M4 10h2v2H4z" fill="#e74c3c"/><path d="M1 2h1v1H1z" fill="#ffffff"/></svg>` },
+  { id: 'px_letter_envelope', name: 'Envelope', svg: `<svg class="px-emo" viewBox="0 0 14 10" shape-rendering="crispEdges"><path d="M1 1h12v8H1z" fill="#fffef5"/><path d="M2 2h10v1H2zM3 3h8v1H3zM4 4h6v1H4zM5 5h4v1H5z" fill="#ffeaa7"/><path d="M6 4h2v2H6zM5 5h4v1H5z" fill="#e74c3c"/><path d="M0 0h14v1H0zM0 9h14v1H0zM0 0h1v10H0zM13 0h1v10H13z" fill="#2d3436"/></svg>` },
+  { id: 'px_sparkle_blue', name: 'Blue Sparkle', svg: `<svg class="px-emo" viewBox="0 0 9 9" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#54a0ff"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#74b9ff"/></svg>` },
+  { id: 'px_sparkle_gold', name: 'Gold Sparkle', svg: `<svg class="px-emo" viewBox="0 0 9 9" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#feca57"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#ffdd59"/></svg>` },
+  { id: 'px_rose', name: 'Red Rose', svg: `<svg class="px-emo" viewBox="0 0 11 12" shape-rendering="crispEdges"><path d="M3 1h5v4H3z" fill="#e74c3c"/><path d="M4 2h2v2H4z" fill="#ff7675"/><path d="M5 5h1v4H5z" fill="#10ac84"/><path d="M3 7h2v2H3zM6 6h2v2H6z" fill="#1dd1a1"/><path d="M3 0h5v1H3zM8 1h1v4H8zM3 5h5v1H3zM2 1h1v4H2zM5 9h1v3H5zM2 7h1v1H2zM3 9h2v1H3zM6 6h1v1H6zM8 8h1v1H8z" fill="#2d3436"/></svg>` },
+  { id: 'px_sunflower', name: 'Sunflower', svg: `<svg class="px-emo" viewBox="0 0 11 11" shape-rendering="crispEdges"><path d="M4 0h3v11H4zM0 4h11v3H0zM2 2h7v7H2z" fill="#feca57"/><path d="M4 4h3v3H4z" fill="#8395a7"/></svg>` },
+  { id: 'px_hibiscus', name: 'Hibiscus', svg: `<svg class="px-emo" viewBox="0 0 11 11" shape-rendering="crispEdges"><path d="M2 1h7v9H2zM1 2h9v7H1z" fill="#ff9ff3"/><path d="M4 4h3v3H4z" fill="#feca57"/><path d="M5 2h1v3H5z" fill="#ffdd59"/></svg>` },
+  { id: 'px_butterfly', name: 'Butterfly', svg: `<svg class="px-emo" viewBox="0 0 12 10" shape-rendering="crispEdges"><path d="M1 1h4v4H1zM7 1h4v4H7z" fill="#54a0ff"/><path d="M2 5h3v3H2zM7 5h3v3H7z" fill="#48dbfb"/><path d="M5 0h2v10H5z" fill="#2d3436"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ffffff"/></svg>` },
+  { id: 'px_ribbon', name: 'Ribbon', svg: `<svg class="px-emo" viewBox="0 0 13 9" shape-rendering="crispEdges"><path d="M1 2h4v4H1zM8 2h4v4H8z" fill="#ff9ff3"/><path d="M5 3h3v3H5z" fill="#fd79a8"/><path d="M6 4h1v1H6z" fill="#ffffff"/><path d="M2 6h2v2H2zM9 6h2v2H9z" fill="#e84393"/></svg>` },
+  { id: 'px_bear', name: 'Cute Bear', svg: `<svg class="px-emo" viewBox="0 0 12 11" shape-rendering="crispEdges"><path d="M1 1h3v3H1zM8 1h3v3H8z" fill="#cc8e35"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ff7675"/><path d="M1 3h10v6H1z" fill="#e1b12c"/><path d="M4 6h4v3H4z" fill="#fffef5"/><path d="M3 5h1v1H3zM8 5h1v1H8zM5 6h2v1H5z" fill="#2d3436"/></svg>` },
+  { id: 'px_gift', name: 'Gift Box', svg: `<svg class="px-emo" viewBox="0 0 11 11" shape-rendering="crispEdges"><path d="M1 1h9v9H1z" fill="#feca57"/><path d="M5 1h1v9H5zM1 5h9v1H1z" fill="#ee5253"/><path d="M3 0h5v1H3z" fill="#ff6b6b"/></svg>` },
+  { id: 'px_star', name: 'Gold Star', svg: `<svg class="px-emo" viewBox="0 0 11 11" shape-rendering="crispEdges"><path d="M5 1h1v2H5zM4 3h3v2H4zM1 4h9v2H1zM2 6h7v2H2zM3 8h2v2H3zM6 8h2v2H6z" fill="#feca57"/><path d="M5 2h1v1H5zM4 4h1v1H4z" fill="#ffffff"/></svg>` },
+  { id: 'px_moon', name: 'Crescent Moon', svg: `<svg class="px-emo" viewBox="0 0 10 10" shape-rendering="crispEdges"><path d="M3 1h4v1H3zM2 2h3v1H2zM1 3h3v4H1zM2 7h3v1H2zM3 8h4v1H3z" fill="#feca57"/><path d="M3 3h1v1H3z" fill="#fffef5"/></svg>` },
+  { id: 'px_crown', name: 'Crown', svg: `<svg class="px-emo" viewBox="0 0 11 9" shape-rendering="crispEdges"><path d="M1 1h1v7H1zM5 1h1v7H5zM9 1h1v7H9zM2 4h7v4H2z" fill="#feca57"/><path d="M1 1h1v1H1zM5 1h1v1H5zM9 1h1v1H9z" fill="#ffdd59"/><path d="M2 7h7v1H2z" fill="#ee5253"/></svg>` },
+  { id: 'px_ring', name: 'Diamond Ring', svg: `<svg class="px-emo" viewBox="0 0 11 12" shape-rendering="crispEdges"><path d="M4 1h3v3H4z" fill="#48dbfb"/><path d="M5 2h1v1H5z" fill="#ffffff"/><path d="M2 5h7v5H2z" fill="#feca57"/><path d="M4 7h3v2H4z" fill="#fffef5"/></svg>` },
+  { id: 'px_dove', name: 'White Dove', svg: `<svg class="px-emo" viewBox="0 0 12 10" shape-rendering="crispEdges"><path d="M2 1h5v4H2zM6 4h5v4H6zM3 5h7v3H3z" fill="#ffffff"/><path d="M8 2h1v1H8z" fill="#2d3436"/><path d="M11 5h1v2H11z" fill="#ff9f43"/></svg>` }
+];
+
+function renderPixelEmojis() {
+  document.querySelectorAll('span[data-px]').forEach(el => {
+    const p = PIXEL_PALETTE.find(x => x.id === el.getAttribute('data-px'));
+    if (p) {
+      el.innerHTML = p.svg;
+      if(el.getAttribute('style')) {
+        el.querySelector('svg').setAttribute('style', el.getAttribute('style'));
+      }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderPixelEmojis);
+
 // ── Admin Navigation Modal ──
 function goToAdmin() {
   const token = sessionStorage.getItem('ghToken');
@@ -805,13 +855,27 @@ async function spawnHearts() {
   }
 
   // Apply envelope seal emoji
-  if (sealEmoji) {
+  if (sealEmoji || true) {
     const sealEl = document.getElementById('envSeal');
-    if (sealEl) sealEl.textContent = sealEmoji;
+    if (sealEl) {
+      const sealVal = sealEmoji || ('data:image/svg+xml;utf8,' + encodeURIComponent(PIXEL_PALETTE.find(x=>x.id==='px_letter_envelope').svg.replace('class="px-emo"', 'width="48" height="48"')));
+      if (sealVal.startsWith('data:image/') || sealVal.startsWith('http') || sealVal.startsWith('<svg')) {
+        sealEl.innerHTML = `<img src="${sealVal}" style="width:48px;height:48px;object-fit:contain;image-rendering:pixelated;display:block;">`;
+      } else {
+        sealEl.textContent = sealVal;
+      }
+    }
   }
 
   bg.innerHTML = '';
-  const defaultEmojis = ['\u{1F497}', '\u{1F496}', '\u{1F495}', '\u2764\uFE0F', '\u{1F338}', '\u2728', '\u{1F4AB}'];
+  
+  const defaultEmojis = [
+    'px_sakura', 'px_heart_sparkle', 'px_heart_pink', 'px_heart_red', 'px_sparkle_gold'
+  ].map(id => {
+    const p = PIXEL_PALETTE.find(x => x.id === id);
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(p.svg.replace('class="px-emo"', 'width="32" height="32"'));
+  });
+
   const activeEmojis = ltEmojis.length > 0 ? ltEmojis : defaultEmojis;
 
   const totalElements = 24;
@@ -819,7 +883,7 @@ async function spawnHearts() {
     const h = document.createElement('div');
     h.className = 'float-heart';
 
-    // Randomly choose between image icon (if available) or text emoji
+    // Randomly choose between image icon (if available) or text/SVG emoji
     const useImage = (ltIcons.length > 0 && Math.random() < 0.5);
 
     if (useImage) {
@@ -832,8 +896,18 @@ async function spawnHearts() {
       img.style.height = size + 'px';
       h.appendChild(img);
     } else {
-      h.textContent = activeEmojis[Math.floor(Math.random() * activeEmojis.length)];
-      h.style.fontSize = (16 + Math.random() * 22) + 'px';
+      const emojiVal = activeEmojis[Math.floor(Math.random() * activeEmojis.length)];
+      if (emojiVal.startsWith('data:image/') || emojiVal.startsWith('http') || emojiVal.startsWith('<svg')) {
+        const img = document.createElement('img');
+        img.src = emojiVal;
+        const size = Math.floor(16 + Math.random() * 22);
+        img.style.width = size + 'px';
+        img.style.height = size + 'px';
+        h.appendChild(img);
+      } else {
+        h.textContent = emojiVal;
+        h.style.fontSize = (16 + Math.random() * 22) + 'px';
+      }
     }
 
     h.style.left = Math.random() * 100 + 'vw';
