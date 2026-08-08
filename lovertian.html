@@ -50,6 +50,15 @@
       100% { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
     }
 
+    .float-heart img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      display: block;
+    }
+
+
     /* ── Top Nav back button ── */
     .lt-nav {
       position: absolute;
@@ -509,8 +518,9 @@
 <div class="custom-bg" id="customBg"></div>
 
 <!-- Back nav -->
-<div class="lt-nav">
+<div class="lt-nav" style="display: flex; gap: 10px;">
   <a href="index.html">&#8592; Portfolio</a>
+  <a href="javascript:void(0)" onclick="goToAdmin()">&#9881; Settings</a>
 </div>
 
 <!-- Main page -->
@@ -587,22 +597,82 @@
 </footer>
 
 <script>
-// ── Floating Hearts ──
-(function spawnHearts() {
+// ── Admin Navigation ──
+function goToAdmin() {
+  const token = sessionStorage.getItem('ghToken');
+  if (token) {
+    window.location.href = 'lovertian-admin.html';
+  } else {
+    const inputToken = prompt("กรุณากรอก GitHub Personal Access Token เพื่อเข้าสู่ LoverTian Admin:");
+    if (inputToken && inputToken.trim()) {
+      sessionStorage.setItem('ghToken', inputToken.trim());
+      window.location.href = 'lovertian-admin.html';
+    }
+  }
+}
+
+// ── Floating Background Elements (Icons & Emojis) ──
+async function spawnHearts() {
   const bg = document.getElementById('heartsBg');
-  const emojis = ['\u{1F497}', '\u{1F496}', '\u{1F495}', '\u2764\uFE0F', '\u{1F338}', '\u2728', '\u{1F4AB}'];
-  for (let i = 0; i < 18; i++) {
+  let ltIcons = [];
+
+  // Try loading settings from Firebase Firestore
+  try {
+    const authMod = await import('./js/authManager.js');
+    const fsMod = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const ref = fsMod.doc(authMod.db, 'settings', 'global');
+    const snap = await fsMod.getDoc(ref);
+    if (snap.exists() && snap.data().settings && snap.data().settings.lovertianIcons) {
+      ltIcons = snap.data().settings.lovertianIcons;
+    }
+  } catch(e) {
+    console.warn("Firebase fetch fallback:", e);
+  }
+
+  // Fallback to GitHub raw JSON if Firebase yields no icons
+  if (!ltIcons || ltIcons.length === 0) {
+    try {
+      const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.lovertianIcons && data.lovertianIcons.length > 0) {
+          ltIcons = data.lovertianIcons;
+        }
+      }
+    } catch(e) {
+      console.warn("GitHub fetch fallback error:", e);
+    }
+  }
+
+  bg.innerHTML = '';
+  const defaultEmojis = ['\u{1F497}', '\u{1F496}', '\u{1F495}', '\u2764\uFE0F', '\u{1F338}', '\u2728', '\u{1F4AB}'];
+
+  for (let i = 0; i < 22; i++) {
     const h = document.createElement('div');
     h.className = 'float-heart';
-    h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+    if (ltIcons && ltIcons.length > 0) {
+      const randomIcon = ltIcons[Math.floor(Math.random() * ltIcons.length)];
+      const img = document.createElement('img');
+      img.src = randomIcon.url;
+      img.alt = randomIcon.name;
+      const size = Math.floor(22 + Math.random() * 24);
+      img.style.width = size + 'px';
+      img.style.height = size + 'px';
+      h.appendChild(img);
+    } else {
+      h.textContent = defaultEmojis[Math.floor(Math.random() * defaultEmojis.length)];
+      h.style.fontSize = (16 + Math.random() * 22) + 'px';
+    }
+
     h.style.left = Math.random() * 100 + 'vw';
-    h.style.fontSize = (16 + Math.random() * 22) + 'px';
     const dur = 8 + Math.random() * 12;
     h.style.animationDuration = dur + 's';
     h.style.animationDelay = -(Math.random() * dur) + 's';
     bg.appendChild(h);
   }
-})();
+}
+spawnHearts();
 
 // ── Letter lines ──
 (function drawLines() {

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>LoverTian Admin | AritsiaZ</title>
+  <link rel="icon" type="image/jpeg" href="favicon-small.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
+
+  <style>
+    body {
+      background: var(--sky4);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      font-family: 'VT323', monospace;
+      color: var(--dark);
+      position: relative;
+    }
+
+    .admin-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Header Nav ── */
+    .anav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      border: 4px solid var(--dark);
+      padding: 14px 20px;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .anav-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 16px;
+      color: #c0392b;
+      letter-spacing: 1px;
+    }
+
+    .anav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .anav-btn {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      padding: 8px 14px;
+      background: var(--gold-l);
+      color: var(--dark);
+      border: 3px solid var(--dark);
+      box-shadow: 3px 3px 0 var(--dark);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .anav-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--dark);
+      background: var(--gold);
+    }
+
+    .anav-btn.danger {
+      background: #e74c3c;
+      color: white;
+    }
+    .anav-btn.danger:hover {
+      background: #c0392b;
+    }
+
+    /* ── GitHub Status Box ── */
+    .gh-status-box {
+      border: 4px solid var(--dark);
+      padding: 14px;
+      background: var(--white);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+      cursor: pointer;
+      text-align: center;
+      font-size: 22px;
+      transition: background 0.2s;
+    }
+
+    /* ── Panel Card ── */
+    .panel-card {
+      border: 4px solid var(--dark);
+      background: var(--white);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: var(--gold);
+      border-bottom: 4px solid var(--dark);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    /* Asset Grid */
+    .asset-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+      min-height: 100px;
+    }
+
+    .asset-item {
+      border: 3px solid var(--dark);
+      background: var(--white);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+      text-align: center;
+      position: relative;
+      box-shadow: 4px 4px 0 var(--dark);
+    }
+
+    .asset-item img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      margin-bottom: 8px;
+    }
+
+    .asset-name {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      line-height: 1.1;
+      word-break: break-all;
+      color: var(--dark);
+    }
+
+    .asset-del-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #e74c3c;
+      color: white;
+      border: 2px solid var(--dark);
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 0 var(--dark);
+    }
+
+    .asset-del-btn:hover {
+      background: #c0392b;
+      transform: scale(1.1);
+    }
+
+    /* Form Container */
+    .upload-form {
+      border: 3px solid var(--dark);
+      background: #fffef5;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 4px 4px 0 var(--dark);
+    }
+
+    .upload-form input[type="text"] {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px;
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      border: 3px solid var(--dark);
+      background: var(--white);
+      outline: none;
+    }
+
+    .upload-form input[type="file"] {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+    }
+
+    /* Message Toast */
+    .msg-box {
+      font-size: 20px;
+      margin-top: 12px;
+      padding: 8px 12px;
+      display: none;
+    }
+    .msg-box.ok { display: block; background: #abebc6; border: 2px solid var(--dark); color: #145a32; }
+    .msg-box.err { display: block; background: #fadbd8; border: 2px solid var(--dark); color: #78281f; }
+  </style>
+</head>
+<body>
+
+<div class="admin-container" id="adminContainer" style="display: none;">
+
+  <!-- Nav Header -->
+  <nav class="anav">
+    <span class="anav-title">❤️ LOVERTIAN ADMIN PANEL</span>
+    <div class="anav-right">
+      <a href="lovertian.html" class="anav-btn">← Back to LoverTian</a>
+      <button class="anav-btn danger" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- GitHub Connection Box -->
+  <div id="ghStatusBox" class="gh-status-box" onclick="editTokenPrompt()">
+    <div id="ghStatus">Checking connection to GitHub...</div>
+  </div>
+
+  <!-- LoverTian Assets Panel -->
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2><span>🌸 LOVERTIAN BACKGROUND ASSETS</span></h2>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
+        อัปโหลดไอคอน/รูปภาพตกแต่ง เพื่อนำไปลอยเป็น Background ในหน้า LoverTian (หากยังไม่มีรูปภาพ ระบบจะใช้ Emoji หัวใจสำรอง)
+      </p>
+
+      <!-- Asset Grid -->
+      <div id="loverTianIconList" class="asset-grid">
+        <div style="color: var(--mid); font-size: 20px;">Loading assets...</div>
+      </div>
+
+      <!-- Upload Form -->
+      <div class="upload-form">
+        <input type="text" id="newLtIconName" placeholder="Icon Name (e.g. Cherry Blossom)">
+        <input type="file" id="newLtIconFile" accept="image/*">
+        <button class="anav-btn" id="uploadBtn" onclick="addLoverTianIcon()">UPLOAD BACKGROUND ICON</button>
+      </div>
+
+      <div id="msgBox" class="msg-box"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── GitHub Config ──
+const GH_USER = 'OzonZ';
+const GH_REPO = 'Non-Four-Portfolio-Data';
+const DATA_PATH = 'All File Aritsia';
+const API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${encodeURIComponent(DATA_PATH)}`;
+const JSON_PATH = 'settings.json';
+let GH_TOKEN  = '';
+
+function getHeaders(){
+  return {
+    'Authorization': `token ${GH_TOKEN}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+function sanitizeFilename(name) {
+  if (!name) return 'file';
+  return name.replace(/[^a-z0-9]/gi, '_').toLowerCase().replace(/_+/g, '_').replace(/^_|_$/g, '') || 'file';
+}
+
+// ── Auth Check ──
+window.addEventListener('DOMContentLoaded', () => {
+  const savedToken = sessionStorage.getItem('ghToken');
+  if(!savedToken) {
+    const inputToken = prompt("กรุณากรอก GitHub Personal Access Token เพื่อเข้าสู่ LoverTian Admin:");
+    if(inputToken && inputToken.trim()) {
+      sessionStorage.setItem('ghToken', inputToken.trim());
+      GH_TOKEN = inputToken.trim();
+      document.getElementById('adminContainer').style.display = 'flex';
+      loadSettings();
+    } else {
+      window.location.href = 'lovertian.html';
+    }
+  } else {
+    GH_TOKEN = savedToken;
+    document.getElementById('adminContainer').style.display = 'flex';
+    loadSettings();
+  }
+});
+
+function logout(){
+  sessionStorage.removeItem('ghToken');
+  window.location.href = 'lovertian.html';
+}
+
+function editTokenPrompt() {
+  const t = prompt("Enter new GitHub Token:", GH_TOKEN);
+  if(t !== null && t.trim()) {
+    sessionStorage.setItem('ghToken', t.trim());
+    location.reload();
+  }
+}
+
+// ── GitHub API Helpers ──
+async function ghGet(path) {
+  const r = await fetch(`${API}/${path}?t=${Date.now()}`, { headers: getHeaders() });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub error ${r.status}`);
+  return r.json();
+}
+
+async function ghPut(path, content, message, sha) {
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
+  if (sha) body.sha = sha;
+  let r = await fetch(`${API}/${path}`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify(body) });
+  if (!r.ok) {
+    if (r.status === 409) {
+      const latest = await ghGet(path);
+      if (latest && latest.sha) {
+        body.sha = latest.sha;
+        r = await fetch(`${API}/${path}`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify(body) });
+      }
+    }
+    if (!r.ok) {
+      const t = await r.text();
+      throw new Error(`GitHub PUT error ${r.status}: ${t}`);
+    }
+  }
+  syncSettingsToFirebase(JSON.parse(content));
+  return r.json();
+}
+
+async function ghPutBinary(path, base64content, message) {
+  let sha = undefined;
+  try {
+    const existing = await ghGet(path);
+    if (existing && existing.sha) sha = existing.sha;
+  } catch(e) {}
+  const body = { message, content: base64content };
+  if (sha) body.sha = sha;
+  const r = await fetch(`${API}/${path}`, { method: 'PUT', headers: getHeaders(), body: JSON.stringify(body) });
+  if (!r.ok) {
+    const t = await r.text();
+    throw new Error(`GitHub PUT error ${r.status}: ${t}`);
+  }
+  return r.json();
+}
+
+// ── Firebase Firestore Sync ──
+let fDB = null, fDoc = null, fGetDoc = null, fSetDoc = null;
+async function initFirebaseSettings() {
+  if (fDB) return;
+  try {
+    const authMod = await import('./js/authManager.js');
+    const fsMod = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    fDB = authMod.db;
+    fDoc = fsMod.doc;
+    fGetDoc = fsMod.getDoc;
+    fSetDoc = fsMod.setDoc;
+  } catch (e) {
+    console.warn("Firebase init warning:", e);
+  }
+}
+
+async function syncSettingsToFirebase(settingsObj) {
+  if (fDB) {
+    try {
+      const ref = fDoc(fDB, 'settings', 'global');
+      await fSetDoc(ref, { settings: settingsObj });
+    } catch(e) {
+      console.warn("Firebase sync warning:", e);
+    }
+  }
+}
+
+// ── Load & Manage Settings ──
+let settings = {}, settingsSha = null;
+
+async function loadSettings() {
+  await initFirebaseSettings();
+  const statusBox = document.getElementById('ghStatusBox');
+  const statusText = document.getElementById('ghStatus');
+
+  try {
+    const data = await ghGet(JSON_PATH);
+    if (data) {
+      settingsSha = data.sha;
+      settings = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+      statusBox.style.background = '#abebc6';
+      statusText.textContent = '✓ Connected to GitHub Repository';
+    }
+  } catch(e) {
+    statusBox.style.background = '#fadbd8';
+    statusText.textContent = '✗ GitHub Connection Failed: ' + e.message;
+  }
+
+  renderLoverTianLibrary();
+}
+
+function renderLoverTianLibrary() {
+  const box = document.getElementById('loverTianIconList');
+  box.innerHTML = '';
+
+  const ltIcons = settings.lovertianIcons || [];
+
+  if (ltIcons.length === 0) {
+    box.innerHTML = '<div style="color:var(--mid);font-size:20px;">ยังไม่มี Icon ในหมวด LoverTian (ระบบจะใช้ Emoji หัวใจสำรอง)</div>';
+    return;
+  }
+
+  ltIcons.forEach((ic, idx) => {
+    box.innerHTML += `
+      <div class="asset-item">
+        <button class="asset-del-btn" onclick="deleteLoverTianIcon(${idx})" title="ลบ Icon นี้">✕</button>
+        <img src="${ic.url}" alt="${ic.name}">
+        <span class="asset-name">${ic.name}</span>
+      </div>
+    `;
+  });
+}
+
+function showMsg(text, isErr = false) {
+  const msg = document.getElementById('msgBox');
+  msg.textContent = text;
+  msg.className = 'msg-box ' + (isErr ? 'err' : 'ok');
+  setTimeout(() => { msg.style.display = 'none'; }, 4000);
+}
+
+async function addLoverTianIcon() {
+  const nameInput = document.getElementById('newLtIconName');
+  const fileInput = document.getElementById('newLtIconFile');
+  const btn = document.getElementById('uploadBtn');
+
+  if (!nameInput.value.trim() || !fileInput.files[0]) {
+    alert("กรุณาระบุชื่อ Icon และเลือกไฟล์รูปภาพ");
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const ext = file.name.split('.').pop().toLowerCase() || 'png';
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    try {
+      btn.disabled = true;
+      btn.innerText = "UPLOADING...";
+      showMsg("กำลังอัปโหลดไฟล์ภาพไปยัง GitHub...");
+
+      const base64 = e.target.result.split(',')[1];
+      const safeName = sanitizeFilename(nameInput.value);
+      const id = 'lticon_' + Date.now();
+      const fname = `works/lticon_${safeName}_${Date.now()}.${ext}`;
+
+      await ghPutBinary(fname, base64, `Upload LoverTian icon ${nameInput.value}`);
+      const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
+
+      if (!settings.lovertianIcons) settings.lovertianIcons = [];
+      settings.lovertianIcons.push({ id, name: nameInput.value.trim(), url });
+
+      showMsg("กำลังอัปเดต settings.json...");
+      const json = JSON.stringify(settings, null, 2);
+      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with LoverTian icon', settingsSha);
+      settingsSha = saveResult.content.sha;
+
+      nameInput.value = '';
+      fileInput.value = '';
+      showMsg("✓ อัปโหลดสำเร็จ!");
+      renderLoverTianLibrary();
+    } catch(err) {
+      alert("Error uploading LoverTian icon: " + err.message);
+      showMsg("✗ อัปโหลดล้มเหลว: " + err.message, true);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "UPLOAD BACKGROUND ICON";
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function deleteLoverTianIcon(idx) {
+  if (!confirm("คุณต้องการลบ Icon นี้ใช่หรือไม่?")) return;
+
+  if (settings.lovertianIcons && settings.lovertianIcons[idx]) {
+    settings.lovertianIcons.splice(idx, 1);
+    try {
+      showMsg("กำลังลบ Icon...");
+      const json = JSON.stringify(settings, null, 2);
+      const res = await ghPut(JSON_PATH, json, 'Delete LoverTian icon', settingsSha);
+      settingsSha = res.content.sha;
+      showMsg("✓ ลบ Icon สำเร็จ!");
+      renderLoverTianLibrary();
+    } catch(e) {
+      alert("Error deleting icon: " + e.message);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
