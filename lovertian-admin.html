@@ -851,7 +851,7 @@ function renderPixelPresets() {
 function appendBgPixelIcon(id) {
   const p = PIXEL_PALETTE.find(x => x.id === id);
   if (!p) return;
-  const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg)}`;
+  const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '))}`
   if (!settings.lovertianIcons) settings.lovertianIcons = [];
 
   if (!settings.lovertianIcons.some(x => x.id === p.id)) {
@@ -866,7 +866,7 @@ function appendBgPixelIcon(id) {
 function selectSealPixelIcon(id) {
   const p = PIXEL_PALETTE.find(x => x.id === id);
   if (!p) return;
-  const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg)}`;
+  const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(p.svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '))}`;
   settings.lovertianEnvelopeSealEmoji = dataUrl;
 
   const input = document.getElementById('sealEmojiInput');

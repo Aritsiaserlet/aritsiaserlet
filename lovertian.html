@@ -858,7 +858,7 @@ async function spawnHearts() {
   if (sealEmoji || true) {
     const sealEl = document.getElementById('envSeal');
     if (sealEl) {
-      const sealVal = sealEmoji || ('data:image/svg+xml;utf8,' + encodeURIComponent(PIXEL_PALETTE.find(x=>x.id==='px_letter_envelope').svg.replace('class="px-emo"', 'width="48" height="48"')));
+      const sealVal = sealEmoji || ('data:image/svg+xml;utf8,' + encodeURIComponent(PIXEL_PALETTE.find(x=>x.id==='px_letter_envelope').svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace('class="px-emo"', 'width="48" height="48"')));
       if (sealVal.startsWith('data:image/') || sealVal.startsWith('http') || sealVal.startsWith('<svg')) {
         sealEl.innerHTML = `<img src="${sealVal}" style="width:48px;height:48px;object-fit:contain;image-rendering:pixelated;display:block;">`;
       } else {
@@ -873,7 +873,7 @@ async function spawnHearts() {
     'px_sakura', 'px_heart_sparkle', 'px_heart_pink', 'px_heart_red', 'px_sparkle_gold'
   ].map(id => {
     const p = PIXEL_PALETTE.find(x => x.id === id);
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(p.svg.replace('class="px-emo"', 'width="32" height="32"'));
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(p.svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace('class="px-emo"', 'width="32" height="32"'));
   });
 
   const activeEmojis = ltEmojis.length > 0 ? ltEmojis : defaultEmojis;
