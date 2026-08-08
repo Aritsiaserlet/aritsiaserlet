@@ -5,14 +5,21 @@
 
 window.goToAdmin = function() {
   const token = document.getElementById('adminTokenInput').value.trim();
-  if(token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
+  if (token.toLowerCase() === 'raktianna') {
+    const pageEl = document.querySelector('.page');
+    if (pageEl) pageEl.classList.add('fade-out');
+    setTimeout(() => {
+      window.location.href = 'lovertian.html';
+    }, 400);
+  } else if(token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
     sessionStorage.setItem('ghToken', token);
-    document.querySelector('.page').classList.add('fade-out');
+    const pageEl = document.querySelector('.page');
+    if (pageEl) pageEl.classList.add('fade-out');
     setTimeout(() => {
       window.location.href = 'admin.html';
     }, 500);
   } else {
-    document.getElementById('adminErrorMsg').innerText = 'Please enter a valid GitHub token (ghp_ or github_pat_).';
+    document.getElementById('adminErrorMsg').innerText = 'Please enter a valid GitHub token or access code.';
     setTimeout(() => {
       document.getElementById('adminErrorMsg').innerText = '';
     }, 2000);
