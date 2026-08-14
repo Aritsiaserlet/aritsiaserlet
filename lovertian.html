@@ -442,7 +442,6 @@
       justify-content: center;
       align-items: center;
       min-height: 64px;
-      position: relative;
     }
 
     .btn-yes {
@@ -881,7 +880,7 @@
     <!-- Yes Screen (Milestone & Celebration) -->
     <div class="yes-screen" id="yesScreen">
       <div class="yes-emoji"><span data-px="px_bear" style="font-size: 1.5em; display: inline-block;"></span></div>
-      <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! 💕</div>
+      <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! <span data-px="px_heart_pink"></span></div>
       <div class="yes-sub" id="lYesSub">
         I'm the happiest person in the world! <span data-px="px_heart_sparkle"></span>
       </div>
@@ -890,7 +889,7 @@
       <div class="milestone-box">
         <div class="milestone-badge">★ OFFICIAL RELATIONSHIP MILESTONE ★</div>
         <div class="milestone-date">
-          📅 วันเริ่มต้นความรัก: 8 สิงหาคม 2026 เวลา 19:00:00 น.
+          <span data-px="px_star"></span> Official Start Date: August 8, 2026 at 19:00:00
         </div>
         
         <!-- Live Relationship Ticker -->
@@ -914,17 +913,17 @@
         </div>
 
         <div class="milestone-quote">
-          "Falling in love with you more and more every single second ✨"
+          "Falling in love with you more and more every single second <span data-px="px_sparkle_gold"></span>"
         </div>
       </div>
 
       <!-- Action Buttons -->
       <div class="yes-actions">
-        <button class="btn-action save" onclick="saveMemoryCard()">
-          📸 บันทึกการ์ดความทรงจำ
+        <button class="btn-action" onclick="saveMemoryCard()">
+          <span data-px="px_star"></span> Save Memory Card
         </button>
-        <button class="btn-action replay" onclick="replayLetter()">
-          ↺ อ่านจดหมายอีกครั้ง
+        <button class="btn-action secondary" onclick="replayLetter()">
+          <span data-px="px_letter_envelope"></span> Read Letter Again
         </button>
       </div>
 
@@ -1379,13 +1378,13 @@ function spawnSealBurst() {
 // =============================================================================
 let noRunCount = 0;
 const NO_MESSAGES = [
-  '✖ No',
-  'แน่ใจเหรอ? 🤔',
-  'คิดดูอีกทีน้า... 🥺',
-  'กดผิดป่าวเนี่ย! 🙈',
-  'อย่าใจร้ายจิ... 💔',
-  'ยอมเค้าเถอะนะ 💖',
-  '✓ YES (เขินๆ) 😳'
+  '&#10007; No',
+  'Are you sure?',
+  'Think again...',
+  'Misclick?!',
+  'Don\'t be mean...',
+  'Just say Yes!',
+  '&#10003; YES (shy)'
 ];
 
 function initNoButton() {
@@ -1609,7 +1608,7 @@ function saveMemoryCard() {
   // Subtitle
   ctx.fillStyle = '#1a2a3a';
   ctx.font = '26px "VT323", monospace';
-  ctx.fillText('The happiest milestone in my life 💕', 300, 205);
+  ctx.fillText('The happiest milestone in my life', 300, 205);
 
   // Divider
   ctx.strokeStyle = '#1a2a3a';
@@ -1632,13 +1631,13 @@ function saveMemoryCard() {
 
   ctx.fillStyle = '#1a2a3a';
   ctx.font = '20px "Mitr", sans-serif';
-  ctx.fillText('8 สิงหาคม 2026 เวลา 19:00:00 น.', 300, 345);
+  ctx.fillText('August 8, 2026 at 19:00:00', 300, 345);
 
   // Love Quote
   ctx.fillStyle = '#555';
   ctx.font = 'italic 24px "VT323", monospace';
   ctx.fillText('"Falling in love with you more and more', 300, 440);
-  ctx.fillText('every single second ✨"', 300, 475);
+  ctx.fillText('every single second"', 300, 475);
 
   // Footer Tag
   ctx.fillStyle = '#1a2a3a';
@@ -1647,7 +1646,7 @@ function saveMemoryCard() {
 
   ctx.fillStyle = '#888';
   ctx.font = '20px "VT323", monospace';
-  ctx.fillText('Saved forever on lover-tian.dev 💌', 300, 640);
+  ctx.fillText('Saved forever on lover-tian.dev', 300, 640);
 
   // Convert to image and download
   const link = document.createElement('a');
@@ -1665,10 +1664,19 @@ function spawnCursorSparkle(x, y) {
   if (now - lastSparkleTime < 50) return;
   lastSparkleTime = now;
 
-  const sparkles = ['✨', '💖', '🌸', '⭐'];
+  const sparkles = ['px_sparkle_gold', 'px_heart_pink', 'px_sakura', 'px_star'];
+  const pId = sparkles[Math.floor(Math.random() * sparkles.length)];
+  const p = PIXEL_PALETTE.find(x => x.id === pId);
   const s = document.createElement('div');
   s.className = 'cursor-sparkle';
-  s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+  if (p) {
+    s.innerHTML = p.svg;
+    const svg = s.querySelector('svg');
+    if (svg) {
+      svg.style.width = '14px';
+      svg.style.height = '14px';
+    }
+  }
   s.style.left = (x - 8) + 'px';
   s.style.top = (y - 8) + 'px';
   const dx = (Math.random() - 0.5) * 40;
