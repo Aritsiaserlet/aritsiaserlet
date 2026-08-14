@@ -562,9 +562,9 @@
     }
 
     .milestone-date {
-      font-family: 'Mitr', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      font-weight: normal;
       color: var(--dark);
     }
 
@@ -879,7 +879,7 @@
 
     <!-- Yes Screen (Milestone & Celebration) -->
     <div class="yes-screen" id="yesScreen">
-      <div class="yes-emoji"><span data-px="px_bear" style="font-size: 1.5em; display: inline-block;"></span></div>
+      <div class="yes-emoji"><span data-px="px_fox" style="font-size: 1.5em; display: inline-block;"></span></div>
       <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! <span data-px="px_heart_pink"></span></div>
       <div class="yes-sub" id="lYesSub">
         I'm the happiest person in the world! <span data-px="px_heart_sparkle"></span>
@@ -971,6 +971,7 @@ const PIXEL_PALETTE = [
   { id: 'px_letter_envelope', name: 'Envelope', svg: `<svg class="px-emo" viewBox="0 0 14 10" shape-rendering="crispEdges"><path d="M1 1h12v8H1z" fill="#fffef5"/><path d="M2 2h10v1H2zM3 3h8v1H3zM4 4h6v1H4zM5 5h4v1H5z" fill="#ffeaa7"/><path d="M6 4h2v2H6zM5 5h4v1H5z" fill="#e74c3c"/><path d="M0 0h14v1H0zM0 9h14v1H0zM0 0h1v10H0zM13 0h1v10H13z" fill="#2d3436"/></svg>` },
   { id: 'px_sparkle_gold', name: 'Gold Sparkle', svg: `<svg class="px-emo" viewBox="0 0 9 9" shape-rendering="crispEdges"><path d="M4 0h1v9H4zM0 4h9v1H0z" fill="#feca57"/><path d="M3 3h3v3H3z" fill="#ffffff"/><path d="M2 2h1v1H2zM6 2h1v1H6zM2 6h1v1H2zM6 6h1v1H6z" fill="#ffdd59"/></svg>` },
   { id: 'px_bear', name: 'Cute Bear', svg: `<svg class="px-emo" viewBox="0 0 12 11" shape-rendering="crispEdges"><path d="M1 1h3v3H1zM8 1h3v3H8z" fill="#cc8e35"/><path d="M2 2h1v1H2zM9 2h1v1H9z" fill="#ff7675"/><path d="M1 3h10v6H1z" fill="#e1b12c"/><path d="M4 6h4v3H4z" fill="#fffef5"/><path d="M3 5h1v1H3zM8 5h1v1H8z" fill="#2d3436"/></svg>` },
+  { id: 'px_fox', name: 'Cute Fox', svg: `<svg class="px-emo" viewBox="0 0 12 11" shape-rendering="crispEdges"><path d="M1 0h2v3H1zm8 0h2v3H9zM2 2h8v3H2zM0 3h12v2H0zM0 5h2v1H0zm4 0h4v1H4zm6 0h2v1h-2zM0 6h1v1H0zm4 0h4v1H4zm7 0h1v1h-1zM5 7h2v1H5z" fill="#e67e22"/><path d="M2 5h1v1H2zm7 0h1v1H9zM1 6h3v1H1zm7 0h3v1H8zM1 7h4v1H1zm6 0h4v1H7zM2 8h8v1H2zM4 9h4v1H4z" fill="#fffef5"/><path d="M3 5h1v1H3zm5 0h1v1H8zM5 8h2v1H5z" fill="#2d3436"/><path d="M2 1h1v1H2zm7 0h1v1H9z" fill="#ff7675"/></svg>` },
   { id: 'px_star', name: 'Gold Star', svg: `<svg class="px-emo" viewBox="0 0 11 11" shape-rendering="crispEdges"><path d="M5 1h1v2H5zM4 3h3v2H4zM1 4h9v2H1zM2 6h7v2H2zM3 8h2v2H3zM6 8h2v2H6z" fill="#feca57"/><path d="M5 2h1v1H5zM4 4h1v1H4z" fill="#ffffff"/></svg>` }
 ];
 
@@ -1405,7 +1406,7 @@ function runAway(btn) {
   }
 
   // Update text
-  btn.textContent = NO_MESSAGES[Math.min(noRunCount, NO_MESSAGES.length - 1)];
+  btn.innerHTML = NO_MESSAGES[Math.min(noRunCount, NO_MESSAGES.length - 1)];
 
   // Grow the Yes button!
   const btnYes = document.getElementById('btnYes');
@@ -1455,7 +1456,7 @@ function resetNo() {
   noRunCount = 0;
   const btn = document.getElementById('btnNo');
   if (btn) {
-    btn.textContent = NO_MESSAGES[0];
+    btn.innerHTML = NO_MESSAGES[0];
     btn.className = 'btn-no';
     btn.style.display = '';
     btn.style.position = '';
