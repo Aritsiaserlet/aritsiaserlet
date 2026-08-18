@@ -127,7 +127,24 @@ Transformed the single modal view into an authentic **Multi-Window Retro Desktop
 | **Z-Index Focus on Click** | Clicking or tapping any window brings it smoothly to the front (`highest z-index`) with an active golden header highlight. |
 | **Corner & Edge Resizing** | Each window includes a retro diagonal grip handle (`◢`) on the bottom-right corner. Users can click/touch and drag to resize width and height freely with min/max clamps. |
 | **Maximize / Restore Button** | Added a retro `[□]` button on the window title bar to toggle full-screen maximization and restore back to custom dimensions. |
-| **Independent Close Button** | Each window has its own `[✕]` button to close only that specific window. |
 | **Smart Responsive Cascading** | Windows open at cascading offsets on desktop, or auto-fit neatly on mobile viewports. |
+
+---
+
+## 🖼️ v2.3 — 8-Directional Edge Resizing & Two-Tier Admin Photo Library (August 18, 2026)
+
+### Overview
+Upgraded window interaction with full 8-directional edge/border resizing (drag any border or corner to resize freely), added retro photo placeholder slots, and introduced a two-tier Photo Management system in Admin (Library Pool + Active Selection).
+
+### 🌟 New Features in v2.3
+
+| Feature | Details |
+|---|---|
+| **8-Direction Window Resizing** | Users can click/touch and drag **any border or corner** (Top, Bottom, Left, Right, NE, NW, SE, SW) to freely resize windows in all directions with dynamic directional cursors (`↕`, `↔`, `⤡`, `⤢`). |
+| **Retro Photo Placeholders** | When no photos are selected, the Photos window renders **6 styled retro placeholder cards** with dashed pixel borders and prompt badges (`Memory Slot #1`, `#2`...). |
+| **📂 Photo Library Pool** | In Admin, users can upload images to a centralized storage pool (`settings.lovertianPhotoLibrary[]`) without immediately cluttering the live page. |
+| **⭐ Active Selection Workflow** | From the Photo Library in Admin, users click `[+ USE IN PAGE]` to assign photos into active memory slots (`settings.lovertianMemoryPhotos[]`) with custom captions. |
+| **Delete & Remove Separation** | Users can remove photos from the live page without deleting them from the library, or permanently delete them from storage when needed. |
+
 
 

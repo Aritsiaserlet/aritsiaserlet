@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1073,40 +1073,38 @@
       background: #fffef5;
     }
 
-    /* Bottom-right diagonal resize grip handle */
-    .win-resize-handle {
+    /* ── 8-Directional Interactive Window Resize Handles ── */
+    .resize-edge {
       position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 20px;
-      height: 20px;
-      cursor: nwse-resize;
-      z-index: 50;
-      user-select: none;
+      z-index: 55;
       touch-action: none;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-      opacity: 0.65;
-      transition: opacity 0.15s;
+      user-select: none;
     }
-    .win-resize-handle:hover, .win-resize-handle:active {
-      opacity: 1;
-    }
-    .win-resize-handle::before {
+    .resize-edge.edge-n { top: -4px; left: 12px; right: 12px; height: 8px; cursor: ns-resize; }
+    .resize-edge.edge-s { bottom: -4px; left: 12px; right: 12px; height: 8px; cursor: ns-resize; }
+    .resize-edge.edge-e { right: -4px; top: 12px; bottom: 12px; width: 8px; cursor: ew-resize; }
+    .resize-edge.edge-w { left: -4px; top: 12px; bottom: 12px; width: 8px; cursor: ew-resize; }
+    .resize-edge.edge-nw { top: -6px; left: -6px; width: 16px; height: 16px; cursor: nwse-resize; z-index: 60; }
+    .resize-edge.edge-ne { top: -6px; right: -6px; width: 16px; height: 16px; cursor: nesw-resize; z-index: 60; }
+    .resize-edge.edge-sw { bottom: -6px; left: -6px; width: 16px; height: 16px; cursor: nesw-resize; z-index: 60; }
+    .resize-edge.edge-se { bottom: -6px; right: -6px; width: 16px; height: 16px; cursor: nwse-resize; z-index: 60; }
+    .resize-edge.edge-se::after {
       content: "";
-      width: 12px;
-      height: 12px;
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 10px;
+      height: 10px;
       border-right: 3px solid var(--dark);
       border-bottom: 3px solid var(--dark);
-      margin-right: 3px;
-      margin-bottom: 3px;
+      pointer-events: none;
     }
 
+    /* Photos Grid & Placeholder Styling */
     .photos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
     .photo-card {
       border: 3px solid var(--dark);
@@ -1115,6 +1113,10 @@
       box-shadow: 4px 4px 0 var(--dark);
       display: flex;
       flex-direction: column;
+      transition: transform 0.15s;
+    }
+    .photo-card:hover {
+      transform: translateY(-2px);
     }
     .photo-card img {
       width: 100%;
@@ -1129,6 +1131,38 @@
       text-align: center;
       margin-top: 8px;
       color: var(--dark);
+      word-break: break-word;
+    }
+
+    .photo-placeholder-card {
+      border: 3px dashed var(--dark);
+      background: #fffef5;
+      padding: 16px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+      transition: transform 0.15s, background 0.15s;
+      min-height: 140px;
+      box-sizing: border-box;
+    }
+    .photo-placeholder-card:hover {
+      transform: translateY(-3px);
+      background: #fff9db;
+    }
+    .placeholder-badge {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 9px;
+      color: var(--dark);
+      margin-top: 4px;
+    }
+    .placeholder-sub {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      color: #999;
     }
     .song-card {
       max-width: 100%;
@@ -1141,9 +1175,15 @@
     }
     .song-title {
       font-family: 'Press Start 2P', cursive;
-      font-size: 12px;
+      font-size: 11px;
       margin-bottom: 16px;
       color: var(--dark);
+      letter-spacing: 1px;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     .yt-embed-wrap {
       position: relative;
@@ -1360,7 +1400,7 @@
           </div>
           <div class="mini-box-label">
             <span>OUR SONG</span>
-            <span class="mini-box-sub">Thinking of you</span>
+            <span class="mini-box-sub">Reminds me of you</span>
           </div>
         </div>
 
@@ -1424,6 +1464,15 @@
 
 <!-- 📸 Window 1: Memory Photos -->
 <div class="lt-window" id="winPhotos" style="width: 480px; height: 430px; left: 8vw; top: 12vh;">
+  <div class="resize-edge edge-n" onmousedown="startResize(event, 'n', 'winPhotos')" ontouchstart="startResize(event, 'n', 'winPhotos')"></div>
+  <div class="resize-edge edge-s" onmousedown="startResize(event, 's', 'winPhotos')" ontouchstart="startResize(event, 's', 'winPhotos')"></div>
+  <div class="resize-edge edge-e" onmousedown="startResize(event, 'e', 'winPhotos')" ontouchstart="startResize(event, 'e', 'winPhotos')"></div>
+  <div class="resize-edge edge-w" onmousedown="startResize(event, 'w', 'winPhotos')" ontouchstart="startResize(event, 'w', 'winPhotos')"></div>
+  <div class="resize-edge edge-nw" onmousedown="startResize(event, 'nw', 'winPhotos')" ontouchstart="startResize(event, 'nw', 'winPhotos')"></div>
+  <div class="resize-edge edge-ne" onmousedown="startResize(event, 'ne', 'winPhotos')" ontouchstart="startResize(event, 'ne', 'winPhotos')"></div>
+  <div class="resize-edge edge-sw" onmousedown="startResize(event, 'sw', 'winPhotos')" ontouchstart="startResize(event, 'sw', 'winPhotos')"></div>
+  <div class="resize-edge edge-se" onmousedown="startResize(event, 'se', 'winPhotos')" ontouchstart="startResize(event, 'se', 'winPhotos')"></div>
+  
   <div class="lt-window-header">
     <div class="win-title">
       <span data-px="px_camera"></span> MEMORY PHOTOS
@@ -1436,11 +1485,19 @@
   <div class="win-body" id="bodyPhotos">
     <div id="photosGridContainer"></div>
   </div>
-  <div class="win-resize-handle" onmousedown="startResize(event, 'winPhotos')" ontouchstart="startResize(event, 'winPhotos')"></div>
 </div>
 
 <!-- 🎵 Window 2: Our Song -->
 <div class="lt-window" id="winSong" style="width: 470px; height: 400px; left: 30vw; top: 16vh;">
+  <div class="resize-edge edge-n" onmousedown="startResize(event, 'n', 'winSong')" ontouchstart="startResize(event, 'n', 'winSong')"></div>
+  <div class="resize-edge edge-s" onmousedown="startResize(event, 's', 'winSong')" ontouchstart="startResize(event, 's', 'winSong')"></div>
+  <div class="resize-edge edge-e" onmousedown="startResize(event, 'e', 'winSong')" ontouchstart="startResize(event, 'e', 'winSong')"></div>
+  <div class="resize-edge edge-w" onmousedown="startResize(event, 'w', 'winSong')" ontouchstart="startResize(event, 'w', 'winSong')"></div>
+  <div class="resize-edge edge-nw" onmousedown="startResize(event, 'nw', 'winSong')" ontouchstart="startResize(event, 'nw', 'winSong')"></div>
+  <div class="resize-edge edge-ne" onmousedown="startResize(event, 'ne', 'winSong')" ontouchstart="startResize(event, 'ne', 'winSong')"></div>
+  <div class="resize-edge edge-sw" onmousedown="startResize(event, 'sw', 'winSong')" ontouchstart="startResize(event, 'sw', 'winSong')"></div>
+  <div class="resize-edge edge-se" onmousedown="startResize(event, 'se', 'winSong')" ontouchstart="startResize(event, 'se', 'winSong')"></div>
+
   <div class="lt-window-header">
     <div class="win-title">
       <span data-px="px_music_note"></span> OUR SONG
@@ -1453,11 +1510,19 @@
   <div class="win-body" id="bodySong">
     <div id="songCardContainer"></div>
   </div>
-  <div class="win-resize-handle" onmousedown="startResize(event, 'winSong')" ontouchstart="startResize(event, 'winSong')"></div>
 </div>
 
 <!-- 💌 Window 3: Love Letter -->
 <div class="lt-window" id="winLetter" style="width: 530px; height: 530px; left: 22vw; top: 14vh;">
+  <div class="resize-edge edge-n" onmousedown="startResize(event, 'n', 'winLetter')" ontouchstart="startResize(event, 'n', 'winLetter')"></div>
+  <div class="resize-edge edge-s" onmousedown="startResize(event, 's', 'winLetter')" ontouchstart="startResize(event, 's', 'winLetter')"></div>
+  <div class="resize-edge edge-e" onmousedown="startResize(event, 'e', 'winLetter')" ontouchstart="startResize(event, 'e', 'winLetter')"></div>
+  <div class="resize-edge edge-w" onmousedown="startResize(event, 'w', 'winLetter')" ontouchstart="startResize(event, 'w', 'winLetter')"></div>
+  <div class="resize-edge edge-nw" onmousedown="startResize(event, 'nw', 'winLetter')" ontouchstart="startResize(event, 'nw', 'winLetter')"></div>
+  <div class="resize-edge edge-ne" onmousedown="startResize(event, 'ne', 'winLetter')" ontouchstart="startResize(event, 'ne', 'winLetter')"></div>
+  <div class="resize-edge edge-sw" onmousedown="startResize(event, 'sw', 'winLetter')" ontouchstart="startResize(event, 'sw', 'winLetter')"></div>
+  <div class="resize-edge edge-se" onmousedown="startResize(event, 'se', 'winLetter')" ontouchstart="startResize(event, 'se', 'winLetter')"></div>
+
   <div class="lt-window-header">
     <div class="win-title">
       <span data-px="px_letter_envelope"></span> LOVE LETTER
@@ -1544,7 +1609,6 @@
       </div>
     </div>
   </div>
-  <div class="win-resize-handle" onmousedown="startResize(event, 'winLetter')" ontouchstart="startResize(event, 'winLetter')"></div>
 </div>
 
 <footer style="position:fixed;bottom:16px;left:0;right:0;text-align:center;font-family:'VT323',monospace;font-size:18px;color:var(--dark);opacity:0.6;z-index:5;pointer-events:none;">
@@ -2112,7 +2176,7 @@ function renderSongWindow() {
   
   container.innerHTML = `
     <div class="song-card">
-      <div class="song-title"><span data-px="px_music_note"></span> A SONG FOR YOU</div>
+      <div class="song-title"><span data-px="px_music_note"></span> A SONG THAT REMINDS ME OF YOU</div>
       <div class="yt-embed-wrap">
         <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
@@ -2126,8 +2190,22 @@ function renderPhotosWindow() {
   const container = document.getElementById('photosGridContainer');
   if (!container) return;
   const photos = window.lovertianSettings?.lovertianMemoryPhotos || [];
+  
   if (photos.length === 0) {
-    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No memories yet — add some in Admin!</div>';
+    // Render 6 cute retro placeholder cards
+    let placeholderHTML = '<div class="photos-grid">';
+    for (let i = 1; i <= 6; i++) {
+      placeholderHTML += `
+        <div class="photo-placeholder-card">
+          <div style="font-size: 28px;"><span data-px="px_camera"></span></div>
+          <div class="placeholder-badge">SLOT #${i}</div>
+          <div class="placeholder-sub">[ Pick in Admin ]</div>
+        </div>
+      `;
+    }
+    placeholderHTML += '</div>';
+    container.innerHTML = placeholderHTML;
+    renderPixelEmojis();
     return;
   }
   
@@ -2144,116 +2222,14 @@ function renderPhotosWindow() {
   container.innerHTML = html;
 }
 
-// Wax seal burst particles
-function spawnSealBurst() {
-  const seal = document.getElementById('envSeal');
-  if (!seal) return;
-  const rect = seal.getBoundingClientRect();
-  spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
-}
-
-function spawnMiniBoxesBurst() {
-  const miniWrap = document.getElementById('miniBoxesWrap');
-  if (!miniWrap) return;
-  const rect = miniWrap.getBoundingClientRect();
-  spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
-}
-
-function spawnBurstAt(cx, cy, count = 16) {
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'cursor-sparkle';
-    const pxIds = ['px_sparkle_gold', 'px_heart_pink', 'px_heart_sparkle', 'px_star'];
-    const pxPick = PIXEL_PALETTE.find(x => x.id === pxIds[Math.floor(Math.random() * pxIds.length)]);
-    p.innerHTML = pxPick ? pxPick.svg : '✨';
-    const pSvg = p.querySelector('svg');
-    if (pSvg) { pSvg.style.width = '16px'; pSvg.style.height = '16px'; }
-    p.style.left = cx + 'px';
-    p.style.top = cy + 'px';
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 30 + Math.random() * 90;
-    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 700);
-  }
-}
-
-// =============================================================================
-// DRAGGABLE & RESIZABLE WINDOW SYSTEM
-// =============================================================================
-function initWindowInteractions() {
-  document.querySelectorAll('.lt-window').forEach(win => {
-    // Bring to front on touch/click
-    win.addEventListener('mousedown', () => bringToFront(win));
-    win.addEventListener('touchstart', () => bringToFront(win), { passive: true });
-
-    // Drag by header
-    const header = win.querySelector('.lt-window-header');
-    if (header) {
-      let isDragging = false;
-      let startX = 0, startY = 0;
-      let initialLeft = 0, initialTop = 0;
-
-      const onDragStart = (e) => {
-        if (e.target.closest('.win-btn')) return;
-        if (win.classList.contains('maximized')) return;
-
-        bringToFront(win);
-        isDragging = true;
-        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-        startX = clientX;
-        startY = clientY;
-
-        const rect = win.getBoundingClientRect();
-        initialLeft = rect.left;
-        initialTop = rect.top;
-      };
-
-      const onDragMove = (e) => {
-        if (!isDragging) return;
-        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-        const dx = clientX - startX;
-        const dy = clientY - startY;
-
-        let newLeft = initialLeft + dx;
-        let newTop = initialTop + dy;
-
-        // Viewport bounds clamp
-        const pad = 8;
-        const maxLeft = Math.max(pad, window.innerWidth - win.offsetWidth - pad);
-        const maxTop = Math.max(pad, window.innerHeight - win.offsetHeight - pad);
-        newLeft = Math.max(pad, Math.min(newLeft, maxLeft));
-        newTop = Math.max(pad, Math.min(newTop, maxTop));
-
-        win.style.left = newLeft + 'px';
-        win.style.top = newTop + 'px';
-      };
-
-      const onDragEnd = () => {
-        isDragging = false;
-      };
-
-      header.addEventListener('mousedown', onDragStart);
-      window.addEventListener('mousemove', onDragMove);
-      window.addEventListener('mouseup', onDragEnd);
-
-      header.addEventListener('touchstart', onDragStart, { passive: true });
-      window.addEventListener('touchmove', onDragMove, { passive: true });
-      window.addEventListener('touchend', onDragEnd);
-    }
-  });
-}
-
-// Corner & Edge Resize Handler
+// 8-Directional Window Resize Handler
 let isResizing = false;
 let resizeWin = null;
-let startRX = 0, startRY = 0;
-let startW = 0, startH = 0;
+let resizeDir = '';
+let startX = 0, startY = 0;
+let startLeft = 0, startTop = 0, startW = 0, startH = 0;
 
-function startResize(e, winId) {
+function startResize(e, dir, winId) {
   e.stopPropagation();
   e.preventDefault();
   resizeWin = document.getElementById(winId);
@@ -2261,37 +2237,75 @@ function startResize(e, winId) {
 
   bringToFront(resizeWin);
   isResizing = true;
+  resizeDir = dir;
 
   const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
   const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-  startRX = clientX;
-  startRY = clientY;
-  startW = resizeWin.offsetWidth;
-  startH = resizeWin.offsetHeight;
+  startX = clientX;
+  startY = clientY;
+
+  const rect = resizeWin.getBoundingClientRect();
+  startLeft = rect.left;
+  startTop = rect.top;
+  startW = rect.width;
+  startH = rect.height;
+}
+
+function handleResizeMove(clientX, clientY) {
+  if (!isResizing || !resizeWin) return;
+  const dx = clientX - startX;
+  const dy = clientY - startY;
+
+  const minW = 280;
+  const minH = 200;
+
+  let newW = startW;
+  let newH = startH;
+  let newLeft = startLeft;
+  let newTop = startTop;
+
+  // Horizontal resizing
+  if (resizeDir.includes('e')) {
+    newW = Math.max(minW, Math.min(startW + dx, window.innerWidth - startLeft - 10));
+  } else if (resizeDir.includes('w')) {
+    const rawW = startW - dx;
+    if (rawW >= minW && startLeft + dx >= 10) {
+      newW = rawW;
+      newLeft = startLeft + dx;
+    } else if (rawW < minW) {
+      newW = minW;
+      newLeft = startLeft + (startW - minW);
+    }
+  }
+
+  // Vertical resizing
+  if (resizeDir.includes('s')) {
+    newH = Math.max(minH, Math.min(startH + dy, window.innerHeight - startTop - 10));
+  } else if (resizeDir.includes('n')) {
+    const rawH = startH - dy;
+    if (rawH >= minH && startTop + dy >= 10) {
+      newH = rawH;
+      newTop = startTop + dy;
+    } else if (rawH < minH) {
+      newH = minH;
+      newTop = startTop + (startH - minH);
+    }
+  }
+
+  resizeWin.style.width = newW + 'px';
+  resizeWin.style.height = newH + 'px';
+  resizeWin.style.left = newLeft + 'px';
+  resizeWin.style.top = newTop + 'px';
 }
 
 window.addEventListener('mousemove', (e) => {
-  if (!isResizing || !resizeWin) return;
-  const dx = e.clientX - startRX;
-  const dy = e.clientY - startRY;
-
-  const newW = Math.max(280, Math.min(startW + dx, window.innerWidth - resizeWin.offsetLeft - 10));
-  const newH = Math.max(200, Math.min(startH + dy, window.innerHeight - resizeWin.offsetTop - 10));
-
-  resizeWin.style.width = newW + 'px';
-  resizeWin.style.height = newH + 'px';
+  if (isResizing) handleResizeMove(e.clientX, e.clientY);
 });
 
 window.addEventListener('touchmove', (e) => {
-  if (!isResizing || !resizeWin || !e.touches[0]) return;
-  const dx = e.touches[0].clientX - startRX;
-  const dy = e.touches[0].clientY - startRY;
-
-  const newW = Math.max(280, Math.min(startW + dx, window.innerWidth - resizeWin.offsetLeft - 10));
-  const newH = Math.max(200, Math.min(startH + dy, window.innerHeight - resizeWin.offsetTop - 10));
-
-  resizeWin.style.width = newW + 'px';
-  resizeWin.style.height = newH + 'px';
+  if (isResizing && e.touches[0]) {
+    handleResizeMove(e.touches[0].clientX, e.touches[0].clientY);
+  }
 }, { passive: false });
 
 window.addEventListener('mouseup', () => { isResizing = false; resizeWin = null; });
