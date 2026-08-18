@@ -324,9 +324,6 @@
 
     /* Letter close btn */
     .letter-close {
-      position: absolute;
-      top: 8px;
-      right: 10px;
       background: #c0392b;
       border: 3px solid var(--dark);
       width: 32px;
@@ -340,6 +337,7 @@
       z-index: 4;
       box-shadow: 2px 2px 0 var(--dark);
       transition: transform 0.1s, box-shadow 0.1s;
+      flex-shrink: 0;
     }
 
     .letter-close:hover {
@@ -693,6 +691,231 @@
       100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
     }
 
+    /* Gift Box */
+    .gift-box {
+      width: 280px;
+      height: 240px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .gift-box:hover {
+      transform: translateY(-6px) scale(1.03);
+    }
+    .gift-body {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60%;
+      background: #ff7675;
+      border: 4px solid #2d3436;
+      box-sizing: border-box;
+      box-shadow: 6px 6px 0 var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gift-ribbon-v {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      background: #feca57;
+      transform: translateX(-50%);
+      border-left: 3px solid #2d3436;
+      border-right: 3px solid #2d3436;
+    }
+    .gift-ribbon-h {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 16px;
+      background: #feca57;
+      transform: translateY(-50%);
+      border-top: 3px solid #2d3436;
+      border-bottom: 3px solid #2d3436;
+    }
+    .gift-lid {
+      position: absolute;
+      top: 0;
+      width: 104%;
+      height: 40%;
+      background: #ff7675;
+      border: 4px solid #2d3436;
+      box-sizing: border-box;
+      left: -2%;
+      z-index: 5;
+      transform-origin: top center;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 6px 6px 0 var(--dark);
+    }
+    .gift-lid .gift-ribbon-v {
+      height: 100%;
+      bottom: auto;
+    }
+    .gift-box.opened .gift-lid {
+      transform: rotateX(-110deg);
+    }
+    .gift-bow {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 24px;
+      background: #feca57;
+      border: 3px solid #2d3436;
+      border-radius: 20px 20px 0 0;
+      z-index: 6;
+      box-sizing: border-box;
+    }
+
+    /* Tabs Panel */
+    .lt-panel-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(20, 40, 65, 0.75);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .lt-panel-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .lt-panel {
+      background: #fffef5;
+      border: 4px solid var(--dark);
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+      transform: scale(0.88) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .lt-panel-overlay.open .lt-panel {
+      transform: scale(1) translateY(0);
+    }
+    .lt-panel-header {
+      background: var(--gold);
+      border-bottom: 4px solid var(--dark);
+      padding: 12px 52px 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .lt-panel-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      color: var(--dark);
+      letter-spacing: 2px;
+    }
+    .lt-tabs {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      background: var(--sky4);
+      border-bottom: 4px solid var(--dark);
+    }
+    .lt-tab {
+      flex: 1;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 9px;
+      padding: 12px 4px;
+      cursor: pointer;
+      border: none;
+      border-right: 3px solid var(--dark);
+      border-bottom: 4px solid transparent;
+      background: var(--white);
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .lt-tab:last-child {
+      border-right: none;
+    }
+    .lt-tab.active {
+      background: #feca57;
+      border-bottom: 4px solid #feca57;
+    }
+    .lt-tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .photo-card {
+      border: 3px solid var(--dark);
+      background: var(--white);
+      padding: 8px;
+      box-shadow: 4px 4px 0 var(--dark);
+      display: flex;
+      flex-direction: column;
+    }
+    .photo-card img {
+      width: 100%;
+      height: auto;
+      border: 2px solid var(--dark);
+      object-fit: cover;
+      aspect-ratio: 1;
+    }
+    .photo-caption {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      text-align: center;
+      margin-top: 8px;
+      color: var(--dark);
+    }
+    .song-card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 4px solid var(--dark);
+      padding: 16px;
+      box-shadow: 6px 6px 0 var(--dark);
+      text-align: center;
+    }
+    .song-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 12px;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+    .yt-embed-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border: 3px solid var(--dark);
+    }
+    .yt-embed-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
     /* ── Token Access Modal ── */
     .token-modal-overlay {
       position: fixed;
@@ -830,104 +1053,128 @@
 <main class="lovertian-page">
   <h1 class="lt-title">LOVER<span data-px="px_heart_red"></span>TIAN</h1>
 
-  <!-- Envelope -->
+  <!-- Envelope / Gift Box -->
   <div class="envelope-wrap" id="envelopeWrap">
-    <div class="envelope" id="envelope" onclick="openEnvelope()">
-      <div class="env-body">
-        <div class="env-flap"></div>
-        <div class="env-bottom"></div>
-        <div class="env-left"></div>
-        <div class="env-right"></div>
-        <div class="env-seal" id="envSeal"><span data-px="px_letter_envelope"></span></div>
+    <div class="gift-box-container" style="perspective: 800px;">
+      <div class="envelope gift-box" id="envelope" onclick="openEnvelope()">
+        <div class="gift-lid">
+          <div class="gift-bow"></div>
+          <div class="gift-ribbon-v"></div>
+          <div class="gift-ribbon-h"></div>
+        </div>
+        <div class="gift-body">
+          <div class="gift-ribbon-v"></div>
+          <div class="gift-ribbon-h"></div>
+          <div class="env-seal" id="envSeal"><span data-px="px_heart_red"></span></div>
+        </div>
       </div>
     </div>
-    <div class="env-hint" id="envHint">[ Click to open letter ]</div>
+    <div class="env-hint" id="envHint">[ Click to open ]</div>
   </div>
 </main>
 
-<!-- Letter Modal -->
-<div class="letter-overlay" id="letterOverlay">
-  <div class="letter-box" id="letterBox">
+<!-- Letter Modal / Panel -->
+<div class="lt-panel-overlay" id="ltPanelOverlay">
+  <div class="lt-panel" id="ltPanel">
     <!-- Header -->
-    <div class="letter-header">
-      <span data-px="px_letter_envelope"></span>
-      <div class="letter-header-title">LOVE LETTER</div>
-      <span data-px="px_letter_envelope"></span>
+    <div class="lt-panel-header">
+      <div class="lt-panel-title">LOVERTIAN</div>
+      <button class="letter-close" onclick="closePanel()">&#10005;</button>
     </div>
-    <button class="letter-close" onclick="closeLetter()">&#10005;</button>
-
-    <!-- Letter body -->
-    <div class="letter-content" id="letterContent">
-      <div class="letter-lines" id="letterLines"></div>
-      <div class="letter-deco"><span data-px="px_heart_pink"></span> <span data-px="px_heart_sparkle"></span> <span data-px="px_heart_pink"></span></div>
-      
-      <div class="letter-greeting" id="lGreeting"></div>
-      <div class="letter-text" id="lBody"></div>
-      <div class="letter-divider" id="lDivider" style="display:none;"></div>
-      <div class="letter-question" id="lQuestion"></div>
-
-      <!-- Answer buttons -->
-      <div class="answer-row" id="answerRow" style="opacity:0; transition:opacity 0.4s;">
-        <button class="btn-yes" id="btnYes" onclick="sayYes()">&#10003; YES !</button>
-        <button class="btn-no" id="btnNo" onmouseenter="runAway(this)" onclick="handleNoClick(this)">&#10007; No</button>
-      </div>
-
-      <div class="letter-signature" id="lSignature" style="opacity:0; transition:opacity 0.4s;"></div>
-
-      <button class="btn-skip-type" id="btnSkipType" onclick="skipTypewriter()" style="display:none;">Skip ▶</button>
+    <!-- Tab nav -->
+    <div class="lt-tabs">
+      <button class="lt-tab" id="tab-photos" onclick="switchTab('photos')"><span data-px="px_camera"></span> PHOTOS</button>
+      <button class="lt-tab" id="tab-song" onclick="switchTab('song')"><span data-px="px_music_note"></span> SONG</button>
+      <button class="lt-tab active" id="tab-letter" onclick="switchTab('letter')"><span data-px="px_letter_envelope"></span> LETTER</button>
     </div>
-
-    <!-- Yes Screen (Milestone & Celebration) -->
-    <div class="yes-screen" id="yesScreen">
-      <div class="yes-emoji"><span data-px="px_fox" style="font-size: 1.5em; display: inline-block;"></span></div>
-      <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! <span data-px="px_heart_pink"></span></div>
-      <div class="yes-sub" id="lYesSub">
-        I'm the happiest person in the world! <span data-px="px_heart_sparkle"></span>
-      </div>
-
-      <!-- Official Milestone Box -->
-      <div class="milestone-box">
-        <div class="milestone-badge">★ OFFICIAL RELATIONSHIP MILESTONE ★</div>
-        <div class="milestone-date">
-          <span data-px="px_star"></span> Official Start Date: August 8, 2026 at 19:00:00
+    <!-- Tab contents -->
+    <div class="lt-tab-content" id="tabContent-photos" style="display:none;">
+      <!-- photos grid -->
+    </div>
+    <div class="lt-tab-content" id="tabContent-song" style="display:none">
+      <!-- youtube embed -->
+    </div>
+    <div class="lt-tab-content" id="tabContent-letter">
+      <div class="letter-box" id="letterBox" style="box-shadow:none; border:none; max-width:none; transform:none;">
+        <div class="letter-header">
+          <span data-px="px_letter_envelope"></span>
+          <div class="letter-header-title">LOVE LETTER</div>
+          <span data-px="px_letter_envelope"></span>
         </div>
-        
-        <!-- Live Relationship Ticker -->
-        <div class="timer-grid" id="timerGrid">
-          <div class="timer-unit">
-            <div class="timer-val" id="tDays">0</div>
-            <div class="timer-lbl">DAYS</div>
+        <!-- Letter body -->
+        <div class="letter-content" id="letterContent">
+          <div class="letter-lines" id="letterLines"></div>
+          <div class="letter-deco"><span data-px="px_heart_pink"></span> <span data-px="px_heart_sparkle"></span> <span data-px="px_heart_pink"></span></div>
+          
+          <div class="letter-greeting" id="lGreeting"></div>
+          <div class="letter-text" id="lBody"></div>
+          <div class="letter-divider" id="lDivider" style="display:none;"></div>
+          <div class="letter-question" id="lQuestion"></div>
+
+          <!-- Answer buttons -->
+          <div class="answer-row" id="answerRow" style="opacity:0; transition:opacity 0.4s;">
+            <button class="btn-yes" id="btnYes" onclick="sayYes()">&#10003; YES !</button>
+            <button class="btn-no" id="btnNo" onmouseenter="runAway(this)" onclick="handleNoClick(this)">&#10007; No</button>
           </div>
-          <div class="timer-unit">
-            <div class="timer-val" id="tHours">0</div>
-            <div class="timer-lbl">HOURS</div>
-          </div>
-          <div class="timer-unit">
-            <div class="timer-val" id="tMinutes">0</div>
-            <div class="timer-lbl">MINS</div>
-          </div>
-          <div class="timer-unit">
-            <div class="timer-val" id="tSeconds">0</div>
-            <div class="timer-lbl">SECS</div>
-          </div>
+
+          <div class="letter-signature" id="lSignature" style="opacity:0; transition:opacity 0.4s;"></div>
+
+          <button class="btn-skip-type" id="btnSkipType" onclick="skipTypewriter()" style="display:none;">Skip ▶</button>
         </div>
 
-        <div class="milestone-quote">
-          "Falling in love with you more and more every single second <span data-px="px_sparkle_gold"></span>"
+        <!-- Yes Screen (Milestone & Celebration) -->
+        <div class="yes-screen" id="yesScreen">
+          <div class="yes-emoji"><span data-px="px_fox" style="font-size: 1.5em; display: inline-block;"></span></div>
+          <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! <span data-px="px_heart_pink"></span></div>
+          <div class="yes-sub" id="lYesSub">
+            I'm the happiest person in the world! <span data-px="px_heart_sparkle"></span>
+          </div>
+
+          <!-- Official Milestone Box -->
+          <div class="milestone-box">
+            <div class="milestone-badge">★ OFFICIAL RELATIONSHIP MILESTONE ★</div>
+            <div class="milestone-date">
+              <span data-px="px_star"></span> Official Start Date: August 8, 2026 at 19:00:00
+            </div>
+            
+            <!-- Live Relationship Ticker -->
+            <div class="timer-grid" id="timerGrid">
+              <div class="timer-unit">
+                <div class="timer-val" id="tDays">0</div>
+                <div class="timer-lbl">DAYS</div>
+              </div>
+              <div class="timer-unit">
+                <div class="timer-val" id="tHours">0</div>
+                <div class="timer-lbl">HOURS</div>
+              </div>
+              <div class="timer-unit">
+                <div class="timer-val" id="tMinutes">0</div>
+                <div class="timer-lbl">MINS</div>
+              </div>
+              <div class="timer-unit">
+                <div class="timer-val" id="tSeconds">0</div>
+                <div class="timer-lbl">SECS</div>
+              </div>
+            </div>
+
+            <div class="milestone-quote">
+              "Falling in love with you more and more every single second <span data-px="px_sparkle_gold"></span>"
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="yes-actions">
+            <button class="btn-action" onclick="saveMemoryCard()">
+              <span data-px="px_star"></span> Save Memory Card
+            </button>
+            <button class="btn-action secondary" onclick="replayLetter()">
+              <span data-px="px_letter_envelope"></span> Read Letter Again
+            </button>
+          </div>
+
+          <div style="font-size: 32px; margin-top: 4px;"><span data-px="px_heart_pink"></span> <span data-px="px_heart_double"></span> <span data-px="px_heart_pink"></span></div>
         </div>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="yes-actions">
-        <button class="btn-action" onclick="saveMemoryCard()">
-          <span data-px="px_star"></span> Save Memory Card
-        </button>
-        <button class="btn-action secondary" onclick="replayLetter()">
-          <span data-px="px_letter_envelope"></span> Read Letter Again
-        </button>
-      </div>
-
-      <div style="font-size: 32px; margin-top: 4px;"><span data-px="px_heart_pink"></span> <span data-px="px_heart_double"></span> <span data-px="px_heart_pink"></span></div>
     </div>
   </div>
 </div>
@@ -962,6 +1209,8 @@
 // PIXEL EMOJI SYSTEM
 // =============================================================================
 const PIXEL_PALETTE = [
+  { id: 'px_music_note', name: 'Music Note', svg: `<svg class="px-emo" viewBox="0 0 10 12" shape-rendering="crispEdges"><path d="M3 0h6v1H3zM3 1h1v6H3zM8 1h1v2H8zM2 6h3v2H2zM1 8h5v1H1zM2 9h3v1H2z" fill="#2d3436"/><path d="M4 1h4v1H4z" fill="#feca57"/><path d="M2 7h3v1H2z" fill="#feca57"/></svg>` },
+  { id: 'px_camera', name: 'Camera', svg: `<svg class="px-emo" viewBox="0 0 14 11" shape-rendering="crispEdges"><path d="M0 2h14v8H0z" fill="#636e72"/><path d="M1 3h12v6H1z" fill="#b2bec3"/><path d="M3 0h3v2H3zM5 4h4v4H5z" fill="#2d3436"/><path d="M6 5h2v2H6z" fill="#74b9ff"/><path d="M11 3h2v1h-2z" fill="#feca57"/></svg>` },
   { id: 'px_sakura', name: 'Sakura', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M4 1h4v2H4zM1 4h2v4H1zM9 4h2v4H9zM4 9h4v2H4z" fill="#ff9ff3"/><path d="M3 2h2v2H3zM7 2h2v2H7zM3 8h2v2H3zM7 8h2v2H7zM4 4h4v4H4z" fill="#fd79a8"/><path d="M5 5h2v2H5z" fill="#feca57"/><path d="M4 0h4v1H4zM8 1h1v1H8zM9 2h1v2H9zM11 4h1v4H11zM9 8h1v2H9zM8 10h1v1H8zM4 11h4v1H4zM3 10h1v1H3zM2 8h1v2H2zM0 4h1v4H0zM2 2h1v2H2zM3 1h1v1H3z" fill="#2d3436"/></svg>` },
   { id: 'px_heart_sparkle', name: 'Sparkle Heart', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#fd79a8"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M0 0h2v2H0zM1 1h2v2H1z" fill="#feca57"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
   { id: 'px_heart_pink', name: 'Pink Heart', svg: `<svg class="px-emo" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M2 2h3v1H2zM7 2h3v1H7zM1 3h5v2H1zM6 3h5v2H6zM1 5h10v2H1zM2 7h8v2H2zM3 9h6v1H3zM4 10h4v1H4zM5 11h2v1H5z" fill="#ff7675"/><path d="M2 3h2v1H2zM3 4h1v1H3z" fill="#ffffff"/><path d="M1 2h1v1H1zM4 1h1v1H4zM7 1h1v1H7zM10 2h1v1H10zM11 3h1v4H11zM10 7h1v2H10zM9 9h1v1H9zM8 10h1v1H8zM7 11h1v1H7zM4 11h1v1H4zM3 10h1v1H3zM2 9h1v1H2zM1 7h1v2H1zM0 3h1v4H0zM5 2h2v1H5z" fill="#2d3436"/></svg>` },
@@ -1309,6 +1558,74 @@ function skipTypewriter() {
 // =============================================================================
 // OPEN / CLOSE ENVELOPE
 // =============================================================================
+function switchTab(tabName) {
+  ['photos', 'song', 'letter'].forEach(t => {
+    const content = document.getElementById('tabContent-' + t);
+    const tabBtn = document.getElementById('tab-' + t);
+    if(content) content.style.display = (t === tabName ? '' : 'none');
+    if(tabBtn) tabBtn.classList.toggle('active', t === tabName);
+  });
+  if (tabName === 'letter') {
+    const elGreet = document.getElementById('lGreeting');
+    if (elGreet && !elGreet.textContent.trim()) startTypewriter();
+  }
+  if (tabName === 'song') {
+    renderSongTab();
+  }
+  if (tabName === 'photos') {
+    renderPhotosTab();
+  }
+}
+
+function renderSongTab() {
+  const container = document.getElementById('tabContent-song');
+  if (!container) return;
+  const url = window.lovertianSettings?.lovertianYoutubeUrl;
+  if (!url) {
+    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;">No song set yet — add one in Admin!</div>';
+    return;
+  }
+  
+  let embedUrl = url;
+  if (url.includes('watch?v=')) {
+    embedUrl = url.replace('watch?v=', 'embed/');
+    embedUrl = embedUrl.split('&')[0];
+  }
+  
+  container.innerHTML = `
+    <div class="song-card">
+      <div class="song-title"><span data-px="px_music_note"></span> A Song I Think Of You</div>
+      <div class="yt-embed-wrap">
+        <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+      <div style="margin-top:16px;font-size:24px;"><span data-px="px_heart_pink"></span> <span data-px="px_sparkle_gold"></span> <span data-px="px_heart_pink"></span></div>
+    </div>
+  `;
+  renderPixelEmojis();
+}
+
+function renderPhotosTab() {
+  const container = document.getElementById('tabContent-photos');
+  if (!container) return;
+  const photos = window.lovertianSettings?.lovertianMemoryPhotos || [];
+  if (photos.length === 0) {
+    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;">No memories yet — add some in Admin!</div>';
+    return;
+  }
+  
+  let html = '<div class="photos-grid">';
+  photos.forEach(p => {
+    html += `
+      <div class="photo-card">
+        <img src="${p.url}" alt="Memory">
+        <div class="photo-caption">${p.caption || ''}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
 function openEnvelope() {
   playPaperRustle();
   startBGM();
@@ -1322,15 +1639,15 @@ function openEnvelope() {
   spawnSealBurst();
 
   setTimeout(() => {
-    const overlay = document.getElementById('letterOverlay');
+    const overlay = document.getElementById('ltPanelOverlay');
     overlay.classList.add('open');
-    startTypewriter();
+    switchTab('letter');
   }, 600);
 }
 
-function closeLetter() {
+function closePanel() {
   clearTypewriter();
-  document.getElementById('letterOverlay').classList.remove('open');
+  document.getElementById('ltPanelOverlay').classList.remove('open');
   setTimeout(() => {
     const env = document.getElementById('envelope');
     env.classList.remove('opened');
@@ -1362,7 +1679,11 @@ function spawnSealBurst() {
   for (let i = 0; i < 16; i++) {
     const p = document.createElement('div');
     p.className = 'cursor-sparkle';
-    p.innerHTML = Math.random() > 0.5 ? '✨' : '💖';
+    const pxIds = ['px_sparkle_gold', 'px_heart_pink', 'px_heart_sparkle', 'px_star'];
+    const pxPick = PIXEL_PALETTE.find(x => x.id === pxIds[Math.floor(Math.random() * pxIds.length)]);
+    p.innerHTML = pxPick ? pxPick.svg : '✨';
+    const pSvg = p.querySelector('svg');
+    if (pSvg) { pSvg.style.width = '16px'; pSvg.style.height = '16px'; }
     p.style.left = cx + 'px';
     p.style.top = cy + 'px';
     const angle = Math.random() * Math.PI * 2;
@@ -1379,13 +1700,13 @@ function spawnSealBurst() {
 // =============================================================================
 let noRunCount = 0;
 const NO_MESSAGES = [
-  '&#10007; No',
+  '✗ No',
   'Are you sure?',
   'Think again...',
   'Misclick?!',
   'Don\'t be mean...',
   'Just say Yes!',
-  '&#10003; YES (shy)'
+  '✓ YES (shy)'
 ];
 
 function initNoButton() {
@@ -1708,6 +2029,7 @@ async function spawnHearts() {
 
   function applySettings(settingsObj) {
     if (!settingsObj) return;
+    window.lovertianSettings = settingsObj;
     if (settingsObj.lovertianIcons) ltIcons = settingsObj.lovertianIcons;
     if (settingsObj.lovertianEmojis && settingsObj.lovertianEmojis.length > 0) ltEmojis = settingsObj.lovertianEmojis;
     if (settingsObj.lovertianEnvelopeSealEmoji) sealEmoji = settingsObj.lovertianEnvelopeSealEmoji;

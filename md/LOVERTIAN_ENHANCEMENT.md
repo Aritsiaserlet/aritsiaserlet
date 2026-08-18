@@ -63,3 +63,32 @@ function updateRelationshipTicker() {
 * **[`lovertian.html`](file:///c:/Users/mink/Documents/GitHub/aritsiaserlet/lovertian.html)**: หน้าเว็บหลักที่รวมทุกฟีเจอร์และเอฟเฟกต์ทั้งหมด
 * **[`lovertian-admin.html`](file:///c:/Users/mink/Documents/GitHub/aritsiaserlet/lovertian-admin.html)**: หน้าแอดมินสำหรับจัดการข้อความและไอคอนพื้นหลัง
 * **[`md/LOVERTIAN_ENHANCEMENT.md`](file:///c:/Users/mink/Documents/GitHub/aritsiaserlet/md/LOVERTIAN_ENHANCEMENT.md)**: เอกสารสรุปการพัฒนานี้
+
+---
+
+## 🎁 v2.0 — Gift Box Redesign (August 18, 2026)
+
+### Overview
+Major redesign of the LoverTian page: replaced the letter envelope with a pixel art gift box, and turned the single letter modal into a 3-tab interactive panel.
+
+### Feature Table
+
+| Feature | Details |
+|---|---|
+| **Gift Box** | Replaced letter envelope with a pixel art gift box (red body, gold ribbon & bow). The lid flips open with a `rotateX` 3D animation when clicked. |
+| **3-Tab Panel** | After opening the box, a panel slides in with 3 navigable tabs. |
+| **Tab 1: PHOTOS** | Grid gallery of memory photos uploaded via Admin Panel. Shows pixel camera icon tab. |
+| **Tab 2: SONG** | YouTube embed card — a special song. The URL is configured via Admin Panel. Supports `watch?v=` and `youtu.be/` URL formats. |
+| **Tab 3: LETTER** | The original love letter with full typewriter effect, playful No button, and Yes celebration screen — now housed in a tab. |
+| **Admin: Memory Photos** | New panel in Admin to upload photos (with captions) to the Photos tab. Stored in `settings.lovertianMemoryPhotos[]`. |
+| **Admin: Song URL** | New panel in Admin to set the YouTube URL for the Song tab. Stored in `settings.lovertianYoutubeUrl`. Shows a live preview embed. |
+| **Pixel Emojis Only** | All normal emojis (✨💖🌸⭐) replaced with pixel SVG art across the entire UI and cursor trail. |
+| **Button Entity Fix** | Fixed `&#10003;`/`&#10007;` HTML entities in No-button messages that were rendering as literal text — now use actual Unicode `✓`/`✗` characters. |
+| **Pixel Fonts** | Confirmed all UI text uses `Press Start 2P` or `VT323` pixel fonts throughout. |
+| **New Pixel Arts** | Added `px_music_note` and `px_camera` to `PIXEL_PALETTE`. |
+
+### Settings Keys Added
+| Key | Type | Description |
+|---|---|---|
+| `lovertianMemoryPhotos` | `Array<{url, caption}>` | Memory photos for the Photos tab |
+| `lovertianYoutubeUrl` | `string` | YouTube video URL for the Song tab |

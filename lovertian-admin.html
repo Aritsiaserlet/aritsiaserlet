@@ -501,6 +501,45 @@
     </div>
   </div>
 
+  <!-- Memory Photos Panel -->
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2><span><span data-px="px_camera"></span> MEMORY PHOTOS GALLERY</span></h2>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
+        Photos shown in the PHOTOS tab of LoverTian. Upload meaningful memories here.
+      </p>
+      <div id="ltPhotosBox" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px; margin-bottom:20px;">
+        <div style="font-family:'VT323',monospace; font-size:20px; color:var(--mid);">Loading...</div>
+      </div>
+      <div style="border-top: 3px dashed var(--dark); padding-top: 16px; display:flex; flex-direction:column; gap:10px;">
+        <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:11px;">ADD NEW PHOTO</label>
+        <input type="text" id="newPhotoCaption" placeholder="Caption for this photo..." style="font-family:'VT323',monospace; font-size:20px; padding:8px; border:3px solid var(--dark);">
+        <input type="file" id="newPhotoFile" accept="image/*" style="font-family:'VT323',monospace; font-size:18px;">
+        <button class="anav-btn" id="uploadPhotoBtn" onclick="addMemoryPhoto()">UPLOAD PHOTO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Song Configuration Panel -->
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2><span><span data-px="px_music_note"></span> SONG CONFIGURATION</span></h2>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
+        YouTube URL for the song shown in the SONG tab. Paste a full YouTube URL below.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:11px;">YOUTUBE URL</label>
+        <input type="text" id="ltYoutubeUrl" placeholder="https://www.youtube.com/watch?v=..." style="font-family:'VT323',monospace; font-size:20px; padding:8px; border:3px solid var(--dark);">
+        <div id="ytPreview" style="margin-top:8px;"></div>
+        <button class="anav-btn" onclick="saveSongConfig()">SAVE SONG URL</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Retro Token Access Modal -->
@@ -719,10 +758,21 @@ async function loadSettings() {
   // Load Letter Content
   if (document.getElementById('cfgLetterGreeting')) {
     document.getElementById('cfgLetterGreeting').value = settings.lovertianLetterGreeting || 'To... the one I want to tell <span data-px="px_sakura"></span>';
-    document.getElementById('cfgLetterBody').value = settings.lovertianLetterBody || 'I\'ve been thinking for a long time<br>\nabout what to say...<br><br>\nBut every time I see your face<br>\nthe words just disappear <span data-px="px_sparkle_gold"></span><br><br>\nSo I\'m sending this letter instead <span data-px="px_letter_envelope"></span>';
+    document.getElementById('cfgLetterBody').value = settings.lovertianLetterBody || "I've been thinking for a long time<br>\nabout what to say...<br><br>\nBut every time I see your face<br>\nthe words just disappear <span data-px=\"px_sparkle_gold\"></span><br><br>\nSo I'm sending this letter instead <span data-px=\"px_letter_envelope\"></span>";
     document.getElementById('cfgLetterQuestion').value = settings.lovertianLetterQuestion || 'Will you<span data-px="px_heart_red"></span>be my girlfriend?<span data-px="px_heart_red"></span>';
     document.getElementById('cfgLetterSignature').value = settings.lovertianLetterSignature || '&#8212; With love, AritsiaZ <span data-px="px_sakura"></span>';
-    document.getElementById('cfgLetterYesSub').value = settings.lovertianLetterYesSub || 'Thank you so much <span data-px="px_heart_sparkle"></span><br>\nI\'m the happiest person in the world!';
+    document.getElementById('cfgLetterYesSub').value = settings.lovertianLetterYesSub || "Thank you so much <span data-px=\"px_heart_sparkle\"></span><br>\nI'm the happiest person in the world!";
+  }
+
+  // Load Memory Photos
+  loadMemoryPhotos();
+
+  // Load YouTube URL
+  const ytInput = document.getElementById('ltYoutubeUrl');
+  if (ytInput) {
+    ytInput.value = settings.lovertianYoutubeUrl || '';
+    updateYtPreview(ytInput.value);
+    ytInput.addEventListener('input', () => updateYtPreview(ytInput.value));
   }
 }
 
@@ -995,6 +1045,129 @@ async function saveLetterContent() {
     showMsg("✓ Letter Content saved successfully!");
   } catch(e) {
     alert("Error saving letter content: " + e.message);
+  }
+}
+
+// ── Memory Photos ──
+function loadMemoryPhotos() {
+  const box = document.getElementById('ltPhotosBox');
+  if (!box) return;
+  const photos = settings.lovertianMemoryPhotos || [];
+  if (photos.length === 0) {
+    box.innerHTML = '<div style="font-family:\'VT323\',monospace; font-size:20px; color:var(--mid);">No photos yet — upload some below!</div>';
+    return;
+  }
+  box.innerHTML = '';
+  photos.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.style.cssText = 'border:3px solid var(--dark); background:var(--white); padding:6px; box-shadow:3px 3px 0 var(--dark); position:relative;';
+    card.innerHTML = `
+      <button onclick="deleteMemoryPhoto(${idx})" style="position:absolute;top:4px;right:4px;background:#c0392b;color:white;border:2px solid var(--dark);width:22px;height:22px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      <img src="${p.url}" alt="Memory" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
+      <div style="font-family:'VT323',monospace;font-size:16px;text-align:center;margin-top:4px;">${p.caption || ''}</div>
+    `;
+    box.appendChild(card);
+  });
+}
+
+async function addMemoryPhoto() {
+  const captionInput = document.getElementById('newPhotoCaption');
+  const fileInput = document.getElementById('newPhotoFile');
+  const btn = document.getElementById('uploadPhotoBtn');
+
+  if (!fileInput.files[0]) {
+    alert('Please select an image file first');
+    return;
+  }
+
+  btn.textContent = 'UPLOADING...';
+  btn.disabled = true;
+
+  try {
+    const file = fileInput.files[0];
+    const caption = captionInput.value.trim() || 'Memory';
+    const ext = file.name.split('.').pop().toLowerCase();
+    const filePath = `All File Aritsia/lovertian-photos/photo-${Date.now()}.${ext}`;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const b64 = e.target.result.split(',')[1];
+      try {
+        await ghPut(filePath, b64, `Upload memory photo: ${caption}`, null, true);
+        const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filePath}`;
+
+        if (!settings.lovertianMemoryPhotos) settings.lovertianMemoryPhotos = [];
+        settings.lovertianMemoryPhotos.push({ url: rawUrl, caption });
+
+        const json = JSON.stringify(settings, null, 2);
+        const res = await ghPut(JSON_PATH, json, 'Add memory photo', settingsSha);
+        settingsSha = res.content.sha;
+        syncSettingsToFirebase(settings);
+
+        captionInput.value = '';
+        fileInput.value = '';
+        loadMemoryPhotos();
+        showMsg('✓ Photo uploaded successfully!');
+      } catch(err) {
+        showMsg('✗ Upload failed: ' + err.message, true);
+      } finally {
+        btn.textContent = 'UPLOAD PHOTO';
+        btn.disabled = false;
+      }
+    };
+    reader.readAsDataURL(file);
+  } catch(err) {
+    showMsg('✗ Error: ' + err.message, true);
+    btn.textContent = 'UPLOAD PHOTO';
+    btn.disabled = false;
+  }
+}
+
+async function deleteMemoryPhoto(idx) {
+  if (!confirm('Delete this photo?')) return;
+  const photos = settings.lovertianMemoryPhotos || [];
+  photos.splice(idx, 1);
+  settings.lovertianMemoryPhotos = photos;
+  try {
+    showMsg('Deleting photo...');
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Delete memory photo', settingsSha);
+    settingsSha = res.content.sha;
+    syncSettingsToFirebase(settings);
+    loadMemoryPhotos();
+    showMsg('✓ Photo deleted!');
+  } catch(e) {
+    showMsg('✗ Delete failed: ' + e.message, true);
+  }
+}
+
+// ── Song Config ──
+function updateYtPreview(url) {
+  const preview = document.getElementById('ytPreview');
+  if (!preview || !url) { if (preview) preview.innerHTML = ''; return; }
+  let embedUrl = url;
+  if (url.includes('watch?v=')) {
+    embedUrl = url.replace('watch?v=', 'embed/').split('&')[0];
+  } else if (url.includes('youtu.be/')) {
+    embedUrl = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
+  }
+  preview.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border:3px solid var(--dark);margin-top:8px;">
+    <iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allowfullscreen></iframe>
+  </div>`;
+}
+
+async function saveSongConfig() {
+  const url = (document.getElementById('ltYoutubeUrl').value || '').trim();
+  settings.lovertianYoutubeUrl = url;
+  try {
+    showMsg('Saving Song URL...');
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update LoverTian song URL', settingsSha);
+    settingsSha = res.content.sha;
+    syncSettingsToFirebase(settings);
+    showMsg('✓ Song URL saved successfully!');
+  } catch(e) {
+    showMsg('✗ Save failed: ' + e.message, true);
   }
 }
 </script>
