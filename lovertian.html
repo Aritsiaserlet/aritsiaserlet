@@ -2097,6 +2097,94 @@ function bringToFront(win) {
   win.classList.add('active-window');
 }
 
+// ── Burst Particle Helpers ──
+function spawnSealBurst() {
+  const seal = document.getElementById('envSeal');
+  if (!seal) return;
+  const rect = seal.getBoundingClientRect();
+  spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
+
+function spawnMiniBoxesBurst() {
+  const miniWrap = document.getElementById('miniBoxesWrap');
+  if (!miniWrap) return;
+  const rect = miniWrap.getBoundingClientRect();
+  spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+}
+
+function spawnBurstAt(cx, cy, count = 16) {
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'cursor-sparkle';
+    const pxIds = ['px_sparkle_gold', 'px_heart_pink', 'px_heart_sparkle', 'px_star'];
+    const pxPick = PIXEL_PALETTE.find(x => x.id === pxIds[Math.floor(Math.random() * pxIds.length)]);
+    p.innerHTML = pxPick ? pxPick.svg : '✨';
+    const pSvg = p.querySelector('svg');
+    if (pSvg) { pSvg.style.width = '16px'; pSvg.style.height = '16px'; }
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 30 + Math.random() * 90;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 700);
+  }
+}
+
+// =============================================================================
+// DRAGGABLE WINDOW SYSTEM (initWindowInteractions)
+// =============================================================================
+function initWindowInteractions() {
+  document.querySelectorAll('.lt-window').forEach(win => {
+    win.addEventListener('mousedown', () => bringToFront(win));
+    win.addEventListener('touchstart', () => bringToFront(win), { passive: true });
+
+    const header = win.querySelector('.lt-window-header');
+    if (header) {
+      let isDragging = false;
+      let dStartX = 0, dStartY = 0;
+      let dInitLeft = 0, dInitTop = 0;
+
+      const onDragStart = (e) => {
+        if (e.target.closest('.win-btn') || e.target.closest('.resize-edge')) return;
+        if (win.classList.contains('maximized')) return;
+        bringToFront(win);
+        isDragging = true;
+        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+        dStartX = clientX;
+        dStartY = clientY;
+        const rect = win.getBoundingClientRect();
+        dInitLeft = rect.left;
+        dInitTop = rect.top;
+      };
+
+      const onDragMove = (e) => {
+        if (!isDragging) return;
+        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+        let newLeft = dInitLeft + (clientX - dStartX);
+        let newTop = dInitTop + (clientY - dStartY);
+        const pad = 8;
+        newLeft = Math.max(pad, Math.min(newLeft, window.innerWidth - win.offsetWidth - pad));
+        newTop = Math.max(pad, Math.min(newTop, window.innerHeight - win.offsetHeight - pad));
+        win.style.left = newLeft + 'px';
+        win.style.top = newTop + 'px';
+      };
+
+      const onDragEnd = () => { isDragging = false; };
+
+      header.addEventListener('mousedown', onDragStart);
+      window.addEventListener('mousemove', onDragMove);
+      window.addEventListener('mouseup', onDragEnd);
+      header.addEventListener('touchstart', onDragStart, { passive: true });
+      window.addEventListener('touchmove', onDragMove, { passive: true });
+      window.addEventListener('touchend', onDragEnd);
+    }
+  });
+}
+
 // Stage 1: Open Main Big Box -> Reveal 3 Mini Boxes
 function openMainBox() {
   playPaperRustle();
@@ -2107,7 +2195,6 @@ function openMainBox() {
   if (env) env.classList.add('opened');
   if (hint) hint.style.display = 'none';
 
-  // Spawn wax seal burst particles
   spawnSealBurst();
 
   setTimeout(() => {

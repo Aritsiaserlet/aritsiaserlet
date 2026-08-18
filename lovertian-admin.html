@@ -1222,8 +1222,9 @@ async function uploadPhotoToLibrary() {
     reader.onload = async (e) => {
       const b64 = e.target.result.split(',')[1];
       try {
-        await ghPut(filePath, b64, `Upload library photo: ${name}`, null, true);
-        const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${filePath}`;
+        // Use ghPutBinary for image files (raw base64, not text-encoded)
+        await ghPutBinary(filePath, b64, `Upload library photo: ${name}`);
+        const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(filePath).replace(/%2F/g, '/')}`;
 
         if (!settings.lovertianPhotoLibrary) settings.lovertianPhotoLibrary = [];
         settings.lovertianPhotoLibrary.push({ url: rawUrl, name: name });
