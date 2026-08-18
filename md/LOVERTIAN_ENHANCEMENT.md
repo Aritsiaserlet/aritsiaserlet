@@ -92,3 +92,22 @@ Major redesign of the LoverTian page: replaced the letter envelope with a pixel 
 |---|---|---|
 | `lovertianMemoryPhotos` | `Array<{url, caption}>` | Memory photos for the Photos tab |
 | `lovertianYoutubeUrl` | `string` | YouTube video URL for the Song tab |
+
+---
+
+## 🧸 v2.1 — 3 Mini Gift Boxes, Draggable Window & Live Counter (August 18, 2026)
+
+### Overview
+Enhanced the unboxing experience into an interactive 2-stage reveal. Opening the main gift box reveals 3 distinct themed mini boxes in a row. Clicking any mini box launches a draggable retro modal window directly to that content, and a persistent live relationship milestone clock ticks in real-time at the bottom of the page.
+
+### 🌟 New Features in v2.1
+
+| Feature | Details |
+|---|---|
+| **2-Stage Unboxing Flow** | Clicking the Big Gift Box reveals **3 Mini Themed Gift Boxes** side-by-side: 📸 Photos, 🎵 Our Song, and 💌 Love Letter. |
+| **Mini Gift Boxes Grid** | Each mini box features custom retro colors, animated 3D lids on hover, cute pixel badges (`px_camera`, `px_music_note`, `px_letter_envelope`), and sub-labels. |
+| **Direct Tab Activation** | Clicking any mini box immediately opens the Modal Window focused on that exact tab (Photos / Song / Letter). |
+| **Draggable Modal Window** | The retro modal window can now be **dragged freely across the screen** by clicking/touching and moving the Title Bar (`.lt-panel-header`). Features boundary clamping to prevent losing the window off-screen. |
+| **Persistent Milestone Counter** | A dedicated **"★ OFFICIAL RELATIONSHIP MILESTONE ★"** live counter is permanently displayed on the main page below the gift boxes, updating DAYS : HOURS : MINS : SECS every single second. |
+| **Pack Back Function** | Added a `↺ Pack back into big box` button to collapse the 3 mini boxes back into the main big gift box anytime. |
+

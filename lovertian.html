@@ -691,7 +691,17 @@
       100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
     }
 
-    /* Gift Box */
+    /* Gift Box (Stage 1 Big Box) */
+    .big-gift-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .big-gift-wrap.hide {
+      display: none !important;
+    }
+
     .gift-box {
       width: 280px;
       height: 240px;
@@ -772,7 +782,193 @@
       box-sizing: border-box;
     }
 
-    /* Tabs Panel */
+    /* ── Stage 2: 3 Mini Boxes Row ── */
+    .mini-boxes-wrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: popFade 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    .mini-boxes-wrap.show {
+      display: flex;
+    }
+
+    @keyframes popFade {
+      0%   { opacity: 0; transform: scale(0.85) translateY(15px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .mini-boxes-grid {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 22px;
+      flex-wrap: wrap;
+      max-width: 580px;
+    }
+
+    .mini-box-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      user-select: none;
+      width: 140px;
+    }
+    .mini-box-card:hover {
+      transform: translateY(-8px) scale(1.07);
+    }
+    .mini-box-card:active {
+      transform: scale(0.95);
+    }
+
+    .mini-gift-box {
+      width: 120px;
+      height: 105px;
+      position: relative;
+      perspective: 600px;
+    }
+    .mini-gift-body {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 62%;
+      border: 3.5px solid var(--dark);
+      box-shadow: 4px 4px 0 var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    .mini-gift-body.color-photos { background: #74b9ff; }
+    .mini-gift-body.color-song   { background: #ff7675; }
+    .mini-gift-body.color-letter { background: #feca57; }
+
+    .mini-ribbon-v {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 12px;
+      background: #ffeaa7;
+      transform: translateX(-50%);
+      border-left: 2px solid var(--dark);
+      border-right: 2px solid var(--dark);
+    }
+    .mini-ribbon-h {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 12px;
+      background: #ffeaa7;
+      transform: translateY(-50%);
+      border-top: 2px solid var(--dark);
+      border-bottom: 2px solid var(--dark);
+    }
+    .mini-gift-lid {
+      position: absolute;
+      top: 0;
+      width: 108%;
+      left: -4%;
+      height: 40%;
+      border: 3.5px solid var(--dark);
+      box-shadow: 4px 4px 0 var(--dark);
+      z-index: 5;
+      box-sizing: border-box;
+      transform-origin: top center;
+      transition: transform 0.35s ease;
+    }
+    .mini-gift-lid.color-photos { background: #74b9ff; }
+    .mini-gift-lid.color-song   { background: #ff7675; }
+    .mini-gift-lid.color-letter { background: #feca57; }
+
+    .mini-box-card:hover .mini-gift-lid {
+      transform: rotateX(-35deg) translateY(-4px);
+    }
+    .mini-gift-bow {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 14px;
+      background: #ffeaa7;
+      border: 2px solid var(--dark);
+      border-radius: 12px 12px 0 0;
+      z-index: 6;
+    }
+    .mini-gift-seal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      font-size: 20px;
+    }
+
+    .mini-box-label {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      color: var(--dark);
+      text-align: center;
+      line-height: 1.4;
+      background: var(--white);
+      border: 3px solid var(--dark);
+      padding: 6px 8px;
+      box-shadow: 3px 3px 0 var(--dark);
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .mini-box-sub {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      color: #e84393;
+    }
+
+    .btn-pack-back {
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      color: var(--dark);
+      background: var(--white);
+      border: 2px dashed var(--dark);
+      padding: 4px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-top: 6px;
+    }
+    .btn-pack-back:hover {
+      background: var(--gold-l);
+      transform: translateY(-2px);
+    }
+
+    /* ── Persistent Main Milestone Card ── */
+    .main-milestone-card {
+      margin-top: 36px;
+      width: 100%;
+      max-width: 520px;
+      background: #fff9e6;
+      border: 4px solid var(--dark);
+      box-shadow: 6px 6px 0 var(--dark);
+      padding: 16px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+      position: relative;
+      z-index: 5;
+      animation: fadeUp 0.9s 0.3s ease both;
+    }
+
+    /* Tabs Panel (Draggable Window) */
     .lt-panel-overlay {
       position: fixed;
       inset: 0;
@@ -797,12 +993,14 @@
       border: 4px solid var(--dark);
       width: 100%;
       max-width: 620px;
-      max-height: 90vh;
+      max-height: 88vh;
       display: flex;
       flex-direction: column;
       box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
       transform: scale(0.88) translateY(20px);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      touch-action: none;
     }
     .lt-panel-overlay.open .lt-panel {
       transform: scale(1) translateY(0);
@@ -810,12 +1008,17 @@
     .lt-panel-header {
       background: var(--gold);
       border-bottom: 4px solid var(--dark);
-      padding: 12px 52px 12px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       position: relative;
       flex-shrink: 0;
+      cursor: grab;
+      user-select: none;
+    }
+    .lt-panel-header:active {
+      cursor: grabbing;
     }
     .lt-panel-title {
       font-family: 'Press Start 2P', cursive;
@@ -1053,23 +1256,128 @@
 <main class="lovertian-page">
   <h1 class="lt-title">LOVER<span data-px="px_heart_red"></span>TIAN</h1>
 
-  <!-- Envelope / Gift Box -->
+  <!-- Gift Box Stage Wrapper -->
   <div class="envelope-wrap" id="envelopeWrap">
-    <div class="gift-box-container" style="perspective: 800px;">
-      <div class="envelope gift-box" id="envelope" onclick="openEnvelope()">
-        <div class="gift-lid">
-          <div class="gift-bow"></div>
-          <div class="gift-ribbon-v"></div>
-          <div class="gift-ribbon-h"></div>
-        </div>
-        <div class="gift-body">
-          <div class="gift-ribbon-v"></div>
-          <div class="gift-ribbon-h"></div>
-          <div class="env-seal" id="envSeal"><span data-px="px_heart_red"></span></div>
+    <!-- Stage 1: Big Gift Box -->
+    <div class="big-gift-wrap" id="bigGiftWrap">
+      <div class="gift-box-container" style="perspective: 800px;">
+        <div class="envelope gift-box" id="envelope" onclick="openMainBox()">
+          <div class="gift-lid">
+            <div class="gift-bow"></div>
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+          </div>
+          <div class="gift-body">
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+            <div class="env-seal" id="envSeal"><span data-px="px_heart_red"></span></div>
+          </div>
         </div>
       </div>
+      <div class="env-hint" id="envHint">[ Click to open ]</div>
     </div>
-    <div class="env-hint" id="envHint">[ Click to open ]</div>
+
+    <!-- Stage 2: 3 Mini Gift Boxes in a row -->
+    <div class="mini-boxes-wrap" id="miniBoxesWrap">
+      <div style="font-family:'Press Start 2P',cursive; font-size:12px; color:var(--dark); text-align:center; margin-bottom:4px;">
+        <span data-px="px_sparkle_gold"></span> CHOOSE A GIFT BOX <span data-px="px_sparkle_gold"></span>
+      </div>
+      <div class="mini-boxes-grid">
+        <!-- Box 1: Photos -->
+        <div class="mini-box-card" onclick="openMiniBox('photos')" title="Click to view Memory Photos">
+          <div class="mini-gift-box" id="miniBoxPhotos">
+            <div class="mini-gift-lid color-photos">
+              <div class="mini-gift-bow"></div>
+              <div class="mini-ribbon-v"></div>
+              <div class="mini-ribbon-h"></div>
+            </div>
+            <div class="mini-gift-body color-photos">
+              <div class="mini-ribbon-v"></div>
+              <div class="mini-ribbon-h"></div>
+              <div class="mini-gift-seal"><span data-px="px_camera"></span></div>
+            </div>
+          </div>
+          <div class="mini-box-label">
+            <span>PHOTOS</span>
+            <span class="mini-box-sub">Memories</span>
+          </div>
+        </div>
+
+        <!-- Box 2: Song -->
+        <div class="mini-box-card" onclick="openMiniBox('song')" title="Click to listen to our Song">
+          <div class="mini-gift-box" id="miniBoxSong">
+            <div class="mini-gift-lid color-song">
+              <div class="mini-gift-bow"></div>
+              <div class="mini-ribbon-v"></div>
+              <div class="mini-ribbon-h"></div>
+            </div>
+            <div class="mini-gift-body color-song">
+              <div class="mini-ribbon-v"></div>
+              <div class="mini-ribbon-h"></div>
+              <div class="mini-gift-seal"><span data-px="px_music_note"></span></div>
+            </div>
+          </div>
+          <div class="mini-box-label">
+            <span>OUR SONG</span>
+            <span class="mini-box-sub">Thinking of you</span>
+          </div>
+        </div>
+
+        <!-- Box 3: Letter -->
+        <div class="mini-box-card" onclick="openMiniBox('letter')" title="Click to read Love Letter">
+          <div class="mini-gift-box" id="miniBoxLetter">
+            <div class="mini-gift-lid color-letter">
+              <div class="mini-gift-bow"></div>
+              <div class="mini-ribbon-v"></div>
+              <div class="mini-ribbon-h"></div>
+            </div>
+            <div class="mini-gift-body color-letter">
+              <div class="mini-ribbon-v"></div>
+              <div class="mini-ribbon-h"></div>
+              <div class="mini-gift-seal"><span data-px="px_letter_envelope"></span></div>
+            </div>
+          </div>
+          <div class="mini-box-label">
+            <span>LETTER</span>
+            <span class="mini-box-sub">For you</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-pack-back" onclick="resetToBigBox()">↺ Pack back into big box</button>
+    </div>
+  </div>
+
+  <!-- Persistent Main Milestone Card -->
+  <div class="main-milestone-card" id="mainMilestoneCard">
+    <div class="milestone-badge">★ OFFICIAL RELATIONSHIP MILESTONE ★</div>
+    <div class="milestone-date">
+      <span data-px="px_star"></span> Official Start Date: August 8, 2026 at 19:00:00
+    </div>
+    
+    <!-- Live Relationship Ticker Grid -->
+    <div class="timer-grid" id="mainTimerGrid">
+      <div class="timer-unit">
+        <div class="timer-val" id="mainTDays">0</div>
+        <div class="timer-lbl">DAYS</div>
+      </div>
+      <div class="timer-unit">
+        <div class="timer-val" id="mainTHours">00</div>
+        <div class="timer-lbl">HOURS</div>
+      </div>
+      <div class="timer-unit">
+        <div class="timer-val" id="mainTMinutes">00</div>
+        <div class="timer-lbl">MINS</div>
+      </div>
+      <div class="timer-unit">
+        <div class="timer-val" id="mainTSeconds">00</div>
+        <div class="timer-lbl">SECS</div>
+      </div>
+    </div>
+
+    <div class="milestone-quote">
+      "Falling in love with you more and more every single second <span data-px="px_sparkle_gold"></span>"
+    </div>
   </div>
 </main>
 
@@ -1405,6 +1713,7 @@ function updateRelationshipTicker() {
   const hours   = Math.floor((diff / (1000 * 60 * 60)) % 24);
   const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
 
+  // Modal timer elements
   const elDays = document.getElementById('tDays');
   const elHours = document.getElementById('tHours');
   const elMins = document.getElementById('tMinutes');
@@ -1414,6 +1723,17 @@ function updateRelationshipTicker() {
   if (elHours) elHours.textContent = String(hours).padStart(2, '0');
   if (elMins) elMins.textContent = String(minutes).padStart(2, '0');
   if (elSecs) elSecs.textContent = String(seconds).padStart(2, '0');
+
+  // Main page persistent timer elements
+  const mDays = document.getElementById('mainTDays');
+  const mHours = document.getElementById('mainTHours');
+  const mMins = document.getElementById('mainTMinutes');
+  const mSecs = document.getElementById('mainTSeconds');
+
+  if (mDays) mDays.textContent = days;
+  if (mHours) mHours.textContent = String(hours).padStart(2, '0');
+  if (mMins) mMins.textContent = String(minutes).padStart(2, '0');
+  if (mSecs) mSecs.textContent = String(seconds).padStart(2, '0');
 }
 
 function startRelationshipTicker() {
@@ -1421,6 +1741,8 @@ function startRelationshipTicker() {
   if (tickerInterval) clearInterval(tickerInterval);
   tickerInterval = setInterval(updateRelationshipTicker, 1000);
 }
+// Start ticker immediately on page load
+startRelationshipTicker();
 
 // =============================================================================
 // TYPEWRITER EFFECT & LETTER CONTENT
@@ -1556,7 +1878,7 @@ function skipTypewriter() {
 }
 
 // =============================================================================
-// OPEN / CLOSE ENVELOPE
+// 2-STAGE UNBOXING & TABS NAVIGATION
 // =============================================================================
 function switchTab(tabName) {
   ['photos', 'song', 'letter'].forEach(t => {
@@ -1582,19 +1904,20 @@ function renderSongTab() {
   if (!container) return;
   const url = window.lovertianSettings?.lovertianYoutubeUrl;
   if (!url) {
-    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;">No song set yet — add one in Admin!</div>';
+    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No song set yet — add one in Admin!</div>';
     return;
   }
   
   let embedUrl = url;
   if (url.includes('watch?v=')) {
-    embedUrl = url.replace('watch?v=', 'embed/');
-    embedUrl = embedUrl.split('&')[0];
+    embedUrl = url.replace('watch?v=', 'embed/').split('&')[0];
+  } else if (url.includes('youtu.be/')) {
+    embedUrl = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
   }
   
   container.innerHTML = `
     <div class="song-card">
-      <div class="song-title"><span data-px="px_music_note"></span> A Song I Think Of You</div>
+      <div class="song-title"><span data-px="px_music_note"></span> A SONG FOR YOU</div>
       <div class="yt-embed-wrap">
         <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
@@ -1609,7 +1932,7 @@ function renderPhotosTab() {
   if (!container) return;
   const photos = window.lovertianSettings?.lovertianMemoryPhotos || [];
   if (photos.length === 0) {
-    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;">No memories yet — add some in Admin!</div>';
+    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No memories yet — add some in Admin!</div>';
     return;
   }
   
@@ -1626,39 +1949,77 @@ function renderPhotosTab() {
   container.innerHTML = html;
 }
 
-function openEnvelope() {
+// Stage 1: Open Main Big Box -> Reveal 3 Mini Boxes
+function openMainBox() {
   playPaperRustle();
   startBGM();
 
   const env = document.getElementById('envelope');
   const hint = document.getElementById('envHint');
-  env.classList.add('opened');
-  hint.style.display = 'none';
+  if (env) env.classList.add('opened');
+  if (hint) hint.style.display = 'none';
 
   // Spawn wax seal burst particles
   spawnSealBurst();
 
   setTimeout(() => {
-    const overlay = document.getElementById('ltPanelOverlay');
+    const bigWrap = document.getElementById('bigGiftWrap');
+    const miniWrap = document.getElementById('miniBoxesWrap');
+    if (bigWrap) bigWrap.classList.add('hide');
+    if (miniWrap) {
+      miniWrap.classList.add('show');
+      spawnMiniBoxesBurst();
+    }
+  }, 500);
+}
+
+// Stage 2: Open specific Mini Box -> Open Draggable Modal
+function openMiniBox(tabName) {
+  playWhoosh();
+  startBGM();
+
+  const boxEl = document.getElementById('miniBox' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+  if (boxEl) {
+    const rect = boxEl.getBoundingClientRect();
+    spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  const overlay = document.getElementById('ltPanelOverlay');
+  if (overlay) {
     overlay.classList.add('open');
-    switchTab('letter');
-  }, 600);
+    resetPanelPosition();
+    switchTab(tabName);
+  }
+}
+
+// Reset from 3 mini boxes back to big gift box
+function resetToBigBox() {
+  playWhoosh();
+  const bigWrap = document.getElementById('bigGiftWrap');
+  const miniWrap = document.getElementById('miniBoxesWrap');
+  const env = document.getElementById('envelope');
+  const hint = document.getElementById('envHint');
+
+  if (miniWrap) miniWrap.classList.remove('show');
+  if (bigWrap) bigWrap.classList.remove('hide');
+  if (env) {
+    env.classList.remove('opened');
+    env.style.pointerEvents = 'auto';
+  }
+  if (hint) hint.style.display = '';
 }
 
 function closePanel() {
   clearTypewriter();
-  document.getElementById('ltPanelOverlay').classList.remove('open');
+  const overlay = document.getElementById('ltPanelOverlay');
+  if (overlay) overlay.classList.remove('open');
+  resetPanelPosition();
+
   setTimeout(() => {
-    const env = document.getElementById('envelope');
-    env.classList.remove('opened');
-    env.style.pointerEvents = 'auto';
-    document.getElementById('envHint').style.display = '';
-    
-    // Reset state
     document.getElementById('letterContent').style.display = '';
     document.getElementById('yesScreen').classList.remove('show');
     resetNo();
-  }, 400);
+  }, 350);
 }
 
 function replayLetter() {
@@ -1673,10 +2034,18 @@ function spawnSealBurst() {
   const seal = document.getElementById('envSeal');
   if (!seal) return;
   const rect = seal.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
+  spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
 
-  for (let i = 0; i < 16; i++) {
+function spawnMiniBoxesBurst() {
+  const miniWrap = document.getElementById('miniBoxesWrap');
+  if (!miniWrap) return;
+  const rect = miniWrap.getBoundingClientRect();
+  spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+}
+
+function spawnBurstAt(cx, cy, count = 16) {
+  for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
     p.className = 'cursor-sparkle';
     const pxIds = ['px_sparkle_gold', 'px_heart_pink', 'px_heart_sparkle', 'px_star'];
@@ -1687,13 +2056,92 @@ function spawnSealBurst() {
     p.style.left = cx + 'px';
     p.style.top = cy + 'px';
     const angle = Math.random() * Math.PI * 2;
-    const dist = 40 + Math.random() * 80;
+    const dist = 30 + Math.random() * 90;
     p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
     p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 700);
   }
 }
+
+// =============================================================================
+// DRAGGABLE MODAL WINDOW SYSTEM
+// =============================================================================
+function initDraggablePanel() {
+  const panel = document.getElementById('ltPanel');
+  const header = document.querySelector('.lt-panel-header');
+  if (!panel || !header) return;
+
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let initialLeft = 0, initialTop = 0;
+
+  const onStart = (e) => {
+    // If clicking close button or tabs, don't drag
+    if (e.target.closest('.letter-close') || e.target.closest('.lt-tab')) return;
+
+    isDragging = true;
+    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+    startX = clientX;
+    startY = clientY;
+
+    const rect = panel.getBoundingClientRect();
+    initialLeft = rect.left;
+    initialTop = rect.top;
+
+    panel.style.margin = '0';
+    panel.style.position = 'fixed';
+    panel.style.left = initialLeft + 'px';
+    panel.style.top = initialTop + 'px';
+    panel.style.transform = 'none';
+  };
+
+  const onMove = (e) => {
+    if (!isDragging) return;
+    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+
+    let newLeft = initialLeft + dx;
+    let newTop = initialTop + dy;
+
+    // Viewport clamping
+    const pad = 10;
+    const maxLeft = Math.max(pad, window.innerWidth - panel.offsetWidth - pad);
+    const maxTop = Math.max(pad, window.innerHeight - panel.offsetHeight - pad);
+    newLeft = Math.max(pad, Math.min(newLeft, maxLeft));
+    newTop = Math.max(pad, Math.min(newTop, maxTop));
+
+    panel.style.left = newLeft + 'px';
+    panel.style.top = newTop + 'px';
+  };
+
+  const onEnd = () => {
+    isDragging = false;
+  };
+
+  header.addEventListener('mousedown', onStart);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+
+  header.addEventListener('touchstart', onStart, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('touchend', onEnd);
+}
+
+function resetPanelPosition() {
+  const panel = document.getElementById('ltPanel');
+  if (!panel) return;
+  panel.style.position = '';
+  panel.style.left = '';
+  panel.style.top = '';
+  panel.style.margin = '';
+  panel.style.transform = '';
+}
+
+document.addEventListener('DOMContentLoaded', initDraggablePanel);
 
 // =============================================================================
 // PLAYFUL "NO" BUTTON & GROWING "YES" BUTTON
