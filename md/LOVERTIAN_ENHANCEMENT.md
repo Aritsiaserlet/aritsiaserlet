@@ -111,3 +111,23 @@ Enhanced the unboxing experience into an interactive 2-stage reveal. Opening the
 | **Persistent Milestone Counter** | A dedicated **"★ OFFICIAL RELATIONSHIP MILESTONE ★"** live counter is permanently displayed on the main page below the gift boxes, updating DAYS : HOURS : MINS : SECS every single second. |
 | **Pack Back Function** | Added a `↺ Pack back into big box` button to collapse the 3 mini boxes back into the main big gift box anytime. |
 
+---
+
+## 🪟 v2.2 — Multi-Window Retro OS & Resizable Windows (August 18, 2026)
+
+### Overview
+Transformed the single modal view into an authentic **Multi-Window Retro Desktop Environment**. Each mini gift box now launches its own independent floating window. Multiple windows can be open simultaneously on screen, focused on click, dragged across the viewport, and resized via corner handles.
+
+### 🌟 New Features in v2.2
+
+| Feature | Details |
+|---|---|
+| **Independent Windows** | 📸 Photos (`#winPhotos`), 🎵 Song (`#winSong`), and 💌 Letter (`#winLetter`) are now 3 separate floating desktop windows. |
+| **Simultaneous Multi-Window** | Users can open multiple (or all 3) windows on screen at the same time and freely interact with the main page and other mini boxes without background modal blocking. |
+| **Z-Index Focus on Click** | Clicking or tapping any window brings it smoothly to the front (`highest z-index`) with an active golden header highlight. |
+| **Corner & Edge Resizing** | Each window includes a retro diagonal grip handle (`◢`) on the bottom-right corner. Users can click/touch and drag to resize width and height freely with min/max clamps. |
+| **Maximize / Restore Button** | Added a retro `[□]` button on the window title bar to toggle full-screen maximization and restore back to custom dimensions. |
+| **Independent Close Button** | Each window has its own `[✕]` button to close only that specific window. |
+| **Smart Responsive Cascading** | Windows open at cascading offsets on desktop, or auto-fit neatly on mobile viewports. |
+
+

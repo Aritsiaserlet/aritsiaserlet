@@ -968,103 +968,144 @@
       animation: fadeUp 0.9s 0.3s ease both;
     }
 
-    /* Tabs Panel (Draggable Window) */
-    .lt-panel-overlay {
+    /* ── Multi-Window Retro OS Desktop System ── */
+    .lt-window {
       position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(20, 40, 65, 0.75);
-      backdrop-filter: blur(2px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    .lt-panel-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .lt-panel {
       background: #fffef5;
       border: 4px solid var(--dark);
-      width: 100%;
-      max-width: 620px;
-      max-height: 88vh;
-      display: flex;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
+      display: none;
       flex-direction: column;
-      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
-      transform: scale(0.88) translateY(20px);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
+      z-index: 100;
+      min-width: 280px;
+      min-height: 220px;
+      max-width: 96vw;
+      max-height: 92vh;
+      animation: winPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      overflow: hidden;
       touch-action: none;
     }
-    .lt-panel-overlay.open .lt-panel {
-      transform: scale(1) translateY(0);
+    .lt-window.open {
+      display: flex;
     }
-    .lt-panel-header {
+    .lt-window.active-window {
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.65), 0 0 16px rgba(254, 202, 87, 0.4);
+    }
+    .lt-window.maximized {
+      top: 12px !important;
+      left: 12px !important;
+      width: calc(100vw - 24px) !important;
+      height: calc(100vh - 24px) !important;
+      max-width: none !important;
+      max-height: none !important;
+    }
+
+    @keyframes winPop {
+      0%   { opacity: 0; transform: scale(0.88); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .lt-window-header {
       background: var(--gold);
       border-bottom: 4px solid var(--dark);
-      padding: 12px 20px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative;
       flex-shrink: 0;
       cursor: grab;
       user-select: none;
     }
-    .lt-panel-header:active {
+    .lt-window.active-window .lt-window-header {
+      background: #feca57;
+    }
+    .lt-window-header:active {
       cursor: grabbing;
     }
-    .lt-panel-title {
+    .win-title {
       font-family: 'Press Start 2P', cursive;
-      font-size: 14px;
+      font-size: 11px;
       color: var(--dark);
-      letter-spacing: 2px;
-    }
-    .lt-tabs {
+      letter-spacing: 1px;
       display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      background: var(--sky4);
-      border-bottom: 4px solid var(--dark);
+      align-items: center;
+      gap: 6px;
     }
-    .lt-tab {
-      flex: 1;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 9px;
-      padding: 12px 4px;
+    .win-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .win-btn {
+      border: 2.5px solid var(--dark);
+      width: 26px;
+      height: 26px;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
-      border: none;
-      border-right: 3px solid var(--dark);
-      border-bottom: 4px solid transparent;
-      background: var(--white);
-      color: var(--dark);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: background 0.2s;
+      box-shadow: 2px 2px 0 var(--dark);
+      transition: transform 0.1s, box-shadow 0.1s;
+      background: var(--white);
+      color: var(--dark);
+      padding: 0;
     }
-    .lt-tab:last-child {
-      border-right: none;
+    .win-btn:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--dark);
     }
-    .lt-tab.active {
-      background: #feca57;
-      border-bottom: 4px solid #feca57;
+    .win-btn.btn-close {
+      background: #c0392b;
+      color: white;
     }
-    .lt-tab-content {
+    .win-btn.btn-max {
+      background: var(--gold-l);
+    }
+
+    .win-body {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 16px;
+      position: relative;
+      background: #fffef5;
     }
+
+    /* Bottom-right diagonal resize grip handle */
+    .win-resize-handle {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      cursor: nwse-resize;
+      z-index: 50;
+      user-select: none;
+      touch-action: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      opacity: 0.65;
+      transition: opacity 0.15s;
+    }
+    .win-resize-handle:hover, .win-resize-handle:active {
+      opacity: 1;
+    }
+    .win-resize-handle::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-right: 3px solid var(--dark);
+      border-bottom: 3px solid var(--dark);
+      margin-right: 3px;
+      margin-bottom: 3px;
+    }
+
     .photos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 12px;
     }
     .photo-card {
@@ -1090,7 +1131,7 @@
       color: var(--dark);
     }
     .song-card {
-      max-width: 480px;
+      max-width: 100%;
       margin: 0 auto;
       background: var(--white);
       border: 4px solid var(--dark);
@@ -1381,110 +1422,129 @@
   </div>
 </main>
 
-<!-- Letter Modal / Panel -->
-<div class="lt-panel-overlay" id="ltPanelOverlay">
-  <div class="lt-panel" id="ltPanel">
-    <!-- Header -->
-    <div class="lt-panel-header">
-      <div class="lt-panel-title">LOVERTIAN</div>
-      <button class="letter-close" onclick="closePanel()">&#10005;</button>
+<!-- 📸 Window 1: Memory Photos -->
+<div class="lt-window" id="winPhotos" style="width: 480px; height: 430px; left: 8vw; top: 12vh;">
+  <div class="lt-window-header">
+    <div class="win-title">
+      <span data-px="px_camera"></span> MEMORY PHOTOS
     </div>
-    <!-- Tab nav -->
-    <div class="lt-tabs">
-      <button class="lt-tab" id="tab-photos" onclick="switchTab('photos')"><span data-px="px_camera"></span> PHOTOS</button>
-      <button class="lt-tab" id="tab-song" onclick="switchTab('song')"><span data-px="px_music_note"></span> SONG</button>
-      <button class="lt-tab active" id="tab-letter" onclick="switchTab('letter')"><span data-px="px_letter_envelope"></span> LETTER</button>
+    <div class="win-actions">
+      <button class="win-btn btn-max" onclick="toggleMaximize('winPhotos')" title="Maximize / Restore">□</button>
+      <button class="win-btn btn-close" onclick="closeWindow('photos')" title="Close Window">&#10005;</button>
     </div>
-    <!-- Tab contents -->
-    <div class="lt-tab-content" id="tabContent-photos" style="display:none;">
-      <!-- photos grid -->
+  </div>
+  <div class="win-body" id="bodyPhotos">
+    <div id="photosGridContainer"></div>
+  </div>
+  <div class="win-resize-handle" onmousedown="startResize(event, 'winPhotos')" ontouchstart="startResize(event, 'winPhotos')"></div>
+</div>
+
+<!-- 🎵 Window 2: Our Song -->
+<div class="lt-window" id="winSong" style="width: 470px; height: 400px; left: 30vw; top: 16vh;">
+  <div class="lt-window-header">
+    <div class="win-title">
+      <span data-px="px_music_note"></span> OUR SONG
     </div>
-    <div class="lt-tab-content" id="tabContent-song" style="display:none">
-      <!-- youtube embed -->
+    <div class="win-actions">
+      <button class="win-btn btn-max" onclick="toggleMaximize('winSong')" title="Maximize / Restore">□</button>
+      <button class="win-btn btn-close" onclick="closeWindow('song')" title="Close Window">&#10005;</button>
     </div>
-    <div class="lt-tab-content" id="tabContent-letter">
-      <div class="letter-box" id="letterBox" style="box-shadow:none; border:none; max-width:none; transform:none;">
-        <div class="letter-header">
-          <span data-px="px_letter_envelope"></span>
-          <div class="letter-header-title">LOVE LETTER</div>
-          <span data-px="px_letter_envelope"></span>
+  </div>
+  <div class="win-body" id="bodySong">
+    <div id="songCardContainer"></div>
+  </div>
+  <div class="win-resize-handle" onmousedown="startResize(event, 'winSong')" ontouchstart="startResize(event, 'winSong')"></div>
+</div>
+
+<!-- 💌 Window 3: Love Letter -->
+<div class="lt-window" id="winLetter" style="width: 530px; height: 530px; left: 22vw; top: 14vh;">
+  <div class="lt-window-header">
+    <div class="win-title">
+      <span data-px="px_letter_envelope"></span> LOVE LETTER
+    </div>
+    <div class="win-actions">
+      <button class="win-btn btn-max" onclick="toggleMaximize('winLetter')" title="Maximize / Restore">□</button>
+      <button class="win-btn btn-close" onclick="closeWindow('letter')" title="Close Window">&#10005;</button>
+    </div>
+  </div>
+  <div class="win-body" id="bodyLetter">
+    <div class="letter-box" id="letterBox" style="box-shadow:none; border:none; max-width:none; transform:none; background:transparent;">
+      <!-- Letter body -->
+      <div class="letter-content" id="letterContent">
+        <div class="letter-lines" id="letterLines"></div>
+        <div class="letter-deco"><span data-px="px_heart_pink"></span> <span data-px="px_heart_sparkle"></span> <span data-px="px_heart_pink"></span></div>
+        
+        <div class="letter-greeting" id="lGreeting"></div>
+        <div class="letter-text" id="lBody"></div>
+        <div class="letter-divider" id="lDivider" style="display:none;"></div>
+        <div class="letter-question" id="lQuestion"></div>
+
+        <!-- Answer buttons -->
+        <div class="answer-row" id="answerRow" style="opacity:0; transition:opacity 0.4s;">
+          <button class="btn-yes" id="btnYes" onclick="sayYes()">&#10003; YES !</button>
+          <button class="btn-no" id="btnNo" onmouseenter="runAway(this)" onclick="handleNoClick(this)">&#10007; No</button>
         </div>
-        <!-- Letter body -->
-        <div class="letter-content" id="letterContent">
-          <div class="letter-lines" id="letterLines"></div>
-          <div class="letter-deco"><span data-px="px_heart_pink"></span> <span data-px="px_heart_sparkle"></span> <span data-px="px_heart_pink"></span></div>
+
+        <div class="letter-signature" id="lSignature" style="opacity:0; transition:opacity 0.4s;"></div>
+
+        <button class="btn-skip-type" id="btnSkipType" onclick="skipTypewriter()" style="display:none;">Skip ▶</button>
+      </div>
+
+      <!-- Yes Screen (Milestone & Celebration) -->
+      <div class="yes-screen" id="yesScreen">
+        <div class="yes-emoji"><span data-px="px_fox" style="font-size: 1.5em; display: inline-block;"></span></div>
+        <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! <span data-px="px_heart_pink"></span></div>
+        <div class="yes-sub" id="lYesSub">
+          I'm the happiest person in the world! <span data-px="px_heart_sparkle"></span>
+        </div>
+
+        <!-- Official Milestone Box -->
+        <div class="milestone-box">
+          <div class="milestone-badge">★ OFFICIAL RELATIONSHIP MILESTONE ★</div>
+          <div class="milestone-date">
+            <span data-px="px_star"></span> Official Start Date: August 8, 2026 at 19:00:00
+          </div>
           
-          <div class="letter-greeting" id="lGreeting"></div>
-          <div class="letter-text" id="lBody"></div>
-          <div class="letter-divider" id="lDivider" style="display:none;"></div>
-          <div class="letter-question" id="lQuestion"></div>
-
-          <!-- Answer buttons -->
-          <div class="answer-row" id="answerRow" style="opacity:0; transition:opacity 0.4s;">
-            <button class="btn-yes" id="btnYes" onclick="sayYes()">&#10003; YES !</button>
-            <button class="btn-no" id="btnNo" onmouseenter="runAway(this)" onclick="handleNoClick(this)">&#10007; No</button>
+          <!-- Live Relationship Ticker -->
+          <div class="timer-grid" id="timerGrid">
+            <div class="timer-unit">
+              <div class="timer-val" id="tDays">0</div>
+              <div class="timer-lbl">DAYS</div>
+            </div>
+            <div class="timer-unit">
+              <div class="timer-val" id="tHours">00</div>
+              <div class="timer-lbl">HOURS</div>
+            </div>
+            <div class="timer-unit">
+              <div class="timer-val" id="tMinutes">00</div>
+              <div class="timer-lbl">MINS</div>
+            </div>
+            <div class="timer-unit">
+              <div class="timer-val" id="tSeconds">00</div>
+              <div class="timer-lbl">SECS</div>
+            </div>
           </div>
 
-          <div class="letter-signature" id="lSignature" style="opacity:0; transition:opacity 0.4s;"></div>
-
-          <button class="btn-skip-type" id="btnSkipType" onclick="skipTypewriter()" style="display:none;">Skip ▶</button>
+          <div class="milestone-quote">
+            "Falling in love with you more and more every single second <span data-px="px_sparkle_gold"></span>"
+          </div>
         </div>
 
-        <!-- Yes Screen (Milestone & Celebration) -->
-        <div class="yes-screen" id="yesScreen">
-          <div class="yes-emoji"><span data-px="px_fox" style="font-size: 1.5em; display: inline-block;"></span></div>
-          <div class="yes-title">YAY!! <span data-px="px_sparkle_gold"></span><br>SHE SAID YES!! <span data-px="px_heart_pink"></span></div>
-          <div class="yes-sub" id="lYesSub">
-            I'm the happiest person in the world! <span data-px="px_heart_sparkle"></span>
-          </div>
-
-          <!-- Official Milestone Box -->
-          <div class="milestone-box">
-            <div class="milestone-badge">★ OFFICIAL RELATIONSHIP MILESTONE ★</div>
-            <div class="milestone-date">
-              <span data-px="px_star"></span> Official Start Date: August 8, 2026 at 19:00:00
-            </div>
-            
-            <!-- Live Relationship Ticker -->
-            <div class="timer-grid" id="timerGrid">
-              <div class="timer-unit">
-                <div class="timer-val" id="tDays">0</div>
-                <div class="timer-lbl">DAYS</div>
-              </div>
-              <div class="timer-unit">
-                <div class="timer-val" id="tHours">0</div>
-                <div class="timer-lbl">HOURS</div>
-              </div>
-              <div class="timer-unit">
-                <div class="timer-val" id="tMinutes">0</div>
-                <div class="timer-lbl">MINS</div>
-              </div>
-              <div class="timer-unit">
-                <div class="timer-val" id="tSeconds">0</div>
-                <div class="timer-lbl">SECS</div>
-              </div>
-            </div>
-
-            <div class="milestone-quote">
-              "Falling in love with you more and more every single second <span data-px="px_sparkle_gold"></span>"
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="yes-actions">
-            <button class="btn-action" onclick="saveMemoryCard()">
-              <span data-px="px_star"></span> Save Memory Card
-            </button>
-            <button class="btn-action secondary" onclick="replayLetter()">
-              <span data-px="px_letter_envelope"></span> Read Letter Again
-            </button>
-          </div>
-
-          <div style="font-size: 32px; margin-top: 4px;"><span data-px="px_heart_pink"></span> <span data-px="px_heart_double"></span> <span data-px="px_heart_pink"></span></div>
+        <!-- Action Buttons -->
+        <div class="yes-actions">
+          <button class="btn-action save" onclick="saveMemoryCard()">
+            <span data-px="px_star"></span> Save Memory Card
+          </button>
+          <button class="btn-action replay" onclick="replayLetter()">
+            <span data-px="px_letter_envelope"></span> Read Letter Again
+          </button>
         </div>
+
+        <div style="font-size: 32px; margin-top: 4px;"><span data-px="px_heart_pink"></span> <span data-px="px_heart_double"></span> <span data-px="px_heart_pink"></span></div>
       </div>
     </div>
   </div>
+  <div class="win-resize-handle" onmousedown="startResize(event, 'winLetter')" ontouchstart="startResize(event, 'winLetter')"></div>
 </div>
 
 <footer style="position:fixed;bottom:16px;left:0;right:0;text-align:center;font-family:'VT323',monospace;font-size:18px;color:var(--dark);opacity:0.6;z-index:5;pointer-events:none;">
@@ -1878,75 +1938,99 @@ function skipTypewriter() {
 }
 
 // =============================================================================
-// 2-STAGE UNBOXING & TABS NAVIGATION
+// MULTI-WINDOW RETRO OS DESKTOP SYSTEM
 // =============================================================================
-function switchTab(tabName) {
-  ['photos', 'song', 'letter'].forEach(t => {
-    const content = document.getElementById('tabContent-' + t);
-    const tabBtn = document.getElementById('tab-' + t);
-    if(content) content.style.display = (t === tabName ? '' : 'none');
-    if(tabBtn) tabBtn.classList.toggle('active', t === tabName);
-  });
-  if (tabName === 'letter') {
+let highestZ = 300;
+let windowSavedSizes = {};
+
+const WINDOW_DEFAULTS = {
+  photos: { id: 'winPhotos', defaultLeft: '8vw', defaultTop: '12vh', defaultW: '480px', defaultH: '430px' },
+  song:   { id: 'winSong',   defaultLeft: '30vw', defaultTop: '16vh', defaultW: '470px', defaultH: '400px' },
+  letter: { id: 'winLetter', defaultLeft: '22vw', defaultTop: '14vh', defaultW: '530px', defaultH: '530px' }
+};
+
+function openWindow(winType) {
+  const conf = WINDOW_DEFAULTS[winType];
+  if (!conf) return;
+  const win = document.getElementById(conf.id);
+  if (!win) return;
+
+  playWhoosh();
+  startBGM();
+
+  // If opening fresh, apply default responsive coordinates
+  if (!win.classList.contains('open')) {
+    // For smaller screens, center nicely
+    if (window.innerWidth < 768) {
+      win.style.left = '10px';
+      win.style.top = '10px';
+      win.style.width = 'calc(100vw - 20px)';
+      win.style.height = 'calc(100vh - 40px)';
+    } else {
+      win.style.left = conf.defaultLeft;
+      win.style.top = conf.defaultTop;
+      win.style.width = conf.defaultW;
+      win.style.height = conf.defaultH;
+    }
+    win.classList.add('open');
+  }
+
+  bringToFront(win);
+
+  // Content render triggers
+  if (winType === 'photos') {
+    renderPhotosWindow();
+  } else if (winType === 'song') {
+    renderSongWindow();
+  } else if (winType === 'letter') {
     const elGreet = document.getElementById('lGreeting');
     if (elGreet && !elGreet.textContent.trim()) startTypewriter();
   }
-  if (tabName === 'song') {
-    renderSongTab();
-  }
-  if (tabName === 'photos') {
-    renderPhotosTab();
+}
+
+function closeWindow(winType) {
+  const conf = WINDOW_DEFAULTS[winType];
+  const win = conf ? document.getElementById(conf.id) : document.getElementById(winType);
+  if (!win) return;
+  win.classList.remove('open');
+  win.classList.remove('maximized');
+  if (winType === 'letter') {
+    clearTypewriter();
   }
 }
 
-function renderSongTab() {
-  const container = document.getElementById('tabContent-song');
-  if (!container) return;
-  const url = window.lovertianSettings?.lovertianYoutubeUrl;
-  if (!url) {
-    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No song set yet — add one in Admin!</div>';
-    return;
+function toggleMaximize(winId) {
+  const win = document.getElementById(winId);
+  if (!win) return;
+  bringToFront(win);
+
+  if (win.classList.contains('maximized')) {
+    win.classList.remove('maximized');
+    if (windowSavedSizes[winId]) {
+      win.style.left = windowSavedSizes[winId].left;
+      win.style.top = windowSavedSizes[winId].top;
+      win.style.width = windowSavedSizes[winId].width;
+      win.style.height = windowSavedSizes[winId].height;
+    }
+  } else {
+    windowSavedSizes[winId] = {
+      left: win.style.left,
+      top: win.style.top,
+      width: win.style.width,
+      height: win.style.height
+    };
+    win.classList.add('maximized');
   }
-  
-  let embedUrl = url;
-  if (url.includes('watch?v=')) {
-    embedUrl = url.replace('watch?v=', 'embed/').split('&')[0];
-  } else if (url.includes('youtu.be/')) {
-    embedUrl = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
-  }
-  
-  container.innerHTML = `
-    <div class="song-card">
-      <div class="song-title"><span data-px="px_music_note"></span> A SONG FOR YOU</div>
-      <div class="yt-embed-wrap">
-        <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      </div>
-      <div style="margin-top:16px;font-size:24px;"><span data-px="px_heart_pink"></span> <span data-px="px_sparkle_gold"></span> <span data-px="px_heart_pink"></span></div>
-    </div>
-  `;
-  renderPixelEmojis();
 }
 
-function renderPhotosTab() {
-  const container = document.getElementById('tabContent-photos');
-  if (!container) return;
-  const photos = window.lovertianSettings?.lovertianMemoryPhotos || [];
-  if (photos.length === 0) {
-    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No memories yet — add some in Admin!</div>';
-    return;
-  }
-  
-  let html = '<div class="photos-grid">';
-  photos.forEach(p => {
-    html += `
-      <div class="photo-card">
-        <img src="${p.url}" alt="Memory">
-        <div class="photo-caption">${p.caption || ''}</div>
-      </div>
-    `;
-  });
-  html += '</div>';
-  container.innerHTML = html;
+function bringToFront(win) {
+  if (typeof win === 'string') win = document.getElementById(win);
+  if (!win) return;
+  highestZ += 2;
+  win.style.zIndex = highestZ;
+
+  document.querySelectorAll('.lt-window').forEach(w => w.classList.remove('active-window'));
+  win.classList.add('active-window');
 }
 
 // Stage 1: Open Main Big Box -> Reveal 3 Mini Boxes
@@ -1973,23 +2057,14 @@ function openMainBox() {
   }, 500);
 }
 
-// Stage 2: Open specific Mini Box -> Open Draggable Modal
-function openMiniBox(tabName) {
-  playWhoosh();
-  startBGM();
-
-  const boxEl = document.getElementById('miniBox' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+// Stage 2: Open specific Mini Box -> Open Independent Floating Window
+function openMiniBox(winType) {
+  const boxEl = document.getElementById('miniBox' + winType.charAt(0).toUpperCase() + winType.slice(1));
   if (boxEl) {
     const rect = boxEl.getBoundingClientRect();
     spawnBurstAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
   }
-
-  const overlay = document.getElementById('ltPanelOverlay');
-  if (overlay) {
-    overlay.classList.add('open');
-    resetPanelPosition();
-    switchTab(tabName);
-  }
+  openWindow(winType);
 }
 
 // Reset from 3 mini boxes back to big gift box
@@ -2007,19 +2082,9 @@ function resetToBigBox() {
     env.style.pointerEvents = 'auto';
   }
   if (hint) hint.style.display = '';
-}
 
-function closePanel() {
-  clearTypewriter();
-  const overlay = document.getElementById('ltPanelOverlay');
-  if (overlay) overlay.classList.remove('open');
-  resetPanelPosition();
-
-  setTimeout(() => {
-    document.getElementById('letterContent').style.display = '';
-    document.getElementById('yesScreen').classList.remove('show');
-    resetNo();
-  }, 350);
+  // Close all open windows
+  ['photos', 'song', 'letter'].forEach(closeWindow);
 }
 
 function replayLetter() {
@@ -2027,6 +2092,56 @@ function replayLetter() {
   document.getElementById('yesScreen').classList.remove('show');
   resetNo();
   startTypewriter();
+}
+
+function renderSongWindow() {
+  const container = document.getElementById('songCardContainer');
+  if (!container) return;
+  const url = window.lovertianSettings?.lovertianYoutubeUrl;
+  if (!url) {
+    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No song set yet — add one in Admin!</div>';
+    return;
+  }
+  
+  let embedUrl = url;
+  if (url.includes('watch?v=')) {
+    embedUrl = url.replace('watch?v=', 'embed/').split('&')[0];
+  } else if (url.includes('youtu.be/')) {
+    embedUrl = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
+  }
+  
+  container.innerHTML = `
+    <div class="song-card">
+      <div class="song-title"><span data-px="px_music_note"></span> A SONG FOR YOU</div>
+      <div class="yt-embed-wrap">
+        <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+      <div style="margin-top:16px;font-size:24px;"><span data-px="px_heart_pink"></span> <span data-px="px_sparkle_gold"></span> <span data-px="px_heart_pink"></span></div>
+    </div>
+  `;
+  renderPixelEmojis();
+}
+
+function renderPhotosWindow() {
+  const container = document.getElementById('photosGridContainer');
+  if (!container) return;
+  const photos = window.lovertianSettings?.lovertianMemoryPhotos || [];
+  if (photos.length === 0) {
+    container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No memories yet — add some in Admin!</div>';
+    return;
+  }
+  
+  let html = '<div class="photos-grid">';
+  photos.forEach(p => {
+    html += `
+      <div class="photo-card">
+        <img src="${p.url}" alt="Memory">
+        <div class="photo-caption">${p.caption || ''}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
 }
 
 // Wax seal burst particles
@@ -2065,83 +2180,124 @@ function spawnBurstAt(cx, cy, count = 16) {
 }
 
 // =============================================================================
-// DRAGGABLE MODAL WINDOW SYSTEM
+// DRAGGABLE & RESIZABLE WINDOW SYSTEM
 // =============================================================================
-function initDraggablePanel() {
-  const panel = document.getElementById('ltPanel');
-  const header = document.querySelector('.lt-panel-header');
-  if (!panel || !header) return;
+function initWindowInteractions() {
+  document.querySelectorAll('.lt-window').forEach(win => {
+    // Bring to front on touch/click
+    win.addEventListener('mousedown', () => bringToFront(win));
+    win.addEventListener('touchstart', () => bringToFront(win), { passive: true });
 
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let initialLeft = 0, initialTop = 0;
+    // Drag by header
+    const header = win.querySelector('.lt-window-header');
+    if (header) {
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
 
-  const onStart = (e) => {
-    // If clicking close button or tabs, don't drag
-    if (e.target.closest('.letter-close') || e.target.closest('.lt-tab')) return;
+      const onDragStart = (e) => {
+        if (e.target.closest('.win-btn')) return;
+        if (win.classList.contains('maximized')) return;
 
-    isDragging = true;
-    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-    startX = clientX;
-    startY = clientY;
+        bringToFront(win);
+        isDragging = true;
+        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+        startX = clientX;
+        startY = clientY;
 
-    const rect = panel.getBoundingClientRect();
-    initialLeft = rect.left;
-    initialTop = rect.top;
+        const rect = win.getBoundingClientRect();
+        initialLeft = rect.left;
+        initialTop = rect.top;
+      };
 
-    panel.style.margin = '0';
-    panel.style.position = 'fixed';
-    panel.style.left = initialLeft + 'px';
-    panel.style.top = initialTop + 'px';
-    panel.style.transform = 'none';
-  };
+      const onDragMove = (e) => {
+        if (!isDragging) return;
+        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
 
-  const onMove = (e) => {
-    if (!isDragging) return;
-    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-    const dx = clientX - startX;
-    const dy = clientY - startY;
+        let newLeft = initialLeft + dx;
+        let newTop = initialTop + dy;
 
-    let newLeft = initialLeft + dx;
-    let newTop = initialTop + dy;
+        // Viewport bounds clamp
+        const pad = 8;
+        const maxLeft = Math.max(pad, window.innerWidth - win.offsetWidth - pad);
+        const maxTop = Math.max(pad, window.innerHeight - win.offsetHeight - pad);
+        newLeft = Math.max(pad, Math.min(newLeft, maxLeft));
+        newTop = Math.max(pad, Math.min(newTop, maxTop));
 
-    // Viewport clamping
-    const pad = 10;
-    const maxLeft = Math.max(pad, window.innerWidth - panel.offsetWidth - pad);
-    const maxTop = Math.max(pad, window.innerHeight - panel.offsetHeight - pad);
-    newLeft = Math.max(pad, Math.min(newLeft, maxLeft));
-    newTop = Math.max(pad, Math.min(newTop, maxTop));
+        win.style.left = newLeft + 'px';
+        win.style.top = newTop + 'px';
+      };
 
-    panel.style.left = newLeft + 'px';
-    panel.style.top = newTop + 'px';
-  };
+      const onDragEnd = () => {
+        isDragging = false;
+      };
 
-  const onEnd = () => {
-    isDragging = false;
-  };
+      header.addEventListener('mousedown', onDragStart);
+      window.addEventListener('mousemove', onDragMove);
+      window.addEventListener('mouseup', onDragEnd);
 
-  header.addEventListener('mousedown', onStart);
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onEnd);
-
-  header.addEventListener('touchstart', onStart, { passive: true });
-  window.addEventListener('touchmove', onMove, { passive: true });
-  window.addEventListener('touchend', onEnd);
+      header.addEventListener('touchstart', onDragStart, { passive: true });
+      window.addEventListener('touchmove', onDragMove, { passive: true });
+      window.addEventListener('touchend', onDragEnd);
+    }
+  });
 }
 
-function resetPanelPosition() {
-  const panel = document.getElementById('ltPanel');
-  if (!panel) return;
-  panel.style.position = '';
-  panel.style.left = '';
-  panel.style.top = '';
-  panel.style.margin = '';
-  panel.style.transform = '';
+// Corner & Edge Resize Handler
+let isResizing = false;
+let resizeWin = null;
+let startRX = 0, startRY = 0;
+let startW = 0, startH = 0;
+
+function startResize(e, winId) {
+  e.stopPropagation();
+  e.preventDefault();
+  resizeWin = document.getElementById(winId);
+  if (!resizeWin || resizeWin.classList.contains('maximized')) return;
+
+  bringToFront(resizeWin);
+  isResizing = true;
+
+  const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+  const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+  startRX = clientX;
+  startRY = clientY;
+  startW = resizeWin.offsetWidth;
+  startH = resizeWin.offsetHeight;
 }
 
-document.addEventListener('DOMContentLoaded', initDraggablePanel);
+window.addEventListener('mousemove', (e) => {
+  if (!isResizing || !resizeWin) return;
+  const dx = e.clientX - startRX;
+  const dy = e.clientY - startRY;
+
+  const newW = Math.max(280, Math.min(startW + dx, window.innerWidth - resizeWin.offsetLeft - 10));
+  const newH = Math.max(200, Math.min(startH + dy, window.innerHeight - resizeWin.offsetTop - 10));
+
+  resizeWin.style.width = newW + 'px';
+  resizeWin.style.height = newH + 'px';
+});
+
+window.addEventListener('touchmove', (e) => {
+  if (!isResizing || !resizeWin || !e.touches[0]) return;
+  const dx = e.touches[0].clientX - startRX;
+  const dy = e.touches[0].clientY - startRY;
+
+  const newW = Math.max(280, Math.min(startW + dx, window.innerWidth - resizeWin.offsetLeft - 10));
+  const newH = Math.max(200, Math.min(startH + dy, window.innerHeight - resizeWin.offsetTop - 10));
+
+  resizeWin.style.width = newW + 'px';
+  resizeWin.style.height = newH + 'px';
+}, { passive: false });
+
+window.addEventListener('mouseup', () => { isResizing = false; resizeWin = null; });
+window.addEventListener('touchend', () => { isResizing = false; resizeWin = null; });
+
+document.addEventListener('DOMContentLoaded', initWindowInteractions);
 
 // =============================================================================
 // PLAYFUL "NO" BUTTON & GROWING "YES" BUTTON
