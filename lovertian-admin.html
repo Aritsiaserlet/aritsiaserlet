@@ -537,47 +537,32 @@
     </div>
   </div>
 
-  <!-- 📂 Panel 1: Photo Library (คลังรูปภาพทั้งหมด) -->
+  <!-- 📸 Unified Memory Photos Gallery Panel -->
   <div class="panel-card">
     <div class="panel-header">
-      <h2><span><span data-px="px_camera"></span> 1. PHOTO LIBRARY (ALL UPLOADED PHOTOS)</span></h2>
+      <h2><span><span data-px="px_camera"></span> MEMORY PHOTOS GALLERY</span></h2>
     </div>
     <div class="panel-body">
       <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
-        Upload and manage your photo storage pool. Click <strong>[+ USE IN PAGE]</strong> to select photos for the LoverTian page.
+        Photos displayed in the first mini box (<strong>PHOTOS</strong>) on LoverTian. Upload and manage your memory photos with captions below.
       </p>
 
-      <!-- Upload form -->
-      <div style="background:#fff9e6; border:3px solid var(--dark); padding:14px; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
-        <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:10px;">UPLOAD NEW PHOTO TO LIBRARY</label>
-        <input type="file" id="libPhotoFile" accept="image/*" style="font-family:'VT323',monospace; font-size:18px;">
-        <button class="anav-btn" id="uploadLibPhotoBtn" onclick="uploadPhotoToLibrary()">UPLOAD TO LIBRARY</button>
+      <!-- Upload New Photo Form -->
+      <div style="background:#fff9e6; border:3px solid var(--dark); padding:16px; margin-bottom:24px; display:flex; flex-direction:column; gap:10px; box-shadow:4px 4px 0 var(--dark);">
+        <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:10px;">ADD NEW MEMORY PHOTO</label>
+        <input type="text" id="newPhotoCaption" placeholder="Caption for this memory (e.g. Our sweet moment...)" style="font-family:'VT323',monospace; font-size:22px; padding:8px; border:3px solid var(--dark);">
+        <input type="file" id="newPhotoFile" accept="image/*" style="font-family:'VT323',monospace; font-size:18px;">
+        <button class="anav-btn" id="uploadPhotoBtn" onclick="addMemoryPhoto()">UPLOAD MEMORY PHOTO</button>
       </div>
 
-      <!-- Library Grid -->
-      <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:10px; margin-bottom:8px; display:block;">LIBRARY STORAGE POOL</label>
-      <div id="photoLibraryBox" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:12px;">
-        <div style="font-family:'VT323',monospace; font-size:20px; color:var(--mid);">Loading Library...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⭐ Panel 2: Active Memories for LoverTian (รูปที่เลือกแสดงในหน้าเว็บ) -->
-  <div class="panel-card">
-    <div class="panel-header">
-      <h2><span><span data-px="px_star"></span> 2. ACTIVE MEMORIES (SHOWN ON LOVERTIAN)</span></h2>
-    </div>
-    <div class="panel-body">
-      <p style="font-size: 20px; color: var(--mid); margin-top: 0; margin-bottom: 16px;">
-        These selected photos will be displayed in the <strong>PHOTOS</strong> window on LoverTian. You can customize captions and reorder them.
-      </p>
-      
-      <div id="activeMemoriesBox" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:14px; margin-bottom:20px;">
-        <div style="font-family:'VT323',monospace; font-size:20px; color:var(--mid);">No active memories selected yet. Pick from the library above!</div>
+      <!-- Current Memory Photos Grid -->
+      <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:10px; margin-bottom:10px; display:block;">CURRENT MEMORY PHOTOS (DISPLAYED IN FIRST MINI BOX)</label>
+      <div id="ltPhotosBox" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:14px; margin-bottom:20px;">
+        <div style="font-family:'VT323',monospace; font-size:20px; color:var(--mid);">Loading photos...</div>
       </div>
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; border-top:3px dashed var(--dark); padding-top:16px;">
-        <button class="anav-btn" onclick="saveActiveMemories(this)">SAVE ACTIVE MEMORIES</button>
+        <button class="anav-btn" onclick="saveMemoryPhotos(this)">SAVE ALL CAPTIONS</button>
       </div>
     </div>
   </div>
@@ -842,8 +827,8 @@ async function loadSettings() {
     document.getElementById('cfgLetterYesSub').value = settings.lovertianLetterYesSub || "Thank you so much <span data-px=\"px_heart_sparkle\"></span><br>\nI'm the happiest person in the world!";
   }
 
-  // Load Memory Photos & Library
-  loadPhotoManagement();
+  // Load Memory Photos
+  loadMemoryPhotos();
 
   // Load YouTube URL
   const ytInput = document.getElementById('ltYoutubeUrl');
@@ -1200,149 +1185,67 @@ async function saveLetterContent(btn) {
   }
 }
 
-// ── Two-Tier Photo Management (Library + Active Selection) ──
-function loadPhotoManagement() {
-  if (!settings.lovertianPhotoLibrary) {
-    settings.lovertianPhotoLibrary = [];
-    // Migration: If memory photos exist, seed into library pool
-    if (settings.lovertianMemoryPhotos && settings.lovertianMemoryPhotos.length > 0) {
-      settings.lovertianMemoryPhotos.forEach(p => {
-        if (!settings.lovertianPhotoLibrary.some(lp => lp.url === p.url)) {
-          settings.lovertianPhotoLibrary.push({ url: p.url, name: p.caption || 'Memory Photo' });
-        }
-      });
+// ── Unified Memory Photos Management ──
+function loadMemoryPhotos() {
+  if (!settings.lovertianMemoryPhotos) {
+    if (settings.lovertianPhotoLibrary && settings.lovertianPhotoLibrary.length > 0) {
+      settings.lovertianMemoryPhotos = settings.lovertianPhotoLibrary.map(p => ({
+        url: p.url,
+        caption: p.name || 'Our Sweet Memory'
+      }));
+    } else {
+      settings.lovertianMemoryPhotos = [];
     }
   }
-  if (!settings.lovertianMemoryPhotos) {
-    settings.lovertianMemoryPhotos = [];
-  }
-
-  renderPhotoLibrary();
-  renderActiveMemories();
+  renderMemoryPhotos();
 }
 
-function renderPhotoLibrary() {
-  const box = document.getElementById('photoLibraryBox');
+function renderMemoryPhotos() {
+  const box = document.getElementById('ltPhotosBox');
   if (!box) return;
-  const lib = settings.lovertianPhotoLibrary || [];
-  if (lib.length === 0) {
-    box.innerHTML = '<div style="font-family:\'VT323\',monospace; font-size:20px; color:var(--mid);">Library storage is empty — upload photos above!</div>';
+  const photos = settings.lovertianMemoryPhotos || [];
+  if (photos.length === 0) {
+    box.innerHTML = '<div style="font-family:\'VT323\',monospace; font-size:20px; color:var(--mid);">No photos yet — upload your first memory photo above!</div>';
     return;
   }
   box.innerHTML = '';
-  lib.forEach((item, idx) => {
-    const isAlreadyActive = (settings.lovertianMemoryPhotos || []).some(m => m.url === item.url);
-    const card = document.createElement('div');
-    card.style.cssText = 'border:3px solid var(--dark); background:var(--white); padding:8px; box-shadow:3px 3px 0 var(--dark); position:relative; display:flex; flex-direction:column; gap:6px;';
-    card.innerHTML = `
-      <button onclick="deleteFromLibrary(${idx})" style="position:absolute;top:4px;right:4px;background:#c0392b;color:white;border:2px solid var(--dark);width:22px;height:22px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Delete from storage">✕</button>
-      <img src="${item.url}" alt="Library Photo" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
-      <button onclick="addToActiveMemories(${idx})" class="anav-btn" style="font-size:9px;padding:6px 4px;margin-top:auto;background:${isAlreadyActive ? '#abebc6' : 'var(--gold)'};color:var(--dark);" title="${isAlreadyActive ? 'Already added' : 'Add to Active'}">
-        ${isAlreadyActive ? '✓ ADDED' : '+ USE IN PAGE'}
-      </button>
-    `;
-    box.appendChild(card);
-  });
-}
-
-function renderActiveMemories() {
-  const box = document.getElementById('activeMemoriesBox');
-  if (!box) return;
-  const active = settings.lovertianMemoryPhotos || [];
-  if (active.length === 0) {
-    box.innerHTML = '<div style="font-family:\'VT323\',monospace; font-size:20px; color:var(--mid);">No active memories selected. Click "+ USE IN PAGE" in the library above!</div>';
-    return;
-  }
-  box.innerHTML = '';
-  active.forEach((item, idx) => {
+  photos.forEach((item, idx) => {
     const card = document.createElement('div');
     card.style.cssText = 'border:3px solid var(--dark); background:var(--white); padding:8px; box-shadow:3px 3px 0 var(--dark); display:flex; flex-direction:column; gap:6px; position:relative;';
     card.innerHTML = `
       <div style="font-family:'Press Start 2P',cursive; font-size:9px; color:var(--dark); display:flex; justify-content:space-between; align-items:center;">
         <span>SLOT #${idx + 1}</span>
-        <button onclick="removeFromActiveMemories(${idx})" style="background:#c0392b;color:white;border:2px solid var(--dark);width:20px;height:20px;font-size:12px;cursor:pointer;" title="Remove from active">✕</button>
+        <button onclick="deleteMemoryPhoto(${idx})" style="background:#c0392b;color:white;border:2px solid var(--dark);width:22px;height:22px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Delete this photo">✕</button>
       </div>
-      <img src="${item.url}" alt="Active Memory" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
+      <img src="${item.url}" alt="Memory #${idx + 1}" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
       <label style="font-family:'VT323',monospace; font-size:16px; color:var(--dark); margin-top:2px;">Caption:</label>
-      <input type="text" value="${item.caption || ''}" placeholder="Enter caption..." onchange="updateActiveCaption(${idx}, this.value)" style="font-family:'VT323',monospace; font-size:18px; padding:4px 6px; border:2px solid var(--dark); box-sizing:border-box; width:100%;">
+      <input type="text" value="${item.caption || ''}" placeholder="Enter caption..." onchange="updatePhotoCaption(${idx}, this.value)" style="font-family:'VT323',monospace; font-size:18px; padding:4px 6px; border:2px solid var(--dark); box-sizing:border-box; width:100%;">
     `;
     box.appendChild(card);
   });
 }
 
-function updateActiveCaption(idx, val) {
+function updatePhotoCaption(idx, val) {
   if (settings.lovertianMemoryPhotos && settings.lovertianMemoryPhotos[idx]) {
     settings.lovertianMemoryPhotos[idx].caption = val.trim();
   }
 }
 
-function addToActiveMemories(libIdx) {
-  const libItem = settings.lovertianPhotoLibrary[libIdx];
-  if (!libItem) return;
-  if (!settings.lovertianMemoryPhotos) settings.lovertianMemoryPhotos = [];
-  
-  if (settings.lovertianMemoryPhotos.some(m => m.url === libItem.url)) {
-    showMsg("This photo is already in active memories!");
-    return;
-  }
-
-  settings.lovertianMemoryPhotos.push({
-    url: libItem.url,
-    caption: libItem.name || 'Our Sweet Memory'
-  });
-  renderPhotoLibrary();
-  renderActiveMemories();
-  showMsg("✓ Added to active memories! Click 'SAVE ACTIVE MEMORIES' to save changes.");
-}
-
-function removeFromActiveMemories(actIdx) {
-  if (!settings.lovertianMemoryPhotos) return;
-  settings.lovertianMemoryPhotos.splice(actIdx, 1);
-  renderPhotoLibrary();
-  renderActiveMemories();
-  showMsg("Removed from active list. Click 'SAVE ACTIVE MEMORIES' to apply.");
-}
-
-async function deleteFromLibrary(libIdx) {
-  if (!confirm("Delete this photo from Library storage?")) return;
-  const item = settings.lovertianPhotoLibrary[libIdx];
-  if (!item) return;
-
-  // Also remove from active if present
-  if (settings.lovertianMemoryPhotos) {
-    settings.lovertianMemoryPhotos = settings.lovertianMemoryPhotos.filter(m => m.url !== item.url);
-  }
-
-  settings.lovertianPhotoLibrary.splice(libIdx, 1);
-
-  try {
-    showMsg("Deleting photo from library...");
-    const json = JSON.stringify(settings, null, 2);
-    const res = await ghPut(JSON_PATH, json, 'Delete photo from library', settingsSha);
-    settingsSha = res.content.sha;
-    syncSettingsToFirebase(settings);
-    renderPhotoLibrary();
-    renderActiveMemories();
-    showMsg("✓ Photo deleted from library!");
-  } catch(e) {
-    showMsg("✗ Error deleting: " + e.message, true);
-  }
-}
-
-async function uploadPhotoToLibrary() {
-  const fileInput = document.getElementById('libPhotoFile');
-  const btn = document.getElementById('uploadLibPhotoBtn');
+async function addMemoryPhoto() {
+  const captionInput = document.getElementById('newPhotoCaption');
+  const fileInput = document.getElementById('newPhotoFile');
+  const btn = document.getElementById('uploadPhotoBtn');
 
   if (!fileInput.files[0]) {
     alert("Please select an image file first");
     return;
   }
 
+  const caption = (captionInput.value || '').trim() || 'Our Sweet Memory';
   setBtnState(btn, 'loading', '⏳ UPLOADING PHOTO...');
 
   try {
     const file = fileInput.files[0];
-    const name = file.name.replace(/\.[^/.]+$/, "");
     const ext = file.name.split('.').pop().toLowerCase();
     const filePath = `All File Aritsia/lovertian-photos/photo-${Date.now()}.${ext}`;
 
@@ -1350,22 +1253,26 @@ async function uploadPhotoToLibrary() {
     reader.onload = async (e) => {
       const b64 = e.target.result.split(',')[1];
       try {
-        // Use ghPutBinary for image files (raw base64, not text-encoded)
-        await ghPutBinary(filePath, b64, `Upload library photo: ${name}`);
+        await ghPutBinary(filePath, b64, `Upload memory photo: ${caption}`);
         const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(filePath).replace(/%2F/g, '/')}`;
 
+        if (!settings.lovertianMemoryPhotos) settings.lovertianMemoryPhotos = [];
+        settings.lovertianMemoryPhotos.push({ url: rawUrl, caption: caption });
+
+        // Keep photoLibrary synced as well
         if (!settings.lovertianPhotoLibrary) settings.lovertianPhotoLibrary = [];
-        settings.lovertianPhotoLibrary.push({ url: rawUrl, name: name });
+        settings.lovertianPhotoLibrary.push({ url: rawUrl, name: caption });
 
         const json = JSON.stringify(settings, null, 2);
-        const res = await ghPut(JSON_PATH, json, 'Add photo to library', settingsSha);
+        const res = await ghPut(JSON_PATH, json, 'Add memory photo: ' + caption, settingsSha);
         settingsSha = res.content.sha;
         syncSettingsToFirebase(settings);
 
+        captionInput.value = '';
         fileInput.value = '';
-        renderPhotoLibrary();
+        renderMemoryPhotos();
         setBtnState(btn, 'success', '✓ PHOTO UPLOADED!');
-        showMsg("✓ Photo uploaded to Library successfully!");
+        showMsg("✓ Photo uploaded and added to memory gallery!");
       } catch(err) {
         setBtnState(btn, 'error', '✗ UPLOAD FAILED!');
         showMsg("✗ Upload failed: " + err.message, true);
@@ -1378,16 +1285,38 @@ async function uploadPhotoToLibrary() {
   }
 }
 
-async function saveActiveMemories(btn) {
-  setBtnState(btn, 'loading', '⏳ SAVING ACTIVE MEMORIES...');
+async function deleteMemoryPhoto(idx) {
+  if (!confirm("Delete this photo from memory gallery?")) return;
+  if (!settings.lovertianMemoryPhotos) return;
+
+  const removed = settings.lovertianMemoryPhotos.splice(idx, 1)[0];
+  if (removed && settings.lovertianPhotoLibrary) {
+    settings.lovertianPhotoLibrary = settings.lovertianPhotoLibrary.filter(p => p.url !== removed.url);
+  }
+
   try {
-    showMsg("Saving Active Memories...");
+    showMsg("Deleting photo...");
     const json = JSON.stringify(settings, null, 2);
-    const res = await ghPut(JSON_PATH, json, 'Update LoverTian active memories', settingsSha);
+    const res = await ghPut(JSON_PATH, json, 'Delete memory photo', settingsSha);
     settingsSha = res.content.sha;
     syncSettingsToFirebase(settings);
-    setBtnState(btn, 'success', '✓ MEMORIES SAVED!');
-    showMsg("✓ Active Memories saved successfully!");
+    renderMemoryPhotos();
+    showMsg("✓ Photo deleted successfully!");
+  } catch(e) {
+    showMsg("✗ Error deleting: " + e.message, true);
+  }
+}
+
+async function saveMemoryPhotos(btn) {
+  setBtnState(btn, 'loading', '⏳ SAVING CAPTIONS...');
+  try {
+    showMsg("Saving Photo Captions...");
+    const json = JSON.stringify(settings, null, 2);
+    const res = await ghPut(JSON_PATH, json, 'Update LoverTian memory photo captions', settingsSha);
+    settingsSha = res.content.sha;
+    syncSettingsToFirebase(settings);
+    setBtnState(btn, 'success', '✓ CAPTIONS SAVED!');
+    showMsg("✓ Photo Captions saved successfully!");
   } catch(e) {
     setBtnState(btn, 'error', '✗ SAVE FAILED!');
     showMsg("✗ Save failed: " + e.message, true);
@@ -1395,15 +1324,41 @@ async function saveActiveMemories(btn) {
 }
 
 // ── Song Config ──
+function getYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  url = url.trim();
+  
+  // Format: youtu.be/ID
+  const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+
+  // Format: watch?v=ID or music.youtube.com/watch?v=ID
+  const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+
+  // Format: /embed/ID
+  const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+  if (embedMatch) return `https://www.youtube.com/embed/${embedMatch[1]}`;
+
+  // Format: /shorts/ID
+  const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (shortsMatch) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+
+  // Format: Raw 11-char ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+    return `https://www.youtube.com/embed/${url}`;
+  }
+
+  if (url.includes('watch?v=')) {
+    return url.replace(/https?:\/\/music\./, 'https://www.').replace('watch?v=', 'embed/').split('&')[0];
+  }
+  return url;
+}
+
 function updateYtPreview(url) {
   const preview = document.getElementById('ytPreview');
   if (!preview || !url) { if (preview) preview.innerHTML = ''; return; }
-  let embedUrl = url;
-  if (url.includes('watch?v=')) {
-    embedUrl = url.replace('watch?v=', 'embed/').split('&')[0];
-  } else if (url.includes('youtu.be/')) {
-    embedUrl = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
-  }
+  const embedUrl = getYouTubeEmbedUrl(url);
   preview.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border:3px solid var(--dark);margin-top:8px;">
     <iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allowfullscreen></iframe>
   </div>`;

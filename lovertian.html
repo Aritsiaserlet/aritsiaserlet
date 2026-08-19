@@ -2245,27 +2245,69 @@ function replayLetter() {
   startTypewriter();
 }
 
-function renderSongWindow() {
+function getYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  url = url.trim();
+  
+  // Format: youtu.be/ID
+  const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+
+  // Format: watch?v=ID or music.youtube.com/watch?v=ID
+  const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+
+  // Format: /embed/ID
+  const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+  if (embedMatch) return `https://www.youtube.com/embed/${embedMatch[1]}`;
+
+  // Format: /shorts/ID
+  const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (shortsMatch) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+
+  // Format: Raw 11-char ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+    return `https://www.youtube.com/embed/${url}`;
+  }
+
+  if (url.includes('watch?v=')) {
+    return url.replace(/https?:\/\/music\./, 'https://www').replace('watch?v=', 'embed/').split('&')[0];
+  }
+  return url;
+}
+
+async function renderSongWindow() {
   const container = document.getElementById('songCardContainer');
   if (!container) return;
-  const url = window.lovertianSettings?.lovertianYoutubeUrl;
+
+  // Fallback fetch if lovertianYoutubeUrl not loaded into state yet
+  let url = window.lovertianSettings?.lovertianYoutubeUrl;
+  if (!url) {
+    try {
+      const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.lovertianYoutubeUrl) {
+          url = data.lovertianYoutubeUrl;
+          if (!window.lovertianSettings) window.lovertianSettings = {};
+          window.lovertianSettings.lovertianYoutubeUrl = url;
+        }
+      }
+    } catch(e) {}
+  }
+
   if (!url) {
     container.innerHTML = '<div style="text-align:center;font-family:\'VT323\';font-size:24px;margin-top:40px;color:var(--dark);">No song set yet — add one in Admin!</div>';
     return;
   }
   
-  let embedUrl = url;
-  if (url.includes('watch?v=')) {
-    embedUrl = url.replace('watch?v=', 'embed/').split('&')[0];
-  } else if (url.includes('youtu.be/')) {
-    embedUrl = 'https://www.youtube.com/embed/' + url.split('youtu.be/')[1].split('?')[0];
-  }
+  const embedUrl = getYouTubeEmbedUrl(url);
   
   container.innerHTML = `
     <div class="song-card">
       <div class="song-title"><span data-px="px_music_note"></span> A SONG THAT REMINDS ME OF YOU</div>
       <div class="yt-embed-wrap">
-        <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
       <div style="margin-top:16px;font-size:24px;"><span data-px="px_heart_pink"></span> <span data-px="px_sparkle_gold"></span> <span data-px="px_heart_pink"></span></div>
     </div>
@@ -2734,7 +2776,7 @@ async function spawnHearts() {
 
   function applySettings(settingsObj) {
     if (!settingsObj) return;
-    window.lovertianSettings = settingsObj;
+    window.lovertianSettings = Object.assign({}, window.lovertianSettings || {}, settingsObj);
     if (settingsObj.lovertianIcons) ltIcons = settingsObj.lovertianIcons;
     if (settingsObj.lovertianEmojis && settingsObj.lovertianEmojis.length > 0) ltEmojis = settingsObj.lovertianEmojis;
     if (settingsObj.lovertianEnvelopeSealEmoji) sealEmoji = settingsObj.lovertianEnvelopeSealEmoji;
@@ -2746,7 +2788,18 @@ async function spawnHearts() {
     if (settingsObj.lovertianLetterYesSub) rawTexts.yesSub = settingsObj.lovertianLetterYesSub;
   }
 
-  // Load from Firebase Firestore
+  // 1. Fetch latest directly from GitHub raw settings.json
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      applySettings(data);
+    }
+  } catch(e) {
+    console.warn("GitHub fetch error:", e);
+  }
+
+  // 2. Merge with Firebase Firestore settings if available
   try {
     const authMod = await import('./js/authManager.js');
     const fsMod = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
@@ -2757,19 +2810,6 @@ async function spawnHearts() {
     }
   } catch(e) {
     console.warn("Firebase fetch fallback:", e);
-  }
-
-  // Fallback to GitHub raw JSON if needed
-  if (!window.lovertianSettings || !window.lovertianSettings.lovertianMemoryPhotos) {
-    try {
-      const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
-      if (res.ok) {
-        const data = await res.json();
-        applySettings(data);
-      }
-    } catch(e) {
-      console.warn("GitHub fetch fallback error:", e);
-    }
   }
 
   // Apply envelope seal emoji
