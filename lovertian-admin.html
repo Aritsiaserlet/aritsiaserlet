@@ -1214,10 +1214,10 @@ function renderMemoryPhotos() {
     card.style.cssText = 'border:3px solid var(--dark); background:var(--white); padding:8px; box-shadow:3px 3px 0 var(--dark); display:flex; flex-direction:column; gap:6px; position:relative;';
     card.innerHTML = `
       <div style="font-family:'Press Start 2P',cursive; font-size:9px; color:var(--dark); display:flex; justify-content:space-between; align-items:center;">
-        <span>SLOT #${idx + 1}</span>
+        <span>PHOTO #${idx + 1}</span>
         <button onclick="deleteMemoryPhoto(${idx})" style="background:#c0392b;color:white;border:2px solid var(--dark);width:22px;height:22px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Delete this photo">✕</button>
       </div>
-      <img src="${item.url}" alt="Memory #${idx + 1}" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
+      <img src="${item.url}" alt="Memory #${idx + 1}" onerror="if(!this._retried){this._retried=true;if(this.src.includes('/lovertian-photos/')){this.src=this.src.replace('/lovertian-photos/','/photobooth/');}else if(this.src.includes('All%20File%20Aritsia/All%20File%20Aritsia')){this.src=this.src.replace('All%20File%20Aritsia/All%20File%20Aritsia','All%20File%20Aritsia');}}" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
       <label style="font-family:'VT323',monospace; font-size:16px; color:var(--dark); margin-top:2px;">Caption:</label>
       <input type="text" value="${item.caption || ''}" placeholder="Enter caption..." onchange="updatePhotoCaption(${idx}, this.value)" style="font-family:'VT323',monospace; font-size:18px; padding:4px 6px; border:2px solid var(--dark); box-sizing:border-box; width:100%;">
     `;
@@ -1247,14 +1247,14 @@ async function addMemoryPhoto() {
   try {
     const file = fileInput.files[0];
     const ext = file.name.split('.').pop().toLowerCase();
-    const filePath = `All File Aritsia/lovertian-photos/photo-${Date.now()}.${ext}`;
+    const fname = `photobooth/photo-${Date.now()}.${ext}`;
 
     const reader = new FileReader();
     reader.onload = async (e) => {
       const b64 = e.target.result.split(',')[1];
       try {
-        await ghPutBinary(filePath, b64, `Upload memory photo: ${caption}`);
-        const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(filePath).replace(/%2F/g, '/')}`;
+        await ghPutBinary(fname, b64, `Upload memory photo: ${caption}`);
+        const rawUrl = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${encodeURIComponent(DATA_PATH)}/${fname}`;
 
         if (!settings.lovertianMemoryPhotos) settings.lovertianMemoryPhotos = [];
         settings.lovertianMemoryPhotos.push({ url: rawUrl, caption: caption });

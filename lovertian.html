@@ -2315,25 +2315,34 @@ async function renderSongWindow() {
   renderPixelEmojis();
 }
 
-function renderPhotosWindow() {
+async function renderPhotosWindow() {
   const container = document.getElementById('photosGridContainer');
   if (!container) return;
-  const photos = window.lovertianSettings?.lovertianMemoryPhotos || [];
+
+  // Fallback fetch if lovertianMemoryPhotos not loaded into state yet
+  let photos = window.lovertianSettings?.lovertianMemoryPhotos;
+  if (!photos || photos.length === 0) {
+    try {
+      const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.lovertianMemoryPhotos && data.lovertianMemoryPhotos.length > 0) {
+          photos = data.lovertianMemoryPhotos;
+          if (!window.lovertianSettings) window.lovertianSettings = {};
+          window.lovertianSettings.lovertianMemoryPhotos = photos;
+        }
+      }
+    } catch(e) {}
+  }
   
-  if (photos.length === 0) {
-    // Render 6 cute retro placeholder cards
-    let placeholderHTML = '<div class="photos-grid">';
-    for (let i = 1; i <= 6; i++) {
-      placeholderHTML += `
-        <div class="photo-placeholder-card">
-          <div style="font-size: 28px;"><span data-px="px_camera"></span></div>
-          <div class="placeholder-badge">SLOT #${i}</div>
-          <div class="placeholder-sub">[ Pick in Admin ]</div>
-        </div>
-      `;
-    }
-    placeholderHTML += '</div>';
-    container.innerHTML = placeholderHTML;
+  if (!photos || photos.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 48px 20px; font-family:'VT323',monospace; font-size:26px; color:var(--dark);">
+        <div style="font-size: 40px; margin-bottom: 10px;"><span data-px="px_camera"></span></div>
+        <div>No memory photos added yet.</div>
+        <div style="font-size: 20px; color: var(--mid); margin-top: 6px;">Upload photos in the Admin panel!</div>
+      </div>
+    `;
     renderPixelEmojis();
     return;
   }
@@ -2342,7 +2351,7 @@ function renderPhotosWindow() {
   photos.forEach(p => {
     html += `
       <div class="photo-card">
-        <img src="${p.url}" alt="Memory">
+        <img src="${p.url}" alt="Memory" onerror="if(!this._retried){this._retried=true;if(this.src.includes('/lovertian-photos/')){this.src=this.src.replace('/lovertian-photos/','/photobooth/');}else if(this.src.includes('All%20File%20Aritsia/All%20File%20Aritsia')){this.src=this.src.replace('All%20File%20Aritsia/All%20File%20Aritsia','All%20File%20Aritsia');}}">
         <div class="photo-caption">${p.caption || ''}</div>
       </div>
     `;
