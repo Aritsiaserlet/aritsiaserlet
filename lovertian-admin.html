@@ -229,7 +229,7 @@
       font-size: 18px;
     }
 
-    /* Message Toast */
+    /* Message Toast & Banner */
     .msg-box {
       font-size: 20px;
       margin-top: 12px;
@@ -238,6 +238,42 @@
     }
     .msg-box.ok { display: block; background: #abebc6; border: 2px solid var(--dark); color: #145a32; }
     .msg-box.err { display: block; background: #fadbd8; border: 2px solid var(--dark); color: #78281f; }
+
+    /* Fixed Floating Toast Banner */
+    .msg-toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 99999;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      line-height: 1.6;
+      padding: 14px 22px;
+      border: 4px solid var(--dark);
+      box-shadow: 6px 6px 0 var(--dark);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s;
+      max-width: 90vw;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .msg-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .msg-toast.ok {
+      background: #abebc6;
+      color: #145a32;
+      border-color: #145a32;
+    }
+    .msg-toast.err {
+      background: #fadbd8;
+      color: #78281f;
+      border-color: #78281f;
+    }
 
     /* Emoji Picker Buttons */
     .emoji-picker-btn {
@@ -426,7 +462,7 @@
 
         <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
           <input type="text" id="bgEmojiInput" placeholder="Emojis/Pixel Assets" style="flex:1; padding:10px; font-family:'VT323',monospace; font-size:24px; border:3px solid var(--dark);">
-          <button class="anav-btn" onclick="saveBgEmojis()">SAVE EMOJIS</button>
+          <button class="anav-btn" onclick="saveBgEmojis(this)">SAVE EMOJIS</button>
         </div>
       </div>
 
@@ -463,7 +499,7 @@
       <!-- Input & Save Row -->
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
         <input type="text" id="sealEmojiInput" placeholder="Seal Icon / Emoji" oninput="updateSealPreview(this.value)" style="width:240px; padding:10px; font-family:'VT323',monospace; font-size:20px; border:3px solid var(--dark); text-align:center;">
-        <button class="anav-btn" onclick="saveSealEmoji()">SAVE ENVELOPE SEAL ICON</button>
+        <button class="anav-btn" onclick="saveSealEmoji(this)">SAVE ENVELOPE SEAL ICON</button>
       </div>
     </div>
   </div>
@@ -496,7 +532,7 @@
       </div>
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-        <button class="anav-btn" onclick="saveLetterContent()">SAVE LETTER CONTENT</button>
+        <button class="anav-btn" onclick="saveLetterContent(this)">SAVE LETTER CONTENT</button>
       </div>
     </div>
   </div>
@@ -541,7 +577,7 @@
       </div>
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; border-top:3px dashed var(--dark); padding-top:16px;">
-        <button class="anav-btn" onclick="saveActiveMemories()">SAVE ACTIVE MEMORIES</button>
+        <button class="anav-btn" onclick="saveActiveMemories(this)">SAVE ACTIVE MEMORIES</button>
       </div>
     </div>
   </div>
@@ -559,7 +595,7 @@
         <label style="font-weight:bold; color:var(--dark); font-family:'Press Start 2P',cursive; font-size:11px;">YOUTUBE URL</label>
         <input type="text" id="ltYoutubeUrl" placeholder="https://www.youtube.com/watch?v=..." style="font-family:'VT323',monospace; font-size:20px; padding:8px; border:3px solid var(--dark);">
         <div id="ytPreview" style="margin-top:8px;"></div>
-        <button class="anav-btn" onclick="saveSongConfig()">SAVE SONG URL</button>
+        <button class="anav-btn" onclick="saveSongConfig(this)">SAVE SONG URL</button>
       </div>
     </div>
   </div>
@@ -822,11 +858,73 @@ function renderLoverTianLibrary() {
   });
 }
 
+let msgTimer = null;
 function showMsg(text, isErr = false) {
+  // 1. Inline msgBox (if exists in active panel)
   const msg = document.getElementById('msgBox');
-  msg.textContent = text;
-  msg.className = 'msg-box ' + (isErr ? 'err' : 'ok');
-  setTimeout(() => { msg.style.display = 'none'; }, 4000);
+  if (msg) {
+    msg.textContent = text;
+    msg.className = 'msg-box ' + (isErr ? 'err' : 'ok');
+  }
+
+  // 2. Global Floating Toast Banner
+  let toast = document.getElementById('msgToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'msgToast';
+    toast.className = 'msg-toast';
+    document.body.appendChild(toast);
+  }
+
+  if (msgTimer) clearTimeout(msgTimer);
+
+  toast.innerHTML = (isErr ? '✗ ' : '✓ ') + text.replace(/^[✓✗]\s*/, '');
+  toast.className = 'msg-toast show ' + (isErr ? 'err' : 'ok');
+
+  msgTimer = setTimeout(() => {
+    toast.classList.remove('show');
+    if (msg) msg.style.display = 'none';
+  }, 4000);
+}
+
+function setBtnState(btn, state, customText, defaultText = '') {
+  if (!btn) return;
+  if (!btn.dataset.origText) {
+    btn.dataset.origText = defaultText || btn.textContent;
+  }
+  const orig = btn.dataset.origText;
+
+  if (state === 'loading') {
+    btn.disabled = true;
+    btn.style.backgroundColor = '#feca57';
+    btn.style.borderColor = '#2d3436';
+    btn.style.color = '#2d3436';
+    btn.textContent = customText || '⏳ SAVING...';
+  } else if (state === 'success') {
+    btn.disabled = false;
+    btn.style.backgroundColor = '#2ecc71';
+    btn.style.borderColor = '#145a32';
+    btn.style.color = '#ffffff';
+    btn.textContent = customText || '✓ SAVED!';
+    setTimeout(() => {
+      btn.style.backgroundColor = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      btn.textContent = orig;
+    }, 3000);
+  } else if (state === 'error') {
+    btn.disabled = false;
+    btn.style.backgroundColor = '#e74c3c';
+    btn.style.borderColor = '#78281f';
+    btn.style.color = '#ffffff';
+    btn.textContent = customText || '✗ FAILED!';
+    setTimeout(() => {
+      btn.style.backgroundColor = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      btn.textContent = orig;
+    }, 3500);
+  }
 }
 
 async function addLoverTianIcon() {
@@ -843,10 +941,10 @@ async function addLoverTianIcon() {
   const ext = file.name.split('.').pop().toLowerCase() || 'png';
   const reader = new FileReader();
 
+  setBtnState(btn, 'loading', '⏳ UPLOADING...');
+
   reader.onload = async (e) => {
     try {
-      btn.disabled = true;
-      btn.innerText = "UPLOADING...";
       showMsg("Uploading image to GitHub...");
 
       const base64 = e.target.result.split(',')[1];
@@ -862,20 +960,18 @@ async function addLoverTianIcon() {
 
       showMsg("Updating settings.json...");
       const json = JSON.stringify(settings, null, 2);
-      const saveResult = await ghPut(JSON_PATH, json, 'Update settings.json with LoverTian icon', settingsSha);
-      settingsSha = saveResult.content.sha;
+      const res = await ghPut(JSON_PATH, json, 'Add LoverTian Icon: ' + nameInput.value, settingsSha);
+      settingsSha = res.content.sha;
+      syncSettingsToFirebase(settings);
 
       nameInput.value = '';
       fileInput.value = '';
-      showMsg("✓ Upload successful!");
       renderLoverTianLibrary();
+      setBtnState(btn, 'success', '✓ ICON UPLOADED!');
+      showMsg("✓ Icon uploaded successfully!");
     } catch(err) {
-      btn.disabled = false;
-      btn.innerText = "UPLOAD BACKGROUND ICON";
+      setBtnState(btn, 'error', '✗ UPLOAD FAILED!');
       showMsg("✗ Upload failed: " + err.message, true);
-    } finally {
-      btn.disabled = false;
-      btn.innerText = "UPLOAD BACKGROUND ICON";
     }
   };
   reader.readAsDataURL(file);
@@ -1020,45 +1116,57 @@ function updateSealPreview(val) {
   }
 }
 
-async function saveBgEmojis() {
+async function saveBgEmojis(btn) {
   const input = document.getElementById('bgEmojiInput');
   const text = input ? input.value.trim() : '';
   const emojis = text.split(/\s+/).filter(Boolean);
   settings.lovertianEmojis = emojis;
+
+  setBtnState(btn, 'loading', '⏳ SAVING EMOJIS...');
 
   try {
     showMsg("Saving Background Emojis...");
     const json = JSON.stringify(settings, null, 2);
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian background emojis', settingsSha);
     settingsSha = res.content.sha;
+    syncSettingsToFirebase(settings);
+    setBtnState(btn, 'success', '✓ EMOJIS SAVED!');
     showMsg("✓ Background Emojis saved successfully!");
   } catch(e) {
-    alert("Error saving background emojis: " + e.message);
+    setBtnState(btn, 'error', '✗ SAVE FAILED!');
+    showMsg("✗ Error saving background emojis: " + e.message, true);
   }
 }
 
-async function saveSealEmoji() {
+async function saveSealEmoji(btn) {
   const input = document.getElementById('sealEmojiInput');
   const emoji = input ? input.value.trim() : '💌';
   settings.lovertianEnvelopeSealEmoji = emoji || '💌';
+
+  setBtnState(btn, 'loading', '⏳ SAVING SEAL...');
 
   try {
     showMsg("Saving Envelope Seal Icon...");
     const json = JSON.stringify(settings, null, 2);
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian envelope seal emoji', settingsSha);
     settingsSha = res.content.sha;
+    syncSettingsToFirebase(settings);
+    setBtnState(btn, 'success', '✓ SEAL SAVED!');
     showMsg("✓ Envelope Seal Icon saved successfully!");
   } catch(e) {
-    alert("Error saving seal emoji: " + e.message);
+    setBtnState(btn, 'error', '✗ SAVE FAILED!');
+    showMsg("✗ Error saving seal emoji: " + e.message, true);
   }
 }
 
-async function saveLetterContent() {
+async function saveLetterContent(btn) {
   settings.lovertianLetterGreeting = document.getElementById('cfgLetterGreeting').value.trim();
   settings.lovertianLetterBody = document.getElementById('cfgLetterBody').value.trim();
   settings.lovertianLetterQuestion = document.getElementById('cfgLetterQuestion').value.trim();
   settings.lovertianLetterSignature = document.getElementById('cfgLetterSignature').value.trim();
   settings.lovertianLetterYesSub = document.getElementById('cfgLetterYesSub').value.trim();
+
+  setBtnState(btn, 'loading', '⏳ SAVING LETTER...');
 
   try {
     showMsg("Saving Letter Content...");
@@ -1066,9 +1174,11 @@ async function saveLetterContent() {
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian letter content', settingsSha);
     settingsSha = res.content.sha;
     syncSettingsToFirebase(settings);
+    setBtnState(btn, 'success', '✓ LETTER SAVED!');
     showMsg("✓ Letter Content saved successfully!");
   } catch(e) {
-    alert("Error saving letter content: " + e.message);
+    setBtnState(btn, 'error', '✗ SAVE FAILED!');
+    showMsg("✗ Error saving letter content: " + e.message, true);
   }
 }
 
@@ -1109,7 +1219,7 @@ function renderPhotoLibrary() {
     card.innerHTML = `
       <button onclick="deleteFromLibrary(${idx})" style="position:absolute;top:4px;right:4px;background:#c0392b;color:white;border:2px solid var(--dark);width:22px;height:22px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Delete from storage">✕</button>
       <img src="${item.url}" alt="Library Photo" style="width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--dark);">
-      <button onclick="addToActiveMemories(${idx})" class="anav-btn" style="font-size:9px;padding:6px 4px;margin-top:auto;background:${isAlreadyActive ? '#abebc6' : 'var(--gold)'};" title="${isAlreadyActive ? 'Already added' : 'Add to Active'}">
+      <button onclick="addToActiveMemories(${idx})" class="anav-btn" style="font-size:9px;padding:6px 4px;margin-top:auto;background:${isAlreadyActive ? '#abebc6' : 'var(--gold)'};color:var(--dark);" title="${isAlreadyActive ? 'Already added' : 'Add to Active'}">
         ${isAlreadyActive ? '✓ ADDED' : '+ USE IN PAGE'}
       </button>
     `;
@@ -1172,6 +1282,7 @@ function removeFromActiveMemories(actIdx) {
   settings.lovertianMemoryPhotos.splice(actIdx, 1);
   renderPhotoLibrary();
   renderActiveMemories();
+  showMsg("Removed from active list. Click 'SAVE ACTIVE MEMORIES' to apply.");
 }
 
 async function deleteFromLibrary(libIdx) {
@@ -1209,8 +1320,7 @@ async function uploadPhotoToLibrary() {
     return;
   }
 
-  btn.textContent = 'UPLOADING...';
-  btn.disabled = true;
+  setBtnState(btn, 'loading', '⏳ UPLOADING PHOTO...');
 
   try {
     const file = fileInput.files[0];
@@ -1236,31 +1346,32 @@ async function uploadPhotoToLibrary() {
 
         fileInput.value = '';
         renderPhotoLibrary();
+        setBtnState(btn, 'success', '✓ PHOTO UPLOADED!');
         showMsg("✓ Photo uploaded to Library successfully!");
       } catch(err) {
+        setBtnState(btn, 'error', '✗ UPLOAD FAILED!');
         showMsg("✗ Upload failed: " + err.message, true);
-      } finally {
-        btn.textContent = 'UPLOAD TO LIBRARY';
-        btn.disabled = false;
       }
     };
     reader.readAsDataURL(file);
   } catch(err) {
+    setBtnState(btn, 'error', '✗ UPLOAD FAILED!');
     showMsg("✗ Error: " + err.message, true);
-    btn.textContent = 'UPLOAD TO LIBRARY';
-    btn.disabled = false;
   }
 }
 
-async function saveActiveMemories() {
+async function saveActiveMemories(btn) {
+  setBtnState(btn, 'loading', '⏳ SAVING ACTIVE MEMORIES...');
   try {
     showMsg("Saving Active Memories...");
     const json = JSON.stringify(settings, null, 2);
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian active memories', settingsSha);
     settingsSha = res.content.sha;
     syncSettingsToFirebase(settings);
+    setBtnState(btn, 'success', '✓ MEMORIES SAVED!');
     showMsg("✓ Active Memories saved successfully!");
   } catch(e) {
+    setBtnState(btn, 'error', '✗ SAVE FAILED!');
     showMsg("✗ Save failed: " + e.message, true);
   }
 }
@@ -1280,17 +1391,20 @@ function updateYtPreview(url) {
   </div>`;
 }
 
-async function saveSongConfig() {
+async function saveSongConfig(btn) {
   const url = (document.getElementById('ltYoutubeUrl').value || '').trim();
   settings.lovertianYoutubeUrl = url;
+  setBtnState(btn, 'loading', '⏳ SAVING SONG URL...');
   try {
     showMsg('Saving Song URL...');
     const json = JSON.stringify(settings, null, 2);
     const res = await ghPut(JSON_PATH, json, 'Update LoverTian song URL', settingsSha);
     settingsSha = res.content.sha;
     syncSettingsToFirebase(settings);
+    setBtnState(btn, 'success', '✓ SONG URL SAVED!');
     showMsg('✓ Song URL saved successfully!');
   } catch(e) {
+    setBtnState(btn, 'error', '✗ SAVE FAILED!');
     showMsg('✗ Save failed: ' + e.message, true);
   }
 }

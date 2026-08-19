@@ -2760,7 +2760,7 @@ async function spawnHearts() {
   }
 
   // Fallback to GitHub raw JSON if needed
-  if (ltIcons.length === 0 && ltEmojis.length === 0) {
+  if (!window.lovertianSettings || !window.lovertianSettings.lovertianMemoryPhotos) {
     try {
       const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
       if (res.ok) {
