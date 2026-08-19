@@ -1121,9 +1121,11 @@
     .photo-card img {
       width: 100%;
       height: auto;
+      max-height: 260px;
       border: 2px solid var(--dark);
       object-fit: cover;
-      aspect-ratio: 1;
+      display: block;
+      background: #f8f9fa;
     }
     .photo-caption {
       font-family: 'VT323', monospace;
@@ -2319,20 +2321,22 @@ async function renderPhotosWindow() {
   const container = document.getElementById('photosGridContainer');
   if (!container) return;
 
-  // Fallback fetch if lovertianMemoryPhotos not loaded into state yet
+  // Real-time fetch if memory photos list is empty
   let photos = window.lovertianSettings?.lovertianMemoryPhotos;
   if (!photos || photos.length === 0) {
     try {
       const res = await fetch(`https://raw.githubusercontent.com/OzonZ/Non-Four-Portfolio-Data/main/All%20File%20Aritsia/settings.json?t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
-        if (data && data.lovertianMemoryPhotos && data.lovertianMemoryPhotos.length > 0) {
+        if (data && Array.isArray(data.lovertianMemoryPhotos) && data.lovertianMemoryPhotos.length > 0) {
           photos = data.lovertianMemoryPhotos;
           if (!window.lovertianSettings) window.lovertianSettings = {};
           window.lovertianSettings.lovertianMemoryPhotos = photos;
         }
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn("Fetch photos error:", e);
+    }
   }
   
   if (!photos || photos.length === 0) {
@@ -2348,10 +2352,10 @@ async function renderPhotosWindow() {
   }
   
   let html = '<div class="photos-grid">';
-  photos.forEach(p => {
+  photos.forEach((p, idx) => {
     html += `
       <div class="photo-card">
-        <img src="${p.url}" alt="Memory" onerror="if(!this._retried){this._retried=true;if(this.src.includes('/lovertian-photos/')){this.src=this.src.replace('/lovertian-photos/','/photobooth/');}else if(this.src.includes('All%20File%20Aritsia/All%20File%20Aritsia')){this.src=this.src.replace('All%20File%20Aritsia/All%20File%20Aritsia','All%20File%20Aritsia');}}">
+        <img src="${p.url}" alt="Memory #${idx + 1}" onerror="if(!this._retried){this._retried=true;if(this.src.includes('/lovertian-photos/')){this.src=this.src.replace('/lovertian-photos/','/photobooth/');}else if(this.src.includes('All%20File%20Aritsia/All%20File%20Aritsia')){this.src=this.src.replace('All%20File%20Aritsia/All%20File%20Aritsia','All%20File%20Aritsia');}}">
         <div class="photo-caption">${p.caption || ''}</div>
       </div>
     `;
@@ -2785,16 +2789,26 @@ async function spawnHearts() {
 
   function applySettings(settingsObj) {
     if (!settingsObj) return;
-    window.lovertianSettings = Object.assign({}, window.lovertianSettings || {}, settingsObj);
-    if (settingsObj.lovertianIcons) ltIcons = settingsObj.lovertianIcons;
-    if (settingsObj.lovertianEmojis && settingsObj.lovertianEmojis.length > 0) ltEmojis = settingsObj.lovertianEmojis;
-    if (settingsObj.lovertianEnvelopeSealEmoji) sealEmoji = settingsObj.lovertianEnvelopeSealEmoji;
+    if (!window.lovertianSettings) window.lovertianSettings = {};
+    for (const key in settingsObj) {
+      const val = settingsObj[key];
+      if (Array.isArray(val)) {
+        if (val.length > 0 || !window.lovertianSettings[key]) {
+          window.lovertianSettings[key] = val;
+        }
+      } else if (val !== undefined && val !== null && val !== '') {
+        window.lovertianSettings[key] = val;
+      }
+    }
+    if (window.lovertianSettings.lovertianIcons) ltIcons = window.lovertianSettings.lovertianIcons;
+    if (window.lovertianSettings.lovertianEmojis && window.lovertianSettings.lovertianEmojis.length > 0) ltEmojis = window.lovertianSettings.lovertianEmojis;
+    if (window.lovertianSettings.lovertianEnvelopeSealEmoji) sealEmoji = window.lovertianSettings.lovertianEnvelopeSealEmoji;
 
-    if (settingsObj.lovertianLetterGreeting) rawTexts.greeting = settingsObj.lovertianLetterGreeting;
-    if (settingsObj.lovertianLetterBody) rawTexts.body = settingsObj.lovertianLetterBody;
-    if (settingsObj.lovertianLetterQuestion) rawTexts.question = settingsObj.lovertianLetterQuestion;
-    if (settingsObj.lovertianLetterSignature) rawTexts.signature = settingsObj.lovertianLetterSignature;
-    if (settingsObj.lovertianLetterYesSub) rawTexts.yesSub = settingsObj.lovertianLetterYesSub;
+    if (window.lovertianSettings.lovertianLetterGreeting) rawTexts.greeting = window.lovertianSettings.lovertianLetterGreeting;
+    if (window.lovertianSettings.lovertianLetterBody) rawTexts.body = window.lovertianSettings.lovertianLetterBody;
+    if (window.lovertianSettings.lovertianLetterQuestion) rawTexts.question = window.lovertianSettings.lovertianLetterQuestion;
+    if (window.lovertianSettings.lovertianLetterSignature) rawTexts.signature = window.lovertianSettings.lovertianLetterSignature;
+    if (window.lovertianSettings.lovertianLetterYesSub) rawTexts.yesSub = window.lovertianSettings.lovertianLetterYesSub;
   }
 
   // 1. Fetch latest directly from GitHub raw settings.json
