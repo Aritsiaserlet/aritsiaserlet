@@ -633,8 +633,9 @@ const JSON_PATH = 'settings.json';
 let GH_TOKEN  = '';
 
 function getHeaders(){
+  let token = (GH_TOKEN || '').trim().replace(/^(Bearer|token)\s+/i, '');
   return {
-    'Authorization': `token ${GH_TOKEN}`,
+    'Authorization': `Bearer ${token}`,
     'Accept': 'application/vnd.github.v3+json',
     'Content-Type': 'application/json'
   };
@@ -651,7 +652,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if(!savedToken) {
     openTokenModal();
   } else {
-    GH_TOKEN = savedToken;
+    GH_TOKEN = savedToken.trim().replace(/^(Bearer|token)\s+/i, '');
     document.getElementById('adminContainer').style.display = 'flex';
     loadSettings();
   }
@@ -680,7 +681,8 @@ function closeTokenModal() {
 function submitLtToken() {
   const input = document.getElementById('ltTokenInput');
   const err = document.getElementById('ltTokenError');
-  const val = input ? input.value.trim() : '';
+  let val = input ? input.value.trim() : '';
+  val = val.replace(/^(Bearer|token)\s+/i, '');
 
   if (val) {
     sessionStorage.setItem('ghToken', val);
@@ -767,35 +769,51 @@ async function initFirebaseSettings() {
 }
 
 async function syncSettingsToFirebase(settingsObj) {
-  if (fDB) {
-    try {
+  try {
+    await initFirebaseSettings();
+    if (fDB && fDoc && fSetDoc) {
       const ref = fDoc(fDB, 'settings', 'global');
-      await fSetDoc(ref, { settings: settingsObj });
-    } catch(e) {
-      console.warn("Firebase sync warning:", e);
+      await fSetDoc(ref, { settings: settingsObj, updatedAt: new Date().toISOString() }, { merge: true });
     }
+  } catch(e) {
+    console.warn("Firebase settings sync failed:", e);
   }
 }
 
-// ── Load & Manage Settings ──
-let settings = {}, settingsSha = null;
+// ── Settings Loader ──
+let settings = {
+  lovertianEmojis: ['🌸', '💖', '💗', '💓', '❤️', '✨', '💫'],
+  lovertianEnvelopeSealEmoji: '💌',
+  lovertianIcons: [],
+  lovertianPhotoLibrary: [],
+  lovertianMemoryPhotos: [],
+  lovertianYoutubeUrl: ''
+};
+let settingsSha = null;
 
 async function loadSettings() {
-  await initFirebaseSettings();
   const statusBox = document.getElementById('ghStatusBox');
   const statusText = document.getElementById('ghStatus');
 
   try {
+    statusText.textContent = 'Connecting to GitHub...';
+    statusBox.style.background = '#ffeaa7';
+    await initFirebaseSettings();
+
     const data = await ghGet(JSON_PATH);
     if (data) {
       settingsSha = data.sha;
       settings = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
       statusBox.style.background = '#abebc6';
-      statusText.textContent = '✓ Connected to GitHub Repository';
+      statusText.innerHTML = '✓ Connected to GitHub Repository &nbsp; <button onclick="openTokenModal()" style="font-family:\'VT323\',monospace; font-size:16px; padding:2px 6px; cursor:pointer; background:#fff; border:2px solid var(--dark);">Change Token</button>';
     }
   } catch(e) {
     statusBox.style.background = '#fadbd8';
-    statusText.textContent = '✗ GitHub Connection Failed: ' + e.message;
+    let hint = '';
+    if (e.message && e.message.includes('401')) {
+      hint = ' (Token is invalid, expired, or missing repo/Contents permissions)';
+    }
+    statusText.innerHTML = `✗ GitHub Connection Failed: ${e.message}${hint} &nbsp; <button onclick="openTokenModal()" style="font-family:\'VT323\',monospace; font-size:18px; font-weight:bold; padding:2px 8px; cursor:pointer; background:#c0392b; color:#fff; border:2px solid var(--dark);">⚙ Change / Fix Token</button>`;
   }
 
   renderLoverTianLibrary();
