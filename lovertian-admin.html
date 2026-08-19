@@ -99,6 +99,14 @@
     }
 
     /* ── Panel Card ── */
+    .anav-btn {
+      transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
+    }
+    .anav-btn:active, .submit-btn:active, .token-modal-btn:active {
+      transform: translate(3px, 3px) !important;
+      box-shadow: 0 0 0 var(--dark) !important;
+    }
+
     .panel-card {
       border: 4px solid var(--dark);
       background: var(--white);
