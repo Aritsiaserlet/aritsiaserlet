@@ -900,21 +900,6 @@
             transform: translateX(4px);
             color: var(--primary);
         }
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--on-surface-variant);
-            transition: transform 0.2s, color 0.2s;
-        }
-        
-        .design-side-card:hover .design-side-explore {
-            transform: translateX(4px);
-            color: var(--primary);
-        }
 
         .wind-canvas {
             position: fixed;
@@ -937,10 +922,10 @@
 
     <!-- Navigation -->
     <nav id="main-nav"
-        class="fixed top-0 left-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline/20 transition-all duration-500 transform -translate-y-full">
+        class="fixed top-0 left-0 w-full z-50 bg-background/85 backdrop-blur-xl border-b border-outline/20 transition-all duration-500 transform -translate-y-full">
         <div
-            class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-max-width mx-auto">
-            <a class="text-2xl font-bold text-primary" href="#">OzonZ</a>
+            class="flex justify-between items-center px-4 sm:px-margin-mobile md:px-margin-desktop py-3.5 sm:py-4 max-w-max-width mx-auto">
+            <a class="text-xl sm:text-2xl font-bold text-primary tracking-wide" href="#">OzonZ</a>
             <div class="hidden md:flex items-center gap-8">
                 <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium"
                     href="#work">Work</a>
@@ -948,26 +933,31 @@
                     href="#about">About</a>
                 <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium"
                     href="#contact">Contact</a>
-
             </div>
-            <button class="md:hidden text-primary" id="menu-toggle">
-                <span class="material-symbols-outlined">menu</span>
+            <button class="md:hidden text-primary p-1.5 focus:outline-none flex items-center justify-center" id="menu-toggle" aria-label="Toggle Navigation Menu">
+                <span class="material-symbols-outlined text-2xl" id="menu-icon">menu</span>
             </button>
+        </div>
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 py-4 flex flex-col gap-3 border-t border-outline/10 bg-background/95 backdrop-blur-2xl">
+            <a class="text-on-surface hover:text-primary transition-colors text-base font-medium py-2 border-b border-outline/5" href="#work">Work</a>
+            <a class="text-on-surface hover:text-primary transition-colors text-base font-medium py-2 border-b border-outline/5" href="#about">About</a>
+            <a class="text-on-surface hover:text-primary transition-colors text-base font-medium py-2" href="#contact">Contact</a>
         </div>
     </nav>
 
     <main>
         <!-- Hero Section -->
         <section
-            class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pt-24 pb-16 flex flex-col items-center">
+            class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pt-20 sm:pt-24 pb-12 sm:pb-16 flex flex-col items-center">
             <!-- GitHub Profile Card -->
             <div class="w-full max-w-2xl relative reveal mb-6">
                 <div
-                    class="relative group p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
+                    class="relative group p-5 sm:p-7 md:p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
                     <!-- Texture & Icon Overlays -->
                     <div class="absolute inset-0 bg-grain z-0"></div>
-                    <div class="absolute top-6 right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
-                        <svg class="w-16 h-16 fill-current" viewBox="0 0 24 24">
+                    <div class="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
+                        <svg class="w-12 h-12 sm:w-16 sm:h-16 fill-current" viewBox="0 0 24 24">
                             <path
                                 d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
                             </path>
@@ -975,8 +965,8 @@
                     </div>
                     <div class="relative z-10">
                         <!-- Header: Avatar & Info -->
-                        <div class="flex flex-col items-center justify-center gap-8 mb-12">
-                            <div class="relative w-48 h-48 shrink-0">
+                        <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12">
+                            <div class="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 shrink-0">
                                 <div
                                     class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
                                 </div>
@@ -986,55 +976,55 @@
                                         src="https://avatars.githubusercontent.com/u/255675901?v=4" />
                                 </div>
                                 <!-- Status Indicator -->
-                                <div class="absolute bottom-2 right-2 w-6 h-6 bg-background rounded-full flex items-center justify-center border border-white/10"
+                                <div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-background rounded-full flex items-center justify-center border border-white/10"
                                     title="Live from GitHub">
                                     <div id="ghLiveDot"
-                                        class="w-4 h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
+                                        class="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-center">
+                            <div class="text-center px-2">
                                 <h3 id="ghDisplayName"
-                                    class="text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em]">
-                                    <span class="gh-skeleton inline-block w-48 h-10 rounded-lg"></span>
+                                    class="text-3xl sm:text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em] break-words">
+                                    <span class="gh-skeleton inline-block w-40 sm:w-48 h-8 sm:h-10 rounded-lg"></span>
                                 </h3>
                                 <p id="ghHandle"
-                                    class="text-primary/70 font-body-md text-xl md:text-2xl tracking-wide mt-2">
-                                    <span class="gh-skeleton inline-block w-24 h-6 rounded-md"></span>
+                                    class="text-primary/70 font-body-md text-base sm:text-xl md:text-2xl tracking-wide mt-1 sm:mt-2">
+                                    <span class="gh-skeleton inline-block w-20 sm:w-24 h-5 sm:h-6 rounded-md"></span>
                                 </p>
                             </div>
                         </div>
 
                         <!-- Stats Grid -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10 md:mb-12">
                             <div
-                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center">
-                                <div class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
-                                    <span class="material-symbols-outlined text-lg">show_chart</span>
+                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
+                                <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-base sm:text-lg shrink-0">show_chart</span>
                                     <span
-                                        class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Contributions</span>
+                                        class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Contributions</span>
                                 </div>
                                 <span id="ghContributions"
-                                    class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                                    class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
                             </div>
                             <div
-                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center">
-                                <div class="flex items-center justify-center gap-3 mb-3 text-on-surface-variant">
-                                    <span class="material-symbols-outlined text-lg">folder</span>
+                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
+                                <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-base sm:text-lg shrink-0">folder</span>
                                     <span
-                                        class="text-xs uppercase font-bold tracking-[0.2em] opacity-60">Repositories</span>
+                                        class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Repositories</span>
                                 </div>
                                 <span id="ghRepositories"
-                                    class="text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                                    class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
                             </div>
                         </div>
 
                         <!-- Action Button -->
-                        <a class="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-5 md:py-6 rounded-xl font-bold text-sm md:text-base tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
+                        <a class="w-full flex items-center justify-center gap-2 sm:gap-3 bg-primary text-on-primary py-3.5 sm:py-5 md:py-6 rounded-xl font-bold text-xs sm:text-sm md:text-base tracking-wider sm:tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
                             href="https://github.com/OzonZ" target="_blank">
-                            <span class="relative z-10 flex items-center gap-2">
-                                FOLLOW ON GITHUB
-                                <span class="material-symbols-outlined text-lg">open_in_new</span>
+                            <span class="relative z-10 flex items-center justify-center gap-2">
+                                <span>FOLLOW ON GITHUB</span>
+                                <span class="material-symbols-outlined text-base sm:text-lg">open_in_new</span>
                             </span>
                             <div
                                 class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
@@ -1045,14 +1035,14 @@
             </div>
 
             <!-- Roles Bar (outside card, below) -->
-            <div class="w-full max-w-2xl reveal mb-16">
-                <div class="flex flex-wrap justify-center gap-0" id="roles-bar">
+            <div class="w-full max-w-2xl reveal mb-12 sm:mb-16">
+                <div class="flex flex-wrap justify-center gap-1 sm:gap-0" id="roles-bar">
                     <span class="roles-tag">Game Developer</span>
-                    <span class="roles-tag-sep">|</span>
+                    <span class="roles-tag-sep hidden sm:inline">|</span>
                     <span class="roles-tag">2D Artist</span>
-                    <span class="roles-tag-sep">|</span>
+                    <span class="roles-tag-sep hidden sm:inline">|</span>
                     <span class="roles-tag">Programmer</span>
-                    <span class="roles-tag-sep">|</span>
+                    <span class="roles-tag-sep hidden sm:inline">|</span>
                     <span class="roles-tag">Game Designer</span>
                 </div>
             </div>
@@ -1064,9 +1054,9 @@
             class="flex flex-col items-center gap-2 pb-8 -mt-8 pointer-events-none select-none text-primary"
             aria-hidden="true">
             <span
-                class="text-sm font-bold tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
+                class="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
                 down for more</span>
-            <svg class="scroll-arrow" width="32" height="32" viewBox="0 0 24 24" fill="none"
+            <svg class="scroll-arrow" width="28" height="28" viewBox="0 0 24 24" fill="none"
                 xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(var(--primary-rgb),0.3));">
                 <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                     stroke-linejoin="round" />
@@ -1074,30 +1064,33 @@
         </div>
 
         <!-- Work Section -->
-        <section class="py-32" id="work">
-            <div class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 reveal">
+        <section class="py-16 sm:py-24 md:py-32" id="work">
+            <div class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 md:mb-20 gap-6 sm:gap-8 reveal">
                     <div>
-                        <h2 class="text-5xl font-bold mb-4 uppercase">Selected Archives</h2>
-                        <p class="text-on-surface-variant text-xl">A chronicle of interactive experiences and digital
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 uppercase">Selected Archives</h2>
+                        <p class="text-on-surface-variant text-base sm:text-lg md:text-xl">A chronicle of interactive experiences and digital
                             creations.</p>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2 filter-group bg-surface-container/20 p-2 rounded-full border border-outline/10 backdrop-blur-md shadow-xl" id="work-filters">
-                        <button class="filter-btn active relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest transition-all duration-500 hover:scale-105 overflow-hidden group bg-primary text-on-primary shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]" data-filter="all">
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 filter-group bg-surface-container/20 p-1.5 sm:p-2 rounded-2xl sm:rounded-full border border-outline/10 backdrop-blur-md shadow-xl w-full sm:w-auto" id="work-filters">
+                        <button class="filter-btn active relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest transition-all duration-500 hover:scale-105 overflow-hidden group bg-primary text-on-primary shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]" data-filter="all">
                             <span class="relative z-10">ALL</span>
                             <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
                         </button>
-                        <button class="filter-btn relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="games">
+                        <button class="filter-btn relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="games">
                             <span class="relative z-10">GAMES</span>
                             <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
                         </button>
-                        <button class="filter-btn relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="website">
+                        <button class="filter-btn relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="website">
                             <span class="relative z-10">WEBSITE</span>
                             <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
                         </button>
-                        <button class="filter-btn relative px-6 py-2.5 rounded-full text-sm font-bold tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="other">
+                        <button class="filter-btn relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="other">
                             <span class="relative z-10">OTHER</span>
                             <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                    </div>
+                </div>
                         </button>
                     </div>
                 </div>
