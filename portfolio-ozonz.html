@@ -962,9 +962,12 @@
     <main>
         <!-- Hero Section -->
         <section
-            class="min-h-screen w-full px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto flex flex-col items-center justify-center relative py-12">
+            class="ozonz-hero-section px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto" id="hero">
             
-            <div class="flex flex-col items-center w-full max-w-2xl">
+            <!-- Top Spacer to keep center balanced -->
+            <div class="h-4 sm:h-8 shrink-0"></div>
+
+            <div class="flex flex-col items-center w-full max-w-2xl my-auto">
                 <!-- GitHub Profile Card -->
                 <div class="w-full relative reveal mb-6">
                     <div
@@ -1063,9 +1066,9 @@
                 </div>
             </div>
 
-            <!-- Scroll Down Indicator -->
+            <!-- Scroll Down Indicator (at the very bottom of hero section) -->
             <div id="scroll-indicator"
-                class="absolute bottom-4 sm:bottom-6 left-0 right-0 flex flex-col items-center gap-1.5 pointer-events-none select-none text-primary"
+                class="flex flex-col items-center gap-1.5 pb-2 pointer-events-none select-none text-primary shrink-0"
                 aria-hidden="true">
                 <span
                     class="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
