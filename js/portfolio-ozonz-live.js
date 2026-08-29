@@ -1126,7 +1126,7 @@
     if (extraWorks.length > 0) {
       // Create a full-width grid container for the remaining cards
       const extraGridContainer = document.createElement('div');
-      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10 mt-4 sm:mt-10';d grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mt-6 sm:mt-10';
+      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10 mt-4 sm:mt-10';
 
       extraWorks.forEach((work, index) => {
         const i = index + 3;
