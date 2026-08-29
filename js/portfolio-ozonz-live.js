@@ -1035,15 +1035,15 @@
                 <span class="design-featured-year">${featured.year || new Date().getFullYear()}</span>
             </div>
             
-            <div class="relative z-10 p-8 md:p-10 flex flex-col">
-                <div class="flex flex-wrap gap-1.5 mb-4">
+            <div class="relative z-10 p-5 sm:p-8 md:p-10 flex flex-col">
+                <div class="flex flex-wrap gap-1.5 mb-3 sm:mb-4">
                     ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
                 </div>
                 <h3 class="design-featured-title">${featured.title}</h3>
                 <p class="design-featured-tagline">${featured.tagline || ''}</p>
                 ${
                   featured.aiSummary
-                    ? `<p class="text-primary font-bold text-sm tracking-wider uppercase mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
+                    ? `<p class="text-primary font-bold text-xs sm:text-sm tracking-wider uppercase mb-4 sm:mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
                     : ''
                 }
                 <div>
@@ -1067,7 +1067,7 @@
     const sideWorks = works.slice(1, 3);
     if (sideWorks.length > 0) {
       const bentoContainer = document.createElement('div');
-      bentoContainer.className = 'lg:col-span-4 flex flex-col gap-10';
+      bentoContainer.className = 'lg:col-span-4 flex flex-col gap-6 sm:gap-8 md:gap-10';
 
       sideWorks.forEach((work, index) => {
         const i = index + 1;
@@ -1079,7 +1079,7 @@
                     ${
                       isImg
                         ? `<img src="${work.image}" class="design-side-img" />`
-                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-5xl">${work.image || 'brush'}</span></div>`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">${work.image || 'brush'}</span></div>`
                     }
                     <div class="design-side-fade"></div>
                     <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
@@ -1091,7 +1091,7 @@
                 </div>
                 
                 <div class="design-side-body">
-                    <div class="flex flex-wrap gap-1.5 mb-3">
+                    <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-3">
                         ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
                     </div>
                     
@@ -1101,16 +1101,16 @@
                     <div class="design-side-footer">
                         ${
                           work.contributors && work.contributors.length > 1
-                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[11px] font-semibold">
-                                 <span class="material-symbols-outlined text-[13px]">group</span>
-                                 ${work.contributors.length} contributors
+                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[10px] sm:text-[11px] font-semibold truncate">
+                                 <span class="material-symbols-outlined text-[13px] shrink-0">group</span>
+                                 <span>${work.contributors.length} contributors</span>
                                </span>`
                             : `<span />`
                         }
                         
                         <span class="design-side-explore">
                             <span>Explore</span>
-                            <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                            <span class="material-symbols-outlined text-[10px] sm:text-[11px]">arrow_forward</span>
                         </span>
                     </div>
                 </div>
@@ -1126,7 +1126,7 @@
     if (extraWorks.length > 0) {
       // Create a full-width grid container for the remaining cards
       const extraGridContainer = document.createElement('div');
-      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10';
+      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mt-6 sm:mt-10';
 
       extraWorks.forEach((work, index) => {
         const i = index + 3;
@@ -1138,7 +1138,7 @@
                     ${
                       isImg
                         ? `<img src="${work.image}" class="design-side-img" />`
-                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-5xl">${work.image || 'brush'}</span></div>`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">${work.image || 'brush'}</span></div>`
                     }
                     <div class="design-side-fade"></div>
                     <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
@@ -1150,7 +1150,7 @@
                 </div>
                 
                 <div class="design-side-body">
-                    <div class="flex flex-wrap gap-1.5 mb-3">
+                    <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-3">
                         ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
                     </div>
                     
@@ -1160,16 +1160,16 @@
                     <div class="design-side-footer">
                         ${
                           work.contributors && work.contributors.length > 1
-                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[11px] font-semibold">
-                                 <span class="material-symbols-outlined text-[13px]">group</span>
-                                 ${work.contributors.length} contributors
+                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[10px] sm:text-[11px] font-semibold truncate">
+                                 <span class="material-symbols-outlined text-[13px] shrink-0">group</span>
+                                 <span>${work.contributors.length} contributors</span>
                                </span>`
                             : `<span />`
                         }
                         
                         <span class="design-side-explore">
                             <span>Explore</span>
-                            <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                            <span class="material-symbols-outlined text-[10px] sm:text-[11px]">arrow_forward</span>
                         </span>
                     </div>
                 </div>
@@ -1198,7 +1198,9 @@
         }
         e.preventDefault();
         const index = parseInt(card.getAttribute('data-index'));
-        openProjectDetailModal(index);
+        if (!isNaN(index)) {
+          openProjectDetailModal(index);
+        }
       });
     });
 
@@ -1243,18 +1245,18 @@
     contacts.forEach((c) => {
       let iconHTML = '';
       if (c.iconType === 'svg') {
-        iconHTML = `<svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
+        iconHTML = `<svg class="w-6 h-6 sm:w-8 sm:h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
       } else if (c.iconType === 'image') {
-        iconHTML = `<img alt="${c.name}" class="w-8 h-8 rounded-full object-cover border border-outline/20" src="${c.iconVal}" />`;
+        iconHTML = `<img alt="${c.name}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border border-outline/20 shrink-0" src="${c.iconVal}" />`;
       } else {
-        iconHTML = `<span class="material-symbols-outlined text-2xl">${c.iconVal}</span>`;
+        iconHTML = `<span class="material-symbols-outlined text-xl sm:text-2xl shrink-0">${c.iconVal}</span>`;
       }
 
       const linkHTML = `
-          <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-3"
+          <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold"
               href="${c.link}" target="_blank" title="${c.name}">
               ${iconHTML}
-              <span class="text-sm font-bold">${c.name.toUpperCase()}</span>
+              <span>${c.name.toUpperCase()}</span>
           </a>
       `;
       container.innerHTML += linkHTML;
@@ -1319,7 +1321,7 @@
       }
     } else {
       const imageVal = imagesList.length > 0 ? imagesList[0] : (w.model ? 'view_in_ar' : 'brush');
-      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-8xl">${imageVal}</span></div>`;
+      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-6xl sm:text-8xl">${imageVal}</span></div>`;
     }
 
     // Set tags
@@ -1328,7 +1330,7 @@
       const tagsArray = Array.isArray(w.tags) ? w.tags : (typeof w.tags === 'string' ? w.tags.split(',') : []);
       tagsArray.forEach(tag => {
         const badge = document.createElement('span');
-        badge.className = 'bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-[0.18em] px-[10px] py-[3px] rounded border border-primary/20 whitespace-nowrap';
+        badge.className = 'bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-[0.16em] px-[8px] sm:px-[10px] py-[3px] rounded border border-primary/20 whitespace-nowrap';
         badge.textContent = tag.trim();
         tagsContainer.appendChild(badge);
       });
@@ -1341,7 +1343,7 @@
       contribSection.classList.remove('hidden');
       contributors.forEach(c => {
         const item = document.createElement('a');
-        item.className = 'bg-surface-variant text-on-background text-[12px] font-semibold py-1 px-3 rounded-full border border-outline/30 hover:border-primary/50 transition-colors inline-block';
+        item.className = 'bg-surface-variant text-on-background text-[11px] sm:text-[12px] font-semibold py-1 px-2.5 sm:px-3 rounded-full border border-outline/30 hover:border-primary/50 transition-colors inline-block';
         if (c.url) {
           item.href = c.url;
           item.target = '_blank';
@@ -1367,14 +1369,19 @@
       void modalContent.offsetWidth; // trigger reflow
       modalContent.classList.add('animate-modal-enter');
       
-      // Center modal
+      // Center modal on desktop while allowing flex centering on mobile
       const vw = window.innerWidth, vh = window.innerHeight;
-      modalContent.style.left = Math.max(0, (vw - Math.min(672, vw-40))/2) + 'px';
-      modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
-      
-      requestAnimationFrame(() => {
+      if (vw < 768) {
+        modalContent.style.left = '';
+        modalContent.style.top = '';
+      } else {
+        modalContent.style.left = Math.max(0, (vw - Math.min(672, vw-40))/2) + 'px';
         modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
-      });
+        
+        requestAnimationFrame(() => {
+          modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
+        });
+      }
     }
   }
 
