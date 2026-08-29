@@ -168,10 +168,10 @@
 
         .theme-toggle {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 56px;
-            height: 56px;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -179,6 +179,15 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             z-index: 100;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 768px) {
+            .theme-toggle {
+                bottom: 2rem;
+                right: 2rem;
+                width: 56px;
+                height: 56px;
+            }
         }
 
         .project-glow {
@@ -243,30 +252,45 @@
             animation: roles-glow 3.5s ease-in-out infinite;
             border: 1px solid rgba(var(--primary-rgb), 0.2);
             border-radius: 1rem;
-            padding: 0.65rem 1.5rem;
+            padding: 0.45rem 0.75rem;
             background: rgba(var(--primary-rgb), 0.03);
             backdrop-filter: blur(8px);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 0;
+            gap: 0.15rem;
             transition: border-color 0.5s ease, background-color 0.5s ease;
+        }
+
+        @media (min-width: 768px) {
+            #roles-bar {
+                padding: 0.65rem 1.5rem;
+                gap: 0;
+            }
         }
 
         .roles-tag {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.25rem 0.9rem;
+            padding: 0.2rem 0.5rem;
             color: rgb(var(--primary-rgb));
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             transition: all 0.3s ease, color 0.5s ease;
             cursor: default;
+        }
+
+        @media (min-width: 768px) {
+            .roles-tag {
+                padding: 0.25rem 0.9rem;
+                font-size: 0.7rem;
+                letter-spacing: 0.14em;
+            }
         }
 
         .roles-tag:hover {
