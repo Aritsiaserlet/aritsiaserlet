@@ -1032,7 +1032,10 @@
                 <span class="design-featured-badge">★ Featured</span>
             </div>
             <div class="absolute top-5 right-5 z-10">
-                <span class="design-featured-year">${featured.year || new Date().getFullYear()            <div class="relative z-10 p-4 sm:p-8 md:p-10 flex flex-col">
+                <span class="design-featured-year">${featured.year || new Date().getFullYear()}</span>
+            </div>
+            
+            <div class="relative z-10 p-4 sm:p-8 md:p-10 flex flex-col">
                 <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-4">
                     ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
                 </div>
