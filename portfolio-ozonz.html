@@ -949,122 +949,125 @@
     <main>
         <!-- Hero Section -->
         <section
-            class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto pt-20 sm:pt-24 md:pt-32 pb-12 sm:pb-16 md:pb-20 min-h-[90vh] md:min-h-[92vh] flex flex-col items-center justify-center">
-            <!-- GitHub Profile Card -->
-            <div class="w-full max-w-2xl relative reveal mb-6">
-                <div
-                    class="relative group p-5 sm:p-7 md:p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
-                    <!-- Texture & Icon Overlays -->
-                    <div class="absolute inset-0 bg-grain z-0"></div>
-                    <div class="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
-                        <svg class="w-12 h-12 sm:w-16 sm:h-16 fill-current" viewBox="0 0 24 24">
-                            <path
-                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="relative z-10">
-                        <!-- Header: Avatar & Info -->
-                        <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12">
-                            <div class="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 shrink-0">
-                                <div
-                                    class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
-                                </div>
-                                <div
-                                    class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]">
-                                    <img id="ghAvatar" alt="OzonZ Profile" class="w-full h-full object-cover"
-                                        src="https://avatars.githubusercontent.com/u/255675901?v=4" />
-                                </div>
-                                <!-- Status Indicator -->
-                                <div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-background rounded-full flex items-center justify-center border border-white/10"
-                                    title="Live from GitHub">
-                                    <div id="ghLiveDot"
-                                        class="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
+            class="min-h-screen w-full px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto flex flex-col items-center justify-center relative pt-16 pb-4">
+            
+            <div class="my-auto flex flex-col items-center w-full">
+                <!-- GitHub Profile Card -->
+                <div class="w-full max-w-2xl relative reveal mb-6">
+                    <div
+                        class="relative group p-5 sm:p-7 md:p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
+                        <!-- Texture & Icon Overlays -->
+                        <div class="absolute inset-0 bg-grain z-0"></div>
+                        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
+                            <svg class="w-12 h-12 sm:w-16 sm:h-16 fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="relative z-10">
+                            <!-- Header: Avatar & Info -->
+                            <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8 md:mb-12">
+                                <div class="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 shrink-0">
+                                    <div
+                                        class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
+                                    </div>
+                                    <div
+                                        class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]">
+                                        <img id="ghAvatar" alt="OzonZ Profile" class="w-full h-full object-cover"
+                                            src="https://avatars.githubusercontent.com/u/255675901?v=4" />
+                                    </div>
+                                    <!-- Status Indicator -->
+                                    <div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-background rounded-full flex items-center justify-center border border-white/10"
+                                        title="Live from GitHub">
+                                        <div id="ghLiveDot"
+                                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="text-center px-2">
-                                <h3 id="ghDisplayName"
-                                    class="text-3xl sm:text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em] break-words">
-                                    <span class="gh-skeleton inline-block w-40 sm:w-48 h-8 sm:h-10 rounded-lg"></span>
-                                </h3>
-                                <p id="ghHandle"
-                                    class="text-primary/70 font-body-md text-base sm:text-xl md:text-2xl tracking-wide mt-1 sm:mt-2">
-                                    <span class="gh-skeleton inline-block w-20 sm:w-24 h-5 sm:h-6 rounded-md"></span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Stats Grid -->
-                        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10 md:mb-12">
-                            <div
-                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
-                                <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
-                                    <span class="material-symbols-outlined text-base sm:text-lg shrink-0">show_chart</span>
-                                    <span
-                                        class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Contributions</span>
+                                <div class="text-center px-2">
+                                    <h3 id="ghDisplayName"
+                                        class="text-3xl sm:text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em] break-words">
+                                        <span class="gh-skeleton inline-block w-40 sm:w-48 h-8 sm:h-10 rounded-lg"></span>
+                                    </h3>
+                                    <p id="ghHandle"
+                                        class="text-primary/70 font-body-md text-base sm:text-xl md:text-2xl tracking-wide mt-1 sm:mt-2">
+                                        <span class="gh-skeleton inline-block w-20 sm:w-24 h-5 sm:h-6 rounded-md"></span>
+                                    </p>
                                 </div>
-                                <span id="ghContributions"
-                                    class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
                             </div>
-                            <div
-                                class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
-                                <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
-                                    <span class="material-symbols-outlined text-base sm:text-lg shrink-0">folder</span>
-                                    <span
-                                        class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Repositories</span>
-                                </div>
-                                <span id="ghRepositories"
-                                    class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
-                            </div>
-                        </div>
 
-                        <!-- Action Button -->
-                        <a class="w-full flex items-center justify-center gap-2 sm:gap-3 bg-primary text-on-primary py-3.5 sm:py-5 md:py-6 rounded-xl font-bold text-xs sm:text-sm md:text-base tracking-wider sm:tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
-                            href="https://github.com/OzonZ" target="_blank">
-                            <span class="relative z-10 flex items-center justify-center gap-2">
-                                <span>FOLLOW ON GITHUB</span>
-                                <span class="material-symbols-outlined text-base sm:text-lg">open_in_new</span>
-                            </span>
-                            <div
-                                class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
+                            <!-- Stats Grid -->
+                            <div class="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12">
+                                <div
+                                    class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
+                                    <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-base sm:text-lg shrink-0">show_chart</span>
+                                        <span
+                                            class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Contributions</span>
+                                    </div>
+                                    <span id="ghContributions"
+                                        class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                                </div>
+                                <div
+                                    class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
+                                    <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-base sm:text-lg shrink-0">folder</span>
+                                        <span
+                                            class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Repositories</span>
+                                    </div>
+                                    <span id="ghRepositories"
+                                        class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                                </div>
                             </div>
-                        </a>
+
+                            <!-- Action Button -->
+                            <a class="w-full flex items-center justify-center gap-2 sm:gap-3 bg-primary text-on-primary py-3.5 sm:py-5 md:py-6 rounded-xl font-bold text-xs sm:text-sm md:text-base tracking-wider sm:tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
+                                href="https://github.com/OzonZ" target="_blank">
+                                <span class="relative z-10 flex items-center justify-center gap-2">
+                                    <span>FOLLOW ON GITHUB</span>
+                                    <span class="material-symbols-outlined text-base sm:text-lg">open_in_new</span>
+                                </span>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles Bar (outside card, below) -->
+                <div class="w-full max-w-2xl reveal mb-4 md:mb-6">
+                    <div class="flex flex-wrap justify-center gap-1 sm:gap-0" id="roles-bar">
+                        <span class="roles-tag">Game Developer</span>
+                        <span class="roles-tag-sep hidden sm:inline">|</span>
+                        <span class="roles-tag">2D Artist</span>
+                        <span class="roles-tag-sep hidden sm:inline">|</span>
+                        <span class="roles-tag">Programmer</span>
+                        <span class="roles-tag-sep hidden sm:inline">|</span>
+                        <span class="roles-tag">Game Designer</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Roles Bar (outside card, below) -->
-            <div class="w-full max-w-2xl reveal mb-12 sm:mb-16 md:mb-20">
-                <div class="flex flex-wrap justify-center gap-1 sm:gap-0" id="roles-bar">
-                    <span class="roles-tag">Game Developer</span>
-                    <span class="roles-tag-sep hidden sm:inline">|</span>
-                    <span class="roles-tag">2D Artist</span>
-                    <span class="roles-tag-sep hidden sm:inline">|</span>
-                    <span class="roles-tag">Programmer</span>
-                    <span class="roles-tag-sep hidden sm:inline">|</span>
-                    <span class="roles-tag">Game Designer</span>
-                </div>
+            <!-- Scroll Down Indicator -->
+            <div id="scroll-indicator"
+                class="flex flex-col items-center gap-1.5 pt-2 pb-4 pointer-events-none select-none text-primary mt-auto"
+                aria-hidden="true">
+                <span
+                    class="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
+                    down for more</span>
+                <svg class="scroll-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(var(--primary-rgb),0.3));">
+                    <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
             </div>
 
         </section>
 
-        <!-- Scroll Down Indicator -->
-        <div id="scroll-indicator"
-            class="flex flex-col items-center gap-2 pb-12 sm:pb-16 pointer-events-none select-none text-primary"
-            aria-hidden="true">
-            <span
-                class="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
-                down for more</span>
-            <svg class="scroll-arrow" width="28" height="28" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(var(--primary-rgb),0.3));">
-                <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
-        </div>
-
         <!-- Work Section -->
-        <section class="py-20 sm:py-28 md:py-36" id="work">
+        <section class="py-24 md:py-32" id="work">
             <div class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 md:mb-20 gap-6 sm:gap-8 reveal">
                     <div>
