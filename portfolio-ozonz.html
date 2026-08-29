@@ -500,14 +500,12 @@
             --design-tag-bg: rgba(var(--primary-rgb), 0.10);
             --design-tag-fg: rgb(var(--primary-rgb));
             --design-glow: rgba(var(--primary-rgb), 0.20);
-        }
-        
-        .design-featured-card {
+        }        .design-featured-card {
             position: relative;
-            border-radius: 20px;
+            border-radius: 14px;
             overflow: hidden;
             cursor: pointer;
-            min-height: 420px;
+            min-height: 280px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -518,12 +516,14 @@
 
         @media (min-width: 640px) {
             .design-featured-card {
-                min-height: 480px;
+                border-radius: 18px;
+                min-height: 460px;
             }
         }
 
         @media (min-width: 1024px) {
             .design-featured-card {
+                border-radius: 20px;
                 min-height: 560px;
             }
         }
@@ -562,12 +562,12 @@
         .design-featured-badge {
             background: var(--primary);
             color: var(--on-primary);
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 700;
-            letter-spacing: 0.16em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 3px 8px;
+            border-radius: 5px;
         }
 
         @media (min-width: 640px) {
@@ -575,12 +575,13 @@
                 font-size: 10px;
                 letter-spacing: 0.2em;
                 padding: 5px 14px;
+                border-radius: 6px;
             }
         }
         
         .design-featured-year {
             color: rgba(255,255,255,0.7);
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             letter-spacing: 0.12em;
         }
@@ -596,12 +597,12 @@
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(8px);
             color: rgba(255,255,255,0.95);
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 700;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 5px;
+            padding: 2.5px 7px;
+            border-radius: 4px;
             border: 1px solid rgba(255,255,255,0.2);
             white-space: nowrap;
         }
@@ -611,48 +612,56 @@
                 font-size: 10px;
                 letter-spacing: 0.16em;
                 padding: 4px 10px;
+                border-radius: 5px;
             }
         }
         
         .design-featured-title {
             font-family: 'Mitr', sans-serif;
-            font-size: clamp(1.35rem, 4.5vw, 2.75rem);
+            font-size: clamp(1.2rem, 3.8vw, 2.75rem);
             font-weight: 700;
             color: #ffffff;
             text-transform: uppercase;
             line-height: 1.1;
-            margin: 0 0 6px 0;
+            margin: 0 0 4px 0;
             letter-spacing: -0.01em;
             text-shadow: 0 2px 20px rgba(0,0,0,0.5);
             word-break: break-word;
         }
+
+        @media (min-width: 640px) {
+            .design-featured-title {
+                margin: 0 0 6px 0;
+            }
+        }
         
         .design-featured-tagline {
             color: rgba(255,255,255,0.75);
-            font-size: 13px;
-            margin: 0 0 16px 0;
+            font-size: 11.5px;
+            margin: 0 0 12px 0;
             max-width: 500px;
-            line-height: 1.5;
+            line-height: 1.45;
         }
 
         @media (min-width: 640px) {
             .design-featured-tagline {
                 font-size: 15px;
                 margin: 0 0 24px 0;
+                line-height: 1.55;
             }
         }
         
         .design-featured-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--primary);
             color: var(--on-primary);
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 11px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             box-shadow: none;
             transition: box-shadow 0.3s ease, opacity 0.2s, transform 0.2s;
@@ -678,10 +687,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 3;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.3s ease;
         }
         
         .design-featured-card:hover .design-hover-center-pulse {
@@ -689,8 +697,8 @@
         }
         
         .design-pulse-circle {
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: var(--primary);
             color: var(--on-primary);
@@ -715,7 +723,7 @@
         
         /* Side Card Design */
         .design-side-card {
-            border-radius: 18px;
+            border-radius: 14px;
             overflow: hidden;
             cursor: pointer;
             display: flex;
@@ -725,11 +733,12 @@
             border: 1px solid var(--outline);
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-            min-height: 240px;
+            min-height: 180px;
         }
 
         @media (min-width: 640px) {
             .design-side-card {
+                border-radius: 18px;
                 min-height: 260px;
             }
         }
@@ -742,7 +751,7 @@
         
         .design-side-thumbnail {
             position: relative;
-            height: 150px;
+            height: 110px;
             overflow: hidden;
             flex-shrink: 0;
         }
@@ -772,16 +781,27 @@
         
         .design-side-year {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(6px);
             color: rgba(255,255,255,0.9);
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
-            letter-spacing: 0.15em;
-            padding: 3px 8px;
-            border-radius: 5px;
+            letter-spacing: 0.12em;
+            padding: 2.5px 6px;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-year {
+                top: 10px;
+                right: 10px;
+                font-size: 10px;
+                letter-spacing: 0.15em;
+                padding: 3px 8px;
+                border-radius: 5px;
+            }
         }
         
         .design-side-hover-overlay {
@@ -800,8 +820,8 @@
         }
         
         .design-side-overlay-circle {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--primary);
             color: var(--on-primary);
@@ -818,7 +838,7 @@
         }
         
         .design-side-body {
-            padding: 16px 16px 18px;
+            padding: 10px 12px 12px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -833,12 +853,12 @@
         .design-tag-pill {
             background: var(--design-tag-bg);
             color: var(--design-tag-fg);
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 700;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 2px 6px;
+            border-radius: 3px;
             border: 1px solid var(--design-tag-bg);
             white-space: nowrap;
         }
@@ -848,17 +868,18 @@
                 font-size: 10px;
                 letter-spacing: 0.18em;
                 padding: 3px 10px;
+                border-radius: 4px;
             }
         }
         
         .design-side-title {
             font-family: 'Mitr', sans-serif;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--on-background);
             line-height: 1.2;
-            margin: 0 0 6px 0;
+            margin: 0 0 3px 0;
             word-break: break-word;
         }
 
@@ -866,13 +887,14 @@
             .design-side-title {
                 font-size: 1.15rem;
                 line-height: 1.15;
+                margin: 0 0 6px 0;
             }
         }
         
         .design-side-tagline {
             color: var(--on-surface-variant);
-            font-size: 12px;
-            line-height: 1.5;
+            font-size: 11px;
+            line-height: 1.4;
             margin: 0;
             flex: 1;
         }
@@ -888,27 +910,29 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            margin-top: 14px;
-            padding-top: 12px;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
             border-top: 1px solid var(--outline);
-            min-height: 32px;
+            min-height: 24px;
         }
 
         @media (min-width: 640px) {
             .design-side-footer {
+                gap: 8px;
                 margin-top: 18px;
                 padding-top: 14px;
+                min-height: 32px;
             }
         }
         
         .design-side-explore {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
+            gap: 3px;
+            font-size: 9px;
             font-weight: 700;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--on-surface-variant);
             transition: transform 0.2s, color 0.2s;
@@ -919,6 +943,7 @@
             .design-side-explore {
                 gap: 5px;
                 font-size: 11px;
+                letter-spacing: 0.12em;
             }
         }
         
