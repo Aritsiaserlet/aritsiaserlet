@@ -1091,38 +1091,35 @@
                         </button>
                     </div>
                 </div>
-                        </button>
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10" id="archives-grid">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 md:gap-10" id="archives-grid">
                     <!-- Featured Card Skeleton -->
                     <div
-                        class="lg:col-span-8 h-[600px] rounded-2xl border border-outline/20 bg-surface/30 p-10 flex flex-col justify-end gap-4 relative overflow-hidden animate-pulse">
+                        class="lg:col-span-8 min-h-[420px] sm:min-h-[480px] lg:min-h-[560px] rounded-2xl border border-outline/20 bg-surface/30 p-6 sm:p-8 md:p-10 flex flex-col justify-end gap-4 relative overflow-hidden animate-pulse">
                         <div class="absolute inset-0 gh-skeleton opacity-20"></div>
                         <div class="relative z-10 flex flex-col gap-4">
                             <div class="gh-skeleton w-24 h-5 rounded-md"></div>
-                            <div class="gh-skeleton w-3/4 h-10 rounded-lg"></div>
-                            <div class="gh-skeleton w-1/2 h-6 rounded-md"></div>
-                            <div class="gh-skeleton w-32 h-12 rounded-xl mt-4"></div>
+                            <div class="gh-skeleton w-3/4 h-8 sm:h-10 rounded-lg"></div>
+                            <div class="gh-skeleton w-1/2 h-5 sm:h-6 rounded-md"></div>
+                            <div class="gh-skeleton w-32 h-10 sm:h-12 rounded-xl mt-4"></div>
                         </div>
                     </div>
 
                     <!-- Side Cards Skeleton -->
-                    <div class="lg:col-span-4 flex flex-col gap-10">
+                    <div class="lg:col-span-4 flex flex-col gap-6 sm:gap-8 md:gap-10">
                         <div
-                            class="pixel-card p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[280px] animate-pulse">
+                            class="pixel-card p-6 sm:p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[240px] sm:min-h-[280px] animate-pulse">
                             <div>
-                                <div class="gh-skeleton w-full h-32 rounded-xl mb-4"></div>
-                                <div class="gh-skeleton w-1/2 h-6 rounded-md mb-2"></div>
+                                <div class="gh-skeleton w-full h-28 sm:h-32 rounded-xl mb-4"></div>
+                                <div class="gh-skeleton w-1/2 h-5 sm:h-6 rounded-md mb-2"></div>
                             </div>
                             <div class="gh-skeleton w-24 h-5 rounded-md"></div>
                         </div>
                         <div
-                            class="pixel-card p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[280px] animate-pulse">
+                            class="pixel-card p-6 sm:p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[240px] sm:min-h-[280px] animate-pulse">
                             <div>
-                                <div class="gh-skeleton w-full h-32 rounded-xl mb-4"></div>
-                                <div class="gh-skeleton w-1/2 h-6 rounded-md mb-2"></div>
+                                <div class="gh-skeleton w-full h-28 sm:h-32 rounded-xl mb-4"></div>
+                                <div class="gh-skeleton w-1/2 h-5 sm:h-6 rounded-md mb-2"></div>
                             </div>
                             <div class="gh-skeleton w-24 h-5 rounded-md"></div>
                         </div>
@@ -1132,13 +1129,13 @@
         </section>
 
         <!-- About Section -->
-        <section class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-32 reveal" id="about">
+        <section class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-16 sm:py-24 md:py-32 reveal" id="about">
             <div class="max-w-4xl">
-                <h2 class="text-4xl md:text-5xl font-bold mb-10 uppercase text-primary">About the Dev</h2>
-                <p class="text-2xl md:text-3xl text-on-surface leading-relaxed mb-8">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-10 uppercase text-primary">About the Dev</h2>
+                <p class="text-xl sm:text-2xl md:text-3xl text-on-surface leading-relaxed mb-6 sm:mb-8">
                     Game Developer. 2D Artist. Programmer. Game Designer.
                 </p>
-                <p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                <p class="text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
                     I started my journey in Game Jams and deepened my roots through <strong>Hamster Hub's</strong>
                     courses, mastering Game Design, <strong>Unity development</strong>, and the core philosophy of
                     effective presentation. Building on that foundation through self-study, I expanded into web
@@ -1150,77 +1147,77 @@
 
         <!-- Technical Archetype Section -->
         <section
-            class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-32 border-t border-outline/50 reveal"
+            class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-16 sm:py-24 md:py-32 border-t border-outline/50 reveal"
             id="archetypes">
-            <h2 class="text-sm font-bold tracking-[0.4em] text-primary uppercase mb-16 text-center font-headline">
+            <h2 class="text-xs sm:text-sm font-bold tracking-[0.3em] sm:tracking-[0.4em] text-primary uppercase mb-10 sm:mb-16 text-center font-headline">
                 Technical Archetype</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-                <div class="group">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 md:gap-12 text-center">
+                <div class="group p-2 sm:p-4">
                     <div
-                        class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                        <span class="material-symbols-outlined text-3xl">sports_esports</span>
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">sports_esports</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 uppercase font-headline">Game Dev</h3>
-                    <p class="text-sm text-on-surface-variant px-4">Robust systems &amp; gameplay logic.</p>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">Game Dev</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Robust systems &amp; gameplay logic.</p>
                 </div>
-                <div class="group">
+                <div class="group p-2 sm:p-4">
                     <div
-                        class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                        <span class="material-symbols-outlined text-3xl">palette</span>
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">palette</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 uppercase font-headline">2D Art</h3>
-                    <p class="text-sm text-on-surface-variant px-4">Pixel art &amp; character design.</p>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">2D Art</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Pixel art &amp; character design.</p>
                 </div>
-                <div class="group">
+                <div class="group p-2 sm:p-4">
                     <div
-                        class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                        <span class="material-symbols-outlined text-3xl">terminal</span>
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">terminal</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 uppercase font-headline">Coding</h3>
-                    <p class="text-sm text-on-surface-variant px-4">Clean, performant architectures.</p>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">Coding</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Clean, performant architectures.</p>
                 </div>
-                <div class="group">
+                <div class="group p-2 sm:p-4">
                     <div
-                        class="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-                        <span class="material-symbols-outlined text-3xl">lightbulb</span>
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">lightbulb</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 uppercase font-headline">Design</h3>
-                    <p class="text-sm text-on-surface-variant px-4">Player psychology &amp; engagement.</p>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">Design</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Player psychology &amp; engagement.</p>
                 </div>
             </div>
         </section>
 
         <!-- Contact Section -->
         <section
-            class="px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-32 flex flex-col items-center reveal"
+            class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-16 sm:py-24 md:py-32 flex flex-col items-center reveal"
             id="contact">
-            <h2 class="text-5xl font-bold mb-12 uppercase text-center">CONTACT ME</h2>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 uppercase text-center">CONTACT ME</h2>
             <div id="contact-links-container"
-                class="inline-flex flex-wrap justify-center items-center gap-10 px-12 py-6 bg-surface/50 backdrop-blur rounded-full border border-outline/20 shadow-2xl">
+                class="inline-flex flex-wrap justify-center items-center gap-4 sm:gap-8 md:gap-10 px-6 sm:px-12 py-4 sm:py-6 bg-surface/50 backdrop-blur rounded-2xl sm:rounded-full border border-outline/20 shadow-2xl max-w-full">
                 <!-- Dynamically filled by JS -->
             </div>
         </section>
     </main>
 
-    <footer class="bg-surface/30 py-12 border-t border-outline/10 text-center">
-        <p class="text-on-surface-variant text-base tracking-widest font-bold uppercase">© 2026 Chanon Thongduang. Built
+    <footer class="bg-surface/30 py-8 sm:py-12 border-t border-outline/10 text-center px-4">
+        <p class="text-on-surface-variant text-xs sm:text-sm md:text-base tracking-wider sm:tracking-widest font-bold uppercase">© 2026 Chanon Thongduang. Built
             with Precision.</p>
     </footer>
 
     <!-- Project Detail Modal -->
     <div id="project-detail-modal"
-        class="fixed inset-0 z-[800] hidden bg-black/75 backdrop-blur-md">
+        class="fixed inset-0 z-[800] hidden bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
         
         <div id="project-detail-box"
-            class="absolute max-w-2xl w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto rounded-2xl bg-surface border border-primary/30 shadow-[0_32px_80px_rgba(0,0,0,0.5)] flex flex-col">
+            class="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl bg-surface border border-primary/30 shadow-[0_32px_80px_rgba(0,0,0,0.5)] flex flex-col">
             
-            <!-- Drag Bar -->
-            <div id="project-detail-drag-bar" class="absolute top-0 left-0 right-0 h-12 z-20 cursor-move flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+            <!-- Drag Bar (desktop) -->
+            <div id="project-detail-drag-bar" class="hidden md:flex absolute top-0 left-0 right-0 h-12 z-20 cursor-move items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                 <div class="w-16 h-1.5 rounded-full bg-white/40 backdrop-blur shadow-sm pointer-events-none"></div>
             </div>
 
             <!-- Image hero -->
-            <div class="relative w-full h-[280px] shrink-0 overflow-hidden">
+            <div class="relative w-full h-[200px] sm:h-[280px] shrink-0 overflow-hidden">
                 <div id="project-detail-image-container" class="w-full h-full [&>img]:w-full [&>img]:h-full [&>img]:object-cover pointer-events-none">
                     <!-- Dynamically filled -->
                 </div>
@@ -1229,27 +1226,27 @@
                 
                 <!-- Close Button -->
                 <button id="project-detail-close-btn"
-                    class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur flex items-center justify-center text-white border-none cursor-pointer hover:bg-black/70 transition-colors z-30">
-                    <span class="material-symbols-outlined text-xl">close</span>
+                    class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur flex items-center justify-center text-white border-none cursor-pointer hover:bg-black/80 transition-colors z-30">
+                    <span class="material-symbols-outlined text-lg sm:text-xl">close</span>
                 </button>
             </div>
 
             <!-- Body -->
-            <div class="p-7 md:p-8 flex flex-col relative z-10 bg-surface">
+            <div class="p-5 sm:p-7 md:p-8 flex flex-col relative z-10 bg-surface">
                 
                 <!-- Tags -->
-                <div id="project-detail-tags" class="flex flex-wrap gap-1.5 mb-4">
+                <div id="project-detail-tags" class="flex flex-wrap gap-1.5 mb-3 sm:mb-4">
                     <!-- Dynamically filled -->
                 </div>
 
                 <!-- Title & Tagline -->
-                <h3 id="project-detail-title" class="font-headline text-[clamp(1.6rem,3vw,2.2rem)] font-bold uppercase text-on-background leading-[1.1] mb-1.5"></h3>
-                <p id="project-detail-tagline" class="text-primary text-[14px] font-semibold mb-5"></p>
+                <h3 id="project-detail-title" class="font-headline text-[clamp(1.35rem,4vw,2.2rem)] font-bold uppercase text-on-background leading-[1.1] mb-1.5 break-words"></h3>
+                <p id="project-detail-tagline" class="text-primary text-xs sm:text-[14px] font-semibold mb-4 sm:mb-5"></p>
 
                 <!-- Description Box -->
-                <div class="bg-surface-variant rounded-xl p-4 md:p-5 mb-5 border border-outline/10">
-                    <p class="text-[10px] font-bold tracking-[0.22em] uppercase text-primary mb-2">Project Details</p>
-                    <p id="project-detail-description" class="text-on-surface-variant text-[14px] leading-[1.7] m-0"></p>
+                <div class="bg-surface-variant rounded-xl p-3.5 sm:p-5 mb-4 sm:mb-5 border border-outline/10">
+                    <p class="text-[10px] font-bold tracking-[0.22em] uppercase text-primary mb-1.5 sm:mb-2">Project Details</p>
+                    <p id="project-detail-description" class="text-on-surface-variant text-xs sm:text-[14px] leading-[1.7] m-0"></p>
                 </div>
 
                 <!-- Contributors Section -->
