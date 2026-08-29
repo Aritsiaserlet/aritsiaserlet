@@ -1380,19 +1380,9 @@
       void modalContent.offsetWidth; // trigger reflow
       modalContent.classList.add('animate-modal-enter');
       
-      // Center modal on desktop while allowing flex centering on mobile
-      const vw = window.innerWidth, vh = window.innerHeight;
-      if (vw < 768) {
-        modalContent.style.left = '';
-        modalContent.style.top = '';
-      } else {
-        modalContent.style.left = Math.max(0, (vw - Math.min(672, vw-40))/2) + 'px';
-        modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
-        
-        requestAnimationFrame(() => {
-          modalContent.style.top = Math.max(20, (vh - modalContent.offsetHeight)/2) + 'px';
-        });
-      }
+      // Ensure modal is cleanly centered via flexbox on both desktop and mobile
+      modalContent.style.left = '';
+      modalContent.style.top = '';
     }
   }
 
@@ -1401,7 +1391,13 @@
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
         if (window.carouselInterval) clearInterval(window.carouselInterval);
-        document.getElementById('project-detail-modal').classList.add('hidden');
+        const modal = document.getElementById('project-detail-modal');
+        const box = document.getElementById('project-detail-box');
+        if (modal) modal.classList.add('hidden');
+        if (box) {
+          box.style.left = '';
+          box.style.top = '';
+        }
         document.body.style.overflow = '';
       });
     }
@@ -1411,6 +1407,11 @@
         if (e.target === modal) {
           if (window.carouselInterval) clearInterval(window.carouselInterval);
           modal.classList.add('hidden');
+          const box = document.getElementById('project-detail-box');
+          if (box) {
+            box.style.left = '';
+            box.style.top = '';
+          }
           document.body.style.overflow = '';
         }
       });
@@ -1426,7 +1427,7 @@
       });
     }
 
-    // Modal drag logic
+    // Modal drag logic (optional dragging relative to center)
     const dragBar = document.getElementById('project-detail-drag-bar');
     const box = document.getElementById('project-detail-box');
     if (dragBar && box) {
@@ -1448,10 +1449,8 @@
         const pos = e.touches ? e.touches[0] : e;
         const dx = pos.clientX - startX;
         const dy = pos.clientY - startY;
-        const maxX = window.innerWidth - box.offsetWidth;
-        const maxY = window.innerHeight - 60;
-        box.style.left = Math.max(0, Math.min(maxX, initialLeft + dx)) + 'px';
-        box.style.top = Math.max(0, Math.min(maxY, initialTop + dy)) + 'px';
+        box.style.left = (initialLeft + dx) + 'px';
+        box.style.top = (initialTop + dy) + 'px';
       }
 
       function onUp() { isDragging = false; }
