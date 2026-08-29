@@ -1032,31 +1032,28 @@
                 <span class="design-featured-badge">★ Featured</span>
             </div>
             <div class="absolute top-5 right-5 z-10">
-                <span class="design-featured-year">${featured.year || new Date().getFullYear()}</span>
-            </div>
-            
-            <div class="relative z-10 p-5 sm:p-8 md:p-10 flex flex-col">
-                <div class="flex flex-wrap gap-1.5 mb-3 sm:mb-4">
+                <span class="design-featured-year">${featured.year || new Date().getFullYear()            <div class="relative z-10 p-4 sm:p-8 md:p-10 flex flex-col">
+                <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-4">
                     ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
                 </div>
                 <h3 class="design-featured-title">${featured.title}</h3>
                 <p class="design-featured-tagline">${featured.tagline || ''}</p>
                 ${
                   featured.aiSummary
-                    ? `<p class="text-primary font-bold text-xs sm:text-sm tracking-wider uppercase mb-4 sm:mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
+                    ? `<p class="text-primary font-bold text-xs sm:text-sm tracking-wider uppercase mb-3 sm:mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
                     : ''
                 }
                 <div>
                     <a href="${featured.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="design-featured-btn">
                         <span>Visit Project</span>
-                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+                        <span class="material-symbols-outlined text-xs sm:text-sm">open_in_new</span>
                     </a>
                 </div>
             </div>
             
             <div class="design-hover-center-pulse">
                 <div class="design-pulse-circle">
-                    <span class="material-symbols-outlined text-2xl">open_in_new</span>
+                    <span class="material-symbols-outlined text-xl sm:text-2xl">open_in_new</span>
                 </div>
             </div>
         </div>
@@ -1067,7 +1064,7 @@
     const sideWorks = works.slice(1, 3);
     if (sideWorks.length > 0) {
       const bentoContainer = document.createElement('div');
-      bentoContainer.className = 'lg:col-span-4 flex flex-col gap-6 sm:gap-8 md:gap-10';
+      bentoContainer.className = 'lg:col-span-4 flex flex-col gap-4 sm:gap-8 md:gap-10';
 
       sideWorks.forEach((work, index) => {
         const i = index + 1;
@@ -1079,19 +1076,19 @@
                     ${
                       isImg
                         ? `<img src="${work.image}" class="design-side-img" />`
-                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">${work.image || 'brush'}</span></div>`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-3xl sm:text-5xl">${work.image || 'brush'}</span></div>`
                     }
                     <div class="design-side-fade"></div>
                     <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
                     <div class="design-side-hover-overlay">
                         <div class="design-side-overlay-circle">
-                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base sm:text-lg">arrow_forward</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="design-side-body">
-                    <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-3">
+                    <div class="flex flex-wrap gap-1.5 mb-2 sm:mb-3">
                         ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
                     </div>
                     
@@ -1101,8 +1098,8 @@
                     <div class="design-side-footer">
                         ${
                           work.contributors && work.contributors.length > 1
-                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[10px] sm:text-[11px] font-semibold truncate">
-                                 <span class="material-symbols-outlined text-[13px] shrink-0">group</span>
+                            ? `<span class="flex items-center gap-1 text-on-surface-variant/70 text-[9.5px] sm:text-[11px] font-semibold truncate">
+                                 <span class="material-symbols-outlined text-[12px] sm:text-[13px] shrink-0">group</span>
                                  <span>${work.contributors.length} contributors</span>
                                </span>`
                             : `<span />`
@@ -1110,7 +1107,7 @@
                         
                         <span class="design-side-explore">
                             <span>Explore</span>
-                            <span class="material-symbols-outlined text-[10px] sm:text-[11px]">arrow_forward</span>
+                            <span class="material-symbols-outlined text-[9px] sm:text-[11px]">arrow_forward</span>
                         </span>
                     </div>
                 </div>
@@ -1126,7 +1123,7 @@
     if (extraWorks.length > 0) {
       // Create a full-width grid container for the remaining cards
       const extraGridContainer = document.createElement('div');
-      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mt-6 sm:mt-10';
+      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10 mt-4 sm:mt-10';d grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mt-6 sm:mt-10';
 
       extraWorks.forEach((work, index) => {
         const i = index + 3;
