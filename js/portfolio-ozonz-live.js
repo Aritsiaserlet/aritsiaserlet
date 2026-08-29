@@ -849,9 +849,19 @@
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.05, rootMargin: '50px' }
     );
     document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => revealObserver.observe(el));
+
+    // Instant safety reveal for items already in the viewport
+    setTimeout(() => {
+      document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('active');
+        }
+      });
+    }, 60);
 
     const themeToggle = document.getElementById('theme-toggle');
     const icon = document.getElementById('theme-icon');
@@ -972,7 +982,7 @@
     if (!grid) return;
     grid.innerHTML = '';
 
-    let works = globalWorks || [];
+    let works = normalizeWorks(globalWorks);
     
     // Apply filtering
     if (currentWorkFilter !== 'all') {
@@ -991,8 +1001,9 @@
 
     if (works.length > 0) {
       works = works.map(w => {
-        let image = w.image;
+        let image = w.image || w.thumbnail;
         if (Array.isArray(w.image)) image = w.image[0];
+        if (!image && w.images && w.images.length > 0) image = w.images[0];
         if (!image && w.model) image = 'view_in_ar';
         let link = w.link;
         if (!link && w.links && w.links.length > 0) link = w.links[0].url;
@@ -1461,31 +1472,46 @@
   }
 
 
+  function normalizeWorks(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (typeof data === 'object') {
+      if (Array.isArray(data.projects)) return data.projects;
+      if (Array.isArray(data.works)) return data.works;
+      if (Array.isArray(data.data)) return data.data;
+    }
+    return [];
+  }
+
   function parseSecureJSON(text) {
+      if (!text || typeof text !== 'string') return null;
       try { return JSON.parse(text); } 
-      catch (e) { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
+      catch (e) {
+        try { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
+        catch (_) { return null; }
+      }
   }
 
   async function fetchPortfolioData() {
     try {
       // Query raw GitHub user content to prevent API rate limit (403 errors)
-      let worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`);
-      let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`);
+      let worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`).catch(() => null);
+      let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`).catch(() => null);
       
-      if (worksRes.ok) {
-          globalWorks = parseSecureJSON(await worksRes.text());
+      if (worksRes && worksRes.ok) {
+          globalWorks = normalizeWorks(parseSecureJSON(await worksRes.text()));
       } else {
           try {
-              const r = await fetch('data/ozonz-works.json');
-              if (r.ok) globalWorks = parseSecureJSON(await r.text());
-              else globalWorks = [];
+              const r = await fetch('data/ozonz-works.json').catch(() => null);
+              if (r && r.ok) globalWorks = normalizeWorks(parseSecureJSON(await r.text()));
+              else if (!globalWorks.length) globalWorks = [];
           } catch (_) {
-              globalWorks = [];
+              if (!globalWorks.length) globalWorks = [];
           }
       }
       
-      if (settingsRes.ok) {
-          globalSettings = parseSecureJSON(await settingsRes.text());
+      if (settingsRes && settingsRes.ok) {
+          globalSettings = parseSecureJSON(await settingsRes.text()) || {};
       }
       
       if (!globalSettings || !globalSettings.socials || globalSettings.socials.length === 0) {
@@ -1494,9 +1520,9 @@
           globalSettings.socials = ensureItchContact(globalSettings.socials);
       }
       
-      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json`);
+      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json`).catch(() => null);
       let sharedSettings = {};
-      if (sharedSettingsRes.ok) sharedSettings = parseSecureJSON(await sharedSettingsRes.text());
+      if (sharedSettingsRes && sharedSettingsRes.ok) sharedSettings = parseSecureJSON(await sharedSettingsRes.text()) || {};
       
       // Inject shared icons and teams
       globalSettings.icons = sharedSettings.icons || [];
@@ -1504,7 +1530,7 @@
       globalSettings.sounds = sharedSettings.sounds || [];
       
     } catch (err) {
-      console.error("Failed to fetch portfolio data from GitHub:", err);
+      console.warn("Failed to fetch portfolio data from GitHub:", err);
     }
   }
 
@@ -1514,8 +1540,8 @@
     const cachedSettings = localStorage.getItem('cached_settings');
     if (cachedWorks && cachedSettings) {
       try {
-        globalWorks = JSON.parse(cachedWorks);
-        globalSettings = JSON.parse(cachedSettings);
+        globalWorks = normalizeWorks(JSON.parse(cachedWorks));
+        globalSettings = JSON.parse(cachedSettings) || {};
         if (globalSettings && globalSettings.socials) {
           globalSettings.socials = ensureItchContact(globalSettings.socials);
         }
@@ -1524,18 +1550,18 @@
       } catch (_) {}
     }
 
-    // Always fetch fresh data from GitHub
+    // Always fetch fresh data from GitHub or local fallback
     try {
-      const t = sessionStorage.getItem('ghToken');
-      let rWorks = null;
-      let rSettings = null;
+      let rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
+      let rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
 
-      // Query raw GitHub user content to prevent API rate limit (403 errors)
-      rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
-      rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
+      if (!rWorks) {
+        rWorks = await fetch('data/ozonz-works.json').then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
+      }
 
-      if (rWorks !== null) globalWorks = rWorks;
-      if (rSettings !== null) globalSettings = rSettings;
+      if (rWorks) globalWorks = normalizeWorks(rWorks);
+      if (rSettings) globalSettings = rSettings;
+
       if (!globalSettings || !globalSettings.socials || globalSettings.socials.length === 0) {
         globalSettings = { ...globalSettings, socials: defaultContacts };
       } else {
@@ -1557,7 +1583,7 @@
     fetchPortfolioData().then(() => {
       renderWorks();
       renderContacts();
-    });
+    }).catch(() => {});
   }
 
   function initWorkFilters() {
