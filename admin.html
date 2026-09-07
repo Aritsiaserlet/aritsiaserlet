@@ -116,6 +116,14 @@
               <select id="manageWorkDeleteIcon" onchange="settings.manageWorkDeleteIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Manage Work Star (Active) Icon:</label>
+              <select id="manageWorkStarActiveIcon" onchange="settings.manageWorkStarActiveIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="font-family:'VT323';font-size:20px;">Manage Work Star (Inactive) Icon:</label>
+              <select id="manageWorkStarInactiveIcon" onchange="settings.manageWorkStarInactiveIconId=this.value; saveSettings(); if(window.renderAdminList)renderAdminList();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
               <label style="font-family:'VT323';font-size:20px;">Add Work Placeholder Icon:</label>
               <select id="addWorkPlaceholderIcon" onchange="settings.addWorkImageIconId=this.value; saveSettings(); updateAddWorkPlaceholderIcon();" style="width:100%;padding:8px;font-family:'VT323';font-size:20px;border:3px solid var(--dark);"><option value="">-- None --</option></select>
             </div>
@@ -488,7 +496,7 @@
   </div>
 </div>
 
-<script src="js/admin.js" defer></script>
+<script src="js/admin.js?v=4" defer></script>
 <!-- Preview Modal -->
 <div class="prev-overlay" id="prevOverlay" onclick="if(event.target===this)closePrev()">
   <div class="prev-box">
@@ -529,6 +537,6 @@
   </div>
 </div>
 
-<script src="js/admin.js"></script>
+<script src="js/admin.js?v=4"></script>
 </body>
 </html>
