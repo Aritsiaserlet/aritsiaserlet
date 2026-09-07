@@ -1489,7 +1489,8 @@ window.toggleStar = async function(id) {
       // Revert if failed
       w.starred = !w.starred;
       renderAdminList();
-      toast('Error saving star status');
+      toast('Error: ' + e.message);
+      console.error(e);
     }
   }
 };
