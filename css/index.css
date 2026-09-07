@@ -236,7 +236,7 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   user-select: none;
 }
 .carousel-deck {
@@ -269,12 +269,12 @@ body{
   /* Default hover just thickens shadow a bit if not active */
 }
 /* Only jump up the active card in the front */
-.slot-active {
+.slot-center {
   transform-origin: center bottom;
 }
-.slot-active:hover {
-  transform: translate3d(0, -16px, 100px) scale(1.12) !important;
-  box-shadow: 12px 24px 0 rgba(26, 42, 58, 0.4), 0 30px 60px rgba(0, 0, 0, 0.5);
+.slot-center:hover {
+  transform: translate3d(0, -16px, 160px) scale(1.15) !important;
+  box-shadow: 12px 24px 0 rgba(26, 42, 58, 0.4), 0 30px 60px rgba(0, 0, 0, 0.5) !important;
 }
 .carousel-card img {
   position: absolute;
