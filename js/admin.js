@@ -1447,17 +1447,31 @@ function renderAdminList(){
 
     el.innerHTML=`
       <div class="witem-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--sky4);">${w.image?`<img src="${Array.isArray(w.image)?w.image[0]:w.image}">`:`${catIcon}`}</div>
-      <div class="witem-info" style="min-width:0;">
+      <div class="witem-info" style="min-width:0; flex: 1;">
         <div class="witem-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;" title="${w.name}">${w.name}</div>
         <div class="witem-cat" style="display:flex;align-items:center;gap:6px;">${catIcon} ${label}${sub}</div>
       </div>
+      <button class="witem-star" onclick="toggleStar(${w.id})" title="Feature in Dynamic Reel" style="font-size:20px; background:none; border:none; cursor:pointer; padding:4px;">${w.starred ? '⭐' : '☆'}</button>
       <button class="witem-edit" onclick="editWork(${w.id})" title="Edit">${manageWorkEditIconHtml}</button>
       <button class="witem-del" onclick="deleteWork(${w.id})" title="Delete">${manageWorkDeleteIconHtml}</button>`;
     list.appendChild(el);
   });
 }
 
-
+window.toggleStar = async function(id) {
+  const w = works.find(x => x.id === id);
+  if(w) {
+    w.starred = !w.starred;
+    // Save to server/github
+    try {
+      await saveWorksToGithub();
+      renderAdminList();
+      toast('Dynamic Reel status updated!');
+    } catch(e) {
+      toast('Error saving star status');
+    }
+  }
+};
 let currentWorkLinks = [];
 
 function renderWorkLinks() {

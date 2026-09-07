@@ -121,7 +121,6 @@ async function loadData() {
   applySettings();
   hideSkeletons();
   renderGallery();
-  initShowcaseReel();
   if(window.initSoundBtns) window.initSoundBtns();
 }
 
@@ -321,6 +320,7 @@ function renderGallery() {
               <span style="font-family:'VT323',monospace;font-size:18px;margin-top:2px;">${likesCount}</span>
             </div>
           </div>
+          <div class="card-hover-overlay"><div class="card-hover-overlay-icon">👁</div></div>
         </div>
         <div class="card-info">
           <p class="card-name">${safeName}</p>
@@ -335,142 +335,6 @@ function renderGallery() {
     gallery.appendChild(fragment);
   }
 }
-
-// ── Retro 3D Rotating Reel Showcase ──
-let showcaseWorks = [];
-let showcaseActiveIndex = 0;
-let showcaseTimer = null;
-let isShowcasePaused = false;
-
-function initShowcaseReel() {
-  const deck = document.getElementById('carouselDeck');
-  const dotsContainer = document.getElementById('carouselIndicators');
-  if (!deck || !works.length) return;
-
-  // Pick starred works first, if none, pick any
-  const starredWorks = works.filter(w => w.starred);
-  if (starredWorks.length > 0) {
-    showcaseWorks = [...starredWorks].sort(() => Math.random() - 0.5).slice(0, 8);
-  } else {
-    showcaseWorks = [...works].sort(() => Math.random() - 0.5).slice(0, 8);
-  }
-  showcaseActiveIndex = 0;
-
-  deck.innerHTML = showcaseWorks.map((w, idx) => {
-    const imgUrl = Array.isArray(w.image) ? w.image[0] : (w.image || 'favicon.jpg');
-    const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
-    const catLabel = (catSetting.name || ({game:'GAME', mod:'MINECRAFT MOD', '3d':'3D MODEL'}[w.cat] || w.cat)).toUpperCase();
-    const yearStr = String(w.year || '').split(' ')[0] || '';
-    const focalY = (w.imageFocal !== undefined && w.imageFocal !== null) ? w.imageFocal : 50;
-
-    return `
-      <div class="carousel-card slot-hidden" data-index="${idx}" onclick="handleShowcaseCardClick(${idx})">
-        <img src="${imgUrl}" alt="${escapeHTML(w.name)}" style="object-position: center ${focalY}%" loading="lazy">
-        <div class="carousel-card-gradient"></div>
-        <div class="carousel-card-content">
-          <div class="card-badge-row">
-            <span class="pixel-cat-badge">${escapeHTML(catLabel)}</span>
-            ${yearStr ? `<span class="pixel-year-badge">${escapeHTML(yearStr)}</span>` : ''}
-          </div>
-          <h3 class="carousel-card-title">${escapeHTML(w.name)}</h3>
-          <p class="carousel-card-desc">${escapeHTML(w.desc || 'An interactive creation by Aritsia.')}</p>
-          <div class="carousel-card-btn">
-            <span>▶ EXPLORE WORK</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  if (dotsContainer) {
-    dotsContainer.innerHTML = showcaseWorks.map((_, i) => `
-      <div class="indicator-dot ${i === 0 ? 'active' : ''}" onclick="setShowcaseIndex(${i})"></div>
-    `).join('');
-  }
-
-  updateShowcaseSlots();
-  startShowcaseTimer();
-
-  const stage = document.getElementById('carouselStage');
-  if (stage && !stage._hasHoverEvents) {
-    stage._hasHoverEvents = true;
-    stage.addEventListener('mouseenter', () => { isShowcasePaused = true; });
-    stage.addEventListener('mouseleave', () => { isShowcasePaused = false; });
-  }
-}
-
-function updateShowcaseSlots() {
-  const cards = document.querySelectorAll('#carouselDeck .carousel-card');
-  const dots = document.querySelectorAll('#carouselIndicators .indicator-dot');
-  const N = showcaseWorks.length;
-  if (!N) return;
-
-  cards.forEach((card, i) => {
-    let diff = (i - showcaseActiveIndex) % N;
-    if (diff < -Math.floor(N / 2)) diff += N;
-    if (diff > Math.floor(N / 2)) diff -= N;
-
-    card.classList.remove('slot-center', 'slot-left-1', 'slot-right-1', 'slot-left-2', 'slot-right-2', 'slot-hidden');
-
-    if (diff === 0) {
-      card.classList.add('slot-center');
-    } else if (diff === -1) {
-      card.classList.add('slot-left-1');
-    } else if (diff === 1) {
-      card.classList.add('slot-right-1');
-    } else if (diff === -2) {
-      card.classList.add('slot-left-2');
-    } else if (diff === 2) {
-      card.classList.add('slot-right-2');
-    } else {
-      card.classList.add('slot-hidden');
-    }
-  });
-
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === showcaseActiveIndex);
-  });
-}
-
-function nextShowcase() {
-  const N = showcaseWorks.length;
-  if (!N) return;
-  showcaseActiveIndex = (showcaseActiveIndex + 1) % N;
-  updateShowcaseSlots();
-}
-
-function prevShowcase() {
-  const N = showcaseWorks.length;
-  if (!N) return;
-  showcaseActiveIndex = (showcaseActiveIndex - 1 + N) % N;
-  updateShowcaseSlots();
-}
-
-function setShowcaseIndex(idx) {
-  showcaseActiveIndex = idx;
-  updateShowcaseSlots();
-}
-
-function startShowcaseTimer() {
-  if (showcaseTimer) clearInterval(showcaseTimer);
-  showcaseTimer = setInterval(() => {
-    if (!isShowcasePaused) {
-      nextShowcase();
-    }
-  }, 3800);
-}
-
-window.handleShowcaseCardClick = function(idx) {
-  if (idx === showcaseActiveIndex) {
-    if (showcaseWorks[idx]) openModal(showcaseWorks[idx]);
-  } else {
-    setShowcaseIndex(idx);
-  }
-};
-
-window.nextShowcase = nextShowcase;
-window.prevShowcase = prevShowcase;
-window.setShowcaseIndex = setShowcaseIndex;
 
 // ── Gallery Filter Controls ──
 function setMainCat(cat, btn) {

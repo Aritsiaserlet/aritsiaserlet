@@ -188,311 +188,14 @@ body{
 .social-btn:hover .social-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}
 .social-btn svg{width:20px;height:20px;flex-shrink:0}
 
-/* ── Dynamic 3D Reel Showcase ── */
-.showcase-wrapper {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 1180px;
-  margin: 10px auto 40px;
-  padding: 0 10px;
-}
-.showcase-header-box {
-  text-align: center;
-  margin-bottom: 24px;
-}
-.pixel-section-head {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;
-  margin-bottom: 8px;
-}
-.pixel-s-line {
-  flex: 1;
-  max-width: 120px;
-  height: 4px;
-  background: var(--dark);
-}
-.pixel-s-title {
-  font-family: 'Press Start 2P', cursive;
-  font-size: clamp(15px, 2.8vw, 22px);
-  color: var(--dark);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 0 #fff;
-}
-.pixel-s-subtitle {
-  font-family: 'VT323', monospace;
-  font-size: 20px;
-  color: var(--dark);
-  opacity: 0.9;
-}
-.carousel-stage {
-  position: relative;
-  height: 460px;
-  width: 100%;
-  perspective: 1100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  user-select: none;
-}
-.carousel-deck {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-}
-.carousel-card {
-  position: absolute;
-  width: 350px;
-  height: 410px;
-  background: var(--white);
-  border: 4px solid var(--dark);
-  box-shadow: 8px 8px 0 rgba(26, 42, 58, 0.75);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.6s ease,
-              filter 0.6s ease;
-  will-change: transform, opacity;
-}
-.carousel-card:hover {
-  /* Default hover just thickens shadow a bit if not active */
-}
-/* Only jump up the active card in the front */
-.slot-active {
-  transform-origin: center bottom;
-}
-.slot-active:hover {
-  transform: translate3d(0, -16px, 100px) scale(1.12) !important;
-  box-shadow: 12px 24px 0 rgba(26, 42, 58, 0.4), 0 30px 60px rgba(0, 0, 0, 0.5);
-}
-.carousel-card img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.carousel-card:hover img {
-  transform: scale(1.06);
-}
-.carousel-card-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(26, 42, 58, 0.96) 0%, rgba(26, 42, 58, 0.5) 50%, rgba(26, 42, 58, 0.1) 100%);
-  pointer-events: none;
-}
-.carousel-card-content {
-  position: relative;
-  z-index: 2;
-  padding: 20px;
-}
-.card-badge-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.pixel-cat-badge {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 10px;
-  background: var(--gold);
-  color: var(--dark);
-  border: 2px solid var(--dark);
-  box-shadow: 2px 2px 0 var(--dark);
-  padding: 4px 8px;
-  text-transform: uppercase;
-}
-.pixel-year-badge {
-  font-family: 'VT323', monospace;
-  font-size: 18px;
-  color: var(--dark);
-  background: var(--white);
-  border: 2px solid var(--dark);
-  box-shadow: 2px 2px 0 var(--dark);
-  padding: 2px 8px;
-}
-.carousel-card-title {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 15px;
-  color: #fff;
-  line-height: 1.35;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  text-shadow: 2px 2px 0 var(--dark);
-}
-.carousel-card-desc {
-  font-family: 'VT323', monospace;
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.88);
-  line-height: 1.3;
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.carousel-card-btn {
-  font-family: 'VT323', monospace;
-  font-size: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.slot-center {
-  transform: translate3d(0, 0, 160px) scale(1.05);
-  z-index: 10;
-  opacity: 1;
-  filter: none;
-}
-.slot-center .carousel-card-btn {
-  background: var(--gold);
-  color: var(--dark);
-  border: 3px solid var(--dark);
-  box-shadow: 3px 3px 0 var(--dark);
-  padding: 6px 14px;
-}
-.slot-left-1 {
-  transform: translate3d(-330px, 0, 40px) rotateY(26deg) scale(0.9);
-  z-index: 6;
-  opacity: 0.85;
-  filter: brightness(0.85);
-}
-.slot-right-1 {
-  transform: translate3d(330px, 0, 40px) rotateY(-26deg) scale(0.9);
-  z-index: 6;
-  opacity: 0.85;
-  filter: brightness(0.85);
-}
-.slot-left-2 {
-  transform: translate3d(-580px, 0, -80px) rotateY(40deg) scale(0.76);
-  z-index: 3;
-  opacity: 0.5;
-  filter: brightness(0.65);
-}
-.slot-right-2 {
-  transform: translate3d(580px, 0, -80px) rotateY(-40deg) scale(0.76);
-  z-index: 3;
-  opacity: 0.5;
-  filter: brightness(0.65);
-}
-.slot-hidden {
-  transform: translate3d(0, 0, -200px) scale(0.5);
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-}
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 20px;
-}
-.carousel-nav-btn {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 14px;
-  width: 44px;
-  height: 44px;
-  background: var(--white);
-  border: 3px solid var(--dark);
-  box-shadow: 4px 4px 0 var(--dark);
-  color: var(--dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-.carousel-nav-btn:hover {
-  background: var(--gold);
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--dark);
-}
-.carousel-nav-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--dark);
-}
-.carousel-indicators {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.indicator-dot {
-  width: 12px;
-  height: 12px;
-  background: var(--white);
-  border: 2px solid var(--dark);
-  cursor: pointer;
-  transition: all 0.1s;
-}
-.indicator-dot.active {
-  width: 24px;
-  background: var(--gold);
-  box-shadow: 2px 2px 0 var(--dark);
-}
-.explore-jump-box {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-}
-.explore-jump-btn {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 12px;
-  color: var(--dark);
-  background: var(--white);
-  border: 3px solid var(--dark);
-  box-shadow: 4px 4px 0 var(--dark);
-  padding: 10px 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-.explore-jump-btn:hover {
-  background: var(--gold);
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--dark);
-}
-.explore-jump-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--dark);
-}
-@media (max-width: 900px) {
-  .carousel-card { width: 280px; height: 360px; }
-  .slot-left-1 { transform: translate3d(-220px, 0, 20px) scale(0.85); }
-  .slot-right-1 { transform: translate3d(220px, 0, 20px) scale(0.85); }
-  .slot-left-2, .slot-right-2 { display: none; }
-}
-@media (max-width: 600px) {
-  .carousel-stage { height: 390px; }
-  .carousel-card { width: 250px; height: 330px; }
-  .carousel-card-title { font-size: 13px; }
-}
-
 /* ── Works Section ── */
 .works-section{
-  width:100%;max-width:1180px;
+  width:100%;max-width:960px;
   animation:fadeUp .9s .28s ease both;
   background:var(--glass2);
   border:4px solid var(--dark);
-  padding:34px;
-  box-shadow:var(--pixel-shadow-lg);
+  padding:30px;
+  box-shadow:var(--pixel-shadow);
 }
 .section-head{
   display:flex;align-items:center;gap:14px;
@@ -503,7 +206,7 @@ body{
 
 /* ── Filter Tabs ── */
 .filter-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
 .filter-label{font-size:20px;color:var(--dark);margin-right:4px;white-space:nowrap}
 .tab{
   font-family:'VT323', monospace;
@@ -525,47 +228,46 @@ body{
 .sub-row{display:none;gap:8px;flex-wrap:wrap;justify-content:center}
 .sub-row.visible{display:flex}
 
-/* ── Gallery Grid (Scaled Up for Maximum Clarity) ── */
+/* ── Gallery ── */
 .gallery{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
-  gap:34px;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:20px;
 }
 .work-card{
   border:3px solid var(--dark);
   background:var(--white);
-  box-shadow:4px 4px 0 rgba(26,42,58,0.4);
-  cursor:pointer;
-  /* Make the hover transition very smooth and slightly springy */
-  transition:transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.4s ease,
-              border-color 0.4s ease,
-              background-color 0.4s ease;
-  transform-origin:center bottom;
-  z-index:1;
-  /* Base state after animation releases */
-  opacity:1;
-  transform:scale(1) translateY(0);
-  /* Use backwards fill-mode so it doesn't lock transform after finishing */
-  animation:cardIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-  position:relative;
-  overflow:visible;
-  will-change:transform, box-shadow;
+  box-shadow:4px 4px 0 rgba(26,42,58,0.5);
+  cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .25s,border-color .15s;
+  animation:cardIn 0.4s ease both;
+  position:relative;overflow:hidden;
 }
-/* Front Frame Jumps Up & Scales: Real 3D Pop Effect */
-.work-card:hover{
-  transform:scale(1.12) translateY(-16px);
-  box-shadow: 8px 20px 0 rgba(26,42,58,0.25), 0 28px 50px rgba(26,42,58,0.35);
-  background:var(--gold-l);
-  border-color:var(--dark);
-  z-index:100;
-}
-.work-card:hover .card-thumb img{filter:brightness(1.05);transition:filter 0.4s ease}
-.work-card:active{transform:scale(1.06) translate(2px,2px);box-shadow:2px 2px 0 var(--dark)}
+.work-card:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 rgba(26,42,58,0.8);background:var(--gold-l);border-color:var(--gold-d)}
+.work-card:hover .card-thumb img{transform:scale(1.08);filter:brightness(1.08);transition:transform 0.35s ease-out, filter 0.35s ease-out}
+.work-card:hover .card-hover-overlay{opacity:1}
+.work-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 rgba(26,42,58,0.7)}
 .work-card:focus-visible{outline:4px dashed var(--danger);outline-offset:4px}
 .tab:focus-visible, .nav-btn:focus-visible, .game-btn:focus-visible, .social-btn:focus-visible, .like-btn:focus-visible { outline: 4px dashed var(--danger); outline-offset: 4px; }
 .work-card.hidden{display:none}
 .work-card.fade-out{opacity:0;transform:translateY(10px)}
+/* Card hover overlay */
+.card-hover-overlay{
+  position:absolute;inset:0;
+  background:rgba(26,42,58,0.45);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.2s ease;
+  z-index:4;pointer-events:none;
+}
+.card-hover-overlay-icon{
+  background:var(--gold);
+  border:3px solid var(--dark);
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:3px 3px 0 var(--dark);
+  font-size:24px;
+  transform:scale(0.85);transition:transform 0.2s ease;
+}
+.work-card:hover .card-hover-overlay-icon{transform:scale(1)}
 /* Scroll reveal */
 .works-section.scroll-reveal{opacity:0;transform:translateY(28px);transition:opacity 0.55s ease, transform 0.55s ease}
 .works-section.scroll-reveal.revealed{opacity:1;transform:translateY(0)}
@@ -621,15 +323,14 @@ body{
   font-size:14px;animation:heartParticle 0.7s ease-out forwards;
   transform-origin:center;
 }
-.card-info{padding:16px 18px}
-.card-name{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--dark);margin-bottom:12px;line-height:1.45}
-.card-cats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.card-info{padding:12px 14px}
+.card-name{font-family:'Press Start 2P',cursive;font-size:12px;color:var(--dark);margin-bottom:10px;line-height:1.4}
+.card-cats{display:flex;gap:6px;flex-wrap:wrap}
 .cat-badge{
-  font-size:18px;
-  padding:4px 10px;
+  font-size:16px;
+  padding:4px 8px;
   background:var(--sky4);border:2px solid var(--dark);color:var(--dark);
   display:inline-flex;align-items:center;gap:6px;
-  box-shadow: 2px 2px 0 var(--dark);
 }
 .cat-badge.sub{background:var(--gold-l);}
 

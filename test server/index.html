@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aritsia's Pixel Art Portfolio, Dynamic 3D Reel & Minigame">
+  <title>Aritsia — Pixel Art Portfolio & Dynamic Reel</title>
+  <link rel="icon" type="image/jpeg" href="../favicon-small.jpg">
+
+  <!-- Google Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/modern.css?v=2">
+</head>
+<body>
+
+  <!-- Pixel Wind VFX Background -->
+  <canvas class="wind-canvas" id="windCanvas"></canvas>
+
+  <!-- Top Navigation -->
+  <header class="top-navbar">
+    <div class="nav-brand">
+      <a href="#" class="brand-logo">ARITSIA</a>
+      <span class="brand-badge">PORTFOLIO</span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="#showcase" class="nav-link">SHOWCASE</a>
+      <a href="#worksSection" class="nav-link">WORKS</a>
+      <a href="#profile" class="nav-link">PROFILE</a>
+    </nav>
+
+    <div class="nav-actions">
+      <!-- Minigame link -->
+      <a href="../game.html" class="play-minigame-btn" style="padding: 6px 12px; font-size: 11px; box-shadow: 2px 2px 0 var(--dark);">
+        ▶ MINIGAME
+      </a>
+
+      <!-- Settings / Admin -->
+      <button class="btn-pixel-icon" onclick="openSettingsModal()" title="Settings & Admin Access">
+        ⚙
+      </button>
+    </div>
+  </header>
+
+  <!-- Profile Hero Section -->
+  <section class="profile-wrap" id="profile">
+    <div class="avatar-ring">
+      <div class="avatar-inner">
+        <img src="../favicon.jpg" alt="Aritsia" id="profileAvatar">
+      </div>
+    </div>
+
+    <h1 class="profile-name">ARITSIA</h1>
+    <p class="role-tag">Game Dev · Minecraft Modder · 3D Artist</p>
+
+    <div class="play-btn-shaker">
+      <a href="../game.html" class="play-minigame-btn">
+        ▶ PLAY MINIGAME
+      </a>
+    </div>
+
+    <!-- Social Links (Loaded dynamically from settings.json) -->
+    <div class="social-links" id="socialLinksBox"></div>
+  </section>
+
+  <!-- Retro 3D Rotating Showcase (Dynamic Reel) -->
+  <section class="showcase-wrapper" id="showcase">
+    <div class="showcase-header-box">
+      <div class="pixel-section-head">
+        <div class="pixel-s-line"></div>
+        <span class="pixel-s-title">✦ DYNAMIC REEL ✦</span>
+        <div class="pixel-s-line"></div>
+      </div>
+      <p class="pixel-s-subtitle">Rotating creations · Click any card to explore details</p>
+    </div>
+
+    <!-- 3D Carousel Stage -->
+    <div class="carousel-stage" id="carouselStage">
+      <div class="carousel-deck" id="carouselDeck">
+        <!-- Injected by modern.js -->
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="carousel-controls">
+      <button class="carousel-nav-btn" onclick="prevShowcase()" title="Previous Work">◀</button>
+      <div class="carousel-indicators" id="carouselIndicators"></div>
+      <button class="carousel-nav-btn" onclick="nextShowcase()" title="Next Work">▶</button>
+    </div>
+
+    <!-- Explore All Jump Button -->
+    <div class="explore-jump-box">
+      <button class="explore-jump-btn" id="exploreJumpBtn">
+        <span>▼ EXPLORE CATEGORIES & ALL WORKS ▼</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Enhanced Works Zone (Easy to Browse) -->
+  <section class="works-section" id="worksSection">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div class="pixel-section-head">
+        <div class="pixel-s-line"></div>
+        <span class="pixel-s-title">✦ ALL CREATIONS ✦</span>
+        <div class="pixel-s-line"></div>
+      </div>
+      <p class="pixel-s-subtitle">Categorized archive · Easily filter by discipline, search or sort</p>
+    </div>
+
+    <!-- Toolbar: Tabs + Search + Sort -->
+    <div class="works-toolbar">
+      <div class="toolbar-top-row">
+        <!-- Category Tabs -->
+        <div class="category-tabs" id="categoryTabs">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Search & Sort Controls -->
+        <div class="toolbar-controls">
+          <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="workSearchInput" placeholder="SEARCH WORKS...">
+          </div>
+
+          <select class="sort-select" id="workSortSelect">
+            <option value="newest" selected>NEWEST FIRST</option>
+            <option value="most_liked">MOST LIKED</option>
+            <option value="oldest">OLDEST FIRST</option>
+            <option value="random">RANDOM SHUFFLE</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Subcategories Row -->
+      <div class="subcat-row" id="subcatRow"></div>
+    </div>
+
+    <!-- Clean Grid of Cards -->
+    <div class="works-grid" id="worksGrid">
+      <!-- Injected by modern.js -->
+    </div>
+  </section>
+
+  <!-- Detail Project Modal (RPG Inspect Box) -->
+  <div class="modal-backdrop" id="projectModal" onclick="if(event.target===this)closeProjectModal()">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeProjectModal()" title="Close">✕</button>
+
+      <!-- Media Area (Image Carousel or 3D Canvas) -->
+      <div class="modal-media-area" id="modalMediaArea"></div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="modal-header-meta" id="modalMeta"></div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+
+        <div class="modal-desc-box">
+          <p id="modalDesc"></p>
+        </div>
+
+        <div class="modal-tools-row" id="modalTools"></div>
+
+        <a href="#" target="_blank" rel="noreferrer" class="modal-action-btn" id="modalActionBtn">
+          ▶ VISIT PROJECT / DOWNLOAD
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings & Admin Modal -->
+  <div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this)closeSettingsModal()">
+    <div class="settings-box">
+      <button class="modal-close-btn" onclick="closeSettingsModal()">✕</button>
+      <h3 style="font-family:'Press Start 2P',cursive; font-size:16px; color:var(--dark); margin-bottom:12px;">ADMIN ACCESS</h3>
+      <p style="font-family:'VT323',monospace; font-size:20px; color:var(--mid); margin-bottom:20px;">Enter your GitHub Token or Passcode to manage content.</p>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-family:'Press Start 2P',cursive; font-size:11px; color:var(--dark); display:block; margin-bottom:8px;">ACCESS CODE / TOKEN</label>
+        <input type="password" id="adminTokenInput" placeholder="ghp_... or passcode" style="width:100%; padding:10px; font-family:'VT323',monospace; font-size:22px; border:3px solid var(--dark); outline:none; background:#fff;" onkeydown="if(event.key==='Enter') goToAdmin()">
+      </div>
+
+      <button class="modal-action-btn" onclick="goToAdmin()" style="margin-bottom:12px;">SUBMIT CODE</button>
+      <p id="adminErrorMsg" style="color:var(--danger); font-family:'VT323',monospace; font-size:18px; text-align:center; min-height:22px;"></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 AritsiaZ. Licensed under the MIT License.</p>
+    <p style="font-size:18px; opacity:0.8; margin-top:4px;">Crafted with Pixel Art & Retro Heart.</p>
+  </footer>
+
+  <!-- Firebase Auth & Likes Manager (Reuse existing) -->
+  <script type="module">
+    import * as authManager from '../js/authManager.js';
+    window.portfolioAuthManager = authManager;
+
+    try {
+      if (authManager.fetchLikeCounts) {
+        authManager.fetchLikeCounts().then(likes => {
+          if (likes) {
+            window.globalLikes = likes;
+            if (window.renderWorksGrid) window.renderWorksGrid();
+          }
+        });
+      }
+      if (authManager.onUserChange) {
+        authManager.onUserChange(user => {
+          if (user && authManager.fetchUserLikes) {
+            authManager.fetchUserLikes(user.uid).then(ul => {
+              if (ul) {
+                window.userLikes = ul;
+                if (window.renderWorksGrid) window.renderWorksGrid();
+              }
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Firebase initialized in fallback mode', e);
+    }
+  </script>
+
+  <script src="js/modern.js?v=2"></script>
+</body>
+</html>
