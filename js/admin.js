@@ -1484,12 +1484,12 @@ window.toggleStar = async function(id) {
     // Save to server/github in the background
     try {
       await saveWorks();
-      toast(w.starred ? 'Added to Dynamic Reel!' : 'Removed from Dynamic Reel!');
+      if(window.toastManager) window.toastManager.show(w.starred ? 'Added to Dynamic Reel!' : 'Removed from Dynamic Reel!', 'success');
     } catch(e) {
       // Revert if failed
       w.starred = !w.starred;
       renderAdminList();
-      toast('Error: ' + e.message);
+      if(window.toastManager) window.toastManager.show('Error: ' + e.message, 'error');
       console.error(e);
     }
   }
