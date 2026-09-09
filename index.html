@@ -19,6 +19,20 @@
 </head>
 <body>
 
+<!-- Loading Screen -->
+<div id="loadingScreen" style="position: fixed; inset: 0; background-color: var(--dark, #142841); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; color: white; font-family: 'Press Start 2P', cursive;">
+  <h1 style="font-size: 24px; margin-bottom: 20px; animation: blink 1s infinite;">LOADING...</h1>
+  <div style="width: 200px; height: 20px; border: 4px solid white; background: transparent; padding: 2px; box-sizing: border-box;">
+    <div id="loadingBar" style="width: 0%; height: 100%; background-color: white; transition: width 0.1s linear;"></div>
+  </div>
+</div>
+<style>
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+</style>
+
 <!-- Top Navigation -->
 <div class="top-nav" style="justify-content: flex-end;">
   <button class="nav-btn" onclick="openSettingsModal()" style="font-size: 24px; padding: 4px 8px; margin: 0; display: flex; align-items: center; height: 44px;">⚙</button>
@@ -234,6 +248,37 @@
   </div>
 </div>
 </body>
+<script>
+  // Simple loading animation script
+  document.addEventListener('DOMContentLoaded', () => {
+    let progress = 0;
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingScreen = document.getElementById('loadingScreen');
+    
+    // Simulate loading progress
+    const interval = setInterval(() => {
+      // Increase by random amount between 2 and 15
+      progress += Math.random() * 13 + 2;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        
+        // Ensure it visually hits 100%
+        loadingBar.style.width = progress + '%';
+        
+        // Wait a bit, then fade out
+        setTimeout(() => {
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500); // Wait for transition to finish
+        }, 300);
+      } else {
+        loadingBar.style.width = progress + '%';
+      }
+    }, 60);
+  });
+</script>
 <script>
 // ── Pixel Sweat Drops on Play Button ──
 (function() {
