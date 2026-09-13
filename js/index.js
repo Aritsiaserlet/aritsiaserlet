@@ -337,12 +337,17 @@ function renderGallery() {
   }
 
   const loadMoreBtn = document.getElementById('loadMoreBtn');
-  if (loadMoreBtn) {
-    if (filtered.length > visibleItemsCount) {
-      loadMoreBtn.style.display = 'inline-block';
-    } else {
-      loadMoreBtn.style.display = 'none';
-    }
+  const showLessBtn = document.getElementById('showLessBtn');
+  
+  if (filtered.length <= 8) {
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    if (showLessBtn) showLessBtn.style.display = 'none';
+  } else if (visibleItemsCount >= filtered.length) {
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    if (showLessBtn) showLessBtn.style.display = 'inline-block';
+  } else {
+    if (loadMoreBtn) loadMoreBtn.style.display = 'inline-block';
+    if (showLessBtn) showLessBtn.style.display = 'none';
   }
 }
 
@@ -486,6 +491,14 @@ window.setShowcaseIndex = setShowcaseIndex;
 window.loadMoreWorks = function() {
   visibleItemsCount = 9999; // Load all
   renderGallery();
+};
+
+window.showLessWorks = function() {
+  visibleItemsCount = 8;
+  renderGallery();
+  // Scroll back to gallery
+  const gallery = document.getElementById('gallery');
+  if (gallery) gallery.scrollIntoView({ behavior: 'smooth' });
 };
 
 function setMainCat(cat, btn) {

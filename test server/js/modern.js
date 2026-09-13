@@ -285,6 +285,13 @@ window.loadMoreWorks = function() {
   renderWorksGrid();
 };
 
+window.showLessWorks = function() {
+  visibleItemsCount = 8;
+  renderWorksGrid();
+  const target = document.getElementById('worksSection');
+  if (target) target.scrollIntoView({ behavior: 'smooth' });
+};
+
 window.selectCategory = function(cat, btn) {
   currentMainCat = cat;
   currentSubCat = 'all';
@@ -410,12 +417,17 @@ function renderWorksGrid() {
   }).join('');
 
   const loadMoreBtn = document.getElementById('loadMoreBtn');
-  if (loadMoreBtn) {
-    if (filtered.length > visibleItemsCount) {
-      loadMoreBtn.style.display = 'inline-block';
-    } else {
-      loadMoreBtn.style.display = 'none';
-    }
+  const showLessBtn = document.getElementById('showLessBtn');
+  
+  if (filtered.length <= 8) {
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    if (showLessBtn) showLessBtn.style.display = 'none';
+  } else if (visibleItemsCount >= filtered.length) {
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    if (showLessBtn) showLessBtn.style.display = 'inline-block';
+  } else {
+    if (loadMoreBtn) loadMoreBtn.style.display = 'inline-block';
+    if (showLessBtn) showLessBtn.style.display = 'none';
   }
 }
 
