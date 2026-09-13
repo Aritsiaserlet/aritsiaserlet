@@ -484,7 +484,7 @@ window.setShowcaseIndex = setShowcaseIndex;
 
 // ── Gallery Filter Controls ──
 window.loadMoreWorks = function() {
-  visibleItemsCount += 8;
+  visibleItemsCount = 9999; // Load all
   renderGallery();
 };
 

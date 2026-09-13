@@ -281,7 +281,7 @@ function initCategories() {
 }
 
 window.loadMoreWorks = function() {
-  visibleItemsCount += 8;
+  visibleItemsCount = 9999;
   renderWorksGrid();
 };
 
