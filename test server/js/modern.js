@@ -280,9 +280,15 @@ function initCategories() {
   }).join('');
 }
 
+window.loadMoreWorks = function() {
+  visibleItemsCount += 8;
+  renderWorksGrid();
+};
+
 window.selectCategory = function(cat, btn) {
   currentMainCat = cat;
   currentSubCat = 'all';
+  visibleItemsCount = 8;
 
   document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
@@ -312,6 +318,7 @@ window.selectCategory = function(cat, btn) {
 
 window.selectSubcat = function(sub, btn) {
   currentSubCat = sub;
+  visibleItemsCount = 8;
   document.querySelectorAll('.subcat-pill').forEach(p => p.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderWorksGrid();
@@ -359,7 +366,7 @@ function renderWorksGrid() {
     return;
   }
 
-  container.innerHTML = filtered.map(w => {
+  container.innerHTML = filtered.slice(0, visibleItemsCount).map(w => {
     const imgUrl = Array.isArray(w.image) ? w.image[0] : (w.image || '../favicon.jpg');
     const catName = ({ game: 'GAME', mod: 'MINECRAFT', '3d': '3D MODEL' }[w.cat] || w.cat || 'WORK').toUpperCase();
     const yearStr = String(w.year || '').split(' ')[0];
@@ -401,6 +408,15 @@ function renderWorksGrid() {
       </article>
     `;
   }).join('');
+
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  if (loadMoreBtn) {
+    if (filtered.length > visibleItemsCount) {
+      loadMoreBtn.style.display = 'inline-block';
+    } else {
+      loadMoreBtn.style.display = 'none';
+    }
+  }
 }
 
 // ── Detail Modal (RPG Inspection Dialogue) ──
@@ -629,6 +645,7 @@ function initControls() {
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       searchQuery = e.target.value.trim();
+      visibleItemsCount = 8;
       renderWorksGrid();
     });
   }
@@ -637,6 +654,7 @@ function initControls() {
   if (sortSelect) {
     sortSelect.addEventListener('change', (e) => {
       currentSort = e.target.value;
+      visibleItemsCount = 8;
       renderWorksGrid();
     });
   }

@@ -63,6 +63,7 @@ let settings = {};
 let currentMainCat = 'all';
 let currentSubCat = 'all';
 let currentSort = 'newest'; // Default sort
+let visibleItemsCount = 8;
 
 const GH_USER = 'OzonZ';
 const GH_REPO = 'Non-Four-Portfolio-Data';
@@ -271,7 +272,7 @@ function renderGallery() {
   } else {
     emptyState.style.display = 'none';
     const fragment = document.createDocumentFragment();
-    filtered.forEach((w, idx) => {
+    filtered.slice(0, visibleItemsCount).forEach((w, idx) => {
       const card = document.createElement('div');
       card.className = 'work-card';
       card.tabIndex = 0;
@@ -333,6 +334,15 @@ function renderGallery() {
       fragment.appendChild(card);
     });
     gallery.appendChild(fragment);
+  }
+
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  if (loadMoreBtn) {
+    if (filtered.length > visibleItemsCount) {
+      loadMoreBtn.style.display = 'inline-block';
+    } else {
+      loadMoreBtn.style.display = 'none';
+    }
   }
 }
 
@@ -473,9 +483,15 @@ window.prevShowcase = prevShowcase;
 window.setShowcaseIndex = setShowcaseIndex;
 
 // ── Gallery Filter Controls ──
+window.loadMoreWorks = function() {
+  visibleItemsCount += 8;
+  renderGallery();
+};
+
 function setMainCat(cat, btn) {
   currentMainCat = cat;
   currentSubCat = 'all';
+  visibleItemsCount = 8;
   document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   const subRow = document.getElementById('subRow');
@@ -498,6 +514,7 @@ function setMainCat(cat, btn) {
 
 function setSubCat(sub, btn) {
   currentSubCat = sub;
+  visibleItemsCount = 8;
   document.querySelectorAll('#subRow .subtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   renderGallery();
@@ -505,6 +522,7 @@ function setSubCat(sub, btn) {
 
 function handleSortChange() {
   currentSort = document.getElementById('sortSelect').value;
+  visibleItemsCount = 8;
   renderGallery();
 }
 
