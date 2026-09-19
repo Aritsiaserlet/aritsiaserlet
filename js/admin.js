@@ -384,6 +384,8 @@ function onCatChange(){
   }
   
   mw.style.display=cat==='3d'?'block':'none';
+  const yw=document.getElementById('youtubeWrap');
+  if(yw) yw.style.display=(cat==='animation')?'block':'none';
 }
 
 let currentModelBase64=null, currentModelName=null;
@@ -1323,22 +1325,24 @@ async function addWork(){
       const idx = works.findIndex(x => x.id === editingId);
       if (idx !== -1) {
         works[idx] = { ...works[idx], name, year, cat,
-          subcat: (cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
+          subcat: (cat==='game'||cat==='mod'||cat==='3d'||cat==='animation')?subcat:'',
           desc, links: currentWorkLinks, team: selectedTeams,
           imageFocal: currentImgFocal,
           image: imagePath,
           model: modelPath,
-          tools: selectedTools
+          tools: selectedTools,
+          youtube: document.getElementById('wYoutube') ? document.getElementById('wYoutube').value.trim() : ''
         };
       }
     } else {
       works.push({
         id:Date.now(),name,year,cat,
-        subcat:(cat==='game'||cat==='mod'||cat==='3d')?subcat:'',
+        subcat:(cat==='game'||cat==='mod'||cat==='3d'||cat==='animation')?subcat:'',
         desc,image:imagePath,model:modelPath,
         links:currentWorkLinks, team: selectedTeams,
         imageFocal:currentImgFocal,
         tools:selectedTools,
+        youtube: document.getElementById('wYoutube') ? document.getElementById('wYoutube').value.trim() : '',
         date:new Date().toISOString()
       });
     }
@@ -1531,6 +1535,7 @@ function resetForm(){
   document.getElementById('wCat').value='';
   document.getElementById('wSubcat').value='';
   document.getElementById('wDesc').value='';
+  if (document.getElementById('wYoutube')) document.getElementById('wYoutube').value='';
   currentWorkLinks = [];
   renderWorkLinks();
   document.getElementById('subcatWrap').classList.remove('visible');
@@ -1613,6 +1618,7 @@ function editWork(id) {
   }
   document.getElementById('wSubcat').value = w.subcat || '';
   document.getElementById('wDesc').value = w.desc || '';
+  if (document.getElementById('wYoutube')) document.getElementById('wYoutube').value = w.youtube || '';
   
   // Backward compatibility: Convert old single 'link' to 'links' array
   if (w.links) {

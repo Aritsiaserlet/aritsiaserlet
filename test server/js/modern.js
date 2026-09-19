@@ -390,10 +390,29 @@ function renderWorksGrid() {
       }).join('');
     }
 
+    let mediaHtml = `<img src="${imgUrl}" alt="${escapeHTML(w.name)}" style="object-position:center ${focalY}%" loading="lazy">`;
+    if (w.youtube && w.cat === 'animation') {
+      let yId = '';
+      try {
+        if (w.youtube.includes('youtube.com/watch?v=')) yId = new URL(w.youtube).searchParams.get('v');
+        else if (w.youtube.includes('youtu.be/')) yId = w.youtube.split('youtu.be/')[1].split('?')[0];
+      } catch(e){}
+      
+      if (yId) {
+        mediaHtml = `
+          <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;background:transparent;"></div>
+          <iframe src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&controls=0&showinfo=0&rel=0&modestbranding=1" 
+                  style="width:100%; height:100%; border:none; pointer-events:none; background:#000;" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen></iframe>
+        `;
+      }
+    }
+
     return `
       <article class="work-card" onclick="openProjectModalById('${w.id}')">
-        <div class="card-thumb-wrap">
-          <img src="${imgUrl}" alt="${escapeHTML(w.name)}" style="object-position:center ${focalY}%" loading="lazy">
+        <div class="card-thumb-wrap" style="position:relative;">
+          ${mediaHtml}
           <div class="card-top-badges">
             <span class="badge-cat">${catName}</span>
             ${yearStr ? `<span class="badge-year">${yearStr}</span>` : ''}
@@ -486,8 +505,10 @@ function openProjectModal(w) {
   // Media
   let videoUrl = '';
   if (w.cat === 'animation') {
-    const allUrls = (w.links || []).map(l => l.url);
-    if (w.link) allUrls.unshift(w.link);
+    const allUrls = [];
+    if (w.youtube) allUrls.push(w.youtube);
+    if (w.links) allUrls.push(...w.links.map(l=>l.url));
+    if (w.link) allUrls.push(w.link);
     for (const u of allUrls) {
       if (u.includes('youtube.com/watch?v=')) {
         videoUrl = 'https://www.youtube.com/embed/' + new URL(u).searchParams.get('v');

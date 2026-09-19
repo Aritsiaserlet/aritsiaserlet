@@ -308,9 +308,27 @@ function renderGallery() {
       const safeLabel = escapeHTML(catLabel);
       const safeSub = escapeHTML(subLabel);
 
+      let thumbHtml = w.image ? `<img src="${Array.isArray(w.image) ? w.image[0] : w.image}" alt="${safeName}" loading="lazy" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`;
+      if (w.youtube && w.cat === 'animation') {
+        let yId = '';
+        try {
+          if (w.youtube.includes('youtube.com/watch?v=')) yId = new URL(w.youtube).searchParams.get('v');
+          else if (w.youtube.includes('youtu.be/')) yId = w.youtube.split('youtu.be/')[1].split('?')[0];
+        } catch(e){}
+        if (yId) {
+          thumbHtml = `
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;background:transparent;"></div>
+            <iframe src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&controls=0&showinfo=0&rel=0&modestbranding=1" 
+                    style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); min-width:100%; min-height:100%; width:177.77vh; height:56.25vw; border:none; pointer-events:none; background:#000;" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen></iframe>
+          `;
+        }
+      }
+
       card.innerHTML = `
-        <div class="card-thumb">
-          ${w.image ? `<img src="${Array.isArray(w.image) ? w.image[0] : w.image}" alt="${safeName}" loading="lazy" style="object-position:center ${focalY}%">` : `<div style="font-size:48px;">${catIcon||''}</div>`}
+        <div class="card-thumb" style="position:relative; overflow:hidden;">
+          ${thumbHtml}
           ${w.cat === '3d' ? `<div style="position:absolute;top:8px;left:8px;background:var(--white);border:2px solid var(--dark);padding:2px 6px;font-size:14px;display:flex;align-items:center;gap:4px;box-shadow:2px 2px 0 var(--dark);z-index:5;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
             3D

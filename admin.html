@@ -424,6 +424,10 @@
             <option value="">— select type —</option>
           </select>
         </div>
+        <div class="field" id="youtubeWrap" style="display:none;">
+          <label>YouTube Link (Looping Thumbnail & Video)</label>
+          <input type="url" id="wYoutube" placeholder="e.g. https://www.youtube.com/watch?v=XXXXX">
+        </div>
         <div class="field">
           <label>Description (optional)</label>
           <textarea id="wDesc" placeholder="Short description..."></textarea>
@@ -497,7 +501,7 @@
   </div>
 </div>
 
-<script src="js/admin.js?v=7" defer></script>
+<script src="js/admin.js?v=8" defer></script>
 <!-- Preview Modal -->
 <div class="prev-overlay" id="prevOverlay" onclick="if(event.target===this)closePrev()">
   <div class="prev-box">
@@ -538,6 +542,6 @@
   </div>
 </div>
 
-<script src="js/admin.js?v=7"></script>
+<script src="js/admin.js?v=8"></script>
 </body>
 </html>
