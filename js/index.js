@@ -190,12 +190,12 @@ function applySettings() {
   const allIconHtml = allIconUrl ? `<img src="${allIconUrl}" class="tab-icon" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
   
   mainTabs.innerHTML = `<span class="filter-label">Category:</span><button class="tab active" data-cat="all" onclick="setMainCat('all',this)">${allIconHtml}All</button>`;
-  ['game','mod','3d'].forEach(id => {
-    const c = settings.categories && settings.categories[id] ? settings.categories[id] : {};
-    const name = c.name || (id==='game'?'Game':id==='mod'?'Minecraft Mod':'3D Model');
+  ['game','mod','3d','animation'].forEach(id => {
+    const catSetting = settings.categories && settings.categories[id] ? settings.categories[id] : {};
+    const name = catSetting.name || (id === 'game' ? 'Game' : (id === 'mod' ? 'Minecraft Mod' : (id === '3d' ? '3D Model' : 'Animation')));
     let url = '';
-    if(c.iconId && settings.icons) {
-      const ic = settings.icons.find(x => x.id === c.iconId);
+    if(catSetting.iconId && settings.icons) {
+      const ic = settings.icons.find(x => x.id === catSetting.iconId);
       if(ic) url = ic.url;
     }
     const iconHtml = url ? `<img src="${url}" class="tab-icon" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;">` : '';
@@ -280,7 +280,7 @@ function renderGallery() {
       card.onclick = () => openModal(w);
       card.onkeydown = (e) => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); openModal(w); } };
       const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
-      const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
+      const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model', 'animation':'Animation'}[w.cat] || w.cat);
       
       let catIconUrl = '';
       if(catSetting.iconId && settings.icons) {
@@ -374,7 +374,7 @@ function initShowcaseReel() {
   deck.innerHTML = showcaseWorks.map((w, idx) => {
     const imgUrl = Array.isArray(w.image) ? w.image[0] : (w.image || 'favicon.jpg');
     const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
-    const catLabel = (catSetting.name || ({game:'GAME', mod:'MINECRAFT MOD', '3d':'3D MODEL'}[w.cat] || w.cat)).toUpperCase();
+    const catLabel = (catSetting.name || ({game:'GAME', mod:'MINECRAFT MOD', '3d':'3D MODEL', animation:'ANIMATION'}[w.cat] || w.cat)).toUpperCase();
     const yearStr = String(w.year || '').split(' ')[0] || '';
     const focalY = (w.imageFocal !== undefined && w.imageFocal !== null) ? w.imageFocal : 50;
 
@@ -514,6 +514,7 @@ function setMainCat(cat, btn) {
     if (cat === 'game') subOptions = ['RPG', 'Action', 'Puzzle', 'Visual Novel', 'Platformer', 'Other'];
     if (cat === 'mod') subOptions = ['Client-side', 'Server-side', 'Content', 'Utility', 'Other'];
     if (cat === '3d') subOptions = ['Character', 'Building', 'Object', 'Creature', 'Other'];
+    if (cat === 'animation') subOptions = ['Character', 'Short Film', 'Rigging', 'VFX', 'Other'];
     
     subRow.innerHTML = `<span class="filter-label">Type:</span><button class="tab subtab active" data-sub="all" onclick="setSubCat('all',this)">All</button>`;
     subOptions.forEach(opt => {
@@ -564,7 +565,7 @@ loadData();
 function openModal(w) {
   if (window.portfolioAudioManager && window.portfolioAudioManager.sfxBtn) window.portfolioAudioManager.sfxBtn();
   const catSetting = settings.categories && settings.categories[w.cat] ? settings.categories[w.cat] : {};
-  const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model'}[w.cat] || w.cat);
+  const catLabel = catSetting.name || ({game:'Game', mod:'Minecraft Mod', '3d':'3D Model', 'animation':'Animation'}[w.cat] || w.cat);
   
   let catIconUrl = '';
   if(catSetting.iconId && settings.icons) {
@@ -576,7 +577,32 @@ function openModal(w) {
 
   // Media area
   const media = document.getElementById('modalMedia');
-  if (w.cat === '3d' && w.model) {
+  
+  let videoUrl = '';
+  if (w.cat === 'animation') {
+    const allUrls = (w.links || []).map(l => l.url);
+    if (w.link) allUrls.unshift(w.link);
+    for (const u of allUrls) {
+      if (u.includes('youtube.com/watch?v=')) {
+        videoUrl = 'https://www.youtube.com/embed/' + new URL(u).searchParams.get('v');
+        break;
+      } else if (u.includes('youtu.be/')) {
+        videoUrl = 'https://www.youtube.com/embed/' + u.split('youtu.be/')[1].split('?')[0];
+        break;
+      } else if (u.endsWith('.mp4') || u.endsWith('.webm')) {
+        videoUrl = u;
+        break;
+      }
+    }
+  }
+
+  if (w.cat === 'animation' && videoUrl) {
+    if (videoUrl.includes('youtube.com')) {
+      media.innerHTML = `<div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-bottom:4px solid var(--dark);"><iframe src="${videoUrl}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    } else {
+      media.innerHTML = `<div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-bottom:4px solid var(--dark);"><video src="${videoUrl}" controls autoplay style="width:100%;height:100%;object-fit:contain;background:#000;"></video></div>`;
+    }
+  } else if (w.cat === '3d' && w.model) {
     media.innerHTML = '<canvas class="modal-viewer" id="threeCanvas"></canvas><p class="viewer-hint">🖱 Drag = Rotate &nbsp;·&nbsp; Shift+Drag = Pan &nbsp;·&nbsp; Scroll = Zoom</p>';
     setTimeout(() => initThreeViewer(w.model), 80);
   } else if (w.image) {

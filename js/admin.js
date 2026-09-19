@@ -374,6 +374,7 @@ function onCatChange(){
     if (cat === 'game') options = ['RPG', 'Action', 'Puzzle', 'Visual Novel', 'Platformer', 'Other'];
     if (cat === 'mod') options = ['Client-side', 'Server-side', 'Content', 'Utility', 'Other'];
     if (cat === '3d') options = ['Character', 'Building', 'Object', 'Creature', 'Other'];
+    if (cat === 'animation') options = ['Character', 'Short Film', 'Rigging', 'VFX', 'Other'];
     
     options.forEach(opt => {
       subcat.innerHTML += `<option value="${opt.toLowerCase()}">${opt}</option>`;
@@ -886,10 +887,10 @@ function renderSettingsUI() {
     catsBox.innerHTML = '';
     if (!settings.categories) settings.categories = {};
     if (settings.categories) {
-      ['game', 'mod', '3d'].forEach(id => {
+      ['game', 'mod', '3d', 'animation'].forEach(id => {
         if (!settings.categories[id]) settings.categories[id] = {};
         const c = settings.categories[id];
-        const defaultName = id === 'game' ? 'GAME' : (id === 'mod' ? 'MINECRAFT MOD' : '3D MODEL');
+        const defaultName = id === 'game' ? 'GAME' : (id === 'mod' ? 'MINECRAFT MOD' : (id === '3d' ? '3D MODEL' : 'ANIMATION'));
         
         let iconUrl = '';
         if (c.iconId && settings.icons) {
@@ -1264,7 +1265,7 @@ async function addWork(){
 
   if(!name){showMsg('Please enter a work name.','err');return}
   if(!cat){showMsg('Please select a category.','err');return}
-  if(!subcat && (cat==='game'||cat==='mod'||cat==='3d')){showMsg('Please select a sub-category.','err');return}
+  if(!subcat && (cat==='game'||cat==='mod'||cat==='3d'||cat==='animation')){showMsg('Please select a sub-category.','err');return}
 
   const btn=document.getElementById('submitBtn');
   const bar=document.getElementById('progressBar');

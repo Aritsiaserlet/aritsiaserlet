@@ -133,7 +133,7 @@ function initShowcase() {
 
   deck.innerHTML = showcaseWorks.map((w, idx) => {
     const imgUrl = Array.isArray(w.image) ? w.image[0] : (w.image || '../favicon.jpg');
-    const catName = ({ game: 'GAME DEV', mod: 'MINECRAFT MOD', '3d': '3D MODEL' }[w.cat] || w.cat || 'PROJECT').toUpperCase();
+    const catName = ({ game: 'GAME DEV', mod: 'MINECRAFT MOD', '3d': '3D MODEL', animation: 'ANIMATION' }[w.cat] || w.cat || 'PROJECT').toUpperCase();
     const yearStr = String(w.year || '').split(' ')[0] || '';
     const focalY = w.imageFocal !== undefined ? w.imageFocal : 50;
 
@@ -257,10 +257,11 @@ function initCategories() {
     all: 'ALL',
     mod: 'MINECRAFT MODS',
     game: 'GAME DEV',
-    '3d': '3D MODELS'
+    '3d': '3D MODELS',
+    animation: 'ANIMATIONS'
   };
 
-  const cats = ['all', 'mod', 'game', '3d'];
+  const cats = ['all', 'mod', 'game', '3d', 'animation'];
   // Add any other dynamic categories
   Object.keys(catCounts).forEach(c => {
     if (!cats.includes(c)) cats.push(c);
@@ -375,7 +376,7 @@ function renderWorksGrid() {
 
   container.innerHTML = filtered.slice(0, visibleItemsCount).map(w => {
     const imgUrl = Array.isArray(w.image) ? w.image[0] : (w.image || '../favicon.jpg');
-    const catName = ({ game: 'GAME', mod: 'MINECRAFT', '3d': '3D MODEL' }[w.cat] || w.cat || 'WORK').toUpperCase();
+    const catName = ({ game: 'GAME', mod: 'MINECRAFT', '3d': '3D MODEL', animation: 'ANIMATION' }[w.cat] || w.cat || 'WORK').toUpperCase();
     const yearStr = String(w.year || '').split(' ')[0];
     const focalY = w.imageFocal !== undefined ? w.imageFocal : 50;
     const likesCount = globalLikes[w.id] || 0;
@@ -451,7 +452,7 @@ function openProjectModal(w) {
 
   if (!modal) return;
 
-  const catName = ({ game: 'GAME DEV', mod: 'MINECRAFT MOD', '3d': '3D MODEL' }[w.cat] || w.cat || 'PROJECT').toUpperCase();
+  const catName = ({ game: 'GAME DEV', mod: 'MINECRAFT MOD', '3d': '3D MODEL', animation: 'ANIMATION' }[w.cat] || w.cat || 'PROJECT').toUpperCase();
   const yearStr = String(w.year || '').split(' ')[0];
 
   titleEl.textContent = w.name;
@@ -483,7 +484,31 @@ function openProjectModal(w) {
   }
 
   // Media
-  if (w.cat === '3d' && w.model) {
+  let videoUrl = '';
+  if (w.cat === 'animation') {
+    const allUrls = (w.links || []).map(l => l.url);
+    if (w.link) allUrls.unshift(w.link);
+    for (const u of allUrls) {
+      if (u.includes('youtube.com/watch?v=')) {
+        videoUrl = 'https://www.youtube.com/embed/' + new URL(u).searchParams.get('v');
+        break;
+      } else if (u.includes('youtu.be/')) {
+        videoUrl = 'https://www.youtube.com/embed/' + u.split('youtu.be/')[1].split('?')[0];
+        break;
+      } else if (u.endsWith('.mp4') || u.endsWith('.webm')) {
+        videoUrl = u;
+        break;
+      }
+    }
+  }
+
+  if (w.cat === 'animation' && videoUrl) {
+    if (videoUrl.includes('youtube.com')) {
+      mediaArea.innerHTML = `<iframe src="${videoUrl}?autoplay=1" style="width:100%;height:100%;border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      mediaArea.innerHTML = `<video src="${videoUrl}" controls autoplay style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`;
+    }
+  } else if (w.cat === '3d' && w.model) {
     mediaArea.innerHTML = `<canvas id="threeModalCanvas" class="modal-3d-canvas"></canvas>`;
     setTimeout(() => initThreeViewer(w.model), 60);
   } else {
