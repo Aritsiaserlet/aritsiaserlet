@@ -12,6 +12,39 @@
   let currentWorkFilter = 'all';
   let currentDisplayedWorks = [];
 
+  // ── XSS Sanitization Helpers ──
+  function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function escUrl(url) {
+    if (!url) return '';
+    const u = String(url).trim();
+    if (/^(https?:|\/|data:image\/)/i.test(u)) return esc(u);
+    return '';
+  }
+
+  // ── Network Timeout Helper (AbortController) ──
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(id);
+      return response;
+    } catch (err) {
+      clearTimeout(id);
+      throw err;
+    }
+  }
+
+  const CACHE_TTL_MS = 300_000; // 5 minutes cache TTL
+
   const itchContact = {
     name: "ITCH.IO",
     link: "https://ozonz.itch.io",
