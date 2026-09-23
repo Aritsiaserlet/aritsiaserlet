@@ -10,6 +10,7 @@
   const DATA_OWNER = 'OzonZ';
   const DATA_REPO = 'Non-Four-Portfolio-Data';
   let currentWorkFilter = 'all';
+  let currentDisplayedWorks = [];
 
   const itchContact = {
     name: "ITCH.IO",
@@ -987,13 +988,18 @@
     // Apply filtering
     if (currentWorkFilter !== 'all') {
         works = works.filter(w => {
+            const cats = Array.isArray(w.categories) ? w.categories.map(c => String(c).toLowerCase()) : [];
             let tags = Array.isArray(w.tags) ? w.tags.join(', ').toLowerCase() : (typeof w.tags === 'string' ? w.tags.toLowerCase() : `${w.cat || ''} ${w.subcat || ''}`.toLowerCase());
+            
+            const isGame = cats.includes('game') || cats.includes('games') || tags.includes('game') || tags.includes('games');
+            const isWebsite = cats.includes('website') || cats.includes('web') || cats.includes('webapp') || tags.includes('web') || tags.includes('website');
+
             if (currentWorkFilter === 'games') {
-                return tags.includes('game') || tags.includes('games');
+                return isGame;
             } else if (currentWorkFilter === 'website') {
-                return tags.includes('web') || tags.includes('website');
+                return isWebsite;
             } else if (currentWorkFilter === 'other') {
-                return !tags.includes('game') && !tags.includes('games') && !tags.includes('web') && !tags.includes('website');
+                return cats.includes('other') || (!isGame && !isWebsite);
             }
             return true;
         });
@@ -1018,8 +1024,8 @@
         const tagline = w.tagline || w.aiSummary || getShortDescription(w.desc || w.description || '');
         return { ...w, title: w.name || w.title, detail: w.desc || w.description || '', tagline: tagline, aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
       });
-      globalWorks = works;
-    }
+      currentDisplayedWorks = works;
+}
 
     if (works.length === 0) {
       grid.innerHTML = '<div class="text-center text-on-surface-variant py-10 col-span-12">No works available.</div>';

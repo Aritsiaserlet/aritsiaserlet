@@ -660,11 +660,32 @@
                             id="work-name" type="text" required />
                     </div>
 
+                    <div class="col-span-2">
+                        <label class="font-label-md text-xs text-primary mb-1.5 flex items-center justify-between">
+                            <span>CATEGORY / WORK TYPE (MULTIPLE CHOICE)</span>
+                            <span class="text-[11px] text-on-surface-variant font-normal">Select which filter tab(s) this appears in</span>
+                        </label>
+                        <div class="grid grid-cols-3 gap-2.5" id="work-category-group">
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container border border-outline/10 hover:border-primary/40 cursor-pointer text-xs font-semibold select-none transition-all">
+                                <input type="checkbox" name="work-category" value="Game" class="work-cat-cb rounded text-primary focus:ring-0 w-4 h-4 cursor-pointer" />
+                                <span>🎮 Game</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container border border-outline/10 hover:border-primary/40 cursor-pointer text-xs font-semibold select-none transition-all">
+                                <input type="checkbox" name="work-category" value="Website" class="work-cat-cb rounded text-primary focus:ring-0 w-4 h-4 cursor-pointer" />
+                                <span>🌐 Website</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container border border-outline/10 hover:border-primary/40 cursor-pointer text-xs font-semibold select-none transition-all">
+                                <input type="checkbox" name="work-category" value="Other" class="work-cat-cb rounded text-primary focus:ring-0 w-4 h-4 cursor-pointer" />
+                                <span>📦 Other</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="font-label-md text-xs text-primary mb-1 block">TAGS (COMMA-SEPARATED)</label>
                         <input type="text" id="work-tags"
                             class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md"
-                            placeholder="e.g. PIXEL ART, C#, UNITY" required />
+                            placeholder="e.g. PIXEL ART, C#, UNITY" />
                     </div>
 
                     <div>
@@ -1343,6 +1364,20 @@
 
                 const tags = w?.tags;
                 document.getElementById('work-tags').value = Array.isArray(tags) ? tags.join(', ') : (tags || '');
+
+                // Sync category checkboxes
+                const tagList = Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : []);
+                const savedCats = Array.isArray(w?.categories) ? w.categories : [];
+                const isGame = savedCats.some(c => c.toLowerCase() === 'game' || c.toLowerCase() === 'games') || tagList.some(t => t.toLowerCase().includes('game'));
+                const isWeb = savedCats.some(c => c.toLowerCase() === 'website' || c.toLowerCase() === 'web' || c.toLowerCase() === 'webapp') || tagList.some(t => t.toLowerCase().includes('web'));
+                const isOther = savedCats.some(c => c.toLowerCase() === 'other') || (!isGame && !isWeb && tagList.length > 0);
+
+                const gCb = document.querySelector('.work-cat-cb[value="Game"]');
+                const wCb = document.querySelector('.work-cat-cb[value="Website"]');
+                const oCb = document.querySelector('.work-cat-cb[value="Other"]');
+                if (gCb) gCb.checked = isGame;
+                if (wCb) wCb.checked = isWeb;
+                if (oCb) oCb.checked = isOther;
                 document.getElementById('work-desc').value = w?.desc || '';
                 document.getElementById('work-year').value = w?.year || '';
                 document.getElementById('work-ai-summary').value = w?.aiSummary || '';
@@ -1435,7 +1470,16 @@
                     aiSummary: document.getElementById('work-ai-summary').value.trim(),
                     image: imgVal,
                     images: finalImageUrls,
-                    tags: tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [],
+                    categories: selectedCats,
+                    tags: (() => {
+                        let parsedTags = tagsVal ? tagsVal.split(',').map(t => t.trim()).filter(Boolean) : [];
+                        selectedCats.forEach(cat => {
+                            if (!parsedTags.some(t => t.toLowerCase() === cat.toLowerCase())) {
+                                parsedTags.unshift(cat);
+                            }
+                        });
+                        return parsedTags;
+                    })(),
                     links: collectLinks(),
                     team: Array.from(document.querySelectorAll('.collab-checkbox:checked')).map(cb => cb.value),
                     tools: [],
