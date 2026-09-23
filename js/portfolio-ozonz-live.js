@@ -1078,7 +1078,9 @@
         return { ...w, title: w.name || w.title, detail: w.desc || w.description || '', tagline: tagline, aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
       });
       currentDisplayedWorks = works;
-}
+    } else {
+      currentDisplayedWorks = [];
+    }
 
     if (works.length === 0) {
       grid.innerHTML = '<div class="text-center text-on-surface-variant py-10 col-span-12">No works available.</div>';
@@ -1099,7 +1101,7 @@
       : '';
 
     const featuredHTML = `
-        <div class="lg:col-span-8 work-card-trigger design-featured-card reveal" data-index="0">
+        <div class="lg:col-span-8 work-card-trigger design-featured-card reveal" data-index="0" data-id="${esc(featured.id || '')}">
             ${
               safeFeaturedImg
                 ? `<img alt="${safeFeaturedTitle}" class="design-featured-img" src="${safeFeaturedImg}" />`
@@ -1158,7 +1160,7 @@
           : '';
 
         return `
-            <div class="design-side-card work-card-trigger reveal" data-index="${i}">
+            <div class="design-side-card work-card-trigger reveal" data-index="${i}" data-id="${esc(work.id || '')}">
                 <div class="design-side-thumbnail">
                     ${
                       safeImg
@@ -1220,7 +1222,7 @@
           : '';
 
         return `
-            <div class="design-side-card work-card-trigger reveal" data-index="${i}">
+            <div class="design-side-card work-card-trigger reveal" data-index="${i}" data-id="${esc(work.id || '')}">
                 <div class="design-side-thumbnail">
                     ${
                       safeImg
@@ -1286,8 +1288,11 @@
           return;
         }
         e.preventDefault();
-        const index = parseInt(card.getAttribute('data-index'));
-        if (!isNaN(index)) {
+        const cardId = card.getAttribute('data-id');
+        const index = parseInt(card.getAttribute('data-index'), 10);
+        if (cardId) {
+          openProjectDetailModal(cardId);
+        } else if (!isNaN(index)) {
           openProjectDetailModal(index);
         }
       });
@@ -1354,9 +1359,22 @@
     container.innerHTML = contactsHTML;
   }
 
-  function openProjectDetailModal(index) {
-    const works = globalWorks || [];
-    const w = works[index];
+  function openProjectDetailModal(target) {
+    const displayed = (currentDisplayedWorks && currentDisplayedWorks.length > 0) ? currentDisplayedWorks : (globalWorks || []);
+    let w = null;
+
+    if (typeof target === 'string' && target !== '') {
+      // Find by id in currently displayed works first, then fallback to globalWorks
+      w = displayed.find(x => String(x.id) === target) || (globalWorks || []).find(x => String(x.id) === target);
+      // Fallback: If not found by id but target can parse as numeric index
+      if (!w && !isNaN(Number(target))) {
+        const idx = parseInt(target, 10);
+        w = displayed[idx] || (globalWorks || [])[idx];
+      }
+    } else if (typeof target === 'number') {
+      w = displayed[target] || (globalWorks || [])[target];
+    }
+
     if (!w) return;
 
     const modal = document.getElementById('project-detail-modal');
