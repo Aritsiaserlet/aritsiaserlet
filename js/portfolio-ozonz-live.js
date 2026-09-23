@@ -1571,52 +1571,15 @@
       }
   }
 
-  async function fetchPortfolioData() {
-    try {
-      // Query raw GitHub user content to prevent API rate limit (403 errors)
-      let worksRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`).catch(() => null);
-      let settingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`).catch(() => null);
-      
-      if (worksRes && worksRes.ok) {
-          globalWorks = normalizeWorks(parseSecureJSON(await worksRes.text()));
-      } else {
-          try {
-              const r = await fetch('data/ozonz-works.json').catch(() => null);
-              if (r && r.ok) globalWorks = normalizeWorks(parseSecureJSON(await r.text()));
-              else if (!globalWorks.length) globalWorks = [];
-          } catch (_) {
-              if (!globalWorks.length) globalWorks = [];
-          }
-      }
-      
-      if (settingsRes && settingsRes.ok) {
-          globalSettings = parseSecureJSON(await settingsRes.text()) || {};
-      }
-      
-      if (!globalSettings || !globalSettings.socials || globalSettings.socials.length === 0) {
-          globalSettings = { ...globalSettings, socials: defaultContacts };
-      } else {
-          globalSettings.socials = ensureItchContact(globalSettings.socials);
-      }
-      
-      const sharedSettingsRes = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json`).catch(() => null);
-      let sharedSettings = {};
-      if (sharedSettingsRes && sharedSettingsRes.ok) sharedSettings = parseSecureJSON(await sharedSettingsRes.text()) || {};
-      
-      // Inject shared icons and teams
-      globalSettings.icons = sharedSettings.icons || [];
-      globalSettings.teams = sharedSettings.teams || [];
-      globalSettings.sounds = sharedSettings.sounds || [];
-      
-    } catch (err) {
-      console.warn("Failed to fetch portfolio data from GitHub:", err);
-    }
-  }
+  async function loadInitialData(force = false) {
+    const now = Date.now();
+    const cachedTime = parseInt(localStorage.getItem('cached_timestamp') || '0', 10);
+    const isCacheValid = !force && (now - cachedTime < CACHE_TTL_MS);
 
-  async function loadInitialData() {
     // Show cached data immediately for fast first paint
     const cachedWorks = localStorage.getItem('cached_works');
     const cachedSettings = localStorage.getItem('cached_settings');
+    let hasCache = false;
     if (cachedWorks && cachedSettings) {
       try {
         globalWorks = normalizeWorks(JSON.parse(cachedWorks));
@@ -1626,44 +1589,67 @@
         }
         renderWorks();
         renderContacts();
+        hasCache = true;
       } catch (_) {}
     }
 
-    // Always fetch fresh data from GitHub or local fallback
-    try {
-      let rWorks = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
-      let rSettings = await fetch(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`).then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
+    // If cache is fresh and valid, avoid duplicate network calls
+    if (isCacheValid && hasCache) {
+      return;
+    }
 
-      if (!rWorks) {
-        rWorks = await fetch('data/ozonz-works.json').then(async r => r.ok ? parseSecureJSON(await r.text()) : null).catch(() => null);
+    // Fetch fresh data in parallel with timeout to prevent hanging requests
+    try {
+      const [worksRes, settingsRes, sharedRes] = await Promise.all([
+        fetchWithTimeout(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`)
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null),
+        fetchWithTimeout(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`)
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null),
+        fetchWithTimeout(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json`)
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null)
+      ]);
+
+      let finalWorks = worksRes;
+      if (!finalWorks) {
+        finalWorks = await fetchWithTimeout('data/ozonz-works.json')
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null);
       }
 
-      if (rWorks) globalWorks = normalizeWorks(rWorks);
-      if (rSettings) globalSettings = rSettings;
+      if (finalWorks) globalWorks = normalizeWorks(finalWorks);
+      if (settingsRes) globalSettings = settingsRes;
 
       if (!globalSettings || !globalSettings.socials || globalSettings.socials.length === 0) {
         globalSettings = { ...globalSettings, socials: defaultContacts };
       } else {
         globalSettings.socials = ensureItchContact(globalSettings.socials);
       }
+
+      if (sharedRes) {
+        globalSettings.icons = sharedRes.icons || [];
+        globalSettings.teams = sharedRes.teams || [];
+        globalSettings.sounds = sharedRes.sounds || [];
+      }
+
+      // Update cache with timestamp and render
+      try {
+        localStorage.setItem('cached_works', JSON.stringify(globalWorks));
+        localStorage.setItem('cached_settings', JSON.stringify(globalSettings));
+        localStorage.setItem('cached_timestamp', String(now));
+      } catch (_) {}
+
+      renderWorks();
+      renderContacts();
     } catch (err) {
       console.warn('[Portfolio] GitHub fetch failed:', err.message);
     }
-
-    // Update cache and render with fresh data
-    try {
-      localStorage.setItem('cached_works', JSON.stringify(globalWorks));
-      localStorage.setItem('cached_settings', JSON.stringify(globalSettings));
-    } catch (_) {}
-    renderWorks();
-    renderContacts();
-
-    // Background refresh for shared icons/teams (non-blocking)
-    fetchPortfolioData().then(() => {
-      renderWorks();
-      renderContacts();
-    }).catch(() => {});
   }
+
+  // Alias for backward compatibility
+  const fetchPortfolioData = () => loadInitialData(true);
 
   function initWorkFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
