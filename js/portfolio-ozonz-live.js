@@ -1331,25 +1331,27 @@
       });
     }
 
-    contacts.forEach((c) => {
+    const contactsHTML = contacts.map((c) => {
       let iconHTML = '';
       if (c.iconType === 'svg') {
-        iconHTML = `<svg class="w-6 h-6 sm:w-8 sm:h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="${c.iconVal}"></path></svg>`;
+        iconHTML = `<svg class="w-6 h-6 sm:w-8 sm:h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="${esc(c.iconVal)}"></path></svg>`;
       } else if (c.iconType === 'image') {
-        iconHTML = `<img alt="${c.name}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border border-outline/20 shrink-0" src="${c.iconVal}" />`;
+        iconHTML = `<img alt="${esc(c.name)}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border border-outline/20 shrink-0" src="${escUrl(c.iconVal)}" onerror="this.style.display='none'" />`;
       } else {
-        iconHTML = `<span class="material-symbols-outlined text-xl sm:text-2xl shrink-0">${c.iconVal}</span>`;
+        iconHTML = `<span class="material-symbols-outlined text-xl sm:text-2xl shrink-0">${esc(c.iconVal) || 'link'}</span>`;
       }
+      const safeLink = escUrl(c.link || '#');
+      const safeName = esc(c.name || '');
 
-      const linkHTML = `
+      return `
           <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold"
-              href="${c.link}" target="_blank" title="${c.name}">
+              href="${safeLink}" target="_blank" title="${safeName}">
               ${iconHTML}
-              <span>${c.name.toUpperCase()}</span>
+              <span>${safeName.toUpperCase()}</span>
           </a>
       `;
-      container.innerHTML += linkHTML;
-    });
+    }).join('');
+    container.innerHTML = contactsHTML;
   }
 
   function openProjectDetailModal(index) {
@@ -1410,7 +1412,7 @@
       }
     } else {
       const imageVal = imagesList.length > 0 ? imagesList[0] : (w.model ? 'view_in_ar' : 'brush');
-      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-6xl sm:text-8xl">${imageVal}</span></div>`;
+      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-6xl sm:text-8xl">${esc(imageVal)}</span></div>`;
     }
 
     // Set tags
