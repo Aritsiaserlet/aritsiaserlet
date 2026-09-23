@@ -8,14 +8,23 @@ service cloud.firestore {
       allow write: if false; 
     }
 
-    // Ozonz Portfolio Data
+    // Ozonz Portfolio Data (Read-only for public, writes locked)
     match /ozonz_data/{documentId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
-    // Stats Collection (Page Views)
+    // Ozonz Leaderboard (Dedicated to OzonZ, isolated from Aritsia)
+    match /ozonz_leaderboard/{entryId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Stats Collection (Page Views - safe increment, prevent arbitrary delete)
     match /stats/{documentId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if false;
     }
 
     // 2. Users Collection

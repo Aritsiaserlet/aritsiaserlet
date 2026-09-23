@@ -655,6 +655,13 @@
                                 <button id="gh-token-save"
                                     class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Update</button>
                             </div>
+                            <div class="pt-2 border-t border-outline/10">
+                                <label class="font-label-md text-[11px] text-primary block mb-1">CLOUDFLARE WORKER PROXY (OPTIONAL)</label>
+                                <input type="url" id="gh-proxy-input"
+                                    class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 text-xs font-data-mono"
+                                    placeholder="https://gh-proxy.yourname.workers.dev" />
+                                <p class="text-[10px] text-on-surface-variant mt-1">If set, requests route via your Cloudflare Worker without exposing a client PAT.</p>
+                            </div>
                         </div>
                     </div>
 
@@ -728,7 +735,7 @@
                 <div>
                     <label class="font-label-md text-xs text-primary mb-1 block">AUTOFILL FROM URL</label>
                     <div class="flex gap-2">
-                        <input type="url" id="autofill-url"
+                        <input type="url" id="autofill-url" maxlength="500"
                             class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-body-md text-sm"
                             placeholder="https://username.itch.io/game or https://github.com/user/repo" />
                         <button type="button" id="autofill-btn"
@@ -743,7 +750,7 @@
                     <div class="col-span-2">
                         <label class="font-label-md text-xs text-primary mb-1 block">TITLE</label>
                         <input class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md"
-                            id="work-name" type="text" required />
+                            id="work-name" type="text" maxlength="120" required />
                     </div>
 
                     <div class="col-span-2">
@@ -787,7 +794,7 @@
 
                     <div>
                         <label class="font-label-md text-xs text-primary mb-1 block">TAGS (COMMA-SEPARATED)</label>
-                        <input type="text" id="work-tags"
+                        <input type="text" id="work-tags" maxlength="200"
                             class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md"
                             placeholder="e.g. PIXEL ART, C#, UNITY" />
                     </div>
@@ -807,7 +814,7 @@
                     <div class="relative">
                         <textarea
                             class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10 resize-none"
-                            id="work-desc" rows="3" required></textarea>
+                            id="work-desc" rows="3" maxlength="2000" required></textarea>
                         <button type="button" id="ai-write-btn"
                             class="absolute top-2 right-2 text-primary hover:scale-110 transition-all"
                             title="AI Expand">
@@ -822,7 +829,7 @@
                         <p id="ai-summarize-status" class="text-[10px] hidden text-primary"></p>
                     </div>
                     <div class="relative">
-                        <input type="text" id="work-ai-summary"
+                        <input type="text" id="work-ai-summary" maxlength="300"
                             class="w-full bg-surface-container border-none rounded-lg px-4 py-2 font-body-md pr-10"
                             placeholder="e.g. A Python-based bot that tracks user playtime." />
                         <button type="button" id="ai-summarize-btn"
@@ -838,7 +845,7 @@
                     <div class="flex gap-2">
                         <input
                             class="flex-1 bg-surface-container border-none rounded-lg px-4 py-2 font-data-mono text-sm"
-                            id="work-image" type="text" placeholder="https://... or material icon" />
+                            id="work-image" type="text" maxlength="1000" placeholder="https://... or material icon" />
                         <label
                             class="cursor-pointer bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-all">
                             <span class="material-symbols-outlined text-sm">upload</span>
@@ -900,13 +907,13 @@
                 <input type="hidden" id="contact-edit-id" />
                 <div>
                     <label class="font-label-md text-xs text-primary mb-1 block">Channel Name</label>
-                    <input type="text" id="contact-name" required
+                    <input type="text" id="contact-name" maxlength="80" required
                         class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md"
                         placeholder="e.g. GitHub" />
                 </div>
                 <div>
                     <label class="font-label-md text-xs text-primary mb-1 block">Link URL</label>
-                    <input type="url" id="contact-link" required
+                    <input type="url" id="contact-link" maxlength="500" required
                         class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
                 </div>
                 <div>
@@ -942,7 +949,7 @@
                 <div>
                     <label id="contact-icon-label" class="font-label-md text-xs text-primary mb-1 block">Material Symbol
                         Name (e.g. terminal)</label>
-                    <input type="text" id="contact-icon-val" required
+                    <input type="text" id="contact-icon-val" maxlength="1000" required
                         class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-2 font-body-md" />
                 </div>
                 <div class="flex justify-end gap-3 mt-6">
@@ -989,9 +996,30 @@
             'use strict';
 
             /* ══════════════════════════════════════════════════════
-               CONFIG
+               SECURITY & CONFIG
             ══════════════════════════════════════════════════════ */
-            const PASSCODE = '977254';
+            // Passcode SHA-256 hash (never store plaintext credentials)
+            const PASSCODE_HASH = 'f3d9c3d6c81e980fc0d284c4ab17408b8bcaf0c68ae7be3532fd7f96f5897edc';
+            let failedAttempts = 0;
+            let lockoutUntil = 0;
+
+            // XSS Sanitization Helpers
+            function esc(str) {
+                if (str === null || str === undefined) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+            function escUrl(url) {
+                if (!url) return '';
+                const u = String(url).trim();
+                if (/^(https?:|\/|data:image\/)/i.test(u)) return esc(u);
+                return '';
+            }
+
             const GH_USER = 'OzonZ';
             const GH_REPO = 'Non-Four-Portfolio-Data';
             const GH_API = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
@@ -1002,6 +1030,7 @@
                STATE
             ══════════════════════════════════════════════════════ */
             let ghToken = '';
+            let ghProxyUrl = localStorage.getItem('ghProxyUrl') || '';
             let works = [];        // live array
             let worksSha = null;      // latest SHA for works file
             let ozonzSettings = {};        // { socials: [] }
@@ -1063,14 +1092,22 @@
                GITHUB API HELPERS
             ══════════════════════════════════════════════════════ */
             function ghHeaders() {
-                return {
-                    Authorization: `Bearer ${ghToken}`,
+                const h = {
                     Accept: 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json',
                 };
+                if (ghToken) h.Authorization = `Bearer ${ghToken}`;
+                return h;
             }
 
             async function ghGet(path) {
+                if (ghProxyUrl) {
+                    const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
+                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}&t=${Date.now()}`);
+                    if (r.status === 404) return null;
+                    if (!r.ok) throw new Error(`Proxy GET ${r.status}`);
+                    return r.json();
+                }
                 const r = await fetch(`${GH_API}/${path}?t=${Date.now()}`, { headers: ghHeaders() });
                 if (r.status === 404) return null;
                 if (!r.ok) throw new Error(`GitHub GET ${r.status}`);
@@ -1085,6 +1122,21 @@
                 } catch (_) { }
                 const body = { message, content: base64content };
                 if (sha) body.sha = sha;
+
+                if (ghProxyUrl) {
+                    const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
+                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body),
+                    });
+                    if (!r.ok) {
+                        const t = await r.text();
+                        throw new Error(`Proxy PUT binary ${r.status}: ${t}`);
+                    }
+                    return r.json();
+                }
+
                 let r = await fetch(`${GH_API}/${path}`, {
                     method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
                 });
@@ -1104,6 +1156,23 @@
                     content: btoa(unescape(encodeURIComponent(obfuscatedContent))), // GitHub API requires base64 of the final string
                 };
                 if (sha) body.sha = sha;
+
+                if (ghProxyUrl) {
+                    const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
+                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body),
+                    });
+                    if (r.status === 409) {
+                        throw new Error(`Conflict Detected! Someone else updated the data. Please refresh to load the latest changes before saving.`);
+                    }
+                    if (!r.ok) {
+                        const t = await r.text();
+                        throw new Error(`Proxy PUT ${r.status}: ${t}`);
+                    }
+                    return r.json();
+                }
 
                 let r = await fetch(`${GH_API}/${path}`, {
                     method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
@@ -1406,18 +1475,22 @@
                 list.innerHTML = works.map((w, i) => {
                     const img = Array.isArray(w.image) ? w.image[0] : w.image;
                     const isUrl = img && (img.startsWith('http') || img.includes('/') || img.includes('.'));
-                    const thumb = isUrl
-                        ? `<img src="${img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'" />`
-                        : `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary"><span class="material-symbols-outlined text-2xl">${img || 'brush'}</span></div>`;
+                    const safeImg = isUrl ? escUrl(img) : '';
+                    const thumb = safeImg
+                        ? `<img src="${safeImg}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'" />`
+                        : `<div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary"><span class="material-symbols-outlined text-2xl">${esc(img) || 'brush'}</span></div>`;
                     const tagStr = Array.isArray(w.tags) ? w.tags.join(', ') : (w.tags || '');
+                    const safeName = esc(w.name || '(Untitled)');
+                    const safeMeta = esc(tagStr || w.aiSummary || w.desc || '');
+                    const safeId = esc(String(w.id || ''));
                     return `
         <div class="flex items-center gap-4 p-4 glass border-on-surface/5 rounded-xl hover:border-primary/30 transition-all group">
             <div class="w-20 h-16 bg-surface-container rounded-lg overflow-hidden shrink-0">
                 ${thumb}
             </div>
             <div class="flex-1 min-w-0">
-                <h4 class="font-headline-md text-base text-on-surface">${w.name || '(Untitled)'}</h4>
-                <p class="font-body-md text-xs text-on-surface-variant line-clamp-1">${tagStr || w.aiSummary || w.desc || ''}</p>
+                <h4 class="font-headline-md text-base text-on-surface">${safeName}</h4>
+                <p class="font-body-md text-xs text-on-surface-variant line-clamp-1">${safeMeta}</p>
             </div>
             <div class="flex items-center gap-1">
                 <button onclick="moveWorkItem(${i}, -1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === 0 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Up">
@@ -1426,10 +1499,10 @@
                 <button onclick="moveWorkItem(${i}, 1)" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" ${i === works.length - 1 ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''} title="Move Down">
                     <span class="material-symbols-outlined text-sm">arrow_downward</span>
                 </button>
-                <button onclick="openWorkModal('${w.id}')" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" title="Edit">
+                <button onclick="openWorkModal('${safeId}')" class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center" title="Edit">
                     <span class="material-symbols-outlined text-sm">edit</span>
                 </button>
-                <button onclick="deleteWork('${w.id}')" class="w-8 h-8 rounded-full hover:bg-error-container/20 flex items-center justify-center text-error" title="Delete">
+                <button onclick="deleteWork('${safeId}')" class="w-8 h-8 rounded-full hover:bg-error-container/20 flex items-center justify-center text-error" title="Delete">
                     <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
             </div>

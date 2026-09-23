@@ -67,7 +67,15 @@ class ToastManager {
     if (type === 'error') icon = '❌';
     if (type === 'warning') icon = '⚠️';
 
-    toast.innerHTML = `<span class="toast-icon">${icon}</span> <span>${message}</span>`;
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'toast-icon';
+    iconSpan.textContent = icon;
+
+    const msgSpan = document.createElement('span');
+    msgSpan.textContent = message;
+
+    toast.appendChild(iconSpan);
+    toast.appendChild(msgSpan);
     this.container.appendChild(toast);
 
     setTimeout(() => {
