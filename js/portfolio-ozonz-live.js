@@ -756,11 +756,27 @@
       }
     }, { passive: true });
 
+    function resizeCanvas() {
+      if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
     const FPS_CAP = 1000 / 30; // 30fps — half the GPU cost, imperceptible on a background shader
     let lastFrameTs = 0;
+    let animId = null;
+
     function render(ts) {
+      if (document.hidden) {
+        animId = null;
+        return;
+      }
       // Skip this frame if we haven't waited long enough
-      if (ts - lastFrameTs < FPS_CAP) { requestAnimationFrame(render); return; }
+      if (ts - lastFrameTs < FPS_CAP) { animId = requestAnimationFrame(render); return; }
       lastFrameTs = ts;
       const now = performance.now();
       const dt = (now - lastTime) / 1000.0;
@@ -802,10 +818,6 @@
           wavesData[i*4 + 2] = waves[i].time;
           wavesData[i*4 + 3] = waves[i].intensity;
       }
-
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      gl.viewport(0, 0, canvas.width, canvas.height);
 
       // Query DOM for text elements every 30 frames
       frameCount++;
@@ -867,10 +879,18 @@
       }
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      requestAnimationFrame(render);
+      animId = requestAnimationFrame(render);
     }
 
-    requestAnimationFrame(render);
+    animId = requestAnimationFrame(render);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !animId) {
+        resizeCanvas();
+        lastTime = performance.now();
+        animId = requestAnimationFrame(render);
+      }
+    });
   }
 
   function initRevealAndTheme() {
@@ -1068,12 +1088,22 @@
     // Featured Card (Index 0)
     const featured = works[0];
     const isFeaturedImg = featured.image && (featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.'));
+    const safeFeaturedImg = isFeaturedImg ? escUrl(featured.image) : '';
+    const safeFeaturedTitle = esc(featured.title || featured.name || '(Untitled)');
+    const safeFeaturedTagline = esc(featured.tagline || '');
+    const safeFeaturedSummary = featured.aiSummary ? esc(featured.aiSummary) : '';
+    const safeFeaturedLink = escUrl(featured.link || '#');
+    const safeFeaturedYear = esc(featured.year || new Date().getFullYear());
+    const featuredTagsHTML = featured.tags
+      ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${esc(tag.trim())}</span>`).join('')
+      : '';
+
     const featuredHTML = `
         <div class="lg:col-span-8 work-card-trigger design-featured-card reveal" data-index="0">
             ${
-              isFeaturedImg
-                ? `<img alt="${featured.title}" class="design-featured-img" src="${featured.image}" />`
-                : `<div class="absolute inset-0 w-full h-full bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${featured.image || 'brush'}</span></div>`
+              safeFeaturedImg
+                ? `<img alt="${safeFeaturedTitle}" class="design-featured-img" src="${safeFeaturedImg}" />`
+                : `<div class="absolute inset-0 w-full h-full bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${esc(featured.image) || 'brush'}</span></div>`
             }
             <div class="design-featured-gradient"></div>
             
@@ -1082,22 +1112,22 @@
                 <span class="design-featured-badge">★ Featured</span>
             </div>
             <div class="absolute top-5 right-5 z-10">
-                <span class="design-featured-year">${featured.year || new Date().getFullYear()}</span>
+                <span class="design-featured-year">${safeFeaturedYear}</span>
             </div>
             
             <div class="relative z-10 p-4 sm:p-8 md:p-10 flex flex-col">
                 <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-4">
-                    ${featured.tags ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${tag.trim()}</span>`).join('') : ''}
+                    ${featuredTagsHTML}
                 </div>
-                <h3 class="design-featured-title">${featured.title}</h3>
-                <p class="design-featured-tagline">${featured.tagline || ''}</p>
+                <h3 class="design-featured-title">${safeFeaturedTitle}</h3>
+                <p class="design-featured-tagline">${safeFeaturedTagline}</p>
                 ${
-                  featured.aiSummary
-                    ? `<p class="text-primary font-bold text-xs sm:text-sm tracking-wider uppercase mb-3 sm:mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${featured.aiSummary}</p>`
+                  safeFeaturedSummary
+                    ? `<p class="text-primary font-bold text-xs sm:text-sm tracking-wider uppercase mb-3 sm:mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${safeFeaturedSummary}</p>`
                     : ''
                 }
                 <div>
-                    <a href="${featured.link}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="design-featured-btn">
+                    <a href="${safeFeaturedLink}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="design-featured-btn">
                         <span>Visit Project</span>
                         <span class="material-symbols-outlined text-xs sm:text-sm">open_in_new</span>
                     </a>
@@ -1111,28 +1141,32 @@
             </div>
         </div>
     `;
-    grid.innerHTML += featuredHTML;
 
     // Bento Cards (Index 1 and 2, next to Featured Project)
     const sideWorks = works.slice(1, 3);
+    let bentoHTML = '';
     if (sideWorks.length > 0) {
-      const bentoContainer = document.createElement('div');
-      bentoContainer.className = 'lg:col-span-4 flex flex-col gap-4 sm:gap-8 md:gap-10';
-
-      sideWorks.forEach((work, index) => {
+      const bentoCards = sideWorks.map((work, index) => {
         const i = index + 1;
         const isImg = work.image && (work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.'));
+        const safeImg = isImg ? escUrl(work.image) : '';
+        const safeTitle = esc(work.title || work.name || '');
+        const safeTagline = esc(work.tagline || '');
+        const safeYear = esc(work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear()));
+        const tagsHTML = work.tags
+          ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${esc(tag.trim())}</span>`).join('')
+          : '';
 
-        const cardHTML = `
+        return `
             <div class="design-side-card work-card-trigger reveal" data-index="${i}">
                 <div class="design-side-thumbnail">
                     ${
-                      isImg
-                        ? `<img src="${work.image}" class="design-side-img" />`
-                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-3xl sm:text-5xl">${work.image || 'brush'}</span></div>`
+                      safeImg
+                        ? `<img src="${safeImg}" class="design-side-img" />`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-3xl sm:text-5xl">${esc(work.image) || 'brush'}</span></div>`
                     }
                     <div class="design-side-fade"></div>
-                    <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
+                    <span class="design-side-year">${safeYear}</span>
                     <div class="design-side-hover-overlay">
                         <div class="design-side-overlay-circle">
                             <span class="material-symbols-outlined text-base sm:text-lg">arrow_forward</span>
@@ -1142,11 +1176,11 @@
                 
                 <div class="design-side-body">
                     <div class="flex flex-wrap gap-1.5 mb-2 sm:mb-3">
-                        ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
+                        ${tagsHTML}
                     </div>
                     
-                    <h3 class="design-side-title">${work.title}</h3>
-                    <p class="design-side-tagline">${work.tagline || ''}</p>
+                    <h3 class="design-side-title">${safeTitle}</h3>
+                    <p class="design-side-tagline">${safeTagline}</p>
                     
                     <div class="design-side-footer">
                         ${
@@ -1166,32 +1200,35 @@
                 </div>
             </div>
         `;
-        bentoContainer.innerHTML += cardHTML;
-      });
-      grid.appendChild(bentoContainer);
+      }).join('');
+      bentoHTML = `<div class="lg:col-span-4 flex flex-col gap-4 sm:gap-8 md:gap-10">${bentoCards}</div>`;
     }
 
     // Grid Cards (Index 3 and later, rendered below the featured section)
     const extraWorks = works.slice(3);
+    let extraGridHTML = '';
     if (extraWorks.length > 0) {
-      // Create a full-width grid container for the remaining cards
-      const extraGridContainer = document.createElement('div');
-      extraGridContainer.className = 'col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10 mt-4 sm:mt-10';
-
-      extraWorks.forEach((work, index) => {
+      const extraCards = extraWorks.map((work, index) => {
         const i = index + 3;
         const isImg = work.image && (work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.'));
+        const safeImg = isImg ? escUrl(work.image) : '';
+        const safeTitle = esc(work.title || work.name || '');
+        const safeTagline = esc(work.tagline || '');
+        const safeYear = esc(work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear()));
+        const tagsHTML = work.tags
+          ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${esc(tag.trim())}</span>`).join('')
+          : '';
 
-        const cardHTML = `
+        return `
             <div class="design-side-card work-card-trigger reveal" data-index="${i}">
                 <div class="design-side-thumbnail">
                     ${
-                      isImg
-                        ? `<img src="${work.image}" class="design-side-img" />`
-                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">${work.image || 'brush'}</span></div>`
+                      safeImg
+                        ? `<img src="${safeImg}" class="design-side-img" />`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">${esc(work.image) || 'brush'}</span></div>`
                     }
                     <div class="design-side-fade"></div>
-                    <span class="design-side-year">${work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear())}</span>
+                    <span class="design-side-year">${safeYear}</span>
                     <div class="design-side-hover-overlay">
                         <div class="design-side-overlay-circle">
                             <span class="material-symbols-outlined text-lg">arrow_forward</span>
@@ -1201,11 +1238,11 @@
                 
                 <div class="design-side-body">
                     <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-3">
-                        ${work.tags ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${tag.trim()}</span>`).join('') : ''}
+                        ${tagsHTML}
                     </div>
                     
-                    <h3 class="design-side-title">${work.title}</h3>
-                    <p class="design-side-tagline">${work.tagline || ''}</p>
+                    <h3 class="design-side-title">${safeTitle}</h3>
+                    <p class="design-side-tagline">${safeTagline}</p>
                     
                     <div class="design-side-footer">
                         ${
@@ -1225,10 +1262,12 @@
                 </div>
             </div>
         `;
-        extraGridContainer.innerHTML += cardHTML;
-      });
-      grid.appendChild(extraGridContainer);
+      }).join('');
+      extraGridHTML = `<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10 mt-4 sm:mt-10">${extraCards}</div>`;
     }
+
+    // Single DOM update for the whole grid
+    grid.innerHTML = featuredHTML + bentoHTML + extraGridHTML;
 
     // Bind click listeners to work-card-trigger
     grid.querySelectorAll('.work-card-trigger').forEach(card => {
