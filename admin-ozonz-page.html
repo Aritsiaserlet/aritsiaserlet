@@ -380,6 +380,92 @@
             border-radius: 2px;
             transition: width 0.2s;
         }
+
+        /* ─── Minimal Category Toggle Pills ─── */
+        .cat-toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+        @media (max-width: 480px) {
+            .cat-toggle-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .cat-pill {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            display: block;
+        }
+        .cat-pill-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.75rem;
+            background: var(--surface-container);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html.light .cat-pill-inner {
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        .cat-pill:hover .cat-pill-inner {
+            background: var(--surface-container-high);
+            border-color: rgba(var(--primary-rgb), 0.35);
+            color: var(--on-surface);
+        }
+        .cat-pill input:focus-visible + .cat-pill-inner {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .cat-pill input:checked + .cat-pill-inner {
+            background: rgba(var(--primary-rgb), 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.12);
+        }
+        .cat-custom-check {
+            width: 1.05rem;
+            height: 1.05rem;
+            border-radius: 0.25rem;
+            border: 1.5px solid var(--outline);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s ease;
+            flex-shrink: 0;
+            background: transparent;
+        }
+        .cat-custom-check .material-symbols-outlined {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--on-primary);
+        }
+        .cat-pill input:checked + .cat-pill-inner .cat-custom-check {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .cat-pill input:checked + .cat-pill-inner .cat-custom-check .material-symbols-outlined {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .cat-emoji {
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+        .cat-text {
+            letter-spacing: 0.02em;
+        }
     </style>
 </head>
 
@@ -662,21 +748,39 @@
 
                     <div class="col-span-2">
                         <label class="font-label-md text-xs text-primary mb-1.5 flex items-center justify-between">
-                            <span>CATEGORY / WORK TYPE (MULTIPLE CHOICE)</span>
-                            <span class="text-[11px] text-on-surface-variant font-normal">Select which filter tab(s) this appears in</span>
+                            <span>WORK CATEGORY</span>
+                            <span class="text-[11px] text-on-surface-variant/70 font-normal">Filter tab(s)</span>
                         </label>
-                        <div class="grid grid-cols-3 gap-2.5" id="work-category-group">
-                            <label class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container border border-outline/10 hover:border-primary/40 cursor-pointer text-xs font-semibold select-none transition-all">
-                                <input type="checkbox" name="work-category" value="Game" class="work-cat-cb rounded text-primary focus:ring-0 w-4 h-4 cursor-pointer" />
-                                <span>🎮 Game</span>
+                        <div class="cat-toggle-grid" id="work-category-group">
+                            <label class="cat-pill">
+                                <input type="checkbox" name="work-category" value="Game" class="work-cat-cb sr-only" />
+                                <div class="cat-pill-inner">
+                                    <span class="cat-custom-check">
+                                        <span class="material-symbols-outlined">check</span>
+                                    </span>
+                                    <span class="cat-emoji">🎮</span>
+                                    <span class="cat-text">Game</span>
+                                </div>
                             </label>
-                            <label class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container border border-outline/10 hover:border-primary/40 cursor-pointer text-xs font-semibold select-none transition-all">
-                                <input type="checkbox" name="work-category" value="Website" class="work-cat-cb rounded text-primary focus:ring-0 w-4 h-4 cursor-pointer" />
-                                <span>🌐 Website</span>
+                            <label class="cat-pill">
+                                <input type="checkbox" name="work-category" value="Website" class="work-cat-cb sr-only" />
+                                <div class="cat-pill-inner">
+                                    <span class="cat-custom-check">
+                                        <span class="material-symbols-outlined">check</span>
+                                    </span>
+                                    <span class="cat-emoji">🌐</span>
+                                    <span class="cat-text">Website</span>
+                                </div>
                             </label>
-                            <label class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container border border-outline/10 hover:border-primary/40 cursor-pointer text-xs font-semibold select-none transition-all">
-                                <input type="checkbox" name="work-category" value="Other" class="work-cat-cb rounded text-primary focus:ring-0 w-4 h-4 cursor-pointer" />
-                                <span>📦 Other</span>
+                            <label class="cat-pill">
+                                <input type="checkbox" name="work-category" value="Other" class="work-cat-cb sr-only" />
+                                <div class="cat-pill-inner">
+                                    <span class="cat-custom-check">
+                                        <span class="material-symbols-outlined">check</span>
+                                    </span>
+                                    <span class="cat-emoji">📦</span>
+                                    <span class="cat-text">Other</span>
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -1439,6 +1543,7 @@
 
                 const editId = document.getElementById('work-edit-id').value;
                 const tagsVal = document.getElementById('work-tags').value.trim();
+                const selectedCats = Array.from(document.querySelectorAll('.work-cat-cb:checked')).map(cb => cb.value);
 
                 // Gather existing URLs from the queue
                 const queueItems = Array.from(document.querySelectorAll('.img-queue-item[data-url]'));
@@ -1701,6 +1806,8 @@
                         if (rd.language) tags.push(rd.language.toUpperCase());
                         tags.push('GITHUB');
                         document.getElementById('work-tags').value = tags.join(', ');
+                        const wCb = document.querySelector('.work-cat-cb[value="Website"]');
+                        if (wCb) wCb.checked = true;
                         renderLinkRows([{ url: rd.html_url, label: 'GitHub Repo' }]);
 
                         const apiKey = localStorage.getItem('gemini_api_key') || '';
@@ -1732,6 +1839,8 @@
                         document.getElementById('work-desc').value = desc;
                         document.getElementById('work-ai-summary').value = '';
                         document.getElementById('work-tags').value = 'ITCH.IO';
+                        const gCb = document.querySelector('.work-cat-cb[value="Game"]');
+                        if (gCb) gCb.checked = true;
                         renderLinkRows([{ url, label: 'Play on Itch.io' }]);
 
                         const apiKey = localStorage.getItem('gemini_api_key') || '';
