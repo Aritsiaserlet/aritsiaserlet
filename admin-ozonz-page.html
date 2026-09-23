@@ -2285,7 +2285,7 @@
             });
 
             /* ══════════════════════════════════════════════════════
-               TOKEN MANAGEMENT
+               TOKEN & PROXY MANAGEMENT
             ══════════════════════════════════════════════════════ */
             function applyToken(token) {
                 ghToken = token.trim();
@@ -2303,6 +2303,18 @@
                 loadData();
             });
 
+            // Wire proxy URL input
+            const proxyInput = document.getElementById('gh-proxy-input');
+            if (proxyInput) {
+                proxyInput.value = ghProxyUrl;
+                proxyInput.addEventListener('change', () => {
+                    ghProxyUrl = proxyInput.value.trim();
+                    if (ghProxyUrl) localStorage.setItem('ghProxyUrl', ghProxyUrl);
+                    else localStorage.removeItem('ghProxyUrl');
+                    showToast(ghProxyUrl ? 'Proxy URL saved' : 'Proxy URL cleared');
+                });
+            }
+
             /* ══════════════════════════════════════════════════════
                GEMINI KEY
             ══════════════════════════════════════════════════════ */
@@ -2318,21 +2330,51 @@
                 setTimeout(() => document.getElementById('gemini-save-btn').textContent = 'Save Key', 1500);
             });
 
-
-
             /* ══════════════════════════════════════════════════════
-               LOGIN / LOGOUT
+               LOGIN / LOGOUT (SHA-256 Hashed + Rate Limited)
             ══════════════════════════════════════════════════════ */
-            function attemptLogin() {
-                const pin = document.getElementById('login-input').value;
-                const token = document.getElementById('login-gh-token').value.trim();
-                if (pin !== PASSCODE) {
-                    document.getElementById('login-error').classList.remove('hidden');
-                    document.getElementById('login-input').value = '';
-                    setTimeout(() => document.getElementById('login-error').classList.add('hidden'), 2500);
+            async function sha256(str) {
+                const buf = new TextEncoder().encode(str);
+                const digest = await crypto.subtle.digest('SHA-256', buf);
+                return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            async function attemptLogin() {
+                const now = Date.now();
+                const errEl = document.getElementById('login-error');
+
+                if (now < lockoutUntil) {
+                    const secs = Math.ceil((lockoutUntil - now) / 1000);
+                    errEl.textContent = `Too many failed attempts. Locked for ${secs}s.`;
+                    errEl.classList.remove('hidden');
                     return;
                 }
-                // Apply token (even if empty — user can set later)
+
+                const pin = document.getElementById('login-input').value;
+                const token = document.getElementById('login-gh-token').value.trim();
+                const hash = await sha256(pin);
+
+                if (hash !== PASSCODE_HASH) {
+                    failedAttempts++;
+                    if (failedAttempts >= 5) {
+                        lockoutUntil = Date.now() + 30000; // 30s lockout
+                        failedAttempts = 0;
+                        errEl.textContent = 'Too many failed attempts. Locked for 30 seconds.';
+                    } else {
+                        errEl.textContent = `Incorrect passcode. (${5 - failedAttempts} attempts left)`;
+                    }
+                    errEl.classList.remove('hidden');
+                    document.getElementById('login-input').value = '';
+                    setTimeout(() => errEl.classList.add('hidden'), 3000);
+                    return;
+                }
+
+                // Successful login
+                failedAttempts = 0;
+                lockoutUntil = 0;
+                errEl.classList.add('hidden');
+
+                // Apply token (even if empty — user can set later or use proxy)
                 applyToken(token || sessionStorage.getItem('ghToken') || '');
 
                 document.getElementById('login-screen').style.display = 'none';
@@ -2457,9 +2499,22 @@
                 document.addEventListener('mousemove', onMv, { passive: true });
                 document.addEventListener('mouseleave', () => { pin = false; ts = 0; });
                 document.addEventListener('touchmove', e => { const t = e.touches[0]; if (t) onMv({ clientX: t.clientX, clientY: t.clientY }); }, { passive: true });
+                function resizeCanvas() {
+                    if (canvas.width !== innerWidth || canvas.height !== innerHeight) {
+                        canvas.width = innerWidth;
+                        canvas.height = innerHeight;
+                        gl.viewport(0, 0, canvas.width, canvas.height);
+                    }
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas, { passive: true });
+
+                let animId = null;
                 function render() {
-                    canvas.width = innerWidth; canvas.height = innerHeight;
-                    gl.viewport(0, 0, canvas.width, canvas.height);
+                    if (document.hidden) {
+                        animId = null;
+                        return;
+                    }
                     const l = pin ? .14 : .06; mouse.x += (tgt.x - mouse.x) * l; mouse.y += (tgt.y - mouse.y) * l;
                     spot += (ts - spot) * .12;
                     const id = document.documentElement.classList.contains('dark') ? 1 : 0;
@@ -2468,9 +2523,17 @@
                     gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.vertexAttribPointer(pL, 2, gl.FLOAT, false, 0, 0);
                     gl.uniform2f(rL, canvas.width, canvas.height); gl.uniform2f(mL, mouse.x, mouse.y);
                     gl.uniform1f(sL, spot); gl.uniform1f(dL, dT);
-                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); requestAnimationFrame(render);
+                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                    animId = requestAnimationFrame(render);
                 }
-                requestAnimationFrame(render);
+                animId = requestAnimationFrame(render);
+
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden && !animId) {
+                        resizeCanvas();
+                        animId = requestAnimationFrame(render);
+                    }
+                });
             })();
 
             /* ══════════════════════════════════════════════════════
