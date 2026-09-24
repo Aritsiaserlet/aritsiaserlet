@@ -139,6 +139,10 @@
 
         html {
             scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+        }
+
+        html.scrolled-down {
             scrollbar-color: rgba(var(--primary-rgb), 0.35) transparent;
         }
 
@@ -148,34 +152,51 @@
             height: 6px;
         }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
+        ::-webkit-scrollbar-track,
+        ::-webkit-scrollbar-track-piece {
+            background: transparent !important;
+            border: none !important;
         }
 
+        /* Completely remove up/down arrows in all browsers */
+        ::-webkit-scrollbar-button,
+        ::-webkit-scrollbar-button:single-button,
+        ::-webkit-scrollbar-button:vertical:decrement,
+        ::-webkit-scrollbar-button:vertical:increment,
+        ::-webkit-scrollbar-button:horizontal:decrement,
+        ::-webkit-scrollbar-button:horizontal:increment,
+        ::-webkit-scrollbar-button:start:decrement,
+        ::-webkit-scrollbar-button:end:increment {
+            display: none !important;
+            width: 0px !important;
+            height: 0px !important;
+            background: transparent !important;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent !important;
+        }
+
+        /* Transparent by default on the first screen / top */
         ::-webkit-scrollbar-thumb {
-            background: rgba(var(--primary-rgb), 0.35);
+            background: transparent;
             border-radius: 9999px;
-            transition: background 0.3s ease, box-shadow 0.3s ease;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
+        /* Smoothly appears when scrolled down past the top */
+        html.scrolled-down ::-webkit-scrollbar-thumb {
+            background: rgba(var(--primary-rgb), 0.35);
+        }
+
+        html.scrolled-down ::-webkit-scrollbar-thumb:hover {
             background: rgba(var(--primary-rgb), 0.85);
             box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
         }
 
-        ::-webkit-scrollbar-thumb:active {
+        html.scrolled-down ::-webkit-scrollbar-thumb:active {
             background: var(--primary);
             box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.8);
-        }
-
-        ::-webkit-scrollbar-button {
-            display: none;
-            width: 0;
-            height: 0;
-        }
-
-        ::-webkit-scrollbar-corner {
-            background: transparent;
         }
 
         body {
@@ -2614,6 +2635,15 @@
             /* ══════════════════════════════════════════════════════
                THEME TOGGLE
             ══════════════════════════════════════════════════════ */
+            (function initScrollbarVisibility() {
+                function updateScroll() {
+                    if (window.scrollY > 80) document.documentElement.classList.add('scrolled-down');
+                    else document.documentElement.classList.remove('scrolled-down');
+                }
+                window.addEventListener('scroll', updateScroll, { passive: true });
+                updateScroll();
+            })();
+
             (function initTheme() {
                 const btn = document.getElementById('theme-toggle');
                 const icon = document.getElementById('theme-icon');
