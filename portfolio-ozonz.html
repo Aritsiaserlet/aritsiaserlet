@@ -118,8 +118,8 @@
 
         /* ── Ultra-Thin Minimalist Glass Custom Scrollbar ── */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px !important;
+            height: 8px !important;
         }
 
         ::-webkit-scrollbar-track,
@@ -147,26 +147,10 @@
             background: transparent !important;
         }
 
-        /* Transparent by default on the first page / hero section (like the top menu) */
+        /* Default transparent on first page / hero (dynamically activated on scroll) */
         ::-webkit-scrollbar-thumb {
             background: transparent;
             border-radius: 9999px;
-            transition: background 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        /* Smoothly appears when scrolled down past the first page */
-        html.scrolled-down ::-webkit-scrollbar-thumb {
-            background: rgba(var(--primary-rgb), 0.35);
-        }
-
-        html.scrolled-down ::-webkit-scrollbar-thumb:hover {
-            background: rgba(var(--primary-rgb), 0.85);
-            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
-        }
-
-        html.scrolled-down ::-webkit-scrollbar-thumb:active {
-            background: var(--primary);
-            box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.8);
         }
 
 

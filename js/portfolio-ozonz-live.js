@@ -956,22 +956,69 @@
 
   function initNavbarScroll() {
     const nav = document.getElementById('main-nav');
+    let isScrolledPastHero = null;
+
+    function updateDynamicScrollbar(scrolled) {
+      if (scrolled === isScrolledPastHero) return;
+      isScrolledPastHero = scrolled;
+
+      let styleEl = document.getElementById('dynamic-scrollbar');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'dynamic-scrollbar';
+        document.head.appendChild(styleEl);
+      }
+
+      if (scrolled) {
+        styleEl.textContent = `
+          ::-webkit-scrollbar-thumb {
+            background: rgba(var(--primary-rgb), 0.65) !important;
+            border-radius: 9999px !important;
+            border: 1.5px solid rgba(var(--background-rgb), 0.5) !important;
+            box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.35) !important;
+          }
+          ::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--primary-rgb), 0.95) !important;
+            box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.8) !important;
+          }
+          ::-webkit-scrollbar-thumb:active {
+            background: var(--primary) !important;
+            box-shadow: 0 0 16px rgba(var(--primary-rgb), 1) !important;
+          }
+          html {
+            scrollbar-color: rgba(var(--primary-rgb), 0.65) transparent !important;
+          }
+        `;
+      } else {
+        styleEl.textContent = `
+          ::-webkit-scrollbar-thumb {
+            background: transparent !important;
+            box-shadow: none !important;
+          }
+          html {
+            scrollbar-color: transparent transparent !important;
+          }
+        `;
+      }
+    }
 
     function handleScroll() {
       const isScrolled = window.scrollY > 80;
-      if (isScrolled) {
-        if (nav) {
+      if (nav) {
+        if (isScrolled) {
           nav.classList.remove('-translate-y-full');
           nav.classList.add('translate-y-0');
-        }
-        document.documentElement.classList.add('scrolled-down');
-      } else {
-        if (nav) {
+        } else {
           nav.classList.remove('translate-y-0');
           nav.classList.add('-translate-y-full');
         }
+      }
+      if (isScrolled) {
+        document.documentElement.classList.add('scrolled-down');
+      } else {
         document.documentElement.classList.remove('scrolled-down');
       }
+      updateDynamicScrollbar(isScrolled);
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
