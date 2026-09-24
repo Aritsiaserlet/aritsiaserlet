@@ -137,29 +137,17 @@
             --on-tertiary-fixed-variant: #4f2500;
         }
 
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(var(--primary-rgb), 0.3) rgba(var(--background-rgb), 1);
+        html, body {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        /* Custom Scrollbar styling for Webkit browsers */
+        /* Hide scrollbar for Chrome, Safari and Opera while keeping full scroll functionality */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(var(--background-rgb), 1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: rgba(var(--primary-rgb), 0.3);
-            border-radius: 9999px;
-            border: 2.5px solid rgba(var(--background-rgb), 1);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(var(--primary-rgb), 0.6);
+            display: none;
+            width: 0px;
+            height: 0px;
+            background: transparent;
         }
 
         body {
@@ -1101,14 +1089,24 @@
             }
 
             async function ghGet(path) {
+                const noCacheHeaders = {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                };
                 if (ghProxyUrl) {
                     const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
-                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}&t=${Date.now()}`);
+                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}&ref=main&t=${Date.now()}`, {
+                        cache: 'no-store',
+                        headers: noCacheHeaders
+                    });
                     if (r.status === 404) return null;
                     if (!r.ok) throw new Error(`Proxy GET ${r.status}`);
                     return r.json();
                 }
-                const r = await fetch(`${GH_API}/${path}?t=${Date.now()}`, { headers: ghHeaders() });
+                const r = await fetch(`${GH_API}/${path}?ref=main&t=${Date.now()}`, {
+                    cache: 'no-store',
+                    headers: { ...ghHeaders(), ...noCacheHeaders }
+                });
                 if (r.status === 404) return null;
                 if (!r.ok) throw new Error(`GitHub GET ${r.status}`);
                 return r.json();
@@ -1123,23 +1121,37 @@
                 const body = { message, content: base64content };
                 if (sha) body.sha = sha;
 
-                if (ghProxyUrl) {
-                    const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
-                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(body),
-                    });
-                    if (!r.ok) {
-                        const t = await r.text();
-                        throw new Error(`Proxy PUT binary ${r.status}: ${t}`);
+                async function sendBinaryPut(targetSha) {
+                    const putBody = { ...body };
+                    if (targetSha) putBody.sha = targetSha;
+                    else delete putBody.sha;
+
+                    if (ghProxyUrl) {
+                        const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
+                        return fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(putBody),
+                        });
                     }
-                    return r.json();
+
+                    return fetch(`${GH_API}/${path}`, {
+                        method: 'PUT',
+                        headers: ghHeaders(),
+                        body: JSON.stringify(putBody),
+                    });
                 }
 
-                let r = await fetch(`${GH_API}/${path}`, {
-                    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-                });
+                let r = await sendBinaryPut(sha);
+                if (r.status === 409) {
+                    try {
+                        const latest = await ghGet(path);
+                        if (latest?.sha && latest.sha !== sha) {
+                            r = await sendBinaryPut(latest.sha);
+                        }
+                    } catch (_) {}
+                }
+
                 if (!r.ok) {
                     const t = await r.text();
                     throw new Error(`GitHub PUT binary ${r.status}: ${t}`);
@@ -1157,28 +1169,42 @@
                 };
                 if (sha) body.sha = sha;
 
-                if (ghProxyUrl) {
-                    const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
-                    const r = await fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}`, {
+                async function sendPut(targetSha) {
+                    const putBody = { ...body };
+                    if (targetSha) putBody.sha = targetSha;
+                    else delete putBody.sha;
+
+                    if (ghProxyUrl) {
+                        const cleanProxy = ghProxyUrl.replace(/\/+$/, '');
+                        return fetch(`${cleanProxy}/api?path=${encodeURIComponent(path)}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(putBody),
+                        });
+                    }
+
+                    return fetch(`${GH_API}/${path}`, {
                         method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(body),
+                        headers: ghHeaders(),
+                        body: JSON.stringify(putBody),
                     });
-                    if (r.status === 409) {
-                        throw new Error(`Conflict Detected! Someone else updated the data. Please refresh to load the latest changes before saving.`);
-                    }
-                    if (!r.ok) {
-                        const t = await r.text();
-                        throw new Error(`Proxy PUT ${r.status}: ${t}`);
-                    }
-                    return r.json();
                 }
 
-                let r = await fetch(`${GH_API}/${path}`, {
-                    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body),
-                });
+                let r = await sendPut(sha);
 
-                // 409 Conflict → Do NOT force push. Require user to reload.
+                // Auto-reconcile on 409 Conflict: fetch fresh SHA directly from repository and retry once
+                if (r.status === 409) {
+                    console.warn(`[ghPut] 409 Conflict on ${path}. Fetching fresh SHA to retry...`);
+                    try {
+                        const latest = await ghGet(path);
+                        if (latest?.sha && latest.sha !== sha) {
+                            r = await sendPut(latest.sha);
+                        }
+                    } catch (retryErr) {
+                        console.error("[ghPut] Retry fetch failed:", retryErr);
+                    }
+                }
+
                 if (r.status === 409) {
                     throw new Error(`Conflict Detected! Someone else updated the data. Please refresh to load the latest changes before saving.`);
                 }
@@ -1244,6 +1270,21 @@
                                 if (cal.total) contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
                             }
                         } catch (_) { }
+                    }
+
+                    const oldProfile = ozonzSettings.githubProfile || {};
+                    const isSame =
+                        oldProfile.name === (u.name || u.login) &&
+                        oldProfile.avatarUrl === u.avatar_url &&
+                        oldProfile.bio === (u.bio || '') &&
+                        oldProfile.publicRepos === (u.public_repos || 0) &&
+                        oldProfile.contributions === (contributions || 0);
+
+                    const lastSyncTime = oldProfile.updatedAt ? new Date(oldProfile.updatedAt).getTime() : 0;
+                    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+                    if (isSame && lastSyncTime > oneDayAgo) {
+                        return; // Profile identical and synced within last 24h: skip redundant background commit
                     }
 
                     ozonzSettings.githubProfile = {
@@ -1323,8 +1364,8 @@
                     let loadedWorks = null;
                     let loadedSettings = null;
 
-                    // Try using GitHub API first if token is available (always gets the latest, non-cached content)
-                    if (ghToken) {
+                    // Try using GitHub API first if token or proxy is available (always gets the latest, non-cached content)
+                    if (ghToken || ghProxyUrl) {
                         try {
                             const worksData = await ghGet(WORKS_FILE);
                             if (worksData) {
@@ -1411,18 +1452,21 @@
             async function saveWorks(actionLabel) {
                 showLoading('Saving to GitHub…');
                 try {
-                    if (!ghToken) {
-                        showToast('GitHub token is required to save changes!');
+                    if (!ghToken && !ghProxyUrl) {
+                        showToast('GitHub token or proxy is required to save changes!');
                         return false;
                     }
-                    let sha = null;
+                    let sha = worksSha;
                     try {
                         const fileData = await ghGet(WORKS_FILE);
                         if (fileData?.sha) sha = fileData.sha;
                     } catch (_) { }
 
                     const content = JSON.stringify(works, null, 4);
-                    await ghPut(WORKS_FILE, content, actionLabel, sha);
+                    const res = await ghPut(WORKS_FILE, content, actionLabel, sha);
+                    if (res?.content?.sha) {
+                        worksSha = res.content.sha;
+                    }
                     showToast('✓ ' + actionLabel);
                     setBadge(true, 'Connected to GitHub');
                     return true;
@@ -1439,18 +1483,21 @@
             async function saveSettings(actionLabel, silent = false) {
                 if (!silent) showLoading('Saving settings to GitHub…');
                 try {
-                    if (!ghToken) {
-                        if (!silent) showToast('GitHub token is required to save settings!');
+                    if (!ghToken && !ghProxyUrl) {
+                        if (!silent) showToast('GitHub token or proxy is required to save settings!');
                         return false;
                     }
-                    let sha = null;
+                    let sha = settingsSha;
                     try {
                         const fileData = await ghGet(SETTINGS_FILE);
                         if (fileData?.sha) sha = fileData.sha;
                     } catch (_) { }
 
                     const content = JSON.stringify(ozonzSettings, null, 4);
-                    await ghPut(SETTINGS_FILE, content, actionLabel, sha);
+                    const res = await ghPut(SETTINGS_FILE, content, actionLabel, sha);
+                    if (res?.content?.sha) {
+                        settingsSha = res.content.sha;
+                    }
                     if (!silent) showToast('✓ ' + actionLabel);
                     return true;
                 } catch (err) {

@@ -134,6 +134,7 @@ export default {
           headers: {
             ...corsHeaders,
             'Content-Type': ghRes.headers.get('Content-Type') || 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
           },
         });
       }

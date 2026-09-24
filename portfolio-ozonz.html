@@ -95,8 +95,8 @@
 
         html {
             font-size: 100%;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(var(--primary-rgb), 0.3) rgba(var(--background-rgb), 1);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         /* Mobile only: slightly scale down entire site proportionally */
@@ -112,24 +112,12 @@
             }
         }
 
-        /* Custom Scrollbar styling for Webkit browsers */
+        /* Hide scrollbar for Chrome, Safari and Opera while keeping full scroll functionality */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(var(--background-rgb), 1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: rgba(var(--primary-rgb), 0.3);
-            border-radius: 9999px;
-            border: 2.5px solid rgba(var(--background-rgb), 1);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(var(--primary-rgb), 0.6);
+            display: none;
+            width: 0px;
+            height: 0px;
+            background: transparent;
         }
 
 
