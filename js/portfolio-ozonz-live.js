@@ -956,15 +956,21 @@
 
   function initNavbarScroll() {
     const nav = document.getElementById('main-nav');
-    if (!nav) return;
 
     function handleScroll() {
-      if (window.scrollY > 80) {
-        nav.classList.remove('-translate-y-full');
-        nav.classList.add('translate-y-0');
+      const isScrolled = window.scrollY > 80;
+      if (isScrolled) {
+        if (nav) {
+          nav.classList.remove('-translate-y-full');
+          nav.classList.add('translate-y-0');
+        }
+        document.documentElement.classList.add('scrolled-down');
       } else {
-        nav.classList.remove('translate-y-0');
-        nav.classList.add('-translate-y-full');
+        if (nav) {
+          nav.classList.remove('translate-y-0');
+          nav.classList.add('-translate-y-full');
+        }
+        document.documentElement.classList.remove('scrolled-down');
       }
     }
 
