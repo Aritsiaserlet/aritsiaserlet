@@ -23,8 +23,10 @@ node_modules/
 npm-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-package-lock.json
+/package-lock.json
 yarn.lock
+ozonz-app/node_modules/
+ozonz-app/dist/
 
 # ── Local dev tools ───────────────────────────────────────────────────────────
 .env

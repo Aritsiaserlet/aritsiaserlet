@@ -25,12 +25,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build OzonZ React App
+        run: |
+          npm --prefix ozonz-app install
+          npm --prefix ozonz-app run build
+          cp ozonz-app/dist/portfolio-ozonz.html ./portfolio-ozonz.html
+          cp -r ozonz-app/dist/ozonz-assets ./
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
