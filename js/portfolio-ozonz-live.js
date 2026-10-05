@@ -1154,7 +1154,7 @@
       : '';
 
     const featuredHTML = `
-        <div class="lg:col-span-8 work-card-trigger design-featured-card reveal" data-index="0" data-id="${esc(featured.id || '')}">
+        <div class="col-span-1 lg:col-span-8 w-full work-card-trigger design-featured-card reveal" data-index="0" data-id="${esc(featured.id || '')}">
             ${
               safeFeaturedImg
                 ? `<img alt="${safeFeaturedTitle}" class="design-featured-img" src="${safeFeaturedImg}" />`
@@ -1256,7 +1256,7 @@
             </div>
         `;
       }).join('');
-      bentoHTML = `<div class="lg:col-span-4 flex flex-col gap-4 sm:gap-8 md:gap-10">${bentoCards}</div>`;
+      bentoHTML = `<div class="col-span-1 lg:col-span-4 w-full flex flex-col gap-4 sm:gap-8 md:gap-10">${bentoCards}</div>`;
     }
 
     // Grid Cards (Index 3 and later, rendered below the featured section)
