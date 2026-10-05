@@ -2534,19 +2534,6 @@
                 }
             }
 
-                // Successful login
-                failedAttempts = 0;
-                lockoutUntil = 0;
-                errEl.classList.add('hidden');
-
-                // Apply token (even if empty — user can set later or use proxy)
-                applyToken(token || sessionStorage.getItem('ghToken') || '');
-
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-main').classList.remove('hidden');
-                loadData();
-            }
-
             document.getElementById('login-btn').addEventListener('click', attemptLogin);
             document.getElementById('login-input').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
 
