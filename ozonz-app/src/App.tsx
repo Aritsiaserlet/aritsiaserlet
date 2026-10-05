@@ -49,26 +49,33 @@ export const App: React.FC = () => {
   // Load visitor analytics (compatible with existing js/analytics.js)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // @ts-expect-error dynamic import of root analytics.js
-      import(/* @vite-ignore */ './js/analytics.js')
-        .then((m) => {
-          if (m && typeof m.initAnalytics === 'function') {
-            m.initAnalytics();
-          }
-        })
-        .catch(() => {
-          // Fallback if accessed via relative path from root
-          // @ts-expect-error dynamic import of root analytics.js
-          import(/* @vite-ignore */ '../js/analytics.js')
-            .then((m) => {
-              if (m && typeof m.initAnalytics === 'function') {
+      try {
+        const analyticsUrl = new URL('js/analytics.js', window.location.href).href;
+        const dynamicImport = new Function('url', 'return import(url);');
+        dynamicImport(analyticsUrl)
+          .then(
+            (m: {
+              initAnalytics?: () => void;
+              trackPortfolioClick?: (name?: string) => void;
+            }) => {
+              if (typeof m?.initAnalytics === 'function') {
                 m.initAnalytics();
               }
-            })
-            .catch(() => {
-              // Analytics is non-critical, safe to continue
-            });
-        });
+              if (typeof m?.trackPortfolioClick === 'function') {
+                (
+                  window as unknown as {
+                    trackPortfolioClick: (name?: string) => void;
+                  }
+                ).trackPortfolioClick = m.trackPortfolioClick;
+              }
+            }
+          )
+          .catch((err: unknown) => {
+            console.warn('[Analytics] not loaded:', err);
+          });
+      } catch (e) {
+        console.warn('[Analytics] loader error:', e);
+      }
     }
   }, []);
 
