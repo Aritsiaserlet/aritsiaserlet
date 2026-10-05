@@ -1244,7 +1244,7 @@
                                  <span class="material-symbols-outlined text-[12px] sm:text-[13px] shrink-0">group</span>
                                  <span>${work.contributors.length} contributors</span>
                                </span>`
-                            : `<span />`
+                            : ''
                         }
                         
                         <span class="design-side-explore">
@@ -1306,7 +1306,7 @@
                                  <span class="material-symbols-outlined text-[13px] shrink-0">group</span>
                                  <span>${work.contributors.length} contributors</span>
                                </span>`
-                            : `<span />`
+                            : ''
                         }
                         
                         <span class="design-side-explore">
