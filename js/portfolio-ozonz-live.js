@@ -1429,6 +1429,11 @@
     }
 
     if (!w) return;
+    
+    // Track click for analytics
+    if (window.trackPortfolioClick) {
+      window.trackPortfolioClick(w.name);
+    }
 
     const modal = document.getElementById('project-detail-modal');
     const titleEl = document.getElementById('project-detail-title');
@@ -1755,6 +1760,9 @@
     
     checkHashRoute();
     initProjectDetailModal();
+    
+    // Initialize analytics
+    import('./analytics.js').then(m => m.initAnalytics()).catch(e => console.warn("Analytics not loaded", e));
     
     window.addEventListener('hashchange', checkHashRoute);
   }

@@ -553,10 +553,15 @@
                 <p class="font-label-md text-label-md text-on-surface-variant opacity-70">Portfolio Management</p>
             </div>
             <nav class="flex-1 space-y-2">
-                <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary/10 transition-all"
-                    href="#">
+                <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-primary/10 transition-all cursor-pointer"
+                    id="nav-dashboard">
                     <span class="material-symbols-outlined">dashboard</span>
                     <span class="font-label-md">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 transition-all cursor-pointer"
+                    id="nav-analytics">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <span class="font-label-md">Analytics</span>
                 </a>
                 <a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 transition-all"
                     href="portfolio-ozonz.html">
@@ -611,7 +616,7 @@
             </header>
 
             <!-- Dashboard Grid -->
-            <div class="bento-grid items-start">
+            <div class="bento-grid items-start" id="dashboard-view">
                 <!-- Left Column: Main Content -->
                 <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
                     <!-- Selected Archives (Works List) -->
@@ -727,6 +732,37 @@
                     </div>
 
 
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="hidden">
+                <div class="glass p-8 rounded-2xl max-w-5xl mx-auto shadow-sm">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="font-headline-md text-headline-md text-on-surface">Website Visitors Analytics</h2>
+                        <button id="admin-refresh-analytics-btn" class="px-4 py-2 bg-primary text-on-primary rounded-lg hover:opacity-90 transition font-label-md flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">refresh</span>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div class="bg-surface-container border border-outline/10 rounded-2xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="bg-surface-container-high border-b border-outline/10">
+                                        <th class="py-4 px-6 font-label-md text-primary font-bold">Visitor ID</th>
+                                        <th class="py-4 px-6 font-label-md text-primary font-bold">Time Joined</th>
+                                        <th class="py-4 px-6 font-label-md text-primary font-bold">Duration</th>
+                                        <th class="py-4 px-6 font-label-md text-primary font-bold text-center">Portfolios Viewed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-stats-tbody">
+                                    <tr><td colspan="4" class="text-center py-8 text-on-surface-variant font-body-md">Loading analytics...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -2679,6 +2715,100 @@
                     if (icon) icon.textContent = d ? 'light_mode' : 'dark_mode';
                 });
             })();
+
+            // Handle Analytics rendering and view toggling
+            const navDashboard = document.getElementById('nav-dashboard');
+            const navAnalytics = document.getElementById('nav-analytics');
+            const dashboardView = document.getElementById('dashboard-view');
+            const analyticsView = document.getElementById('analytics-view');
+            
+            navDashboard?.addEventListener('click', () => {
+                navDashboard.classList.add('text-primary', 'font-bold', 'border-r-4', 'border-primary', 'bg-primary/10');
+                navDashboard.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant/30');
+                navAnalytics.classList.remove('text-primary', 'font-bold', 'border-r-4', 'border-primary', 'bg-primary/10');
+                navAnalytics.classList.add('text-on-surface-variant', 'hover:bg-surface-variant/30');
+                
+                dashboardView.classList.remove('hidden');
+                dashboardView.classList.add('bento-grid');
+                analyticsView.classList.add('hidden');
+            });
+            
+            navAnalytics?.addEventListener('click', async () => {
+                navAnalytics.classList.add('text-primary', 'font-bold', 'border-r-4', 'border-primary', 'bg-primary/10');
+                navAnalytics.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant/30');
+                navDashboard.classList.remove('text-primary', 'font-bold', 'border-r-4', 'border-primary', 'bg-primary/10');
+                navDashboard.classList.add('text-on-surface-variant', 'hover:bg-surface-variant/30');
+                
+                dashboardView.classList.add('hidden');
+                dashboardView.classList.remove('bento-grid');
+                analyticsView.classList.remove('hidden');
+                
+                await fetchAndRenderAnalytics();
+            });
+            
+            document.getElementById('admin-refresh-analytics-btn')?.addEventListener('click', fetchAndRenderAnalytics);
+
+            async function fetchAndRenderAnalytics() {
+                const tbody = document.getElementById('admin-stats-tbody');
+                if (!tbody) return;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-on-surface-variant font-body-md">Loading analytics...</td></tr>`;
+                
+                try {
+                    const { getAdminStats } = await import('./js/analytics.js');
+                    const stats = await getAdminStats();
+                    
+                    if (!stats || stats.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-on-surface-variant font-body-md">No visitors recorded yet.</td></tr>`;
+                        return;
+                    }
+                    
+                    function formatDate(isoString) {
+                        if (!isoString) return '-';
+                        const date = new Date(isoString);
+                        return date.toLocaleDateString('th-TH') + ' ' + date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    
+                    function calculateDuration(start, end) {
+                        if (!start || !end) return '-';
+                        const diffMs = new Date(end).getTime() - new Date(start).getTime();
+                        if (diffMs < 60000) return `${Math.max(1, Math.floor(diffMs / 1000))} sec`;
+                        const minutes = Math.floor(diffMs / 60000);
+                        const hours = Math.floor(minutes / 60);
+                        if (hours > 0) return `${hours} hr ${minutes % 60} min`;
+                        return `${minutes} min`;
+                    }
+                    
+                    tbody.innerHTML = stats.map(stat => {
+                        const portfolios = stat.portfoliosClicked || [];
+                        let portfolioHtml = '<span class="text-on-surface-variant/50 text-xs">None</span>';
+                        if (portfolios.length > 0) {
+                            const listHtml = portfolios.map(p => `<li>• ${esc(p)}</li>`).join('');
+                            portfolioHtml = `
+                                <div class="relative group inline-block">
+                                    <button class="px-3 py-1 bg-surface-variant text-on-surface hover:bg-primary hover:text-on-primary transition-colors rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                        Viewed (${portfolios.length})
+                                    </button>
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] bg-inverse-surface text-inverse-on-surface text-xs rounded-xl p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10 shadow-xl pointer-events-none">
+                                        <ul class="space-y-1 text-left font-body-md">${listHtml}</ul>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <tr class="border-b border-outline/10 hover:bg-surface-variant/20 transition-colors">
+                                <td class="py-4 px-6 text-sm font-data-mono font-medium text-on-surface">${esc(stat.visitorId)}</td>
+                                <td class="py-4 px-6 text-sm text-on-surface-variant font-body-md">${formatDate(stat.startTime)}</td>
+                                <td class="py-4 px-6 text-sm text-primary font-bold">${calculateDuration(stat.startTime, stat.lastActiveTime)}</td>
+                                <td class="py-4 px-6 text-center">${portfolioHtml}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                    
+                } catch(e) {
+                    console.error(e);
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-error font-body-md">Error loading analytics. Make sure Firebase rules are updated.</td></tr>`;
+                }
+            }
 
         })();
     </script>

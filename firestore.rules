@@ -27,6 +27,11 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Analytics Collection (page_visits)
+    match /page_visits/{visitId} {
+      allow read, write: if true;
+    }
+
     // 2. Users Collection
     match /users/{userId} {
       allow read: if true;
