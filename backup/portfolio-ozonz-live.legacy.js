@@ -1,0 +1,1775 @@
+(function () {
+  const GITHUB_USER =
+    document.body.dataset.githubUser || 'OzonZ';
+  const POLL_MS = 300_000; // Poll every 5 min instead of 1 min to reduce background network usage
+
+  let globalWorks = [];
+  let globalSettings = {};
+  const GH_REPO_OWNER = 'Aritsiaserlet';
+  const GH_REPO_NAME = 'aritsiaserlet';
+  const DATA_OWNER = 'OzonZ';
+  const DATA_REPO = 'Non-Four-Portfolio-Data';
+  let currentWorkFilter = 'all';
+  let currentDisplayedWorks = [];
+
+  // ── XSS Sanitization Helpers ──
+  function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function escUrl(url) {
+    if (!url) return '';
+    const u = String(url).trim();
+    if (/^(https?:|\/|data:image\/)/i.test(u)) return esc(u);
+    return '';
+  }
+
+  // ── Network Timeout Helper (AbortController) ──
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(id);
+      return response;
+    } catch (err) {
+      clearTimeout(id);
+      throw err;
+    }
+  }
+
+  const CACHE_TTL_MS = 300_000; // 5 minutes cache TTL
+
+  const itchContact = {
+    name: "ITCH.IO",
+    link: "https://ozonz.itch.io",
+    iconType: "svg",
+    iconVal: "M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"
+  };
+
+  const defaultContacts = [
+    {
+      name: "GITHUB",
+      link: "https://github.com/OzonZ",
+      iconType: "svg",
+      iconVal: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+    },
+    {
+      name: "FACEBOOK",
+      link: "https://www.facebook.com/chanon.thongduang?locale=th_TH",
+      iconType: "svg",
+      iconVal: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+    },
+    {
+      name: "DISCORD",
+      link: "https://discordapp.com/users/1018888909419204658",
+      iconType: "svg",
+      iconVal: "M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"
+    },
+    itchContact,
+    {
+      name: "HAMSTER HUB",
+      link: "https://hamsterhub.co/profile/eaya",
+      iconType: "image",
+      iconVal: "https://lh3.googleusercontent.com/aida-public/AB6AXuAB52Gn30AfNgh_ZIaX0WiCP3ULKJO16YpMvDm_d6OFmYoLiJZuIz6kYU0dWjP51u9KSF3rz05OiTcd7jOstWfwOf0135M2Zdh_eIKUBhCTKP8e4gwhrc-Q16KdGIqe5Lh_IcxEm76bR3WiHWks33_7KBAGYy2gyAN-gDZwGt7KV6PmvsfJQrEvrdNCy_j0nHKudDfKnE5qgqy0nseuq0C3B3Jtc3NvA5MC3guzL2BHHWtOcJiF3TBuJqJcX3OZHKJCrTEngA-Xuc7A"
+    }
+  ];
+
+  function ensureItchContact(socials) {
+    if (!Array.isArray(socials)) return [itchContact];
+    const hasItch = socials.some(s => s && s.name && (s.name.toUpperCase() === 'ITCH.IO' || s.name.toUpperCase() === 'ITCHIO'));
+    if (!hasItch) {
+      const hamsterIdx = socials.findIndex(s => s && s.name && s.name.toUpperCase() === 'HAMSTER HUB');
+      if (hamsterIdx >= 0) {
+        socials.splice(hamsterIdx, 0, itchContact);
+      } else {
+        socials.push(itchContact);
+      }
+    }
+    return socials;
+  }
+
+  const els = {
+    contributions: document.getElementById('ghContributions'),
+    repositories: document.getElementById('ghRepositories'),
+    avatar: document.getElementById('ghAvatar'),
+    displayName: document.getElementById('ghDisplayName'),
+    handle: document.getElementById('ghHandle'),
+    bio: document.getElementById('ghBio'),
+    liveDot: document.getElementById('ghLiveDot'),
+  };
+
+  let statsTimer = null;
+  let revealObserver = null;
+  let lastContributions = null;
+  let lastRepos = null;
+
+  function formatCount(n) {
+    if (n == null || Number.isNaN(n)) return '—';
+    return n.toLocaleString();
+  }
+
+  function animateValue(el, from, to, duration = 600) {
+    if (!el || from === to) {
+      if (el) el.textContent = formatCount(to);
+      return;
+    }
+    const start = performance.now();
+    const diff = to - from;
+    function tick(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = formatCount(Math.round(from + diff * eased));
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = formatCount(to);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function setStat(el, value, cacheKey) {
+    if (!el) return;
+    if (typeof value === 'string' || value == null || Number.isNaN(Number(value))) {
+      el.textContent = value ?? '—';
+      return;
+    }
+    const prev = cacheKey === 'c' ? lastContributions : lastRepos;
+    animateValue(el, prev ?? 0, Number(value));
+    if (cacheKey === 'c') lastContributions = Number(value);
+    else lastRepos = Number(value);
+  }
+
+  function pulseLive() {
+    if (!els.liveDot) return;
+    els.liveDot.classList.remove('opacity-40');
+    els.liveDot.classList.add('opacity-100', 'scale-125');
+    setTimeout(() => {
+      els.liveDot.classList.remove('scale-125', 'opacity-100');
+      els.liveDot.classList.add('opacity-40');
+    }, 400);
+  }
+
+  async function fetchGitHubData() {
+    const t = sessionStorage.getItem('ghToken');
+    const headers = { Accept: 'application/vnd.github+json' };
+    if (t) {
+      headers['Authorization'] = `token ${t}`;
+    }
+
+    let u = {};
+    let profileFetched = false;
+    try {
+      const res = await fetch(
+        `https://api.github.com/users/${GITHUB_USER}`,
+        { headers }
+      );
+      if (res.ok) {
+        u = await res.json();
+        profileFetched = true;
+      } else {
+        console.warn('[GitHub sync] REST API returned status:', res.status);
+      }
+    } catch (err) {
+      console.warn('[GitHub sync] Profile fetch failed:', err.message);
+    }
+
+    if (!profileFetched) {
+      // Load fallback profile properties (from database settings if available)
+      const p = (globalSettings && globalSettings.githubProfile) ? globalSettings.githubProfile : {};
+      u = {
+        name: p.name || 'Chanon Thongduang',
+        login: p.login || GITHUB_USER,
+        avatar_url: p.avatarUrl || `https://github.com/${GITHUB_USER}.png`,
+        bio: p.bio || '',
+        public_repos: p.publicRepos || 50
+      };
+    }
+
+    // 2. Fetch contributions
+    let contributions = null;
+
+    // Try GraphQL contributions API if token is available
+    if (t) {
+      try {
+        const query = `
+          query($username: String!) {
+            user(login: $username) {
+              contributionsCollection {
+                contributionCalendar {
+                  totalContributions
+                }
+              }
+            }
+          }
+        `;
+        const gqlRes = await fetch('https://api.github.com/graphql', {
+          method: 'POST',
+          headers: {
+            'Authorization': `bearer ${t}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query,
+            variables: { username: GITHUB_USER }
+          })
+        });
+        if (gqlRes.ok) {
+          const gqlData = await gqlRes.json();
+          if (gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions !== undefined) {
+            contributions = gqlData.data.user.contributionsCollection.contributionCalendar.totalContributions;
+          }
+        }
+      } catch (err) {
+        console.warn('[GitHub sync] GraphQL contributions fetch failed:', err.message);
+      }
+    }
+    
+    // Try jogruber API next (highly reliable and rate-limit-free for visitors)
+    if (contributions === null) {
+      try {
+        const cr = await fetch(
+          `https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}`
+        );
+        if (cr.ok) {
+          const cal = await cr.json();
+          if (cal.total) {
+            contributions = Object.values(cal.total).reduce((sum, v) => sum + (v || 0), 0);
+          }
+        }
+      } catch (err) {
+        console.warn('[GitHub sync] jogruber API failed:', err.message);
+      }
+    }
+
+    // Fallback to Deno.dev API
+    if (contributions === null) {
+      try {
+        const cr = await fetch(
+          `https://github-contributions-api.deno.dev/${GITHUB_USER}.json`
+        );
+        if (cr.ok) {
+          const cal = await cr.json();
+          let count = 0;
+          if (Array.isArray(cal.contributions)) {
+            for (const week of cal.contributions) {
+              if (Array.isArray(week)) {
+                for (const day of week) {
+                  count += (day.contributionCount || 0);
+                }
+              }
+            }
+          }
+          contributions = count;
+        }
+      } catch (err) {
+        console.warn('[GitHub sync] deno.dev API failed:', err.message);
+      }
+    }
+
+    // Fallback to database cached contributions if still null
+    if (contributions === null && globalSettings && globalSettings.githubProfile) {
+      contributions = globalSettings.githubProfile.contributions;
+    }
+
+    return {
+      contributions: contributions ?? lastContributions ?? '—',
+      repositories: u.public_repos ?? 0,
+      name: u.name ?? u.login,
+      login: u.login,
+      avatarUrl: u.avatar_url,
+      bio: u.bio ?? '',
+      profileUrl: `https://github.com/${u.login}`,
+    };
+  }
+
+  async function fetchFallbackProfile() {
+    if (globalSettings && globalSettings.githubProfile) {
+      const p = globalSettings.githubProfile;
+      return {
+        contributions: p.contributions ?? '—',
+        repositories: p.publicRepos ?? 0,
+        name: p.name || 'Chanon Thongduang',
+        login: p.login || GITHUB_USER,
+        avatarUrl: p.avatarUrl || `https://github.com/${GITHUB_USER}.png`,
+        bio: p.bio || '',
+        profileUrl: `https://github.com/${p.login || GITHUB_USER}`
+      };
+    }
+    try {
+      const r = await fetch('data/ozonz-profile.json');
+      if (r.ok) {
+        const d = await r.json();
+        if (d && d.profile) {
+          let avatar = d.profile.profileImage || 'https://avatars.githubusercontent.com/u/101888890?v=4';
+          if (avatar.startsWith('/images/')) {
+            avatar = 'https://avatars.githubusercontent.com/u/101888890?v=4';
+          }
+          return {
+            contributions: '—',
+            repositories: d.profile.stats?.projects || 0,
+            name: d.profile.name || 'Chanon Thongduang',
+            login: d.profile.handle || 'OzonZ',
+            avatarUrl: avatar,
+            bio: d.profile.bio || '',
+            profileUrl: `https://github.com/${d.profile.handle || 'OzonZ'}`
+          };
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  async function syncGitHub() {
+    try {
+      const data = await fetchGitHubData();
+      applyStats(data);
+      pulseLive();
+    } catch (err) {
+      console.warn('[GitHub sync] sync failed, loading fallback profile:', err.message);
+      const fallback = await fetchFallbackProfile();
+      if (fallback) {
+        applyStats(fallback);
+      } else {
+        if (els.contributions?.textContent === '…')
+          els.contributions.textContent = '—';
+        if (els.repositories?.textContent === '…')
+          els.repositories.textContent = '—';
+      }
+    }
+  }
+
+  let profileApplied = false;
+
+  function applyStats(data) {
+    // Remove all skeleton elements on first data application
+    if (!profileApplied) {
+      document.querySelectorAll('#ghDisplayName .gh-skeleton, #ghHandle .gh-skeleton, #ghBio .gh-skeleton').forEach(el => el.remove());
+      profileApplied = true;
+    }
+
+    setStat(els.contributions, data.contributions, 'c');
+    setStat(els.repositories, data.repositories, 'r');
+    if (data.avatarUrl && els.avatar) els.avatar.src = data.avatarUrl;
+
+    // Display name — replace content cleanly
+    if (data.name && els.displayName) {
+      els.displayName.textContent = '';
+      if (data.profileUrl) {
+        const a = document.createElement('a');
+        a.href = data.profileUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'hover:text-primary transition-colors';
+        a.textContent = data.name;
+        els.displayName.appendChild(a);
+      } else {
+        els.displayName.textContent = data.name;
+      }
+    }
+
+    // Handle @login — replace content cleanly
+    if (data.login && els.handle) {
+      els.handle.textContent = '';
+      if (data.profileUrl) {
+        const a = document.createElement('a');
+        a.href = data.profileUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'hover:text-primary transition-colors';
+        a.textContent = `@${data.login}`;
+        els.handle.appendChild(a);
+      } else {
+        els.handle.textContent = `@${data.login}`;
+      }
+    }
+
+    // Bio — replace content cleanly
+    if (els.bio) {
+      els.bio.textContent = data.bio || '';
+      els.bio.style.display = data.bio ? '' : 'none';
+    }
+  }
+
+  function startGitHubSync() {
+    if (els.contributions) els.contributions.textContent = '…';
+    if (els.repositories) els.repositories.textContent = '…';
+    
+    // Load fallback profile immediately so the page doesn't show blank skeletons
+    fetchFallbackProfile().then(fallback => {
+      if (fallback) applyStats(fallback);
+      syncGitHub();
+    });
+    
+    // Only poll periodically, removed focus/visibility listeners to prevent API rate limiting (403 errors)
+    // Poll only when tab is visible — stop wasting mobile battery in background
+    statsTimer = setInterval(() => {
+      if (!document.hidden) syncGitHub();
+    }, POLL_MS);
+  }
+
+  /* ── Dot-grid background + soft cursor spotlight ── */
+  function initBackground() {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+
+    // Skip heavy WebGL shader in Lite Mode — saves mobile GPU entirely
+    if (window.__isLiteMode) { canvas.style.display = 'none'; return; }
+
+    const gl = canvas.getContext('webgl');
+    if (!gl) return;
+
+    const vertexShaderSource = `
+      attribute vec2 a_position;
+      varying vec2 v_texCoord;
+      void main() {
+        v_texCoord = a_position * 0.5 + 0.5;
+        v_texCoord.y = 1.0 - v_texCoord.y;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fragmentShaderSource = `
+      precision highp float;
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_spot;
+      uniform float u_isDark;
+      uniform float u_time;
+      uniform float u_holdDown;
+      // x,y = pos, z = time, w = intensity
+      uniform vec4 u_waves[50];
+      uniform vec4 u_textRects[80];
+      varying vec2 v_texCoord;
+
+      void main() {
+        vec2 px = v_texCoord * u_resolution;
+        
+        vec3 bgDark = vec3(0.063, 0.078, 0.102);
+        float grad = clamp(v_texCoord.x * 0.5 + v_texCoord.y * 0.5, 0.0, 1.0);
+        vec3 bgLight = mix(vec3(0.98, 0.965, 0.922), vec3(1.0, 0.992, 0.969), grad);
+        
+        vec2 mousePx = u_mouse * u_resolution;
+        float spotDist = length(px - mousePx);
+
+        // 1. Initial dark suppression
+        float dimFactor = smoothstep(0.0, 0.2, u_holdDown);
+        float spotlight = u_spot * exp(-spotDist * spotDist / (2.0 * 95.0 * 95.0)) * (1.0 - dimFactor * 0.9);
+
+        // 2. Fusion buildup from 2s to 5s
+        float fusionProgress = clamp((u_holdDown - 2.0) / 3.0, 0.0, 1.0);
+        float chargeGlow = 0.0;
+        if (fusionProgress > 0.0) {
+            float chargeRadius = 95.0 + fusionProgress * 150.0;
+            chargeGlow = fusionProgress * exp(-spotDist * spotDist / (2.0 * chargeRadius * chargeRadius));
+        }
+
+        spotlight += chargeGlow * u_spot;
+
+        // Accumulate waves (both clicks and trails)
+        float waveIntensity = 0.0;
+        float darkSuppress = 0.0;
+        float edgeBacklightAmount = 0.0;
+        vec2 quakeDisplacement = vec2(0.0);
+
+        for (int i = 0; i < 50; i++) {
+            vec4 w = u_waves[i];
+            if (w.z > 0.0) { // time since wave created
+                float clickDist = length(px - w.xy * u_resolution);
+                
+                // Super wave logic: slower, thicker, further, longer
+                float extraPower = max(0.0, w.w - 1.5);
+                float waveSpeed = max(300.0, 1000.0 - extraPower * 150.0);
+                float waveFront = w.z * waveSpeed;
+                float distFromFront = abs(clickDist - waveFront);
+                
+                float thickness = 800.0 + extraPower * 2000.0;
+                float wave = exp(-distFromFront * distFromFront / thickness);
+                
+                float maxDist = 1200.0 + extraPower * 1500.0;
+                float fadeDist = max(0.0, 1.0 - clickDist / maxDist);
+                float ringLife = maxDist / waveSpeed;
+                float fadeTime = smoothstep(ringLife, ringLife * 0.5, w.z);
+                
+                waveIntensity += wave * fadeDist * fadeTime * w.w;
+
+                // Edge Backlight Logic (reflecting glow after wave hits edge)
+                if (waveFront > clickDist) {
+                    float edgeDistX = min(px.x, u_resolution.x - px.x);
+                    float edgeDistY = min(px.y, u_resolution.y - px.y);
+                    float minDistToEdge = min(edgeDistX, edgeDistY);
+                    
+                    float edgeZone = 150.0;
+                    if (minDistToEdge < edgeZone) {
+                        float timeSincePass = (waveFront - clickDist) / waveSpeed;
+                        if (timeSincePass < 2.0) { // Fades out over 2 seconds
+                            float edgeProfile = smoothstep(edgeZone, 0.0, minDistToEdge);
+                            float fadeOut = smoothstep(2.0, 0.0, timeSincePass);
+                            float backlight = edgeProfile * fadeOut * fadeDist * w.w * 0.15;
+                            edgeBacklightAmount = max(edgeBacklightAmount, backlight);
+                        }
+                    }
+                }
+
+
+                // Quake displacement directed away from the wave center (smoothed)
+                if (extraPower > 0.0) {
+                    vec2 dir = clickDist > 0.1 ? (px - w.xy * u_resolution) / clickDist : vec2(0.0);
+                    quakeDisplacement += dir * wave * fadeDist * fadeTime * (extraPower * 4.0);
+                }
+                
+                // Suppress center brightness on all clicks
+                if (w.w > 0.4) {
+                    float sDistScale = 100.0 + extraPower * 30.0;
+                    float suppressDist = exp(-clickDist * clickDist / (2.0 * sDistScale * sDistScale));
+                    float suppressDuration = 2.0 + extraPower * 1.5;
+                    float suppressFade = smoothstep(suppressDuration, 0.0, w.z);
+                    darkSuppress += suppressDist * suppressFade * 2.0;
+                }
+            }
+        }
+
+        // Apply wave to spotlight effects
+        float effectIntensity = max(0.0, spotlight - darkSuppress) + waveIntensity;
+
+        // Text glow accumulation
+        float textGlow = 0.0;
+        for (int i = 0; i < 80; i++) {
+            vec4 r = u_textRects[i];
+            if (r.z > 0.0) {
+                vec2 d = abs(px - r.xy) - r.zw;
+                float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+                float glowRadius = 45.0;
+                float distOutside = max(dist, 0.0);
+                float intensity = 1.0 - smoothstep(0.0, glowRadius, distOutside);
+                textGlow = max(textGlow, intensity);
+            }
+        }
+
+        float spacing = 26.0;
+        vec2 displacedPx = px + quakeDisplacement;
+        vec2 cell = mod(displacedPx + spacing * 0.5, spacing) - spacing * 0.5;
+        
+        // Size boost (scale down)
+        float baseSize = 1.6;
+        float sizeBoost = 1.0 + min(1.5, effectIntensity * 1.2);
+        float dotShape = 1.0 - smoothstep(0.0, baseSize * sizeBoost, length(cell));
+
+        // Dot Colors for dark/light modes
+        vec3 dotColorDimDark = vec3(0.35, 0.38, 0.45);
+        vec3 dotColorDimLight = vec3(0.65, 0.62, 0.55);
+        vec3 dotColorDim = mix(dotColorDimLight, dotColorDimDark, u_isDark);
+        
+        vec3 dotColorLitDark = vec3(3.0, 3.0, 3.0);
+        vec3 dotColorLitLight = vec3(0.15, 0.35, 0.2); // Dark green for spotlight
+        vec3 dotColorLit = mix(dotColorLitLight, dotColorLitDark, u_isDark);
+
+        // Brightness and mixing
+        float dimDark = 0.25;
+        float dimLight = 0.35;
+        float dim = mix(dimLight, dimDark, u_isDark);
+        float lit = dim + effectIntensity * mix(1.2, 2.0, u_isDark);
+        
+        float clampedEffect = clamp(effectIntensity, 0.0, 1.0);
+        float brightness = mix(dim, lit, clampedEffect);
+        vec3 dotColor = mix(dotColorDim, dotColorLit, clampedEffect);
+
+        // Dim dots near text to make text more readable
+        float textDimAmount = textGlow * mix(0.4, 0.7, u_isDark);
+        brightness *= (1.0 - textDimAmount);
+
+        vec3 textDimColor = mix(vec3(0.6, 0.6, 0.6), vec3(0.15, 0.15, 0.15), u_isDark);
+        dotColor = mix(dotColor, textDimColor, textGlow * 0.5);
+        dotShape *= (1.0 - textGlow * 0.5);
+
+        // Final color mix
+        vec3 colorDark = bgDark + dotColor * brightness * dotShape;
+        vec3 colorLight = mix(bgLight, dotColor, brightness * dotShape);
+        
+        vec3 color = mix(colorLight, colorDark, u_isDark);
+        
+        vec3 bLightColor = mix(vec3(1.0, 1.0, 1.0), vec3(0.5, 0.7, 0.9), u_isDark);
+        color += bLightColor * edgeBacklightAmount * 0.15;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    function createShader(type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.warn(gl.getShaderInfoLog(shader));
+      }
+      return shader;
+    }
+
+    const program = gl.createProgram();
+    gl.attachShader(program, createShader(gl.VERTEX_SHADER, vertexShaderSource));
+    gl.attachShader(
+      program,
+      createShader(gl.FRAGMENT_SHADER, fragmentShaderSource)
+    );
+    gl.linkProgram(program);
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+
+    const positionLocation = gl.getAttribLocation(program, 'a_position');
+    const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+    const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+    const spotLocation = gl.getUniformLocation(program, 'u_spot');
+    const isDarkLocation = gl.getUniformLocation(program, 'u_isDark');
+    const timeLocation = gl.getUniformLocation(program, 'u_time');
+    const wavesLocation = gl.getUniformLocation(program, 'u_waves');
+    const holdDownLocation = gl.getUniformLocation(program, 'u_holdDown');
+    const textRectsLocation = gl.getUniformLocation(program, 'u_textRects');
+
+    const mouse = { x: 0.5, y: 0.5 };
+    const target = { x: 0.5, y: 0.5 };
+    let spot = 0;
+    let targetSpot = 0;
+    let pointerInside = false;
+    let lastMoveTime = performance.now();
+
+    const textRectsData = new Float32Array(80 * 4);
+    let textElements = [];
+    function findTextElements() {
+      textElements = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .roles-tag, .group'))
+        .filter(el => {
+          if (el.closest('.pixel-card') || 
+              el.closest('#project-detail-modal') || 
+              el.closest('#main-nav') || 
+              el.closest('#theme-toggle') || 
+              el.closest('#contact-links-container') ||
+              el.closest('.modal-backdrop') ||
+              el.closest('#confirm-modal')) {
+            return false;
+          }
+          return true;
+        });
+    }
+    let frameCount = 0;
+
+    // Multiple waves tracking
+    const MAX_WAVES = 50;
+    let waves = Array(MAX_WAVES).fill(null).map(() => ({ x: 0, y: 0, time: 0, intensity: 0 }));
+    let waveIndex = 0;
+    function addWave(x, y, intensity) {
+        // Find a safe slot to overwrite (avoid killing active super waves)
+        for (let i = 0; i < MAX_WAVES; i++) {
+            let idx = (waveIndex + i) % MAX_WAVES;
+            if (waves[idx].time === 0 || waves[idx].intensity <= 1.5 || intensity > 1.5) {
+                waveIndex = idx;
+                break;
+            }
+        }
+        waves[waveIndex] = { x, y, time: 0.001, intensity };
+        waveIndex = (waveIndex + 1) % MAX_WAVES;
+    }
+
+    let isMouseDown = false;
+    let holdDownAmt = 0.0;
+    let holdWaveTimer = 0.0;
+    let lastTime = performance.now();
+    let totalTime = 0.0;
+    let lastTrailPos = { x: -1000, y: -1000 };
+
+    // Theme transition state
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialIsDark = savedTheme === 'dark' || (savedTheme === null && systemPrefersDark);
+    let darkTransition = initialIsDark ? 1.0 : 0.0;
+
+    function onMove(e) {
+      lastMoveTime = performance.now();
+      target.x = e.clientX / window.innerWidth;
+      target.y = e.clientY / window.innerHeight;
+      pointerInside = true;
+
+      // Add trail waves based on movement distance
+      let dx = e.clientX - lastTrailPos.x;
+      let dy = e.clientY - lastTrailPos.y;
+      if (Math.sqrt(dx*dx + dy*dy) > 30) {
+          addWave(target.x, target.y, 0.25); // small trail wave
+          lastTrailPos.x = e.clientX;
+          lastTrailPos.y = e.clientY;
+      }
+    }
+
+    document.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseenter', onMove, { passive: true });
+    document.addEventListener(
+      'touchmove',
+      (e) => {
+        const t = e.touches[0];
+        if (t) onMove({ clientX: t.clientX, clientY: t.clientY });
+      },
+      { passive: true }
+    );
+    document.addEventListener('mouseleave', () => {
+      pointerInside = false;
+      targetSpot = 0;
+    });
+
+    document.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      lastMoveTime = performance.now();
+      addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, 0.5); // Little wave at first
+    });
+    document.addEventListener('mouseup', (e) => {
+      if (isMouseDown) {
+          isMouseDown = false;
+          lastMoveTime = performance.now();
+          let extra = Math.max(0.0, holdDownAmt - 2.0);
+          let power = 1.0 + extra * 2.0;
+          addWave(e.clientX / window.innerWidth, e.clientY / window.innerHeight, power);
+          holdDownAmt = 0.0;
+      }
+    });
+
+    document.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      if (t) {
+        isMouseDown = true;
+        lastMoveTime = performance.now();
+        addWave(t.clientX / window.innerWidth, t.clientY / window.innerHeight, 0.5); // Little wave at first
+      }
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      if (isMouseDown) {
+          isMouseDown = false;
+          lastMoveTime = performance.now();
+          let extra = Math.max(0.0, holdDownAmt - 2.0);
+          let power = 1.0 + extra * 2.0;
+          addWave(target.x, target.y, power);
+          holdDownAmt = 0.0;
+      }
+    }, { passive: true });
+
+    function resizeCanvas() {
+      if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    const FPS_CAP = 1000 / 30; // 30fps — half the GPU cost, imperceptible on a background shader
+    let lastFrameTs = 0;
+    let animId = null;
+
+    function render(ts) {
+      if (document.hidden) {
+        animId = null;
+        return;
+      }
+      // Skip this frame if we haven't waited long enough
+      if (ts - lastFrameTs < FPS_CAP) { animId = requestAnimationFrame(render); return; }
+      lastFrameTs = ts;
+      const now = performance.now();
+      const dt = (now - lastTime) / 1000.0;
+      lastTime = now;
+      totalTime += dt;
+
+      // Animate hold down charging (up to 5 seconds) and emit periodic waves
+      if (isMouseDown) {
+          holdDownAmt = Math.min(5.0, holdDownAmt + dt);
+          holdWaveTimer += dt;
+          if (holdWaveTimer >= 0.4) {
+              addWave(target.x, target.y, 0.5);
+              holdWaveTimer = 0.0;
+          }
+      } else {
+          holdDownAmt = 0.0;
+          holdWaveTimer = 0.0;
+      }
+
+      // Update waves
+      let wavesData = new Float32Array(MAX_WAVES * 4);
+      for (let i = 0; i < MAX_WAVES; i++) {
+          if (waves[i].time > 0.0) {
+              waves[i].time += dt;
+              
+              let extraPower = Math.max(0.0, waves[i].intensity - 1.5);
+              let waveSpeed = Math.max(300.0, 1000.0 - extraPower * 150.0);
+              let maxDist = 1200.0 + extraPower * 1500.0;
+              let ringLife = maxDist / waveSpeed;
+              let suppressDuration = 2.0 + extraPower * 1.5;
+              let maxLife = Math.max(ringLife, suppressDuration);
+              
+              if (waves[i].time > maxLife) { // Max lifetime
+                  waves[i].time = 0;
+              }
+          }
+          wavesData[i*4 + 0] = waves[i].x;
+          wavesData[i*4 + 1] = waves[i].y;
+          wavesData[i*4 + 2] = waves[i].time;
+          wavesData[i*4 + 3] = waves[i].intensity;
+      }
+
+      // Query DOM for text elements every 30 frames
+      frameCount++;
+      if (frameCount % 30 === 1) {
+          findTextElements();
+      }
+
+      // Update bounding boxes in textRectsData
+      textRectsData.fill(0);
+      const limit = Math.min(textElements.length, 80);
+      for (let i = 0; i < limit; i++) {
+          const el = textElements[i];
+          if (el.offsetWidth === 0 && el.offsetHeight === 0) continue;
+          const r = el.getBoundingClientRect();
+          textRectsData[i * 4 + 0] = r.left + r.width / 2;
+          textRectsData[i * 4 + 1] = r.top + r.height / 2;
+          textRectsData[i * 4 + 2] = r.width / 2;
+          textRectsData[i * 4 + 3] = r.height / 2;
+      }
+
+      if (pointerInside) {
+          const idleTime = (now - lastMoveTime) / 1000.0;
+          if (idleTime > 3.0) {
+              // Gradually dim targetSpot to 0 over 1.5 seconds (from 3.0s to 4.5s)
+              targetSpot = Math.max(0.0, 1.0 - (idleTime - 3.0) / 1.5);
+          } else {
+              targetSpot = 1.0;
+          }
+      } else {
+          targetSpot = 0.0;
+      }
+
+      const lerp = pointerInside ? 0.14 : 0.06;
+      mouse.x += (target.x - mouse.x) * lerp;
+      mouse.y += (target.y - mouse.y) * lerp;
+      spot += (targetSpot - spot) * 0.12;
+
+      // Animate transition between dark and light modes
+      const currentIsDark = document.documentElement.classList.contains('dark');
+      const targetDark = currentIsDark ? 1.0 : 0.0;
+      darkTransition += (targetDark - darkTransition) * 0.1;
+
+      gl.useProgram(program);
+      gl.enableVertexAttribArray(positionLocation);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+      gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+      gl.uniform2f(mouseLocation, mouse.x, mouse.y);
+      gl.uniform1f(spotLocation, spot);
+      gl.uniform1f(isDarkLocation, darkTransition);
+      gl.uniform1f(timeLocation, totalTime);
+      gl.uniform1f(holdDownLocation, holdDownAmt);
+      if (wavesLocation) {
+          gl.uniform4fv(wavesLocation, wavesData);
+      }
+      if (textRectsLocation) {
+          gl.uniform4fv(textRectsLocation, textRectsData);
+      }
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      animId = requestAnimationFrame(render);
+    }
+
+    animId = requestAnimationFrame(render);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !animId) {
+        resizeCanvas();
+        lastTime = performance.now();
+        animId = requestAnimationFrame(render);
+      }
+    });
+  }
+
+  function initRevealAndTheme() {
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '50px' }
+    );
+    document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => revealObserver.observe(el));
+
+    // Instant safety reveal for items already in the viewport
+    setTimeout(() => {
+      document.querySelectorAll('.reveal, .reveal-delayed').forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('active');
+        }
+      });
+    }, 60);
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const icon = document.getElementById('theme-icon');
+
+    // Initialize toggle state correctly based on current classes
+    const isDarkInitial = document.documentElement.classList.contains('dark');
+    if (icon) {
+      icon.textContent = isDarkInitial ? 'light_mode' : 'dark_mode';
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+      });
+    }
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.contains('hidden');
+        if (isHidden) {
+          mobileMenu.classList.remove('hidden');
+          mobileMenu.classList.add('flex');
+          if (menuIcon) menuIcon.textContent = 'close';
+        } else {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('flex');
+          if (menuIcon) menuIcon.textContent = 'menu';
+        }
+      });
+    }
+  }
+
+  function initNavbarScroll() {
+    const nav = document.getElementById('main-nav');
+    let isScrolledPastHero = null;
+
+    function updateDynamicScrollbar(scrolled) {
+      if (scrolled === isScrolledPastHero) return;
+      isScrolledPastHero = scrolled;
+
+      let styleEl = document.getElementById('dynamic-scrollbar');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'dynamic-scrollbar';
+        document.head.appendChild(styleEl);
+      }
+
+      if (scrolled) {
+        styleEl.textContent = `
+          ::-webkit-scrollbar-thumb {
+            background: rgba(var(--primary-rgb), 0.65) !important;
+            border-radius: 9999px !important;
+            border: 1.5px solid rgba(var(--background-rgb), 0.5) !important;
+            box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.35) !important;
+          }
+          ::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--primary-rgb), 0.95) !important;
+            box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.8) !important;
+          }
+          ::-webkit-scrollbar-thumb:active {
+            background: var(--primary) !important;
+            box-shadow: 0 0 16px rgba(var(--primary-rgb), 1) !important;
+          }
+          html {
+            scrollbar-color: rgba(var(--primary-rgb), 0.65) transparent !important;
+          }
+        `;
+      } else {
+        styleEl.textContent = `
+          ::-webkit-scrollbar-thumb {
+            background: transparent !important;
+            box-shadow: none !important;
+          }
+          html {
+            scrollbar-color: transparent transparent !important;
+          }
+        `;
+      }
+    }
+
+    function handleScroll() {
+      const isScrolled = window.scrollY > 80;
+      if (nav) {
+        if (isScrolled) {
+          nav.classList.remove('-translate-y-full');
+          nav.classList.add('translate-y-0');
+        } else {
+          nav.classList.remove('translate-y-0');
+          nav.classList.add('-translate-y-full');
+        }
+      }
+      if (isScrolled) {
+        document.documentElement.classList.add('scrolled-down');
+      } else {
+        document.documentElement.classList.remove('scrolled-down');
+      }
+      updateDynamicScrollbar(isScrolled);
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+  }
+
+  function initSmoothScroll() {
+    const navLinks = document.querySelectorAll('#main-nav a');
+    navLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        // Auto close mobile menu on link click
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('flex');
+          if (menuIcon) menuIcon.textContent = 'menu';
+        }
+
+        if (href === '#' || href === '') {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } else if (href.startsWith('#')) {
+          e.preventDefault();
+          const targetElement = document.querySelector(href);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+  }
+
+  function initLocalStorage() {
+    const defaultApiKey = (typeof CONFIG !== 'undefined' && CONFIG.GEMINI_API_KEY) ? CONFIG.GEMINI_API_KEY : '';
+    if (!localStorage.getItem('gemini_api_key') && defaultApiKey) {
+      localStorage.setItem('gemini_api_key', defaultApiKey);
+    }
+  }
+
+  function getShortDescription(desc) {
+    if (!desc) return '';
+    const sentences = desc.split(/[.!?]\s+/);
+    if (sentences.length > 0 && sentences[0].length > 10) {
+      let first = sentences[0].trim();
+      if (!/[.!?]$/.test(first)) {
+        first += '.';
+      }
+      if (first.length <= 120) {
+        return first;
+      }
+    }
+    if (desc.length <= 100) return desc;
+    return desc.substring(0, 97) + '...';
+  }
+
+  function renderWorks() {
+    const grid = document.getElementById('archives-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    let works = normalizeWorks(globalWorks);
+    
+    // Apply filtering
+    if (currentWorkFilter !== 'all') {
+        works = works.filter(w => {
+            const cats = Array.isArray(w.categories) ? w.categories.map(c => String(c).toLowerCase()) : [];
+            let tags = Array.isArray(w.tags) ? w.tags.join(', ').toLowerCase() : (typeof w.tags === 'string' ? w.tags.toLowerCase() : `${w.cat || ''} ${w.subcat || ''}`.toLowerCase());
+            
+            const isGame = cats.includes('game') || cats.includes('games') || tags.includes('game') || tags.includes('games');
+            const isWebsite = cats.includes('website') || cats.includes('web') || cats.includes('webapp') || tags.includes('web') || tags.includes('website');
+
+            if (currentWorkFilter === 'games') {
+                return isGame;
+            } else if (currentWorkFilter === 'website') {
+                return isWebsite;
+            } else if (currentWorkFilter === 'other') {
+                return cats.includes('other') || (!isGame && !isWebsite);
+            }
+            return true;
+        });
+    }
+
+    if (works.length > 0) {
+      works = works.map(w => {
+        let image = w.image || w.thumbnail;
+        if (Array.isArray(w.image)) image = w.image[0];
+        if (!image && w.images && w.images.length > 0) image = w.images[0];
+        if (!image && w.model) image = 'view_in_ar';
+        let link = w.link;
+        if (!link && w.links && w.links.length > 0) link = w.links[0].url;
+        let tags = Array.isArray(w.tags) ? w.tags.join(', ') : (typeof w.tags === 'string' ? w.tags : `${w.cat || ''}, ${w.subcat || ''}`);
+        let contributors = [];
+        if (w.team && globalSettings.teams) {
+          contributors = w.team.map(tid => {
+            const t = globalSettings.teams.find(x => x.id === tid);
+            return t ? { name: t.name, avatar: t.image || t.iconId, url: t.url || t.link } : null;
+          }).filter(Boolean);
+        }
+        const tagline = w.tagline || w.aiSummary || getShortDescription(w.desc || w.description || '');
+        return { ...w, title: w.name || w.title, detail: w.desc || w.description || '', tagline: tagline, aiSummary: w.aiSummary || '', year: w.year || '', image: image || 'brush', link: link || '#', tags: tags, contributors: contributors };
+      });
+      currentDisplayedWorks = works;
+    } else {
+      currentDisplayedWorks = [];
+    }
+
+    if (works.length === 0) {
+      grid.innerHTML = '<div class="text-center text-on-surface-variant py-10 col-span-12">No works available.</div>';
+      return;
+    }
+
+    // Featured Card (Index 0)
+    const featured = works[0];
+    const isFeaturedImg = featured.image && (featured.image.startsWith('http') || featured.image.includes('/') || featured.image.includes('.'));
+    const safeFeaturedImg = isFeaturedImg ? escUrl(featured.image) : '';
+    const safeFeaturedTitle = esc(featured.title || featured.name || '(Untitled)');
+    const safeFeaturedTagline = esc(featured.tagline || '');
+    const safeFeaturedSummary = featured.aiSummary ? esc(featured.aiSummary) : '';
+    const safeFeaturedLink = escUrl(featured.link || '#');
+    const safeFeaturedYear = esc(featured.year || new Date().getFullYear());
+    const featuredTagsHTML = featured.tags
+      ? featured.tags.split(',').map(tag => `<span class="design-featured-tag">${esc(tag.trim())}</span>`).join('')
+      : '';
+
+    const featuredHTML = `
+        <div class="col-span-1 lg:col-span-8 w-full work-card-trigger design-featured-card reveal" data-index="0" data-id="${esc(featured.id || '')}">
+            ${
+              safeFeaturedImg
+                ? `<img alt="${safeFeaturedTitle}" class="design-featured-img" src="${safeFeaturedImg}" />`
+                : `<div class="absolute inset-0 w-full h-full bg-surface/10 flex items-center justify-center transition-transform duration-1000 group-hover:scale-105"><span class="material-symbols-outlined text-primary text-9xl">${esc(featured.image) || 'brush'}</span></div>`
+            }
+            <div class="design-featured-gradient"></div>
+            
+            <!-- Top badges -->
+            <div class="absolute top-5 left-5 flex gap-2.5 z-10">
+                <span class="design-featured-badge">★ Featured</span>
+            </div>
+            <div class="absolute top-5 right-5 z-10">
+                <span class="design-featured-year">${safeFeaturedYear}</span>
+            </div>
+            
+            <div class="relative z-10 p-4 sm:p-8 md:p-10 flex flex-col">
+                <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-4">
+                    ${featuredTagsHTML}
+                </div>
+                <h3 class="design-featured-title">${safeFeaturedTitle}</h3>
+                <p class="design-featured-tagline">${safeFeaturedTagline}</p>
+                ${
+                  safeFeaturedSummary
+                    ? `<p class="text-primary font-bold text-xs sm:text-sm tracking-wider uppercase mb-3 sm:mb-5 mix-blend-difference flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">auto_awesome</span> ${safeFeaturedSummary}</p>`
+                    : ''
+                }
+                <div>
+                    <a href="${safeFeaturedLink}" target="_blank" onclick="event.stopPropagation(); if(this.getAttribute('href') === '#' || !this.getAttribute('href')) { alert('เกมนี้ยังไม่มี link ตอนนี้'); return false; }" class="design-featured-btn">
+                        <span>Visit Project</span>
+                        <span class="material-symbols-outlined text-xs sm:text-sm">open_in_new</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="design-hover-center-pulse">
+                <div class="design-pulse-circle">
+                    <span class="material-symbols-outlined text-xl sm:text-2xl">open_in_new</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Bento Cards (Index 1 and 2, next to Featured Project)
+    const sideWorks = works.slice(1, 3);
+    let bentoHTML = '';
+    if (sideWorks.length > 0) {
+      const bentoCards = sideWorks.map((work, index) => {
+        const i = index + 1;
+        const isImg = work.image && (work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.'));
+        const safeImg = isImg ? escUrl(work.image) : '';
+        const safeTitle = esc(work.title || work.name || '');
+        const safeTagline = esc(work.tagline || '');
+        const safeYear = esc(work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear()));
+        const tagsHTML = work.tags
+          ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${esc(tag.trim())}</span>`).join('')
+          : '';
+
+        return `
+            <div class="design-side-card work-card-trigger reveal" data-index="${i}" data-id="${esc(work.id || '')}">
+                <div class="design-side-thumbnail">
+                    ${
+                      safeImg
+                        ? `<img src="${safeImg}" class="design-side-img" />`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-3xl sm:text-5xl">${esc(work.image) || 'brush'}</span></div>`
+                    }
+                    <div class="design-side-fade"></div>
+                    <span class="design-side-year">${safeYear}</span>
+                    <div class="design-side-hover-overlay">
+                        <div class="design-side-overlay-circle">
+                            <span class="material-symbols-outlined text-base sm:text-lg">arrow_forward</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="design-side-body">
+                    <div class="flex flex-wrap gap-1.5 mb-2 sm:mb-3">
+                        ${tagsHTML}
+                    </div>
+                    
+                    <h3 class="design-side-title">${safeTitle}</h3>
+                    <p class="design-side-tagline">${safeTagline}</p>
+                    
+                    <div class="design-side-footer">
+                        ${
+                          work.contributors && work.contributors.length > 1
+                            ? `<span class="flex items-center gap-1 text-on-surface-variant/70 text-[9.5px] sm:text-[11px] font-semibold truncate">
+                                 <span class="material-symbols-outlined text-[12px] sm:text-[13px] shrink-0">group</span>
+                                 <span>${work.contributors.length} contributors</span>
+                               </span>`
+                            : ''
+                        }
+                        
+                        <span class="design-side-explore">
+                            <span>Explore</span>
+                            <span class="material-symbols-outlined text-[9px] sm:text-[11px]">arrow_forward</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+      }).join('');
+      bentoHTML = `<div class="col-span-1 lg:col-span-4 w-full flex flex-col gap-4 sm:gap-8 md:gap-10">${bentoCards}</div>`;
+    }
+
+    // Grid Cards (Index 3 and later, rendered below the featured section)
+    const extraWorks = works.slice(3);
+    let extraGridHTML = '';
+    if (extraWorks.length > 0) {
+      const extraCards = extraWorks.map((work, index) => {
+        const i = index + 3;
+        const isImg = work.image && (work.image.startsWith('http') || work.image.includes('/') || work.image.includes('.'));
+        const safeImg = isImg ? escUrl(work.image) : '';
+        const safeTitle = esc(work.title || work.name || '');
+        const safeTagline = esc(work.tagline || '');
+        const safeYear = esc(work.year || (work.date ? new Date(work.date).getFullYear() : new Date().getFullYear()));
+        const tagsHTML = work.tags
+          ? work.tags.split(',').slice(0, 3).map(tag => `<span class="design-tag-pill">${esc(tag.trim())}</span>`).join('')
+          : '';
+
+        return `
+            <div class="design-side-card work-card-trigger reveal" data-index="${i}" data-id="${esc(work.id || '')}">
+                <div class="design-side-thumbnail">
+                    ${
+                      safeImg
+                        ? `<img src="${safeImg}" class="design-side-img" />`
+                        : `<div class="w-full h-full bg-surface/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">${esc(work.image) || 'brush'}</span></div>`
+                    }
+                    <div class="design-side-fade"></div>
+                    <span class="design-side-year">${safeYear}</span>
+                    <div class="design-side-hover-overlay">
+                        <div class="design-side-overlay-circle">
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="design-side-body">
+                    <div class="flex flex-wrap gap-1.5 mb-2.5 sm:mb-3">
+                        ${tagsHTML}
+                    </div>
+                    
+                    <h3 class="design-side-title">${safeTitle}</h3>
+                    <p class="design-side-tagline">${safeTagline}</p>
+                    
+                    <div class="design-side-footer">
+                        ${
+                          work.contributors && work.contributors.length > 1
+                            ? `<span class="flex items-center gap-1.5 text-on-surface-variant/70 text-[10px] sm:text-[11px] font-semibold truncate">
+                                 <span class="material-symbols-outlined text-[13px] shrink-0">group</span>
+                                 <span>${work.contributors.length} contributors</span>
+                               </span>`
+                            : ''
+                        }
+                        
+                        <span class="design-side-explore">
+                            <span>Explore</span>
+                            <span class="material-symbols-outlined text-[10px] sm:text-[11px]">arrow_forward</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+      }).join('');
+      extraGridHTML = `<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 md:gap-10 mt-4 sm:mt-10">${extraCards}</div>`;
+    }
+
+    // Single DOM update for the whole grid
+    grid.innerHTML = featuredHTML + bentoHTML + extraGridHTML;
+
+    // Bind click listeners to work-card-trigger
+    grid.querySelectorAll('.work-card-trigger').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const linkBtn = e.target.closest('a');
+        if (linkBtn) {
+          const href = linkBtn.getAttribute('href');
+          if (href === '#' || !href || href.trim() === '') {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('เกมนี้ยังไม่มี link ตอนนี้');
+          } else {
+            // Stop propagation so it doesn't open the modal, but let the default link target="_blank" behavior run
+            e.stopPropagation();
+          }
+          return;
+        }
+        e.preventDefault();
+        const cardId = card.getAttribute('data-id');
+        const index = parseInt(card.getAttribute('data-index'), 10);
+        if (cardId) {
+          openProjectDetailModal(cardId);
+        } else if (!isNaN(index)) {
+          openProjectDetailModal(index);
+        }
+      });
+    });
+
+    // Observe newly rendered cards for reveal scroll animations
+    if (revealObserver) {
+      grid.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+    }
+  }
+
+  function renderContacts() {
+    const container = document.getElementById('contact-links-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    let contacts = [];
+    if (globalSettings && globalSettings.socials) {
+      contacts = globalSettings.socials.map(s => {
+        // Support new format (iconType, iconVal, link/url) with fallback to iconId
+        if (s.iconType) {
+          return {
+            name: s.name,
+            link: s.link || s.url || '#',
+            iconType: s.iconType,
+            iconVal: s.iconVal || 'link'
+          };
+        }
+        
+        let iconUrl = '';
+        if (s.iconId && globalSettings.icons) {
+          const ic = globalSettings.icons.find(x => x.id === s.iconId);
+          if (ic) iconUrl = ic.url;
+        }
+        return {
+          name: s.name,
+          link: s.link || s.url || '#',
+          iconType: iconUrl ? 'image' : 'material',
+          iconVal: iconUrl ? iconUrl : 'link'
+        };
+      });
+    }
+
+    const contactsHTML = contacts.map((c) => {
+      let iconHTML = '';
+      if (c.iconType === 'svg') {
+        iconHTML = `<svg class="w-6 h-6 sm:w-8 sm:h-8 fill-current shrink-0" viewBox="0 0 24 24"><path d="${esc(c.iconVal)}"></path></svg>`;
+      } else if (c.iconType === 'image') {
+        iconHTML = `<img alt="${esc(c.name)}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border border-outline/20 shrink-0" src="${escUrl(c.iconVal)}" onerror="this.style.display='none'" />`;
+      } else {
+        iconHTML = `<span class="material-symbols-outlined text-xl sm:text-2xl shrink-0">${esc(c.iconVal) || 'link'}</span>`;
+      }
+      const safeLink = escUrl(c.link || '#');
+      const safeName = esc(c.name || '');
+
+      return `
+          <a class="text-on-surface-variant hover:text-primary transition-all hover:scale-110 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold"
+              href="${safeLink}" target="_blank" title="${safeName}">
+              ${iconHTML}
+              <span>${safeName.toUpperCase()}</span>
+          </a>
+      `;
+    }).join('');
+    container.innerHTML = contactsHTML;
+  }
+
+  function openProjectDetailModal(target) {
+    const displayed = (currentDisplayedWorks && currentDisplayedWorks.length > 0) ? currentDisplayedWorks : (globalWorks || []);
+    let w = null;
+
+    if (typeof target === 'string' && target !== '') {
+      // Find by id in currently displayed works first, then fallback to globalWorks
+      w = displayed.find(x => String(x.id) === target) || (globalWorks || []).find(x => String(x.id) === target);
+      // Fallback: If not found by id but target can parse as numeric index
+      if (!w && !isNaN(Number(target))) {
+        const idx = parseInt(target, 10);
+        w = displayed[idx] || (globalWorks || [])[idx];
+      }
+    } else if (typeof target === 'number') {
+      w = displayed[target] || (globalWorks || [])[target];
+    }
+
+    if (!w) return;
+    
+    // Track click for analytics
+    if (window.trackPortfolioClick) {
+      window.trackPortfolioClick(w.name);
+    }
+
+    const modal = document.getElementById('project-detail-modal');
+    const titleEl = document.getElementById('project-detail-title');
+    const taglineEl = document.getElementById('project-detail-tagline');
+    const descEl = document.getElementById('project-detail-description');
+    const imgContainer = document.getElementById('project-detail-image-container');
+    const tagsContainer = document.getElementById('project-detail-tags');
+    const linkEl = document.getElementById('project-detail-link');
+    const contribSection = document.getElementById('project-detail-contributors-section');
+    const contribList = document.getElementById('project-detail-contributors-list');
+
+    titleEl.textContent = w.title || w.name || '';
+    if (taglineEl) {
+      taglineEl.textContent = w.tagline || '';
+    }
+    descEl.textContent = w.detail || w.desc || '';
+    
+    let link = w.link;
+    if (!link && w.links && w.links.length > 0) link = w.links[0].url;
+    linkEl.href = link || '#';
+
+    // Set image or icon
+    imgContainer.innerHTML = '';
+    if (window.carouselInterval) clearInterval(window.carouselInterval);
+    
+    const imagesList = [];
+    if (w.images && Array.isArray(w.images) && w.images.length > 0) {
+      imagesList.push(...w.images);
+    } else if (w.image) {
+      imagesList.push(Array.isArray(w.image) ? w.image[0] : w.image);
+    }
+    
+    if (imagesList.length > 0 && typeof imagesList[0] === 'string' && (imagesList[0].startsWith('http') || imagesList[0].includes('/') || imagesList[0].includes('.'))) {
+      imgContainer.className = "w-full h-full relative pointer-events-none";
+      imagesList.forEach((src, idx) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${idx === 0 ? 'opacity-100' : 'opacity-0'}`;
+        imgContainer.appendChild(img);
+      });
+      
+      if (imagesList.length > 1) {
+        let currIdx = 0;
+        const imgElements = imgContainer.querySelectorAll('img');
+        window.carouselInterval = setInterval(() => {
+          imgElements[currIdx].classList.remove('opacity-100');
+          imgElements[currIdx].classList.add('opacity-0');
+          currIdx = (currIdx + 1) % imagesList.length;
+          imgElements[currIdx].classList.remove('opacity-0');
+          imgElements[currIdx].classList.add('opacity-100');
+        }, 3000);
+      }
+    } else {
+      const imageVal = imagesList.length > 0 ? imagesList[0] : (w.model ? 'view_in_ar' : 'brush');
+      imgContainer.innerHTML = `<div class="flex items-center justify-center w-full h-full"><span class="material-symbols-outlined text-primary text-6xl sm:text-8xl">${esc(imageVal)}</span></div>`;
+    }
+
+    // Set tags
+    tagsContainer.innerHTML = '';
+    if (w.tags) {
+      const tagsArray = Array.isArray(w.tags) ? w.tags : (typeof w.tags === 'string' ? w.tags.split(',') : []);
+      tagsArray.forEach(tag => {
+        const badge = document.createElement('span');
+        badge.className = 'bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-[0.16em] px-[8px] sm:px-[10px] py-[3px] rounded border border-primary/20 whitespace-nowrap';
+        badge.textContent = tag.trim();
+        tagsContainer.appendChild(badge);
+      });
+    }
+
+    // Set contributors
+    contribList.innerHTML = '';
+    const contributors = w.contributors || [];
+    if (contributors.length > 0) {
+      contribSection.classList.remove('hidden');
+      contributors.forEach(c => {
+        const item = document.createElement('a');
+        item.className = 'bg-surface-variant text-on-background text-[11px] sm:text-[12px] font-semibold py-1 px-2.5 sm:px-3 rounded-full border border-outline/30 hover:border-primary/50 transition-colors inline-block';
+        if (c.url) {
+          item.href = c.url;
+          item.target = '_blank';
+        } else {
+          item.href = 'javascript:void(0)';
+          item.style.cursor = 'default';
+        }
+
+        item.textContent = c.name || c;
+        contribList.appendChild(item);
+      });
+    } else {
+      contribSection.classList.add('hidden');
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Trigger animation
+    const modalContent = document.getElementById('project-detail-box');
+    if (modalContent) {
+      modalContent.classList.remove('animate-modal-enter');
+      void modalContent.offsetWidth; // trigger reflow
+      modalContent.classList.add('animate-modal-enter');
+      
+      // Ensure modal is cleanly centered via flexbox on both desktop and mobile
+      modalContent.style.left = '';
+      modalContent.style.top = '';
+    }
+  }
+
+  function initProjectDetailModal() {
+    const closeBtn = document.getElementById('project-detail-close-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        if (window.carouselInterval) clearInterval(window.carouselInterval);
+        const modal = document.getElementById('project-detail-modal');
+        const box = document.getElementById('project-detail-box');
+        if (modal) modal.classList.add('hidden');
+        if (box) {
+          box.style.left = '';
+          box.style.top = '';
+        }
+        document.body.style.overflow = '';
+      });
+    }
+    const modal = document.getElementById('project-detail-modal');
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          if (window.carouselInterval) clearInterval(window.carouselInterval);
+          modal.classList.add('hidden');
+          const box = document.getElementById('project-detail-box');
+          if (box) {
+            box.style.left = '';
+            box.style.top = '';
+          }
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    const linkEl = document.getElementById('project-detail-link');
+    if (linkEl) {
+      linkEl.addEventListener('click', (e) => {
+        const href = linkEl.getAttribute('href');
+        if (href === '#' || !href || href.trim() === '') {
+          e.preventDefault();
+          alert('เกมนี้ยังไม่มี link ตอนนี้');
+        }
+      });
+    }
+
+    // Modal drag logic (optional dragging relative to center)
+    const dragBar = document.getElementById('project-detail-drag-bar');
+    const box = document.getElementById('project-detail-box');
+    if (dragBar && box) {
+      let isDragging = false, startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
+
+      function onDown(e) {
+        isDragging = true;
+        const pos = e.touches ? e.touches[0] : e;
+        startX = pos.clientX;
+        startY = pos.clientY;
+        initialLeft = parseFloat(box.style.left) || 0;
+        initialTop = parseFloat(box.style.top) || 0;
+        if (!e.touches) e.preventDefault();
+      }
+
+      function onMove(e) {
+        if (!isDragging) return;
+        const pos = e.touches ? e.touches[0] : e;
+        const dx = pos.clientX - startX;
+        const dy = pos.clientY - startY;
+        box.style.left = (initialLeft + dx) + 'px';
+        box.style.top = (initialTop + dy) + 'px';
+      }
+
+      function onUp() { isDragging = false; }
+
+      dragBar.addEventListener('mousedown', onDown);
+      dragBar.addEventListener('touchstart', onDown, {passive: true});
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, {passive: true});
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('touchend', onUp);
+    }
+  }
+
+  function checkHashRoute() {
+    if (window.location.hash === '#admin') {
+      window.location.href = 'admin.html';
+    }
+  }
+
+
+  function normalizeWorks(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (typeof data === 'object') {
+      if (Array.isArray(data.projects)) return data.projects;
+      if (Array.isArray(data.works)) return data.works;
+      if (Array.isArray(data.data)) return data.data;
+    }
+    return [];
+  }
+
+  function parseSecureJSON(text) {
+      if (!text || typeof text !== 'string') return null;
+      try { return JSON.parse(text); } 
+      catch (e) {
+        try { return JSON.parse(decodeURIComponent(escape(atob(text)))); }
+        catch (_) { return null; }
+      }
+  }
+
+  async function loadInitialData(force = false) {
+    const now = Date.now();
+    const cachedTime = parseInt(localStorage.getItem('cached_timestamp') || '0', 10);
+    const isCacheValid = !force && (now - cachedTime < CACHE_TTL_MS);
+
+    // Show cached data immediately for fast first paint
+    const cachedWorks = localStorage.getItem('cached_works');
+    const cachedSettings = localStorage.getItem('cached_settings');
+    let hasCache = false;
+    if (cachedWorks && cachedSettings) {
+      try {
+        globalWorks = normalizeWorks(JSON.parse(cachedWorks));
+        globalSettings = JSON.parse(cachedSettings) || {};
+        if (globalSettings && globalSettings.socials) {
+          globalSettings.socials = ensureItchContact(globalSettings.socials);
+        }
+        renderWorks();
+        renderContacts();
+        hasCache = true;
+      } catch (_) {}
+    }
+
+    // If cache is fresh and valid, avoid duplicate network calls
+    if (isCacheValid && hasCache) {
+      return;
+    }
+
+    // Fetch fresh data in parallel with timeout to prevent hanging requests
+    try {
+      const [worksRes, settingsRes, sharedRes] = await Promise.all([
+        fetchWithTimeout(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_works.json`)
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null),
+        fetchWithTimeout(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/ozonz_settings.json`)
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null),
+        fetchWithTimeout(`https://raw.githubusercontent.com/${DATA_OWNER}/${DATA_REPO}/main/All%20File%20Aritsia/settings.json`)
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null)
+      ]);
+
+      let finalWorks = worksRes;
+      if (!finalWorks) {
+        finalWorks = await fetchWithTimeout('data/ozonz-works.json')
+          .then(async r => r.ok ? parseSecureJSON(await r.text()) : null)
+          .catch(() => null);
+      }
+
+      if (finalWorks) globalWorks = normalizeWorks(finalWorks);
+      if (settingsRes) globalSettings = settingsRes;
+
+      if (!globalSettings || !globalSettings.socials || globalSettings.socials.length === 0) {
+        globalSettings = { ...globalSettings, socials: defaultContacts };
+      } else {
+        globalSettings.socials = ensureItchContact(globalSettings.socials);
+      }
+
+      if (sharedRes) {
+        globalSettings.icons = sharedRes.icons || [];
+        globalSettings.teams = sharedRes.teams || [];
+        globalSettings.sounds = sharedRes.sounds || [];
+      }
+
+      // Update cache with timestamp and render
+      try {
+        localStorage.setItem('cached_works', JSON.stringify(globalWorks));
+        localStorage.setItem('cached_settings', JSON.stringify(globalSettings));
+        localStorage.setItem('cached_timestamp', String(now));
+      } catch (_) {}
+
+      renderWorks();
+      renderContacts();
+    } catch (err) {
+      console.warn('[Portfolio] GitHub fetch failed:', err.message);
+    }
+  }
+
+  // Alias for backward compatibility
+  const fetchPortfolioData = () => loadInitialData(true);
+
+  function initWorkFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    if (!filterBtns.length) return;
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterBtns.forEach(b => {
+            b.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]');
+            b.classList.add('text-on-surface-variant');
+        });
+        btn.classList.add('active', 'bg-primary', 'text-on-primary', 'shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]');
+        btn.classList.remove('text-on-surface-variant');
+        currentWorkFilter = btn.getAttribute('data-filter');
+        renderWorks();
+      });
+    });
+  }
+
+  async function init() {
+    initLocalStorage();
+    initBackground();
+    initRevealAndTheme();
+    initNavbarScroll();
+    initSmoothScroll();
+    initWorkFilters();
+    
+    // Load database settings FIRST so GitHub sync has fallback data ready
+    await loadInitialData();
+    
+    // Start GitHub sync AFTER settings are loaded to prevent race condition
+    startGitHubSync();
+    
+    checkHashRoute();
+    initProjectDetailModal();
+    
+    // Initialize analytics
+    import('./analytics.js').then(m => m.initAnalytics()).catch(e => console.warn("Analytics not loaded", e));
+    
+    window.addEventListener('hashchange', checkHashRoute);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

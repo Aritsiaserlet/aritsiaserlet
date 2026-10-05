@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Chanon Thongduang | OzonZ Portfolio</title>
+    <meta name="description" content="Chanon Thongduang (OzonZ) - Game Developer & Software Engineer Portfolio. Discover interactive projects, gameplay systems, and creative technology." />
+    <meta name="author" content="Chanon Thongduang (OzonZ)" />
+    <meta name="theme-color" content="#13161c" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Chanon Thongduang | OzonZ Portfolio" />
+    <meta property="og:description" content="Game Developer & Software Engineer Portfolio. Discover interactive projects, gameplay systems, and creative technology." />
+    <meta property="og:image" content="favicon-small.jpg" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Chanon Thongduang | OzonZ Portfolio" />
+    <meta name="twitter:description" content="Game Developer & Software Engineer Portfolio. Discover interactive projects, gameplay systems, and creative technology." />
+    <meta name="twitter:image" content="favicon-small.jpg" />
+    <link rel="icon" type="image/jpeg" href="favicon-small.jpg">
+    <!-- FOUC Prevention Script -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (savedTheme === null && systemPrefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Mitr:wght@400;600&display=optional"
+        rel="stylesheet" />
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/tailwind.css">
+    <style>
+        :root {
+            /* Light mode RGB values (yellowish-white base) */
+            --primary-rgb: 56, 107, 64;
+            /* #386B40 */
+            --on-primary-rgb: 255, 255, 255;
+            --background-rgb: 255, 253, 245;
+            /* #FFFDF5 - Yellowish White */
+            --on-background-rgb: 0, 0, 0;
+            /* #000000 - Black text */
+            --surface-rgb: 247, 243, 228;
+            /* #F7F3E4 - Soft warm cream */
+            --on-surface-rgb: 0, 0, 0;
+            /* #000000 - Black text */
+            --surface-variant-rgb: 238, 232, 210;
+            /* #EEE8D2 */
+            --on-surface-variant-rgb: 45, 61, 41;
+            /* #2D3D29 */
+            --outline-rgb: 200, 192, 170;
+            /* #C8C0AA */
+            --secondary-rgb: 83, 141, 92;
+            /* #538D5C */
+            --on-secondary-rgb: 255, 255, 255;
+            --tertiary-rgb: 161, 131, 33;
+            /* #A18321 */
+
+            --background: rgb(var(--background-rgb));
+            --on-background: rgb(var(--on-background-rgb));
+            --primary: rgb(var(--primary-rgb));
+            --on-primary: rgb(var(--on-primary-rgb));
+            --surface: rgb(var(--surface-rgb));
+            --on-surface: rgb(var(--on-surface-rgb));
+            --outline: rgb(var(--outline-rgb));
+        }
+
+        html.dark {
+            /* Dark mode RGB values */
+            --primary-rgb: 234, 228, 177;
+            /* #eae4b1 */
+            --on-primary-rgb: 16, 20, 26;
+            --background-rgb: 16, 20, 26;
+            --on-background-rgb: 223, 226, 235;
+            --surface-rgb: 28, 32, 38;
+            --on-surface-rgb: 223, 226, 235;
+            --surface-variant-rgb: 49, 53, 60;
+            --on-surface-variant-rgb: 202, 195, 216;
+            --outline-rgb: 73, 68, 85;
+            --secondary-rgb: 234, 228, 177;
+            --on-secondary-rgb: 16, 20, 26;
+            --tertiary-rgb: 144, 69, 0;
+        }
+
+        html {
+            font-size: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+        }
+
+        html.scrolled-down {
+            scrollbar-color: rgba(var(--primary-rgb), 0.35) transparent;
+        }
+
+        /* Mobile only: slightly scale down entire site proportionally */
+        @media (max-width: 768px) {
+            html {
+                font-size: 86%;
+            }
+        }
+
+        @media (max-width: 430px) {
+            html {
+                font-size: 82%;
+            }
+        }
+
+        /* ── Ultra-Thin Minimalist Glass Custom Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 8px !important;
+            height: 8px !important;
+        }
+
+        ::-webkit-scrollbar-track,
+        ::-webkit-scrollbar-track-piece {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Completely remove up/down arrows in all browsers */
+        ::-webkit-scrollbar-button,
+        ::-webkit-scrollbar-button:single-button,
+        ::-webkit-scrollbar-button:vertical:decrement,
+        ::-webkit-scrollbar-button:vertical:increment,
+        ::-webkit-scrollbar-button:horizontal:decrement,
+        ::-webkit-scrollbar-button:horizontal:increment,
+        ::-webkit-scrollbar-button:start:decrement,
+        ::-webkit-scrollbar-button:end:increment {
+            display: none !important;
+            width: 0px !important;
+            height: 0px !important;
+            background: transparent !important;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent !important;
+        }
+
+        /* Default transparent on first page / hero (dynamically activated on scroll) */
+        ::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 9999px;
+        }
+
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--background);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Mitr', sans-serif;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delayed {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            transition-delay: 0.8s;
+        }
+
+        .reveal-delayed.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pixel-card {
+            background: rgba(var(--surface-rgb), 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--outline);
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 768px) {
+            .theme-toggle {
+                bottom: 2rem;
+                right: 2rem;
+                width: 56px;
+                height: 56px;
+            }
+        }
+
+        .project-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.05);
+        }
+
+        .project-glow:hover {
+            box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.3);
+            border-color: rgba(var(--primary-rgb), 0.65);
+            transform: translateY(-4px);
+        }
+    </style>
+    <style>
+        @keyframes float-tilt {
+
+            0%,
+            100% {
+                transform: translateY(-8px) translateX(0px) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-12px) translateX(4px) rotate(2deg);
+            }
+
+            50% {
+                transform: translateY(-8px) translateX(0px) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-12px) translateX(-4px) rotate(-2deg);
+            }
+        }
+
+        .hover\:animate-float-tilt:hover {
+            animation: float-tilt 3s ease-in-out infinite;
+        }
+    </style>
+    <style>
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+    <style>
+        @keyframes roles-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.15), inset 0 0 6px rgba(var(--primary-rgb), 0.05);
+                border-color: rgba(var(--primary-rgb), 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 18px rgba(var(--primary-rgb), 0.45), inset 0 0 12px rgba(var(--primary-rgb), 0.12);
+                border-color: rgba(var(--primary-rgb), 0.65);
+            }
+        }
+
+        #roles-bar {
+            animation: roles-glow 3.5s ease-in-out infinite;
+            border: 1px solid rgba(var(--primary-rgb), 0.2);
+            border-radius: 1rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(var(--primary-rgb), 0.03);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.15rem;
+            transition: border-color 0.5s ease, background-color 0.5s ease;
+        }
+
+        @media (min-width: 768px) {
+            #roles-bar {
+                padding: 0.65rem 1.5rem;
+                gap: 0;
+            }
+        }
+
+        .roles-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.2rem 0.5rem;
+            color: rgb(var(--primary-rgb));
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: all 0.3s ease, color 0.5s ease;
+            cursor: default;
+        }
+
+        @media (min-width: 768px) {
+            .roles-tag {
+                padding: 0.25rem 0.9rem;
+                font-size: 0.7rem;
+                letter-spacing: 0.14em;
+            }
+        }
+
+        .roles-tag:hover {
+            text-shadow: 0 0 12px rgba(var(--primary-rgb), 0.8);
+            transform: translateY(-1px);
+        }
+
+        .roles-tag-sep {
+            color: rgba(var(--primary-rgb), 0.3);
+            font-size: 0.85rem;
+            font-weight: 300;
+            line-height: 1;
+            user-select: none;
+            transition: color 0.5s ease;
+        }
+
+        .ozonz-hero-section {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 5rem;
+            padding-bottom: 1.5rem;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Archetype tooltip */
+        .archetype-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: rgba(var(--surface-rgb), 0.95);
+            border: 1px solid rgba(var(--primary-rgb), 0.25);
+            color: rgb(var(--primary-rgb));
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            padding: 0.3rem 0.7rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .archetype-item:hover .archetype-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+    <style>
+        @keyframes borderGlow {
+
+            0%,
+            100% {
+                border-color: rgba(var(--primary-rgb), 0.2);
+                box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.1);
+            }
+
+            50% {
+                border-color: rgba(var(--primary-rgb), 0.6);
+                box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+            }
+        }
+
+        @keyframes pulse-soft {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes card-glow-ambient {
+
+            0%,
+            100% {
+                box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.05);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(var(--primary-rgb), 0.15);
+            }
+        }
+
+        @keyframes modal-enter {
+            0% { opacity: 0; transform: scale(0.94) translateY(24px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .animate-modal-enter {
+            animation: modal-enter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .animate-border-glow {
+            animation: borderGlow 4s infinite;
+        }
+
+        .animate-card-ambient {
+            animation: card-glow-ambient 6s infinite ease-in-out;
+        }
+
+        .bg-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* Scroll Down Indicator */
+        #scroll-indicator {
+            color: rgb(var(--on-background-rgb));
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        #scroll-indicator.hidden-indicator {
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+        }
+
+        .scroll-arrow {
+            animation: scroll-bounce 1.8s ease-in-out infinite;
+        }
+
+        @keyframes scroll-bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+                filter: drop-shadow(0 0 2px rgba(var(--primary-rgb), 0.15));
+            }
+
+            50% {
+                transform: translateY(8px);
+                opacity: 1;
+                filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.65));
+            }
+        }
+
+        /* GitHub Skeleton loading */
+        .gh-skeleton {
+            background: linear-gradient(90deg,
+                    rgba(var(--surface-variant-rgb), 0.6) 25%,
+                    rgba(var(--surface-variant-rgb), 0.9) 50%,
+                    rgba(var(--surface-variant-rgb), 0.6) 75%);
+            background-size: 200% 100%;
+            animation: gh-shimmer 1.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes gh-shimmer {
+            0% {
+                background-position: 200% center;
+            }
+
+            100% {
+                background-position: -200% center;
+            }
+        }
+
+        /* Force input text color to be black and background to be white in dark mode for modals */
+        html.dark #work-form-modal input,
+        html.dark #work-form-modal textarea,
+        html.dark #contact-form-modal input,
+        html.dark #contact-form-modal select,
+        html.dark #admin-auth-modal input {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+        }
+
+        html.dark #work-form-modal input::placeholder,
+        html.dark #work-form-modal textarea::placeholder,
+        html.dark #contact-form-modal input::placeholder,
+        html.dark #admin-auth-modal input::placeholder {
+            color: #6b7280 !important;
+        }
+
+        /* ─── Archive Box & Featured Project UI Design ─── */
+        /* Common variables mapping to the design token colors */
+        :root {
+            --design-tag-bg: rgba(var(--primary-rgb), 0.10);
+            --design-tag-fg: rgb(var(--primary-rgb));
+            --design-glow: rgba(var(--primary-rgb), 0.20);
+        }        .design-featured-card {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid var(--outline);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-card {
+                border-radius: 18px;
+                min-height: 460px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .design-featured-card {
+                border-radius: 20px;
+                min-height: 560px;
+            }
+        }
+        
+        .design-featured-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--primary), 0 0 48px var(--design-glow);
+        }
+        
+        .design-featured-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s ease-out;
+        }
+        
+        .design-featured-card:hover .design-featured-img {
+            transform: scale(1.05);
+        }
+        
+        .design-featured-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.60) 45%, rgba(0,0,0,0.15) 100%);
+            transition: opacity 0.35s ease;
+            opacity: 0.95;
+        }
+        
+        .design-featured-card:hover .design-featured-gradient {
+            opacity: 1;
+        }
+        
+        .design-featured-badge {
+            background: var(--primary);
+            color: var(--on-primary);
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-badge {
+                font-size: 10px;
+                letter-spacing: 0.2em;
+                padding: 5px 14px;
+                border-radius: 6px;
+            }
+        }
+        
+        .design-featured-year {
+            color: rgba(255,255,255,0.7);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-year {
+                font-size: 12px;
+                letter-spacing: 0.15em;
+            }
+        }
+        
+        .design-featured-tag {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            color: rgba(255,255,255,0.95);
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 2.5px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2);
+            white-space: nowrap;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-tag {
+                font-size: 10px;
+                letter-spacing: 0.16em;
+                padding: 4px 10px;
+                border-radius: 5px;
+            }
+        }
+        
+        .design-featured-title {
+            font-family: 'Mitr', sans-serif;
+            font-size: clamp(1.2rem, 3.8vw, 2.75rem);
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.01em;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            word-break: break-word;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-title {
+                margin: 0 0 6px 0;
+            }
+        }
+        
+        .design-featured-tagline {
+            color: rgba(255,255,255,0.75);
+            font-size: 11.5px;
+            margin: 0 0 12px 0;
+            max-width: 500px;
+            line-height: 1.45;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-tagline {
+                font-size: 15px;
+                margin: 0 0 24px 0;
+                line-height: 1.55;
+            }
+        }
+        
+        .design-featured-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary);
+            color: var(--on-primary);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            box-shadow: none;
+            transition: box-shadow 0.3s ease, opacity 0.2s, transform 0.2s;
+        }
+
+        @media (min-width: 640px) {
+            .design-featured-btn {
+                gap: 10px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                font-size: 12px;
+                letter-spacing: 0.18em;
+            }
+        }
+        
+        .design-featured-card:hover .design-featured-btn {
+            box-shadow: 0 8px 32px var(--design-glow);
+        }
+        
+        .design-hover-center-pulse {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .design-featured-card:hover .design-hover-center-pulse {
+            opacity: 1;
+        }
+        
+        .design-pulse-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 32px var(--design-glow);
+            animation: pulse-ring-anim 1.2s infinite ease-in-out;
+        }
+
+        @media (min-width: 640px) {
+            .design-pulse-circle {
+                width: 64px;
+                height: 64px;
+            }
+        }
+        
+        @keyframes pulse-ring-anim {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        
+        /* Side Card Design */
+        .design-side-card {
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            background: rgba(var(--surface-rgb), 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--outline);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            min-height: 180px;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-card {
+                border-radius: 18px;
+                min-height: 260px;
+            }
+        }
+        
+        .design-side-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 32px var(--design-glow);
+        }
+        
+        .design-side-thumbnail {
+            position: relative;
+            height: 110px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-thumbnail {
+                height: 180px;
+            }
+        }
+        
+        .design-side-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease-out;
+        }
+        
+        .design-side-card:hover .design-side-img {
+            transform: scale(1.07);
+        }
+        
+        .design-side-fade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(var(--surface-rgb), 0.95) 100%);
+        }
+        
+        .design-side-year {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            color: rgba(255,255,255,0.9);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            padding: 2.5px 6px;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-year {
+                top: 10px;
+                right: 10px;
+                font-size: 10px;
+                letter-spacing: 0.15em;
+                padding: 3px 8px;
+                border-radius: 5px;
+            }
+        }
+        
+        .design-side-hover-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.28);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .design-side-card:hover .design-side-hover-overlay {
+            opacity: 1;
+        }
+        
+        .design-side-overlay-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-overlay-circle {
+                width: 44px;
+                height: 44px;
+            }
+        }
+        
+        .design-side-body {
+            padding: 10px 12px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-body {
+                padding: 20px 22px 22px;
+            }
+        }
+        
+        .design-tag-pill {
+            background: var(--design-tag-bg);
+            color: var(--design-tag-fg);
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid var(--design-tag-bg);
+            white-space: nowrap;
+        }
+
+        @media (min-width: 640px) {
+            .design-tag-pill {
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                padding: 3px 10px;
+                border-radius: 4px;
+            }
+        }
+        
+        .design-side-title {
+            font-family: 'Mitr', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--on-background);
+            line-height: 1.2;
+            margin: 0 0 3px 0;
+            word-break: break-word;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-title {
+                font-size: 1.15rem;
+                line-height: 1.15;
+                margin: 0 0 6px 0;
+            }
+        }
+        
+        .design-side-tagline {
+            color: var(--on-surface-variant);
+            font-size: 11px;
+            line-height: 1.4;
+            margin: 0;
+            flex: 1;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-tagline {
+                font-size: 13px;
+                line-height: 1.55;
+            }
+        }
+        
+        .design-side-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--outline);
+            min-height: 24px;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-footer {
+                gap: 8px;
+                margin-top: 18px;
+                padding-top: 14px;
+                min-height: 32px;
+            }
+        }
+        
+        .design-side-explore {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--on-surface-variant);
+            transition: transform 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 640px) {
+            .design-side-explore {
+                gap: 5px;
+                font-size: 11px;
+                letter-spacing: 0.12em;
+            }
+        }
+        
+        .design-side-card:hover .design-side-explore {
+            transform: translateX(4px);
+            color: var(--primary);
+        }
+
+        .wind-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-background selection:bg-primary/30 font-body-md" data-github-user="OzonZ">
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="windCanvas" class="wind-canvas"></canvas>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle bg-primary text-on-primary" id="theme-toggle" title="Toggle Theme">
+        <span class="material-symbols-outlined" id="theme-icon">light_mode</span>
+    </button>
+
+    <!-- Navigation -->
+    <nav id="main-nav"
+        class="fixed top-0 left-0 w-full z-50 bg-background/85 backdrop-blur-xl border-b border-outline/20 transition-all duration-500 transform -translate-y-full">
+        <div
+            class="flex justify-between items-center px-4 sm:px-margin-mobile md:px-margin-desktop py-3.5 sm:py-4 max-w-max-width mx-auto">
+            <a class="text-xl sm:text-2xl font-bold text-primary tracking-wide" href="#">OzonZ</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium"
+                    href="#work">Work</a>
+                <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium"
+                    href="#about">About</a>
+                <a class="text-on-surface hover:text-primary transition-colors text-sm font-medium"
+                    href="#contact">Contact</a>
+            </div>
+            <button class="md:hidden text-primary p-1.5 focus:outline-none flex items-center justify-center" id="menu-toggle" aria-label="Toggle Navigation Menu">
+                <span class="material-symbols-outlined text-2xl" id="menu-icon">menu</span>
+            </button>
+        </div>
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 py-4 flex flex-col gap-3 border-t border-outline/10 bg-background/95 backdrop-blur-2xl">
+            <a class="text-on-surface hover:text-primary transition-colors text-base font-medium py-2 border-b border-outline/5" href="#work">Work</a>
+            <a class="text-on-surface hover:text-primary transition-colors text-base font-medium py-2 border-b border-outline/5" href="#about">About</a>
+            <a class="text-on-surface hover:text-primary transition-colors text-base font-medium py-2" href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section
+            class="ozonz-hero-section px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto" id="hero">
+            
+            <!-- Top Spacer to keep center balanced -->
+            <div class="h-4 sm:h-8 shrink-0"></div>
+
+            <div class="flex flex-col items-center w-full max-w-2xl my-auto">
+                <!-- GitHub Profile Card -->
+                <div class="w-full relative reveal mb-6">
+                    <div
+                        class="relative group p-5 sm:p-7 md:p-8 rounded-2xl border border-primary/20 bg-surface/40 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-card-ambient">
+                        <!-- Texture & Icon Overlays -->
+                        <div class="absolute inset-0 bg-grain z-0"></div>
+                        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 opacity-10 group-hover:opacity-30 transition-opacity z-10">
+                            <svg class="w-12 h-12 sm:w-16 sm:h-16 fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.416-4.041-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="relative z-10">
+                            <!-- Header: Avatar & Info -->
+                            <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8 md:mb-12">
+                                <div class="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 shrink-0">
+                                    <div
+                                        class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-all duration-700 animate-pulse">
+                                    </div>
+                                    <div
+                                        class="relative w-full h-full rounded-full border-2 border-primary/40 overflow-hidden shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]">
+                                        <img id="ghAvatar" alt="OzonZ Profile" class="w-full h-full object-cover"
+                                            src="https://avatars.githubusercontent.com/u/255675901?v=4" />
+                                    </div>
+                                    <!-- Status Indicator -->
+                                    <div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-background rounded-full flex items-center justify-center border border-white/10"
+                                        title="Live from GitHub">
+                                        <div id="ghLiveDot"
+                                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-green-500 rounded-full animate-pulse transition-all duration-300 opacity-40">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center px-2">
+                                    <h3 id="ghDisplayName"
+                                        class="text-3xl sm:text-4xl md:text-5xl font-bold text-on-background font-headline leading-tight tracking-tight min-h-[1.2em] break-words">
+                                        <span class="gh-skeleton inline-block w-40 sm:w-48 h-8 sm:h-10 rounded-lg"></span>
+                                    </h3>
+                                    <p id="ghHandle"
+                                        class="text-primary/70 font-body-md text-base sm:text-xl md:text-2xl tracking-wide mt-1 sm:mt-2">
+                                        <span class="gh-skeleton inline-block w-20 sm:w-24 h-5 sm:h-6 rounded-md"></span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Stats Grid -->
+                            <div class="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12">
+                                <div
+                                    class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
+                                    <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-base sm:text-lg shrink-0">show_chart</span>
+                                        <span
+                                            class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Contributions</span>
+                                    </div>
+                                    <span id="ghContributions"
+                                        class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                                </div>
+                                <div
+                                    class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-3.5 sm:p-6 md:p-8 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-center overflow-hidden">
+                                    <div class="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-3 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-base sm:text-lg shrink-0">folder</span>
+                                        <span
+                                            class="text-[10px] sm:text-xs uppercase font-bold tracking-wider sm:tracking-[0.2em] opacity-75 truncate">Repositories</span>
+                                    </div>
+                                    <span id="ghRepositories"
+                                        class="text-2xl sm:text-4xl md:text-5xl font-bold text-primary font-headline tabular-nums">…</span>
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <a class="w-full flex items-center justify-center gap-2 sm:gap-3 bg-primary text-on-primary py-3.5 sm:py-5 md:py-6 rounded-xl font-bold text-xs sm:text-sm md:text-base tracking-wider sm:tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden"
+                                href="https://github.com/OzonZ" target="_blank">
+                                <span class="relative z-10 flex items-center justify-center gap-2">
+                                    <span>FOLLOW ON GITHUB</span>
+                                    <span class="material-symbols-outlined text-base sm:text-lg">open_in_new</span>
+                                </span>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles Bar (outside card, below) -->
+                <div class="w-full reveal">
+                    <div class="flex flex-wrap justify-center gap-1 sm:gap-0" id="roles-bar">
+                        <span class="roles-tag">Game Developer</span>
+                        <span class="roles-tag-sep hidden sm:inline">|</span>
+                        <span class="roles-tag">2D Artist</span>
+                        <span class="roles-tag-sep hidden sm:inline">|</span>
+                        <span class="roles-tag">Programmer</span>
+                        <span class="roles-tag-sep hidden sm:inline">|</span>
+                        <span class="roles-tag">Game Designer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Down Indicator (at the very bottom of hero section) -->
+            <div id="scroll-indicator"
+                class="flex flex-col items-center gap-1.5 pb-2 pointer-events-none select-none text-primary shrink-0"
+                aria-hidden="true">
+                <span
+                    class="text-xs sm:text-sm font-bold tracking-[0.2em] sm:tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">Scroll
+                    down for more</span>
+                <svg class="scroll-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(var(--primary-rgb),0.3));">
+                    <path d="M12 5v14M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+
+        </section>
+
+        <!-- Work Section -->
+        <section class="py-24 md:py-32" id="work">
+            <div class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 md:mb-20 gap-6 sm:gap-8 reveal">
+                    <div>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 uppercase">Selected Archives</h2>
+                        <p class="text-on-surface-variant text-base sm:text-lg md:text-xl">A chronicle of interactive experiences and digital
+                            creations.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 filter-group bg-surface-container/20 p-1.5 sm:p-2 rounded-2xl sm:rounded-full border border-outline/10 backdrop-blur-md shadow-xl w-full sm:w-auto" id="work-filters">
+                        <button class="filter-btn active relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest transition-all duration-500 hover:scale-105 overflow-hidden group bg-primary text-on-primary shadow-[0_6px_16px_rgba(var(--primary-rgb),0.25)]" data-filter="all">
+                            <span class="relative z-10">ALL</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                        <button class="filter-btn relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="games">
+                            <span class="relative z-10">GAMES</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                        <button class="filter-btn relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="website">
+                            <span class="relative z-10">WEBSITE</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                        <button class="filter-btn relative px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wider sm:tracking-widest text-on-surface-variant transition-all duration-500 hover:scale-105 overflow-hidden group" data-filter="other">
+                            <span class="relative z-10">OTHER</span>
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 md:gap-10" id="archives-grid">
+                    <!-- Featured Card Skeleton -->
+                    <div
+                        class="lg:col-span-8 min-h-[280px] sm:min-h-[460px] lg:min-h-[560px] rounded-2xl border border-outline/20 bg-surface/30 p-4 sm:p-8 md:p-10 flex flex-col justify-end gap-3 sm:gap-4 relative overflow-hidden animate-pulse">
+                        <div class="absolute inset-0 gh-skeleton opacity-20"></div>
+                        <div class="relative z-10 flex flex-col gap-3 sm:gap-4">
+                            <div class="gh-skeleton w-20 sm:w-24 h-4 sm:h-5 rounded-md"></div>
+                            <div class="gh-skeleton w-3/4 h-6 sm:h-10 rounded-lg"></div>
+                            <div class="gh-skeleton w-1/2 h-4 sm:h-6 rounded-md"></div>
+                            <div class="gh-skeleton w-28 sm:w-32 h-8 sm:h-12 rounded-xl mt-2 sm:mt-4"></div>
+                        </div>
+                    </div>
+
+                    <!-- Side Cards Skeleton -->
+                    <div class="lg:col-span-4 flex flex-col gap-4 sm:gap-8 md:gap-10">
+                        <div
+                            class="pixel-card p-4 sm:p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[180px] sm:min-h-[260px] animate-pulse">
+                            <div>
+                                <div class="gh-skeleton w-full h-24 sm:h-32 rounded-xl mb-3 sm:mb-4"></div>
+                                <div class="gh-skeleton w-1/2 h-4 sm:h-6 rounded-md mb-2"></div>
+                            </div>
+                            <div class="gh-skeleton w-20 sm:w-24 h-4 sm:h-5 rounded-md"></div>
+                        </div>
+                        <div
+                            class="pixel-card p-4 sm:p-8 rounded-2xl border border-outline/20 flex-1 flex flex-col justify-between min-h-[180px] sm:min-h-[260px] animate-pulse">
+                            <div>
+                                <div class="gh-skeleton w-full h-24 sm:h-32 rounded-xl mb-3 sm:mb-4"></div>
+                                <div class="gh-skeleton w-1/2 h-4 sm:h-6 rounded-md mb-2"></div>
+                            </div>
+                            <div class="gh-skeleton w-20 sm:w-24 h-4 sm:h-5 rounded-md"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-16 sm:py-24 md:py-32 reveal" id="about">
+            <div class="max-w-4xl">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-10 uppercase text-primary">About the Dev</h2>
+                <p class="text-xl sm:text-2xl md:text-3xl text-on-surface leading-relaxed mb-6 sm:mb-8">
+                    Game Developer. 2D Artist. Programmer. Game Designer.
+                </p>
+                <p class="text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                    I started my journey in Game Jams and deepened my roots through <strong>Hamster Hub's</strong>
+                    courses, mastering Game Design, <strong>Unity development</strong>, and the core philosophy of
+                    effective presentation. Building on that foundation through self-study, I expanded into web
+                    development, web for education and game programming, collaborating closely with peers and mentors
+                    from the community to transform creative concepts into reality.
+                </p>
+            </div>
+        </section>
+
+        <!-- Technical Archetype Section -->
+        <section
+            class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-16 sm:py-24 md:py-32 border-t border-outline/50 reveal"
+            id="archetypes">
+            <h2 class="text-xs sm:text-sm font-bold tracking-[0.3em] sm:tracking-[0.4em] text-primary uppercase mb-10 sm:mb-16 text-center font-headline">
+                Technical Archetype</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 md:gap-12 text-center">
+                <div class="group p-2 sm:p-4">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">sports_esports</span>
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">Game Dev</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Robust systems &amp; gameplay logic.</p>
+                </div>
+                <div class="group p-2 sm:p-4">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">palette</span>
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">2D Art</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Pixel art &amp; character design.</p>
+                </div>
+                <div class="group p-2 sm:p-4">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">terminal</span>
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">Coding</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Clean, performant architectures.</p>
+                </div>
+                <div class="group p-2 sm:p-4">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-2xl bg-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-3xl">lightbulb</span>
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold mb-1.5 sm:mb-3 uppercase font-headline">Design</h3>
+                    <p class="text-xs sm:text-sm text-on-surface-variant px-1 sm:px-4">Player psychology &amp; engagement.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section
+            class="px-4 sm:px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto py-16 sm:py-24 md:py-32 flex flex-col items-center reveal"
+            id="contact">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 uppercase text-center">CONTACT ME</h2>
+            <div id="contact-links-container"
+                class="inline-flex flex-wrap justify-center items-center gap-4 sm:gap-8 md:gap-10 px-6 sm:px-12 py-4 sm:py-6 bg-surface/50 backdrop-blur rounded-2xl sm:rounded-full border border-outline/20 shadow-2xl max-w-full">
+                <!-- Dynamically filled by JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-surface/30 py-8 sm:py-12 border-t border-outline/10 text-center px-4">
+        <p class="text-on-surface-variant text-xs sm:text-sm md:text-base tracking-wider sm:tracking-widest font-bold uppercase">© 2026 Chanon Thongduang. Built
+            with Precision.</p>
+    </footer>
+
+    <!-- Project Detail Modal -->
+    <div id="project-detail-modal"
+        class="fixed inset-0 z-[800] hidden bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+        
+        <div id="project-detail-box"
+            class="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl bg-surface border border-primary/30 shadow-[0_32px_80px_rgba(0,0,0,0.5)] flex flex-col">
+            
+            <!-- Drag Bar (desktop) -->
+            <div id="project-detail-drag-bar" class="hidden md:flex absolute top-0 left-0 right-0 h-12 z-20 cursor-move items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <div class="w-16 h-1.5 rounded-full bg-white/40 backdrop-blur shadow-sm pointer-events-none"></div>
+            </div>
+
+            <!-- Image hero -->
+            <div class="relative w-full h-[200px] sm:h-[280px] shrink-0 overflow-hidden">
+                <div id="project-detail-image-container" class="w-full h-full [&>img]:w-full [&>img]:h-full [&>img]:object-cover pointer-events-none">
+                    <!-- Dynamically filled -->
+                </div>
+                <!-- Gradient overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent pointer-events-none"></div>
+                
+                <!-- Close Button -->
+                <button id="project-detail-close-btn"
+                    class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur flex items-center justify-center text-white border-none cursor-pointer hover:bg-black/80 transition-colors z-30">
+                    <span class="material-symbols-outlined text-lg sm:text-xl">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-5 sm:p-7 md:p-8 flex flex-col relative z-10 bg-surface">
+                
+                <!-- Tags -->
+                <div id="project-detail-tags" class="flex flex-wrap gap-1.5 mb-3 sm:mb-4">
+                    <!-- Dynamically filled -->
+                </div>
+
+                <!-- Title & Tagline -->
+                <h3 id="project-detail-title" class="font-headline text-[clamp(1.35rem,4vw,2.2rem)] font-bold uppercase text-on-background leading-[1.1] mb-1.5 break-words"></h3>
+                <p id="project-detail-tagline" class="text-primary text-xs sm:text-[14px] font-semibold mb-4 sm:mb-5"></p>
+
+                <!-- Description Box -->
+                <div class="bg-surface-variant rounded-xl p-3.5 sm:p-5 mb-4 sm:mb-5 border border-outline/10">
+                    <p class="text-[10px] font-bold tracking-[0.22em] uppercase text-primary mb-1.5 sm:mb-2">Project Details</p>
+                    <p id="project-detail-description" class="text-on-surface-variant text-xs sm:text-[14px] leading-[1.7] m-0"></p>
+                </div>
+
+                <!-- Contributors Section -->
+                <div id="project-detail-contributors-section" class="mb-6 hidden flex flex-wrap items-center gap-2.5">
+                    <span class="text-on-surface-variant flex items-center gap-1.5 text-xs">
+                        <span class="material-symbols-outlined text-[13px]">group</span> Contributors
+                    </span>
+                    <div id="project-detail-contributors-list" class="flex flex-wrap gap-2.5">
+                        <!-- Dynamically filled -->
+                    </div>
+                </div>
+
+                <!-- Action Link -->
+                <a id="project-detail-link" href="#" target="_blank"
+                    class="w-full py-4 rounded-[14px] bg-primary text-on-primary font-bold text-[13px] tracking-[0.18em] uppercase text-center flex items-center justify-center gap-2.5 shadow-[0_8px_28px_rgba(var(--primary-rgb),0.18)] transition-all hover:opacity-90 hover:scale-[1.015]">
+                    <span>Visit Project</span>
+                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            const s = document.createElement('script');
+            s.src = 'js/config.js';
+            document.head.appendChild(s);
+        }
+    </script>
+    <script type="module" src="js/portfolio-ozonz-live.js?v=18" defer></script>
+    <script>
+            // Hide scroll indicator once user scrolls down
+            (function () {
+                const indicator = document.getElementById('scroll-indicator');
+                if (!indicator) return;
+                let hidden = false;
+                function onScroll() {
+                    if (!hidden && window.scrollY > 60) {
+                        hidden = true;
+                        indicator.classList.add('hidden-indicator');
+                    } else if (hidden && window.scrollY <= 10) {
+                        hidden = false;
+                        indicator.classList.remove('hidden-indicator');
+                    }
+                }
+                window.addEventListener('scroll', onScroll, { passive: true });
+            })();
+
+        // Wind Particle Effect — skipped in Lite Mode to save mobile GPU
+        if (!window.__isLiteMode) (function () {
+            const canvas = document.getElementById('windCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let W, H, particles = [];
+            function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight }
+            resize(); window.addEventListener('resize', resize);
+            function rb(a, b) { return a + Math.random() * (b - a) }
+            function createParticle(yStart) {
+                const size = Math.floor(rb(2, 6)) * 2;
+                return {
+                    x: Math.random() * W,
+                    y: yStart ?? H + size,
+                    size: size,
+                    speedY: rb(0.5, 2.5),
+                    speedX: rb(-0.5, 0.5),
+                    baseOpacity: rb(0.1, 0.8),
+                    glowing: Math.random() < 0.25,
+                    pulsePhase: Math.random() * Math.PI * 2,
+                    pulseSpeed: rb(0.02, 0.06),
+                    swayFactor: rb(0.2, 0.8)
+                };
+            }
+            for (let i = 0; i < 40; i++) particles.push(createParticle(Math.random() * H));
+            // 30fps cap — visually identical but half the GPU cost
+            const FPS_INTERVAL = 1000 / 30;
+            let lastFrame = 0;
+            function animateParticles(ts) {
+                requestAnimationFrame(animateParticles);
+                if (ts - lastFrame < FPS_INTERVAL) return;
+                lastFrame = ts;
+                ctx.clearRect(0, 0, W, H);
+                const isDark = document.documentElement.classList.contains('dark');
+                const colorPrefix = isDark ? '255,255,255' : '56,107,64';
+                const fireflyPrefix = isDark ? '210,255,150' : '100,180,60';
+                particles.forEach((p, i) => {
+                    p.y -= p.speedY;
+                    p.x += p.speedX + (p.glowing ? Math.sin(p.pulsePhase) * p.swayFactor : 0);
+                    p.pulsePhase += p.pulseSpeed;
+                    ctx.beginPath();
+                    if (p.glowing) {
+                        const pulseOpacity = p.baseOpacity + Math.sin(p.pulsePhase) * 0.5;
+                        const finalOpacity = Math.max(0.1, Math.min(1, pulseOpacity));
+                        ctx.save();
+                        ctx.shadowBlur = p.size * 5;
+                        ctx.shadowColor = `rgba(${fireflyPrefix},${finalOpacity})`;
+                        ctx.fillStyle = `rgba(${fireflyPrefix},${finalOpacity})`;
+                        ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = `rgba(${colorPrefix},${p.baseOpacity})`;
+                        ctx.arc(Math.floor(p.x), Math.floor(p.y), p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    if (p.y + p.size < 0) particles[i] = createParticle();
+                });
+            }
+            animateParticles(0);
+        })();
+    </script>
+</body>
+
+</html>
