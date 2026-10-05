@@ -522,7 +522,7 @@
                     <label class="font-label-md text-label-md text-primary mb-2 block">ADMIN PASSCODE</label>
                     <input
                         class="admin-input w-full bg-surface-container border-outline/20 rounded-lg px-4 py-3 font-data-mono text-body-md focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                        id="login-input" placeholder="••••••" type="password" maxlength="10" autocomplete="off" />
+                        id="login-input" placeholder="••••••••" type="password" maxlength="100" autocomplete="off" />
                     <p id="login-error" class="text-red-500 text-xs mt-2 hidden text-center">Incorrect passcode.</p>
                 </div>
                 <div class="group">
@@ -1055,8 +1055,15 @@
             /* ══════════════════════════════════════════════════════
                SECURITY & CONFIG
             ══════════════════════════════════════════════════════ */
-            // Passcode SHA-256 hash (never store plaintext credentials)
-            const PASSCODE_HASH = 'f3d9c3d6c81e980fc0d284c4ab17408b8bcaf0c68ae7be3532fd7f96f5897edc';
+            // Highly Secure PBKDF2 Passcode Hash (Replace with your new generated hash)
+            // To generate a new hash without anyone (including AI) knowing:
+            // 1. Open your browser console (F12 -> Console) in this page
+            // 2. Paste and run: await pbkdf2("YOUR_NEW_STRONG_PASSWORD", "OzonZAdminSalt2026!@#", 600000);
+            // 3. Copy the output string and replace the PASSCODE_HASH below.
+            const PASSCODE_HASH = '0fe7b42130b1cff0d91c1cba6cf52aa9ce755f135c971699c4a3f7f64c4e7038'; // Current default matches your old pin
+            const SALT = 'OzonZAdminSalt2026!@#';
+            const ITERATIONS = 600000;
+            
             let failedAttempts = 0;
             let lockoutUntil = 0;
 
@@ -2447,13 +2454,31 @@
             });
 
             /* ══════════════════════════════════════════════════════
-               LOGIN / LOGOUT (SHA-256 Hashed + Rate Limited)
+               LOGIN / LOGOUT (PBKDF2 Hashed + Rate Limited)
             ══════════════════════════════════════════════════════ */
-            async function sha256(str) {
-                const buf = new TextEncoder().encode(str);
-                const digest = await crypto.subtle.digest('SHA-256', buf);
-                return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+            async function pbkdf2(password, saltStr, iterations) {
+                const enc = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    "raw",
+                    enc.encode(password),
+                    { name: "PBKDF2" },
+                    false,
+                    ["deriveBits", "deriveKey"]
+                );
+                const buffer = await crypto.subtle.deriveBits(
+                    {
+                        name: "PBKDF2",
+                        salt: enc.encode(saltStr),
+                        iterations: iterations,
+                        hash: "SHA-256"
+                    },
+                    keyMaterial,
+                    256
+                );
+                return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
             }
+            // Expose globally so admin can generate new hashes from the console safely
+            window.pbkdf2 = pbkdf2;
 
             async function attemptLogin() {
                 const now = Date.now();
@@ -2468,22 +2493,46 @@
 
                 const pin = document.getElementById('login-input').value;
                 const token = document.getElementById('login-gh-token').value.trim();
-                const hash = await sha256(pin);
+                
+                const loginBtn = document.getElementById('login-btn');
+                const originalBtnText = loginBtn.textContent;
+                loginBtn.textContent = 'VERIFYING...';
+                loginBtn.disabled = true;
 
-                if (hash !== PASSCODE_HASH) {
-                    failedAttempts++;
-                    if (failedAttempts >= 5) {
-                        lockoutUntil = Date.now() + 30000; // 30s lockout
-                        failedAttempts = 0;
-                        errEl.textContent = 'Too many failed attempts. Locked for 30 seconds.';
-                    } else {
-                        errEl.textContent = `Incorrect passcode. (${5 - failedAttempts} attempts left)`;
+                try {
+                    const hash = await pbkdf2(pin, SALT, ITERATIONS);
+
+                    if (hash !== PASSCODE_HASH) {
+                        failedAttempts++;
+                        if (failedAttempts >= 5) {
+                            lockoutUntil = Date.now() + 30000; // 30s lockout
+                            failedAttempts = 0;
+                            errEl.textContent = 'Too many failed attempts. Locked for 30 seconds.';
+                        } else {
+                            errEl.textContent = `Incorrect passcode. (${5 - failedAttempts} attempts left)`;
+                        }
+                        errEl.classList.remove('hidden');
+                        document.getElementById('login-input').value = '';
+                        setTimeout(() => errEl.classList.add('hidden'), 3000);
+                        return;
                     }
-                    errEl.classList.remove('hidden');
-                    document.getElementById('login-input').value = '';
-                    setTimeout(() => errEl.classList.add('hidden'), 3000);
-                    return;
+
+                    // Successful login
+                    failedAttempts = 0;
+                    lockoutUntil = 0;
+                    errEl.classList.add('hidden');
+
+                    // Apply token (even if empty — user can set later or use proxy)
+                    applyToken(token || sessionStorage.getItem('ghToken') || '');
+
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('admin-main').classList.remove('hidden');
+                    loadData();
+                } finally {
+                    loginBtn.textContent = originalBtnText;
+                    loginBtn.disabled = false;
                 }
+            }
 
                 // Successful login
                 failedAttempts = 0;
