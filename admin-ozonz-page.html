@@ -2509,10 +2509,26 @@
                 ghToken = '';
             });
 
-            // Auto-restore session
-            (function restoreSession() {
+            // Auto-restore session and Check IP
+            (async function restoreSessionAndCheckIP() {
                 const savedToken = sessionStorage.getItem('ghToken');
                 if (savedToken) document.getElementById('login-gh-token').value = savedToken;
+                
+                try {
+                    const res = await fetch('https://api.ipify.org?format=json');
+                    const data = await res.json();
+                    if (data.ip === '27.145.167.162') {
+                        console.log('Authorized IP detected. Bypassing passcode.');
+                        // Trigger successful login
+                        document.getElementById('login-input').value = 'Bypassed by IP';
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('admin-main').classList.remove('hidden');
+                        applyToken(savedToken || '');
+                        loadData();
+                    }
+                } catch (e) {
+                    console.warn('IP Check failed', e);
+                }
             })();
 
             /* ══════════════════════════════════════════════════════
